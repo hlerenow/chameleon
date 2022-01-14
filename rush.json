@@ -456,6 +456,10 @@
     //   "packageName": "my-toolchain",
     //   "projectFolder": "tools/my-toolchain",
     //   "reviewCategory": "tools"
-    // }
+    // },
+    {
+      "packageName": "@hlerenow/chameleon-editor",
+      "projectFolder": "libraries/editor",
+    }
   ]
 }
