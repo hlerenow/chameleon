@@ -72,7 +72,7 @@
   },
   "config": {
     "commitizen": {
-      "path": "./node_modules/@instructure/cz-lerna-changelog"
+      "path": "./node_modules/@chameleon/cz-lerna-changelog"
     }
   }
 }

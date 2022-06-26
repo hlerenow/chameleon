@@ -2,8 +2,11 @@
   "name": "chameleon",
   "private": true,
   "scripts": {
+    "prepare": "husky install",
     "bootstrap": "lerna bootstrap --use-workspaces",
-    "clear": "lerna clean && rm -rf ./node_modules"
+    "clear": "lerna clean && rm -rf ./node_modules",
+    "lint": "lerna run lint",
+    "build": "lerna run build"
   },
   "workspaces": [
     "packages/*"
@@ -19,11 +22,12 @@
     "style-loader": "2.0.0"
   },
   "dependencies": {
-    "clsx": "^1.1.1"
+    "clsx": "^1.1.1",
+    "husky": "^8.0.1"
   },
   "config": {
     "commitizen": {
-      "path": "./node_modules/@instructure/cz-lerna-changelog"
+      "path": "./node_modules/@chameleon/cz-lerna-changelog"
     }
   }
 }
