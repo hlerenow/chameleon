@@ -10,6 +10,12 @@
       "dom",
       "esnext"
     ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
     "importHelpers": true,
     // output .d.ts declaration files for consumers
     "declaration": true,

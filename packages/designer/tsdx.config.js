@@ -7,7 +7,7 @@ module.exports = {
       postcss({
         extract: true,
         modules: true,
-        use: ['sass'],
+        use: [['sass', { data: '@import "src/scss/global-variables.scss";' }]],
         plugins: [],
       })
     );

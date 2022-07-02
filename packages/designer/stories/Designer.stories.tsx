@@ -2,7 +2,7 @@ import React from 'react';
 import { Meta, Story } from '@storybook/react';
 import { Designer, Props } from '../src';
 
-const meta: Meta = {
+const Default: Meta = {
   title: 'Designer',
   component: Designer,
   argTypes: {
@@ -17,14 +17,14 @@ const meta: Meta = {
   },
 };
 
-export default meta;
+export default Default;
 
 const Template: Story<Props> = args => (
   <div
     style={{
       border: '1px solid #eee',
-      padding: '20px',
       height: '700px',
+      width: '100%',
     }}
   >
     <Designer {...args} />

@@ -1,0 +1,25 @@
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.headBarBox {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.midBox {
+  flex: 1
+}
+
+.rightBox {
+   button {
+    font-size: 12px;
+    line-height: 1.5;
+    margin-left: 10px;
+   }
+
+}

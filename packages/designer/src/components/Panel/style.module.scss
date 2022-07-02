@@ -1,0 +1,15 @@
+.panelBox {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .middleArea {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+  }
+  .leftArea {
+    position: relative;
+    min-height: 100%;
+  }
+}
