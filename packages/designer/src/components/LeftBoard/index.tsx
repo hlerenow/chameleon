@@ -6,15 +6,18 @@ import BoardDrawer from '../BoardDrawer';
 import clsx from 'clsx';
 import style from './style.module.scss';
 
+import ComponentListPanel from '@/components/ComponentListPanel';
+
 function LeftBoard() {
-  const [drawerVisible, setDrawerVisible] = useState(true);
-  const [fixed, setFixed] = useState(false);
-  const [currentSelectPanelKey, setCurrentSelectPanelKey] = useState('');
+  const [fixed, setFixed] = useState(true);
+  const [currentSelectPanelKey, setCurrentSelectPanelKey] = useState(
+    'componentList'
+  );
   let [panelList] = useState([
     {
       key: 'componentList',
-      name: '组件',
-      view: null,
+      name: '组件库',
+      view: ComponentListPanel,
       icon: AppstoreOutlined,
     },
     {
@@ -24,11 +27,17 @@ function LeftBoard() {
       icon: BarsOutlined,
     },
   ]);
+
+  const currentPanel = panelList.find(({ key }) => {
+    return key === currentSelectPanelKey;
+  });
+
+  const View = currentPanel?.view;
   return (
     <div
       className={style.leftBoardBox}
       style={{
-        width: '48px',
+        width: fixed ? `${48 + 375}px` : '48px',
       }}
     >
       <div className={style.utilBar}>
@@ -46,8 +55,13 @@ function LeftBoard() {
                 type="text"
                 size="small"
                 onClick={() => {
-                  setCurrentSelectPanelKey(item.key);
-                  setDrawerVisible(!drawerVisible);
+                  setCurrentSelectPanelKey(preKey => {
+                    if (preKey === item.key) {
+                      return '';
+                    } else {
+                      return item.key;
+                    }
+                  });
                 }}
               >
                 <IconComp />
@@ -57,22 +71,24 @@ function LeftBoard() {
         })}
       </div>
       <BoardDrawer
-        title="组件列表"
+        title={currentPanel?.name}
         containerStyle={{
           position: 'absolute',
-          left: '50px',
+          left: '48px',
           top: 0,
+          boxShadow: fixed ? 'none' : '5px 3px 10px #ebebeb',
+          borderRight: fixed ? '1px solid #f3f3f3' : 'none',
         }}
-        visible={drawerVisible}
+        visible={!!currentSelectPanelKey}
         fixed={fixed}
         onClose={() => {
-          setDrawerVisible(false);
+          setCurrentSelectPanelKey('');
         }}
         onFixedChange={status => {
           setFixed(status);
         }}
       >
-        滴滴滴
+        {View ? <View /> : '滴滴滴'}
       </BoardDrawer>
     </div>
   );

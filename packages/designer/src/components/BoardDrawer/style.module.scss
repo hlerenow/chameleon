@@ -5,3 +5,8 @@
   align-items: center;
 }
 
+
+.fixed {
+  transform: rotate(-45deg);
+  color: $primary-color;
+}

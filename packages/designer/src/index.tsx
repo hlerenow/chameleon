@@ -1,7 +1,7 @@
 import React, { FC, HTMLAttributes, ReactNode } from 'react';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
-import 'antd/dist/antd.css';
+import 'antd/dist/antd.min.css';
 import style from './style.module.scss';
 import Panel from './components/Panel';
 

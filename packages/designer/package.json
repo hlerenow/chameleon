@@ -1,6 +1,7 @@
 {
   "version": "0.1.0",
   "license": "MIT",
+  "name": "@chameleon/designer",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
@@ -35,7 +36,6 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "@chameleon/designer",
   "author": "何雷",
   "module": "dist/designer.esm.js",
   "size-limit": [
@@ -60,6 +60,7 @@
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
     "babel-loader": "^8.2.5",
+    "babel-plugin-module-resolver": "^4.1.0",
     "cz-conventional-changelog": "3.3.0",
     "husky": "^8.0.1",
     "postcss": "^8.4.14",
