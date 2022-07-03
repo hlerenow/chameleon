@@ -1,0 +1,33 @@
+{
+  "name": "chameleon",
+  "private": true,
+  "scripts": {
+    "prepare": "husky install",
+    "bootstrap": "lerna bootstrap --use-workspaces",
+    "clear": "lerna clean && rm -rf ./node_modules",
+    "lint": "lerna run lint",
+    "build": "lerna run build"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@instructure/cz-lerna-changelog": "8.25.0",
+    "@storybook/preset-scss": "^1.0.3",
+    "commitizen": "^4.2.4",
+    "css-loader": "5.2.7",
+    "lerna": "^4.0.0",
+    "sass": "^1.53.0",
+    "sass-loader": "10.1.1",
+    "style-loader": "2.0.0"
+  },
+  "dependencies": {
+    "clsx": "^1.1.1",
+    "husky": "^8.0.1"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/@chameleon/cz-lerna-changelog"
+    }
+  }
+}
