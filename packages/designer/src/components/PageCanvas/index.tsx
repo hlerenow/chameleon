@@ -1,12 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
+import Drag from '@/utils/drag';
 
 const PageCanvas = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   useEffect(() => {
+    let iframe = document.createElement('iframe');
     if (!iframeRef.current) {
-      let iframe = document.createElement('iframe');
-
       iframe.title = 'PageCanvas';
       iframe.name = 'PageCanvas';
       iframe.style.border = 'none';
@@ -38,6 +38,12 @@ const PageCanvas = () => {
 
       ReactDOM.render(<div>hello world!!!</div>, appContainerDom);
     }
+
+    Drag.registerHotArea(
+      iframe.contentWindow?.document as any,
+      iframe.contentWindow?.document!,
+      'iframe'
+    );
   }, []);
   return (
     <div

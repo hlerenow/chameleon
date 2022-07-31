@@ -20,7 +20,7 @@ const Default: Meta = {
 
 export default Default;
 
-const Template: Story<Props> = args => {
+const Template: Story<Props> = (args) => {
   console.log(111);
   (window as any).React = React;
   (window as any).ReactDOM = ReactDOM;

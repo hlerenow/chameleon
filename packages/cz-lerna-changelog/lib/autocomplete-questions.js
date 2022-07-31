@@ -28,7 +28,7 @@ module.exports = function autoCompleteQuestions(questions) {
       question,
       question.type === "autocomplete"
         ? {
-            source: autoCompleteSource(question.choices)
+            source: autoCompleteSource(question.choices),
           }
         : {}
     )
@@ -38,7 +38,10 @@ module.exports = function autoCompleteQuestions(questions) {
 function autoCompleteSource(options) {
   return (answersSoFar, input) => {
     return new Promise((resolve) => {
-      const matches = options.filter(({ name }) => !input || name.toLowerCase().indexOf(input.toLowerCase()) === 0);
+      const matches = options.filter(
+        ({ name }) =>
+          !input || name.toLowerCase().indexOf(input.toLowerCase()) === 0
+      );
       resolve(matches);
     });
   };

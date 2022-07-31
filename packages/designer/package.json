@@ -74,14 +74,14 @@
     "tsconfig-paths-webpack-plugin": "^3.5.2",
     "tsdx": "^0.14.1",
     "tslib": "^2.4.0",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "jest": "^28.1.2"
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@dnd-kit/core": "^6.0.5",
     "antd": "^4.21.4",
-    "clsx": "^1.1.1",
-    "jest": "^28.1.2"
+    "clsx": "^1.1.1"
   },
   "config": {
     "commitizen": {

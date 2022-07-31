@@ -22,7 +22,7 @@ module.exports = {
   typescript: {
     check: true, // type-check stories during Storybook build
   },
-  webpackFinal: async config => {
+  webpackFinal: async (config) => {
     config.resolve.plugins = [
       ...(config.resolve.plugins || []),
       new TsconfigPathsPlugin({

@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import Drag from '@/utils/drag';
 
 const listData = new Array(10).fill(1);
 const ComponentListPanel = function() {
+  const domRef = useRef<any>();
   const onClick = (id: any) => {
     console.log(id);
   };
+
+  useEffect(() => {
+    Drag.registerHotArea(domRef.current!, document);
+  }, []);
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+    <div style={{ display: 'flex', flexWrap: 'wrap' }} ref={domRef}>
       {listData.map((_, index) => {
         return (
           <div

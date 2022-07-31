@@ -11,12 +11,20 @@
   "workspaces": [
     "packages/*"
   ],
+  "lint-staged": {
+    "packages/*/src/**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix --quiet"
+    ],
+    "packages/*/src/**/*": "prettier --write --ignore-unknown"
+  },
   "devDependencies": {
     "@instructure/cz-lerna-changelog": "8.25.0",
     "@storybook/preset-scss": "^1.0.3",
     "commitizen": "^4.2.4",
     "css-loader": "5.2.7",
     "lerna": "^4.0.0",
+    "lint-staged": "^13.0.3",
+    "prettier": "2.7.1",
     "sass": "^1.53.0",
     "sass-loader": "10.1.1",
     "style-loader": "2.0.0"
