@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "build-script": "./lib/cjs/index.js"
+  },
   "scripts": {
-    "start": "jest --watchAll",
+    "start": "npm run clean && node scripts/build",
+    "dev": "cd example &&  ts-node ../src/index.ts --dev",
     "build": "npm run clean && node scripts/build",
     "clean": "rimraf es lib dist types generated demo coverage output",
     "test": "jest",
@@ -15,6 +19,7 @@
   "license": "ISC",
   "devDependencies": {
     "@tsconfig/node16": "^1.0.3",
+    "@types/fs-extra": "^9.0.13",
     "@types/jest": "^28.1.6",
     "concurrently": "^7.3.0",
     "cz-conventional-changelog": "3.3.0",
@@ -29,5 +34,12 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^2.0.0",
+    "fs-extra": "^10.1.0",
+    "merge": "^2.1.1",
+    "vite": "^3.0.4",
+    "yargs-parser": "^21.0.1"
   }
 }

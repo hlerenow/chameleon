@@ -31,11 +31,11 @@ function buildAll() {
   );
 }
 
-function buildFormat(format, outDir) {
+async function buildFormat(format, outDir) {
   try {
     console.log('building %s...', format);
     const startTime = Date.now();
-    const result = esbuild.buildSync({
+    const result = await esbuild.build({
       entryPoints: ['src/index.ts'],
       outfile: `${outDir}/${format}/index.js`,
       bundle: true,
@@ -49,6 +49,12 @@ function buildFormat(format, outDir) {
       external: _.keys(packageJson.dependencies),
       minify: false,
       legalComments: 'external',
+      watch: {
+        onRebuild(error, result) {
+          if (error) console.error('watch build failed:', error);
+          else console.log('watch build succeeded:', result);
+        },
+      },
     });
     if (result.errors.length > 0) {
       throw result.errors;
