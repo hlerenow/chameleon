@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/index.ts", "../../src/module.ts"],
+  "sourcesContent": ["import { a } from './module';\nconsole.log('hello world');\n\nexport { a };\n", "export const a = () => {\n  console.log(\"I'm a\");\n  return 1;\n};\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;;;ACAO,IAAM,IAAI,MAAM;AACrB,UAAQ,IAAI,OAAO;AACnB,SAAO;AACT;;;ADFA,QAAQ,IAAI,aAAa;",
+  "names": []
+}
