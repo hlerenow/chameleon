@@ -15,7 +15,7 @@ export const PROJECT_ROOT = path.resolve(process.cwd());
 
 let customConfig: any = {};
 
-let customConfigPath = `${PROJECT_ROOT}/build.config.js`;
+const customConfigPath = `${PROJECT_ROOT}/build.config.js`;
 
 if (fs.pathExistsSync(customConfigPath)) {
   customConfig = require(customConfigPath);

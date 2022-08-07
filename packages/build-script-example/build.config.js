@@ -6,9 +6,8 @@ module.exports = {
   libName: 'Ddemo',
   external: ['react', 'react-dom'],
   global: {
-    'react': 'React',
+    react: 'React',
     'react-dom': 'ReactDOM',
-
   },
-  vite: {}
+  vite: {},
 };

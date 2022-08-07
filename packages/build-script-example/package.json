@@ -3,10 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "node ../lib//cjs/index.js --build",
-    "dev:w": "node ../lib//cjs/index.js --build --watch",
-    "dev2": "vite",
-    "build": "tsc && vite build",
+    "dev": "build-script",
+    "build": "build-script --build",
     "preview": "vite preview"
   },
   "dependencies": {
