@@ -21,13 +21,7 @@
     "@tsconfig/node16": "^1.0.3",
     "@types/fs-extra": "^9.0.13",
     "@types/jest": "^28.1.6",
-    "cz-conventional-changelog": "3.3.0",
     "esbuild": "^0.14.51"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^5.32.0",
@@ -47,6 +41,12 @@
     "typescript": "^4.6.4",
     "vite": "^3.0.4",
     "vite-plugin-eslint": "^1.7.0",
-    "yargs-parser": "^21.0.1"
+    "yargs-parser": "^21.0.1",
+    "@chameleon/cz-lerna-changelog": "*"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/@chameleon/cz-lerna-changelog"
+    }
   }
 }
