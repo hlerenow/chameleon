@@ -43,6 +43,7 @@ var import_vite2 = require("vite");
 var import_vite = require("vite");
 var import_path2 = __toESM(require("path"));
 var import_plugin_react = __toESM(require("@vitejs/plugin-react"));
+var import_vite_plugin_eslint = __toESM(require("vite-plugin-eslint"));
 var commonConfig = () => {
   if (!CUSTOM_CONFIG.entry) {
     throw new Error("entry not find");
@@ -62,7 +63,7 @@ var commonConfig = () => {
         }
       }
     },
-    plugins: [(0, import_plugin_react.default)()]
+    plugins: [(0, import_vite_plugin_eslint.default)(), (0, import_plugin_react.default)()]
   });
 };
 

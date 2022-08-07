@@ -31,6 +31,7 @@ import { mergeConfig } from "vite";
 import { defineConfig } from "vite";
 import path2 from "path";
 import react from "@vitejs/plugin-react";
+import eslint from "vite-plugin-eslint";
 var commonConfig = () => {
   if (!CUSTOM_CONFIG.entry) {
     throw new Error("entry not find");
@@ -50,7 +51,7 @@ var commonConfig = () => {
         }
       }
     },
-    plugins: [react()]
+    plugins: [eslint(), react()]
   });
 };
 
