@@ -6,7 +6,8 @@
     "dev": "build-script",
     "build": "build-script --build",
     "lint": "eslint --ext .tsx,.ts src/",
-    "prettier": "prettier --write ./src"
+    "prettier": "prettier --write ./src",
+    "test": "jest"
   },
   "dependencies": {
     "react": "^18.2.0",
