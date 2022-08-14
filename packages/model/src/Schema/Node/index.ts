@@ -8,7 +8,6 @@ import {
   literal,
   object,
   any,
-  array,
 } from 'superstruct';
 import { CNodePropsTypeEnum } from '../../const/schema';
 import { isJSslotNode } from '../../util';

@@ -1,1 +1,1 @@
-export { isPlainObject, values } from 'lodash-es';
+export { isPlainObject, values, isArray, isObject } from 'lodash-es';
