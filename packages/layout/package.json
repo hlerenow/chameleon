@@ -1,5 +1,5 @@
 {
-  "name": "@chameleon/engine",
+  "name": "@chameleon/layout",
   "version": "0.0.1",
   "scripts": {
     "start": "build-script",

@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import path from 'path';
 import react from '@vitejs/plugin-react';
 import eslint from 'vite-plugin-eslint';
+import dts from 'vite-plugin-dts';
 import { PROJECT_ROOT, CUSTOM_CONFIG } from './base';
 
 // https://vitejs.dev/config/
@@ -26,6 +27,6 @@ export const commonConfig = () => {
         },
       },
     },
-    plugins: [eslint(), react()],
+    plugins: [eslint(), react(), dts()],
   });
 };

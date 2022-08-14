@@ -1,5 +1,5 @@
 {
-  "name": "@chameleon/engine",
+  "name": "@chameleon/model",
   "version": "0.0.1",
   "scripts": {
     "start": "build-script",
@@ -9,12 +9,14 @@
     "test": "jest"
   },
   "dependencies": {
+    "lodash-es": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sass": "^1.54.0"
   },
   "devDependencies": {
     "@chameleon/build-script": "*",
+    "@types/lodash-es": "^4.17.6",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6"
   },

@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import reactLogo from './assets/react.svg';
 import './App.scss';
 
+export type AppPRops = {
+  a: string;
+};
+
 function App() {
   const [count, setCount] = useState(0);
 
