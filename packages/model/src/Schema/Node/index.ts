@@ -10,19 +10,19 @@ import {
   any,
 } from 'superstruct';
 import { CNodePropsTypeEnum } from '../../const/schema';
-import { isJSslotNode } from '../../util';
+import { getRandomStr, isJSslotNode } from '../../util';
 import { checkComplexData } from '../../util/dataCheck';
 import { values } from '../../util/lodash';
 
 export type NormalPropType = string | boolean | number | Record<string, any>;
 
 export type RenderPropType = {
-  type: CNodePropsTypeEnum.JSSLOT;
+  type: CNodePropsTypeEnum.SLOT;
   value: CNodeDataType[];
 };
 
 export type JSExpressionPropType = {
-  type: CNodePropsTypeEnum.JSEXPRESSION;
+  type: CNodePropsTypeEnum.EXPRESSION;
   value: string;
 };
 
@@ -41,12 +41,12 @@ export const PropsDataStructDescribe: any = () => {
     number(),
     boolean(),
     object({
-      type: literal(CNodePropsTypeEnum.JSSLOT),
+      type: literal(CNodePropsTypeEnum.SLOT),
       // here can't use PropsDataStructDescribe, it will  caused  "Maximum call stack size exceeded" error
       value: any(),
     }),
     object({
-      type: literal(CNodePropsTypeEnum.JSEXPRESSION),
+      type: literal(CNodePropsTypeEnum.EXPRESSION),
       value: string(),
     }),
     object({
@@ -68,19 +68,25 @@ export type CNodeDataType = {
    * @type {Record<any, any>}
    */
   configure?: Record<any, any>;
+  style?: string;
+  className?: string;
+  ref?: string;
 };
 
 export const CNodeDataStructDescribe = () => {
   return object({
-    id: string(),
+    id: optional(string()),
     componentName: string(),
     props: optional(record(string(), PropsDataStructDescribe())),
     configure: optional(any()),
+    style: optional(string()),
+    className: optional(string()),
+    ref: optional(string()),
   });
 };
 
 export const checkNode = (data: any) => {
-  const { id, componentName, props, configure } = data;
+  const { props } = data;
   // check data
   checkComplexData({
     data: data,
@@ -104,5 +110,6 @@ export class CNode {
   constructor(data: any) {
     checkNode(data);
     this.data = data;
+    this.data.id = this.data.id ?? getRandomStr();
   }
 }

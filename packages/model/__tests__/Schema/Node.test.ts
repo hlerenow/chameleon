@@ -9,7 +9,7 @@ describe('test node model', () => {
         key: '1',
         age: 12,
         itemRender: {
-          type: 'JSSLOT',
+          type: 'SLOT',
           value: {
             id: '2',
             componentName: 'Button',

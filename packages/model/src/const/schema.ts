@@ -1,5 +1,5 @@
 export enum CNodePropsTypeEnum {
-  JSSLOT = 'JSSLOT',
+  SLOT = 'SLOT',
   FUNCTION = 'FUNCTION',
-  JSEXPRESSION = 'JSEXPRESSION',
+  EXPRESSION = 'EXPRESSION',
 }
