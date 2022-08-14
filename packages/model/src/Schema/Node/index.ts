@@ -8,16 +8,14 @@ import {
   literal,
   object,
   any,
+  array,
 } from 'superstruct';
+import { CNodePropsTypeEnum } from '../../const/schema';
+import { isJSslotNode } from '../../util';
 import { checkComplexData } from '../../util/dataCheck';
+import { values } from '../../util/lodash';
 
 export type NormalPropType = string | boolean | number | Record<string, any>;
-
-export enum CNodePropsTypeEnum {
-  JSSLOT = 'JSSLOT',
-  FUNCTION = 'FUNCTION',
-  JSEXPRESSION = 'JSEXPRESSION',
-}
 
 export type RenderPropType = {
   type: CNodePropsTypeEnum.JSSLOT;
@@ -82,7 +80,7 @@ export const CNodeDataStructDescribe = () => {
   });
 };
 
-export const parseNode = (data: any): CNodeDataType => {
+export const checkNode = (data: any) => {
   const { id, componentName, props, configure } = data;
   // check data
   checkComplexData({
@@ -90,19 +88,22 @@ export const parseNode = (data: any): CNodeDataType => {
     dataStruct: CNodeDataStructDescribe(),
     throwError: true,
   });
-  const res: CNodeDataType = {
-    id: id,
-    componentName,
-    props,
-    configure,
-  };
+  // check props data struct which type is JSSLOT
+  const jsslotValueArr = values(props)
+    .filter(isJSslotNode)
+    .map((el) => {
+      return el.value;
+    });
 
-  return res;
+  jsslotValueArr.forEach((val) => {
+    checkNode(val);
+  });
 };
 
 export class CNode {
   data: CNodeDataType;
   constructor(data: any) {
-    this.data = parseNode(data);
+    checkNode(data);
+    this.data = data;
   }
 }

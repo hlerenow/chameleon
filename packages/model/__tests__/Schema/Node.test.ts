@@ -12,7 +12,7 @@ describe('test node model', () => {
           type: 'JSSLOT',
           value: {
             id: '2',
-            component: 'Button',
+            componentName: 'Button',
           },
         },
       },
