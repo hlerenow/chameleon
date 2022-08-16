@@ -2,7 +2,6 @@ import {
   any,
   array,
   assign,
-  boolean,
   literal,
   object,
   optional,
@@ -10,30 +9,9 @@ import {
   union,
 } from 'superstruct';
 import { checkSchema, CSchema } from '../Schema';
+import { LibMetaType, LibMetaTypeDescribe } from '../types/material';
+import { ComponentMetaType } from '../types/page';
 import { checkComplexData } from '../util/dataCheck';
-
-export type LibMetaType = {
-  componentName: string;
-  package: string;
-  version: string;
-  exportName: string;
-  destructuring?: boolean;
-  subName?: string;
-  main?: string;
-};
-
-export type ComponentMetaType = {
-  componentName: string;
-} & LibMetaType;
-
-const LibMetaTypeDescribe = object({
-  package: string(),
-  version: string(),
-  exportName: string(),
-  destructuring: optional(boolean()),
-  subName: optional(string()),
-  main: optional(string()),
-});
 
 export enum ThirdLibTypeEnum {
   CDN = 'CDN',
