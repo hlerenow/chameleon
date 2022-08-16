@@ -59,7 +59,7 @@ export const DevKey = ['configure'];
 export type CNodeDataType = {
   id: string;
   componentName: string;
-  props: Record<string, PropType>;
+  props?: Record<string, PropType>;
   /**
    * only used in dev mode, if you are run in prod, this key will be undefined
    *

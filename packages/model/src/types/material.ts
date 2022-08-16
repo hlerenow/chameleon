@@ -13,6 +13,7 @@ import {
   number,
   omit,
   record,
+  dynamic,
 } from 'superstruct';
 import { CNodeDataStructDescribe, CNodeDataType } from './node';
 
@@ -58,10 +59,14 @@ export type ShapeDataType = {
 
 export const ShapeDataTypeDescribe = object({
   type: literal(AdvanceDataType.SHAPE),
-  value: object({
-    name: string(),
-    valueType: any(),
-  }),
+  value: array(
+    object({
+      name: string(),
+      valueType: dynamic<any>((value) => {
+        return PropsValueTypeDescribe;
+      }),
+    })
+  ),
 });
 
 export type EnumDataType = {
@@ -99,7 +104,7 @@ export type PropsValueType =
   | EnumDataType
   | UnionDataType;
 
-export const PropsValueTypeDescribe = union([
+export const PropsValueTypeDescribe: any = union([
   enums([
     BaseDataType.ARRAY,
     BaseDataType.BOOLEAN,
@@ -127,13 +132,13 @@ export const SetterTypeDescribe = union([
   }),
 ]);
 
-export type MaterialProp = {
+export type MaterialPropType = {
   name: string;
   title: string;
   valueType: PropsValueType;
   description?: string;
   defaultValue: any;
-  setters: SetterType[];
+  setters?: SetterType[];
   supportVariable?: boolean;
   condition?: (state: any) => void;
 };
@@ -144,7 +149,7 @@ export const MaterialPropDescribe = object({
   valueType: PropsValueTypeDescribe,
   description: optional(string()),
   defaultValue: any(),
-  setters: array(SetterTypeDescribe),
+  setters: optional(array(SetterTypeDescribe)),
   supportVariable: optional(boolean()),
   condition: optional(func()),
 });
@@ -170,20 +175,20 @@ export type CMaterialType = {
   version: string;
   npm: LibMetaType;
   snippets: Omit<CNodeDataType, 'id'>;
-  props: MaterialProp[];
+  props: MaterialPropType[];
   // 可以拖入组件
-  isContainer: boolean;
-  isModal:
+  isContainer?: boolean;
+  isModal?:
     | boolean
     | {
         visibleKey: string;
       };
   // 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize
-  isLayout: boolean;
+  isLayout?: boolean;
   rootSelector?: string;
   actions?: ActionType[];
   // 扩展配置
-  extra: Record<any, any>;
+  extra?: Record<any, any>;
 };
 
 export const CMaterialTypeDescribe = object({
@@ -205,17 +210,19 @@ export const CMaterialTypeDescribe = object({
   snippets: omit(CNodeDataStructDescribe(), ['id']),
   props: array(MaterialPropDescribe),
   // 可以拖入组件
-  isContainer: boolean(),
-  isModal: union([
-    boolean(),
-    object({
-      visibleKey: string(),
-    }),
-  ]),
+  isContainer: optional(boolean()),
+  isModal: optional(
+    union([
+      boolean(),
+      object({
+        visibleKey: string(),
+      }),
+    ])
+  ),
   // 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize
-  isLayout: boolean(),
+  isLayout: optional(boolean()),
   rootSelector: optional(string()),
   actions: optional(array(ActionTypeDescribe)),
   // 扩展配置
-  extra: record(any(), any()),
+  extra: optional(record(any(), any())),
 });
