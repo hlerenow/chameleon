@@ -2,8 +2,8 @@ import { CMaterials } from '../../src/Material/index';
 import {
   AdvanceDataType,
   BaseDataType,
-  CMaterialType,
   ShapeDataType,
+  SpecialDataType,
 } from '../../src/types/material';
 
 const mockMaterialData: any = {
@@ -27,23 +27,47 @@ const mockMaterialData: any = {
         value: [
           {
             name: 'key1',
+            title: 'key1',
             valueType: {
               type: AdvanceDataType.SHAPE,
               value: [
                 {
                   name: 'key2',
+                  title: 'key2',
                   valueType: BaseDataType.STRING,
                 },
               ],
             },
           },
+          {
+            name: 'renderItem',
+            title: '渲染子元素',
+            valueType: SpecialDataType.COMPONENT,
+          },
+          {
+            name: 'expression',
+            title: '表达式',
+            valueType: SpecialDataType.EXPRESSION,
+          },
         ],
       } as ShapeDataType,
     },
+    {
+      name: 'renderItem',
+      title: '渲染子元素',
+      valueType: SpecialDataType.COMPONENT,
+    },
+    {
+      name: 'expression',
+      title: '表达式',
+      valueType: SpecialDataType.EXPRESSION,
+    },
   ],
-  snippets: {
-    componentName: 'Button',
-  },
+  snippets: [
+    {
+      componentName: 'Button',
+    },
+  ],
 };
 
 describe('test page model', () => {

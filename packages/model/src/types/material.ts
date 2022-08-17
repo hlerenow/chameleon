@@ -49,10 +49,17 @@ export enum AdvanceDataType {
   UNION = 'union',
 }
 
+export enum SpecialDataType {
+  COMPONENT = 'component',
+  EXPRESSION = 'expression',
+  FUNCTION = 'function',
+}
+
 export type ShapeDataType = {
   type: AdvanceDataType.SHAPE;
   value: {
     name: string;
+    title: string;
     valueType: PropsValueType;
   }[];
 };
@@ -62,7 +69,8 @@ export const ShapeDataTypeDescribe = object({
   value: array(
     object({
       name: string(),
-      valueType: dynamic<any>((value) => {
+      title: string(),
+      valueType: dynamic(() => {
         return PropsValueTypeDescribe;
       }),
     })
@@ -93,6 +101,7 @@ export type UnionDataType = {
   type: AdvanceDataType.UNION;
   value: PropsValueType[];
 };
+
 export const UnionDataTypeDescribe = object({
   type: literal(BaseDataType.ARRAY),
   value: any(),
@@ -100,8 +109,10 @@ export const UnionDataTypeDescribe = object({
 
 export type PropsValueType =
   | BaseDataType
+  | SpecialDataType
   | ShapeDataType
   | EnumDataType
+  | ArrayDataType
   | UnionDataType;
 
 export const PropsValueTypeDescribe: any = union([
@@ -111,6 +122,11 @@ export const PropsValueTypeDescribe: any = union([
     BaseDataType.NUMBER,
     BaseDataType.OBJECT,
     BaseDataType.STRING,
+  ]),
+  enums([
+    SpecialDataType.COMPONENT,
+    SpecialDataType.EXPRESSION,
+    SpecialDataType.FUNCTION,
   ]),
   ShapeDataTypeDescribe,
   EnumDataTypeDescribe,
@@ -137,7 +153,7 @@ export type MaterialPropType = {
   title: string;
   valueType: PropsValueType;
   description?: string;
-  defaultValue: any;
+  defaultValue?: any;
   setters?: SetterType[];
   supportVariable?: boolean;
   condition?: (state: any) => void;
@@ -146,9 +162,11 @@ export type MaterialPropType = {
 export const MaterialPropDescribe = object({
   name: string(),
   title: string(),
+  // 描述 name 对应值的类型
   valueType: PropsValueTypeDescribe,
   description: optional(string()),
   defaultValue: any(),
+  //用于产生 valueType 类型的值
   setters: optional(array(SetterTypeDescribe)),
   supportVariable: optional(boolean()),
   condition: optional(func()),
@@ -174,7 +192,7 @@ export type CMaterialType = {
   priority?: number;
   version: string;
   npm: LibMetaType;
-  snippets: Omit<CNodeDataType, 'id'>;
+  snippets: Omit<CNodeDataType, 'id'>[];
   props: MaterialPropType[];
   // 可以拖入组件
   isContainer?: boolean;
@@ -207,7 +225,7 @@ export const CMaterialTypeDescribe = object({
   priority: optional(number()),
   version: string(),
   npm: LibMetaTypeDescribe,
-  snippets: omit(CNodeDataStructDescribe(), ['id']),
+  snippets: array(omit(CNodeDataStructDescribe, ['id'])),
   props: array(MaterialPropDescribe),
   // 可以拖入组件
   isContainer: optional(boolean()),
