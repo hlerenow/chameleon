@@ -54,12 +54,26 @@ export enum SpecialDataType {
   EXPRESSION = 'expression',
   FUNCTION = 'function',
 }
+export type MTitle =
+  | string
+  | {
+      label: string;
+      tip?: string;
+    };
+
+export const MTitleDescribe = union([
+  string(),
+  object({
+    label: string(),
+    tip: optional(string()),
+  }),
+]);
 
 export type ShapeDataType = {
   type: AdvanceDataType.SHAPE;
   value: {
     name: string;
-    title: string;
+    title: MTitle;
     valueType: PropsValueType;
   }[];
 };
@@ -69,7 +83,7 @@ export const ShapeDataTypeDescribe = object({
   value: array(
     object({
       name: string(),
-      title: string(),
+      title: MTitleDescribe,
       valueType: dynamic(() => {
         return PropsValueTypeDescribe;
       }),
@@ -94,7 +108,9 @@ export type ArrayDataType = {
 
 export const ArrayDataTypeDescribe = object({
   type: literal(BaseDataType.ARRAY),
-  value: any(),
+  value: dynamic(() => {
+    return PropsValueTypeDescribe;
+  }),
 });
 
 export type UnionDataType = {
@@ -104,7 +120,9 @@ export type UnionDataType = {
 
 export const UnionDataTypeDescribe = object({
   type: literal(BaseDataType.ARRAY),
-  value: any(),
+  value: dynamic(() => {
+    return array(PropsValueTypeDescribe);
+  }),
 });
 
 export type PropsValueType =
@@ -133,10 +151,20 @@ export const PropsValueTypeDescribe: any = union([
   UnionDataTypeDescribe,
 ]);
 
+export enum SetterTypeEnum {
+  STRING_SETTER = 'StringSetter',
+  BOOLEAN_SETTER = 'BooleanSetter',
+  JSON_SETTER = 'JsonSetter',
+  SElECT_SETTER = 'SelectSetter',
+  NUMBER_SETTER = 'NumberSetter',
+  SHAPE_SETTER = 'ShapeSSetter',
+  ARRAY_SETTER = 'ArraySetter',
+}
+
 export type SetterType =
-  | string
+  | SetterTypeEnum
   | {
-      componentName: string;
+      componentName: SetterTypeEnum;
       props: Record<any, any>;
     };
 
@@ -150,7 +178,7 @@ export const SetterTypeDescribe = union([
 
 export type MaterialPropType = {
   name: string;
-  title: string;
+  title: MTitle;
   valueType: PropsValueType;
   description?: string;
   defaultValue?: any;
@@ -161,7 +189,7 @@ export type MaterialPropType = {
 
 export const MaterialPropDescribe = object({
   name: string(),
-  title: string(),
+  title: MTitleDescribe,
   // 描述 name 对应值的类型
   valueType: PropsValueTypeDescribe,
   description: optional(string()),
@@ -178,7 +206,7 @@ export const ActionTypeDescribe = union([string(), func()]);
 
 export type CMaterialType = {
   componentName: string;
-  title: string;
+  title: MTitle;
   description?: string;
   screenshot?: string;
   icon?: string;
@@ -211,7 +239,7 @@ export type CMaterialType = {
 
 export const CMaterialTypeDescribe = object({
   componentName: string(),
-  title: string(),
+  title: MTitleDescribe,
   description: optional(string()),
   screenshot: optional(string()),
   icon: optional(string()),
