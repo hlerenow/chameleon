@@ -166,6 +166,7 @@ export type SetterType =
   | {
       componentName: SetterTypeEnum;
       props: Record<any, any>;
+      initialValue: any;
     };
 
 export const SetterTypeDescribe = union([
@@ -173,6 +174,8 @@ export const SetterTypeDescribe = union([
   object({
     componentName: string(),
     props: any(),
+    // 用于标记当前数据的初始值，如添加一个数组元素可以使用该值填充
+    initialValue: any(),
   }),
 ]);
 
@@ -204,6 +207,11 @@ export type ActionType = string | ((context: any) => React.ReactNode);
 
 export const ActionTypeDescribe = union([string(), func()]);
 
+export enum PropsUIType {
+  SINGLE = 'single',
+  GROUP = 'group',
+}
+
 export type CMaterialType = {
   componentName: string;
   title: MTitle;
@@ -221,7 +229,17 @@ export type CMaterialType = {
   version: string;
   npm: LibMetaType;
   snippets: Omit<CNodeDataType, 'id'>[];
-  props: MaterialPropType[];
+  props: (
+    | MaterialPropType
+    | {
+        type: PropsUIType.SINGLE;
+        content: MaterialPropType;
+      }
+    | {
+        type: PropsUIType.GROUP;
+        content: MaterialPropType[];
+      }
+  )[];
   // 可以拖入组件
   isContainer?: boolean;
   isModal?:
@@ -254,7 +272,19 @@ export const CMaterialTypeDescribe = object({
   version: string(),
   npm: LibMetaTypeDescribe,
   snippets: array(omit(CNodeDataStructDescribe, ['id'])),
-  props: array(MaterialPropDescribe),
+  props: array(
+    union([
+      MaterialPropDescribe,
+      object({
+        type: literal(PropsUIType.SINGLE),
+        content: MaterialPropDescribe,
+      }),
+      object({
+        type: literal(PropsUIType.GROUP),
+        content: array(MaterialPropDescribe),
+      }),
+    ])
+  ),
   // 可以拖入组件
   isContainer: optional(boolean()),
   isModal: optional(
