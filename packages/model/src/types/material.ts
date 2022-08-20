@@ -186,7 +186,6 @@ export type MaterialPropType = {
   description?: string;
   defaultValue?: any;
   setters?: SetterType[];
-  supportVariable?: boolean;
   condition?: (state: any) => void;
 };
 
@@ -199,7 +198,6 @@ export const MaterialPropDescribe = object({
   defaultValue: any(),
   //用于产生 valueType 类型的值
   setters: optional(array(SetterTypeDescribe)),
-  supportVariable: optional(boolean()),
   condition: optional(func()),
 });
 
@@ -249,6 +247,7 @@ export type CMaterialType = {
       };
   // 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize
   isLayout?: boolean;
+  isSupportStyle?: boolean;
   rootSelector?: string;
   actions?: ActionType[];
   // 扩展配置
@@ -295,6 +294,7 @@ export const CMaterialTypeDescribe = object({
       }),
     ])
   ),
+  isSupportStyle: boolean(),
   // 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize
   isLayout: optional(boolean()),
   rootSelector: optional(string()),
