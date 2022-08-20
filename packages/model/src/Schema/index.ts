@@ -1,37 +1,41 @@
-import { isArray, isPlainObject } from '../util/lodash';
-import { checkNode, CNode } from './Node';
+import { CSchemaDataType, CSchemaDataTypeDescribe } from '../types/schema';
+import { checkComplexData } from '../util/dataCheck';
+import { isArray } from '../util/lodash';
+import { CNode } from './Node';
 
-export const checkSchema = (data: any) => {
-  let originData: any[] = [];
-  if (isPlainObject(data)) {
-    originData = [data];
-  } else {
-    originData = data;
-  }
-
-  originData.forEach((el) => {
-    checkNode(el);
+export const checkSchema = (data: any): CSchemaDataType => {
+  checkComplexData({
+    data: data,
+    dataStruct: CSchemaDataTypeDescribe,
+    throwError: true,
   });
+  return data;
 };
 
-export const parseSchema = (data: any): CNode[] => {
+export const parseSchema = (data: CSchemaDataType) => {
   let res = [];
-  if (!isArray(data)) {
-    res = data.map((el: any) => {
+  if (isArray(data.children)) {
+    res = data.children.map((el: any) => {
       return new CNode(el);
     });
   } else {
-    res.push(new CNode(data));
+    res.push(new CNode(data.children));
   }
-
-  return res;
+  return {
+    ...data,
+    children: res,
+  };
 };
 
 export class CSchema {
-  originData: any;
-  data: CNode[];
+  private originData: CSchemaDataType;
+  private data: any;
   constructor(data: any) {
-    this.originData = data;
+    this.originData = checkSchema(data);
     this.data = parseSchema(data);
+  }
+
+  export(mode: 'designer' | 'save' = 'save'): CSchemaDataType {
+    return this.originData;
   }
 }

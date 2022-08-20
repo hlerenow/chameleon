@@ -17,7 +17,7 @@ const mockNodeData = {
 };
 
 const mockPageData = {
-  version: '1.0',
+  version: '1.1.0',
   pageName: 'testPage',
   style: '',
   componentsMeta: [
@@ -41,14 +41,24 @@ describe('test page model', () => {
   });
 
   it('validate a bad page', () => {
-    mockPageData.version = 1 as any;
+    const newPageData = {
+      ...mockPageData,
+    };
+    newPageData.version = 1 as any;
     let isError = false;
     try {
-      new CPage(mockPageData);
+      new CPage(newPageData);
     } catch (e) {
       isError = true;
     }
 
     expect(isError).toBeTruthy();
+  });
+
+  it('test export function', () => {
+    const page = new CPage(mockPageData);
+    expect(page).not.toBeNull();
+    expect(page.emitter).not.toBeUndefined();
+    expect(page.export()).toEqual(mockPageData);
   });
 });

@@ -1,106 +1,59 @@
-import {
-  any,
-  array,
-  assign,
-  literal,
-  object,
-  optional,
-  string,
-  union,
-} from 'superstruct';
-import { checkSchema, CSchema } from '../Schema';
-import { LibMetaType, LibMetaTypeDescribe } from '../types/material';
-import { ComponentMetaType } from '../types/page';
+import { Emitter } from 'mitt';
 import { checkComplexData } from '../util/dataCheck';
+import { CPageDataType, CPageDataTypeDescribe } from '../types/page';
+import { DataModelEmitter } from '../util/modelEmitter';
+import { CSchema } from '../Schema';
 
-export enum ThirdLibTypeEnum {
-  CDN = 'CDN',
-  FUNCTION = 'FUNCTION',
-}
-
-export type ThirdLibType =
-  | {
-      globalName: string;
-      type: ThirdLibTypeEnum.CDN;
-      content: LibMetaType;
-    }
-  | {
-      globalName: string;
-      type: ThirdLibTypeEnum.FUNCTION;
-      content: string;
-    };
-
-const ThirdLibTypeDescribe = union([
-  object({
-    globName: string(),
-    type: literal([ThirdLibTypeEnum.CDN]),
-    content: union([LibMetaTypeDescribe]),
-  }),
-  object({
-    globName: string(),
-    type: literal([ThirdLibTypeEnum.FUNCTION]),
-    content: union([string()]),
-  }),
-]);
-
-export type CPageDataType = {
-  version: string;
-  pageName: string;
-  style?: string;
-  css?: {
-    type: 'css' | 'less' | 'scs';
-    value: string;
-  };
-  componentsMeta: ComponentMetaType[];
-  thirdLibs?: ThirdLibType[];
-  componentsTree: {
-    componentName: 'Page';
-    children: CSchema[];
-  };
-};
-
-const CPageDataTypeDescribe = object({
-  version: string(),
-  pageName: string(),
-  style: optional(string()),
-  css: optional(string()),
-  componentsMeta: array(
-    assign(
-      object({
-        componentName: string(),
-      }),
-      LibMetaTypeDescribe
-    )
-  ),
-  thirdLibs: optional(ThirdLibTypeDescribe),
-  componentsTree: object({
-    componentName: literal('Page'),
-    children: array(any()),
-  }),
-});
-
-export const checkPage = (data: any) => {
+export const checkPage = (data: any): CPageDataType => {
   checkComplexData({
     data: data,
     dataStruct: CPageDataTypeDescribe,
     throwError: true,
   });
-  // check page children
-  data?.componentsTree?.children?.forEach((it: any) => {
-    checkSchema(it);
-  });
-};
 
-export const parsePage = (data: any): CPageDataType => {
   return data;
 };
 
+export const parsePage = (data: CPageDataType) => {
+  return {
+    ...data,
+    componentsTree: new CSchema(data.componentsTree),
+  };
+};
+
+export type CPpageDataModelType = Omit<CPageDataType, 'componentsTree'> & {
+  componentsTree: CSchema;
+};
 export class CPage {
-  originData: any;
-  data: CPageDataType;
-  constructor(data: any) {
+  originData: CPageDataType;
+  emitter = DataModelEmitter;
+  data: CPpageDataModelType;
+  constructor(
+    data: any,
+    options?: {
+      emitter?: Emitter<any>;
+    }
+  ) {
     checkPage(data);
     this.originData = data;
     this.data = parsePage(data);
+    if (options?.emitter) {
+      // todo
+      this.emitter = options?.emitter as any;
+    }
+  }
+
+  get value() {
+    return this.data;
+  }
+
+  // TODO
+  export(mode: 'designer' | 'save' = 'save') {
+    const res = {
+      ...this.data,
+      componentsTree: this.data.componentsTree.export(mode),
+    };
+
+    return JSON.parse(JSON.stringify(res));
   }
 }

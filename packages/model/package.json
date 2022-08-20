@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "lodash-es": "^4.17.21",
+    "mitt": "^3.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sass": "^1.54.0",

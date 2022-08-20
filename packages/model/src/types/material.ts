@@ -294,7 +294,7 @@ export const CMaterialTypeDescribe = object({
       }),
     ])
   ),
-  isSupportStyle: boolean(),
+  isSupportStyle: optional(boolean()),
   // 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize
   isLayout: optional(boolean()),
   rootSelector: optional(string()),
