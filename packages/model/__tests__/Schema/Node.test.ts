@@ -1,4 +1,4 @@
-import { CNode } from '../../src/Schema/Node/index';
+import { CNode } from '../../src/Page/Schema/Node/index';
 
 describe('test node model', () => {
   it('new a node instance', () => {
@@ -19,7 +19,7 @@ describe('test node model', () => {
     };
     const node = new CNode(mockData);
     expect(node).not.toBeNull();
-    expect(node.data.componentName).toEqual(mockData.componentName);
+    expect(node.value.componentName).toEqual(mockData.componentName);
   });
 
   it('test node without pros', () => {

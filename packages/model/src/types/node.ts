@@ -9,6 +9,7 @@ import {
   optional,
   record,
   dynamic,
+  array,
 } from 'superstruct';
 import { CNodePropsTypeEnum } from '../const/schema';
 
@@ -29,9 +30,9 @@ export type FunctionPropType = {
   value: string;
 };
 
-export type SpecialProps = RenderPropType | JSExpressionPropType;
+export type SpecialProp = RenderPropType | JSExpressionPropType;
 
-export type PropType = NormalPropType | SpecialProps;
+export type PropType = NormalPropType | SpecialProp;
 
 export const PropsDataStructDescribe: any = union([
   string(),
@@ -61,6 +62,7 @@ export type CNodeDataType = {
   id: string;
   componentName: string;
   props?: Record<string, PropType>;
+  children?: CNodeDataType[];
   /**
    * only used in dev mode, if you are run in prod, this key will be undefined
    *
@@ -72,10 +74,13 @@ export type CNodeDataType = {
   ref?: string;
 };
 
-export const CNodeDataStructDescribe = object({
+export const CNodeDataStructDescribe: any = object({
   id: optional(string()),
   componentName: string(),
   props: optional(record(string(), PropsDataStructDescribe)),
+  children: dynamic(() => {
+    return optional(array(CNodeDataStructDescribe));
+  }),
   configure: optional(any()),
   style: optional(string()),
   className: optional(string()),

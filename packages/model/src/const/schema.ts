@@ -3,3 +3,8 @@ export enum CNodePropsTypeEnum {
   FUNCTION = 'FUNCTION',
   EXPRESSION = 'EXPRESSION',
 }
+
+export enum ExportType {
+  DESIGN = 'design',
+  SAVE = 'save',
+}

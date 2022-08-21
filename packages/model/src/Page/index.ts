@@ -2,7 +2,8 @@ import { Emitter } from 'mitt';
 import { checkComplexData } from '../util/dataCheck';
 import { CPageDataType, CPageDataTypeDescribe } from '../types/page';
 import { DataModelEmitter } from '../util/modelEmitter';
-import { CSchema } from '../Schema';
+import { CSchema } from './Schema';
+import { ExportType } from '../const/schema';
 
 export const checkPage = (data: any): CPageDataType => {
   checkComplexData({
@@ -25,9 +26,10 @@ export type CPpageDataModelType = Omit<CPageDataType, 'componentsTree'> & {
   componentsTree: CSchema;
 };
 export class CPage {
-  originData: CPageDataType;
+  rawData: CPageDataType;
   emitter = DataModelEmitter;
   data: CPpageDataModelType;
+  parent: null | undefined;
   constructor(
     data: any,
     options?: {
@@ -35,7 +37,7 @@ export class CPage {
     }
   ) {
     checkPage(data);
-    this.originData = data;
+    this.rawData = JSON.parse(JSON.stringify(data));
     this.data = parsePage(data);
     if (options?.emitter) {
       // todo
@@ -48,7 +50,7 @@ export class CPage {
   }
 
   // TODO
-  export(mode: 'designer' | 'save' = 'save') {
+  export(mode: ExportType = ExportType.SAVE) {
     const res = {
       ...this.data,
       componentsTree: this.data.componentsTree.export(mode),

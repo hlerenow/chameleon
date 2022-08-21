@@ -1,4 +1,4 @@
-import { CNode } from '../Schema/Node';
+import { CNode } from '../Page/Schema/Node';
 import { CMaterialTypeDescribe } from '../types/material';
 import { isArray } from '../util/lodash';
 import { checkComplexData } from '../util/dataCheck';
