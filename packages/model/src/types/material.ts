@@ -54,6 +54,7 @@ export enum SpecialDataType {
   EXPRESSION = 'expression',
   FUNCTION = 'function',
 }
+
 export type MTitle =
   | string
   | {
@@ -210,6 +211,18 @@ export enum PropsUIType {
   GROUP = 'group',
 }
 
+export type SpecialMaterialPropType =
+  | {
+      type: PropsUIType.SINGLE;
+      content: MaterialPropType;
+    }
+  | {
+      type: PropsUIType.GROUP;
+      content: MaterialPropType[];
+    };
+
+export type CMaterialPropsType = (MaterialPropType | SpecialMaterialPropType)[];
+
 export type CMaterialType = {
   componentName: string;
   title: MTitle;
@@ -227,17 +240,7 @@ export type CMaterialType = {
   version: string;
   npm: LibMetaType;
   snippets: Omit<CNodeDataType, 'id'>[];
-  props: (
-    | MaterialPropType
-    | {
-        type: PropsUIType.SINGLE;
-        content: MaterialPropType;
-      }
-    | {
-        type: PropsUIType.GROUP;
-        content: MaterialPropType[];
-      }
-  )[];
+  props: CMaterialPropsType;
   // 可以拖入组件
   isContainer?: boolean;
   isModal?:

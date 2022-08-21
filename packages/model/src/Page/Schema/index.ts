@@ -1,4 +1,6 @@
+import { CPage } from '..';
 import { ExportType } from '../../const/schema';
+import { CMaterials } from '../../Material';
 import { CSchemaDataType, CSchemaDataTypeDescribe } from '../../types/schema';
 import { checkComplexData } from '../../util/dataCheck';
 import { isArray } from '../../util/lodash';
@@ -33,7 +35,9 @@ export class CSchema {
   private rawData: CSchemaDataType;
   emitter = DataModelEmitter;
   private data;
-  constructor(data: any) {
+  materialModel: CMaterials;
+  constructor(data: any, { parent }: { parent: CPage }) {
+    this.materialModel = parent.materialModel;
     this.rawData = JSON.parse(JSON.stringify(data));
     this.data = parseSchema(data, this);
   }

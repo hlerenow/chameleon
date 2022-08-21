@@ -1,5 +1,6 @@
 import { CSchema } from '..';
 import { ExportType } from '../../../const/schema';
+import { CMaterials } from '../../../Material';
 import { CNodeDataStructDescribe, CNodeDataType } from '../../../types/node';
 import { getRandomStr } from '../../../util';
 import { checkComplexData } from '../../../util/dataCheck';
@@ -30,7 +31,7 @@ export const parseNode = (data: CNodeDataType, parent: CNode) => {
   const propsKeys = Object.keys(data.props || {});
   if (propsKeys.length) {
     propsKeys.forEach((propKey) => {
-      res.props[propKey] = new CProp(data.props?.[propKey], {
+      res.props[propKey] = new CProp(propKey, data.props?.[propKey], {
         parent: parent,
       });
     });
@@ -50,13 +51,15 @@ export class CNode {
   private rawData: CNodeDataType;
   private data: CNodeModelDataType;
   emitter = DataModelEmitter;
-  parent: CNode | CSchema;
+  parent: CNode | CSchema | null;
+  materialModel: CMaterials | null;
 
-  constructor(data: any, { parent }: { parent: CNode | CSchema }) {
+  constructor(data: any, options?: { parent?: CNode | CSchema | null }) {
     this.rawData = JSON.parse(JSON.stringify(data));
     checkNode(data);
+    this.parent = options?.parent || null;
+    this.materialModel = options?.parent?.materialModel || null;
     this.data = parseNode(data, this);
-    this.parent = parent;
   }
 
   get value(): CNodeModelDataType {
@@ -72,6 +75,11 @@ export class CNode {
 
   get props() {
     return this.data.props;
+  }
+
+  get material() {
+    const materialModel = this.materialModel;
+    return materialModel?.findByComponentName(this.data.componentName);
   }
 
   export(mode?: ExportType) {
