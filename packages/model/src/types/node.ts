@@ -73,6 +73,16 @@ export type CNodeDataType = {
   style?: string;
   className?: string;
   ref?: string;
+  onEvents?: Record<
+    string,
+    {
+      actions?: {
+        // 需要场景化，暂时 string ，需要嘿编辑器 行为绑定
+        actionType: string;
+        options?: Record<any, any>;
+      }[];
+    }
+  >;
 };
 
 export const CNodeDataStructDescribe: any = object({
