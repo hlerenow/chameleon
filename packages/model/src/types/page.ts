@@ -1,44 +1,11 @@
-import {
-  array,
-  assign,
-  literal,
-  object,
-  optional,
-  string,
-  union,
-} from 'superstruct';
+import { array, assign, object, optional, string } from 'superstruct';
 import { CSchemaDataType, CSchemaDataTypeDescribe } from './schema';
-import { LibMetaType, LibMetaTypeDescribe } from './material';
-
-export enum ThirdLibTypeEnum {
-  CDN = 'CDN',
-  FUNCTION = 'FUNCTION',
-}
-
-export type ThirdLibType =
-  | {
-      globalName: string;
-      type: ThirdLibTypeEnum.CDN;
-      content: LibMetaType;
-    }
-  | {
-      globalName: string;
-      type: ThirdLibTypeEnum.FUNCTION;
-      content: string;
-    };
-
-const ThirdLibTypeDescribe = union([
-  object({
-    globName: string(),
-    type: literal([ThirdLibTypeEnum.CDN]),
-    content: union([LibMetaTypeDescribe]),
-  }),
-  object({
-    globName: string(),
-    type: literal([ThirdLibTypeEnum.FUNCTION]),
-    content: union([string()]),
-  }),
-]);
+import {
+  LibMetaType,
+  ThirdLibType,
+  ThirdLibTypeDescribe,
+  LibMetaTypeDescribe,
+} from './base';
 
 export type ComponentMetaType = {
   componentName: string;

@@ -15,25 +15,8 @@ import {
   record,
   dynamic,
 } from 'superstruct';
+import { LibMetaType, LibMetaTypeDescribe } from './base';
 import { CNodeDataStructDescribe, CNodeDataType } from './node';
-
-export type LibMetaType = {
-  package: string;
-  version: string;
-  exportName: string;
-  destructuring?: boolean;
-  subName?: string;
-  main?: string;
-};
-
-export const LibMetaTypeDescribe = object({
-  package: string(),
-  version: string(),
-  exportName: string(),
-  destructuring: optional(boolean()),
-  subName: optional(string()),
-  main: optional(string()),
-});
 
 export enum BaseDataType {
   STRING = 'string',
@@ -223,6 +206,33 @@ export type SpecialMaterialPropType =
 
 export type CMaterialPropsType = (MaterialPropType | SpecialMaterialPropType)[];
 
+export type CMaterialEventType =
+  | string
+  | {
+      name: string;
+      descriptions?: string;
+      params?: {
+        name: string;
+        description: string;
+      }[];
+      // function string
+      template: string;
+    };
+export const CMaterialEventTypeDescribe = union([
+  string(),
+  object({
+    name: string(),
+    describe: optional(string()),
+    params: optional(
+      object({
+        name: string(),
+        description: string(),
+      })
+    ),
+    template: string(),
+  }),
+]);
+
 export type CMaterialType = {
   componentName: string;
   title: MTitle;
@@ -252,7 +262,11 @@ export type CMaterialType = {
   isLayout?: boolean;
   isSupportStyle?: boolean;
   rootSelector?: string;
+  // 是否可以派发dom事件，默认被禁止： click、mousedown、mouseup 等等
+  isSupportDispatchNativeEvent?: boolean;
+  // selection 支持的工具列表
   actions?: ActionType[];
+  events?: CMaterialEventType[];
   // 扩展配置
   extra?: Record<any, any>;
 };
@@ -298,6 +312,7 @@ export const CMaterialTypeDescribe = object({
     ])
   ),
   isSupportStyle: optional(boolean()),
+  isSupportDispatchNativeEvent: optional(boolean()),
   // 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize
   isLayout: optional(boolean()),
   rootSelector: optional(string()),

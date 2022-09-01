@@ -12,6 +12,7 @@ import {
   array,
 } from 'superstruct';
 import { CNodePropsTypeEnum } from '../const/schema';
+import { ThirdLibType } from './base';
 
 export type NormalPropType = string | boolean | number | Record<string, any>;
 
