@@ -264,9 +264,33 @@ export type CMaterialType = {
   rootSelector?: string;
   // 是否可以派发dom事件，默认被禁止： click、mousedown、mouseup 等等
   isSupportDispatchNativeEvent?: boolean;
-  // selection 支持的工具列表
-  actions?: ActionType[];
+  // 组件支持的可被调用的方法， todo： 没有补充验证 类型 describe
+  actions?: {
+    title: string;
+    // 方法名
+    name: string;
+    params?: {
+      name: string;
+      description: string;
+    }[];
+    template?: string;
+  }[];
+  // 组件可能触发的事件
   events?: CMaterialEventType[];
+  // 用于定制组件额外的交互行为,
+  panels?: {
+    title: string;
+    key: string;
+    component: ($$context: any) => React.ReactNode;
+  }[];
+  // 用于定制组件特有的一些选中交互， todo: 没有补充验证 类型 describe
+  selection?: ($$context: any) => React.ReactNode;
+  selectionToolBars?: ActionType[];
+  // 定制组件释放时的行为
+  advance?: {
+    onDragStart: ($$context: any) => Promise<void>;
+    onDrop: ($$context: any) => Promise<void>;
+  };
   // 扩展配置
   extra?: Record<any, any>;
 };
@@ -316,7 +340,7 @@ export const CMaterialTypeDescribe = object({
   // 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize
   isLayout: optional(boolean()),
   rootSelector: optional(string()),
-  actions: optional(array(ActionTypeDescribe)),
+  selectionToolBars: optional(array(ActionTypeDescribe)),
   // 扩展配置
   extra: optional(record(any(), any())),
 });
