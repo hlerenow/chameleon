@@ -1,0 +1,33 @@
+{
+  "name": "@chameleon/material",
+  "private": false,
+  "version": "0.0.1",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "start": "build-script",
+    "build": "build-script --build",
+    "build:w": "build-script --build --watch",
+    "lint": "eslint --ext .tsx,.ts src/",
+    "prettier": "prettier --write ./src",
+    "test": "jest"
+  },
+  "dependencies": {
+    "antd": "^4.22.8",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "sass": "^1.54.0"
+  },
+  "devDependencies": {
+    "@chameleon/build-script": "*",
+    "@chameleon/model": "*",
+    "@types/react": "^18.0.15",
+    "@types/react-dom": "^18.0.6"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/@chameleon/cz-lerna-changelog"
+    }
+  }
+}

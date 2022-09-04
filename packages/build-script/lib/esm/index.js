@@ -43,7 +43,7 @@ var commonConfig = () => {
       lib: {
         entry: path2.resolve(PROJECT_ROOT, CUSTOM_CONFIG.entry),
         formats: CUSTOM_CONFIG.formats || ["cjs", "es"],
-        fileName: (format) => `${CUSTOM_CONFIG.libName}.${format}.js`
+        fileName: (format) => `${CUSTOM_CONFIG.fileName || CUSTOM_CONFIG.libName}.${format}.js`
       },
       rollupOptions: {
         external: CUSTOM_CONFIG.external || [],

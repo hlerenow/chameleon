@@ -24,6 +24,7 @@ if (fs.pathExistsSync(customConfigPath)) {
 export type BuildScriptConfig = {
   entry: string;
   libName?: string;
+  fileName?: string;
   external?: string[];
   global?: Record<string, string>;
   formats?: LibraryOptions['formats'];

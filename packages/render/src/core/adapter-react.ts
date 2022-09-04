@@ -1,7 +1,9 @@
 import { Adapter, AdapterOptionsType } from './adapter';
 
-class ReactAdapter extends Adapter {
+const adapter: AdapterOptionsType | any = {};
+
+export class ReactAdapter extends Adapter implements Adapter {
   constructor() {
-    super({});
+    super(adapter);
   }
 }

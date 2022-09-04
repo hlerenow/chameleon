@@ -235,6 +235,8 @@ export const CMaterialEventTypeDescribe = union([
   }),
 ]);
 
+export type SnippetsType = Omit<CNodeDataType, 'id'>[];
+
 export type CMaterialType = {
   componentName: string;
   title: MTitle;
@@ -251,7 +253,7 @@ export type CMaterialType = {
   priority?: number;
   version: string;
   npm: LibMetaType;
-  snippets: Omit<CNodeDataType, 'id'>[];
+  snippets: SnippetsType;
   props: CMaterialPropsType;
   // 可以拖入组件
   isContainer?: boolean;

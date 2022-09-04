@@ -59,11 +59,11 @@ export const PropsDataStructDescribe: any = union([
 export const DevKey = ['configure'];
 
 export type CNodeDataType = {
-  id: string;
+  id?: string;
   componentName: string;
   // 所有的 props 的 value 需要支持表达式 $$context
   props?: Record<string, PropType>;
-  children?: CNodeDataType[];
+  children?: (string | CNodeDataType)[];
   /**
    * only used in dev mode, if you are run in prod, this key will be undefined
    *
@@ -101,7 +101,7 @@ export const CNodeDataStructDescribe: any = object({
   componentName: string(),
   props: optional(record(string(), PropsDataStructDescribe)),
   children: dynamic(() => {
-    return optional(array(CNodeDataStructDescribe));
+    return optional(array(union([string(), CNodeDataStructDescribe])));
   }),
   configure: optional(any()),
   style: optional(string()),

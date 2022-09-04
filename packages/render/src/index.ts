@@ -1,1 +1,3 @@
-export { getRenderComponent } from './render/';
+export * from './core/adapter';
+export * from './core/adapter-react';
+export * from './core/render';

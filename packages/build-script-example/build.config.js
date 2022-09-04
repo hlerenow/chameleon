@@ -3,7 +3,8 @@
 // entry 作为打包库入口
 module.exports = {
   entry: './src/App.tsx',
-  libName: 'Ddemo',
+  libName: 'demo',
+  fileName: 'index',
   external: ['react', 'react-dom'],
   global: {
     react: 'React',

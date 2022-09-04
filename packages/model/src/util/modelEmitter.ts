@@ -5,8 +5,8 @@ export type DataModelEventType = {
   onPageChange: any;
   onSchemaChange: any;
   onNodeChange: {
-    value: CNodeDataType;
-    preValue: CNodeDataType;
+    value: string | CNodeDataType;
+    preValue: string | CNodeDataType;
   };
   onPropChange: {
     value: PropType;

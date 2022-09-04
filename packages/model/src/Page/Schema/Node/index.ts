@@ -8,6 +8,9 @@ import { DataModelEmitter } from '../../../util/modelEmitter';
 import { CProp } from './props';
 
 export const checkNode = (data: any) => {
+  if (typeof data === 'string') {
+    return true;
+  }
   // check data
   checkComplexData({
     data: data,
@@ -17,6 +20,7 @@ export const checkNode = (data: any) => {
 };
 
 export type CNodeModelDataType = Omit<CNodeDataType, 'children'> & {
+  id: string;
   children: CNode[];
   props: Record<string, CProp>;
 };
@@ -48,7 +52,7 @@ export const parseNode = (data: CNodeDataType, parent: CNode) => {
 };
 
 export class CNode {
-  private rawData: CNodeDataType;
+  private rawData: CNodeDataType | string;
   private data: CNodeModelDataType;
   emitter = DataModelEmitter;
   parent: CNode | CSchema | null;
@@ -80,6 +84,15 @@ export class CNode {
   get material() {
     const materialModel = this.materialModel;
     return materialModel?.findByComponentName(this.data.componentName);
+  }
+
+  // 该节点是不是纯文本节点
+  isText() {
+    if (typeof this.data === 'string') {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   export(mode?: ExportType) {
