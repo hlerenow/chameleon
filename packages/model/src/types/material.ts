@@ -150,6 +150,7 @@ export type SetterType =
   | {
       componentName: SetterTypeEnum;
       props: Record<any, any>;
+      // 被设置属性的初始值
       initialValue: any;
     };
 
@@ -211,9 +212,10 @@ export type CMaterialEventType =
   | {
       name: string;
       descriptions?: string;
+      // 事件参数描述
       params?: {
         name: string;
-        description: string;
+        title: MTitle;
       }[];
       // function string
       template: string;

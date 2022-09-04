@@ -12,7 +12,6 @@ import {
   array,
 } from 'superstruct';
 import { CNodePropsTypeEnum } from '../const/schema';
-import { ThirdLibType } from './base';
 
 export type NormalPropType = string | boolean | number | Record<string, any>;
 
@@ -62,6 +61,7 @@ export const DevKey = ['configure'];
 export type CNodeDataType = {
   id: string;
   componentName: string;
+  // 所有的 props 的 value 需要支持表达式 $$context
   props?: Record<string, PropType>;
   children?: CNodeDataType[];
   /**
@@ -69,10 +69,20 @@ export type CNodeDataType = {
    *
    * @type {Record<any, any>}
    */
-  configure?: Record<any, any>;
+  configure?: {
+    // 由于一个 prop 可能会有多个设置器，这里用来存储当前使用的那个设置器
+    props?: Record<
+      string,
+      {
+        name: string;
+        setter: string;
+      }
+    >;
+  };
   style?: string;
   className?: string;
   ref?: string;
+  // 逻辑编排使用
   onEvents?: Record<
     string,
     {
@@ -83,6 +93,7 @@ export type CNodeDataType = {
       }[];
     }
   >;
+  extra?: Record<any, any>;
 };
 
 export const CNodeDataStructDescribe: any = object({
@@ -96,4 +107,5 @@ export const CNodeDataStructDescribe: any = object({
   style: optional(string()),
   className: optional(string()),
   ref: optional(string()),
+  extra: optional(record(any(), any())),
 });
