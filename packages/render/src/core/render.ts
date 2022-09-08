@@ -1,24 +1,30 @@
 import { CPageDataType, parseModel } from '@chameleon/model';
-import { Adapter } from './adapter';
+import { AdapterType } from './adapter';
 
 export type RenderPropsType = {
   page: CPageDataType;
   components?: Record<any, (...args: any) => any>;
 };
 
-export const getRenderComponent = (adapter: Adapter) => {
+export const getRenderComponent = (adapter: AdapterType) => {
   console.log(
     '🚀 ~ file: render.ts ~ line 4 ~ getRenderComponent ~ adapter',
     adapter
   );
+
   return function Render(props: RenderPropsType): any {
-    const PageModel = parseModel(props.page);
+    const pageModel = parseModel(props.page);
     console.log(
       '🚀 ~ file: render.ts ~ line 17 ~ Render ~ PageModel',
-      PageModel
+      pageModel
     );
+    // todo: 加载 page 资源
+    // todo: 收集所有的 第三方库
 
-    console.log('🚀 ~ file: render.ts ~ line 15 ~ Render ~ props', props);
+    const PageRoot = adapter.pageRender(pageModel, {
+      libs: {},
+    });
+    console.log('🚀 ~ file: render.ts ~ line 28 ~ Render ~ PageRoot', PageRoot);
 
     return 123;
   };

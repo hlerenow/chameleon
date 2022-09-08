@@ -8,8 +8,9 @@ import './index.css';
 export type AppPRops = {
   a: string;
 };
+window.ReactAdapter = ReactAdapter;
+const Render = getRenderComponent(ReactAdapter);
 
-const Render = getRenderComponent(new ReactAdapter());
 function App() {
   return (
     <div className="App">

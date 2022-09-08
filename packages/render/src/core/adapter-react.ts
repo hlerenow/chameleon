@@ -1,9 +1,10 @@
-import { Adapter, AdapterOptionsType } from './adapter';
+import { CPage } from '@chameleon/model';
+import { AdapterType, getAdapter } from './adapter';
 
-const adapter: AdapterOptionsType | any = {};
-
-export class ReactAdapter extends Adapter implements Adapter {
-  constructor() {
-    super(adapter);
+class DefineReactAdapter implements Partial<AdapterType> {
+  pageRender(pageModel: CPage, options: { libs: Record<string, any> }) {
+    return 1;
   }
 }
+console.log(new DefineReactAdapter());
+export const ReactAdapter = getAdapter(DefineReactAdapter);
