@@ -1,5 +1,5 @@
 import { CPageDataType, parseModel } from '@chameleon/model';
-import { AdapterType } from './adapter';
+import { AdapterType, getRuntimeRenderHelper } from './adapter';
 
 export type RenderPropsType = {
   page: CPageDataType;
@@ -11,7 +11,6 @@ export const getRenderComponent = (adapter: AdapterType) => {
     '🚀 ~ file: render.ts ~ line 4 ~ getRenderComponent ~ adapter',
     adapter
   );
-
   return function Render(props: RenderPropsType): any {
     const pageModel = parseModel(props.page);
     console.log(
@@ -23,9 +22,11 @@ export const getRenderComponent = (adapter: AdapterType) => {
 
     const PageRoot = adapter.pageRender(pageModel, {
       libs: {},
+      runtimeHelper: getRuntimeRenderHelper(pageModel, adapter, {
+        libs: {},
+      }),
     });
-    console.log('🚀 ~ file: render.ts ~ line 28 ~ Render ~ PageRoot', PageRoot);
 
-    return 123;
+    return PageRoot;
   };
 };

@@ -8,7 +8,7 @@ import './index.css';
 export type AppPRops = {
   a: string;
 };
-window.ReactAdapter = ReactAdapter;
+
 const Render = getRenderComponent(ReactAdapter);
 
 function App() {

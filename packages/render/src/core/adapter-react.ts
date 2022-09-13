@@ -1,10 +1,12 @@
 import { CPage } from '@chameleon/model';
-import { AdapterType, getAdapter } from './adapter';
+import { AdapterOptionsType, AdapterType, getAdapter } from './adapter';
 
 class DefineReactAdapter implements Partial<AdapterType> {
-  pageRender(pageModel: CPage, options: { libs: Record<string, any> }) {
-    return 1;
+  pageRender(pageModel: CPage, options: AdapterOptionsType) {
+    //做一些全局 store 操作
+    return options.runtimeHelper.renderComponent();
   }
 }
 console.log(new DefineReactAdapter());
-export const ReactAdapter = getAdapter(DefineReactAdapter);
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export const ReactAdapter = getAdapter(new DefineReactAdapter());

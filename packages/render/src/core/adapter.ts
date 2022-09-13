@@ -1,6 +1,24 @@
-import { CPage } from '@chameleon/model';
+import { CPage, CNode } from '@chameleon/model';
 
+export type RuntimeRenderHelper = {
+  renderPage: () => any;
+  renderComponent: () => any;
+};
+
+export type AdapterOptionsType = {
+  libs: Record<string, any>;
+  runtimeHelper: RuntimeRenderHelper;
+};
 export interface AdapterType {
+  customPageRootRender?: (pageModel: CPage, options: AdapterOptionsType) => any;
+  // 页面渲染
+  pageRender: (pageModel: CPage, options: AdapterOptionsType) => any;
+  // 渲染一个组件
+  componentRender: (
+    nodeModal: CNode,
+    pageModel: CPage,
+    options: AdapterOptionsType
+  ) => void;
   // find target component render function
   getComponent: () => void;
   getContext: () => void;
@@ -12,15 +30,6 @@ export interface AdapterType {
   transformData: () => void;
   transformGlobalData: () => void;
   errorCatch: () => void;
-  // 渲染一个组件
-  componentRender: () => void;
-  // 页面渲染
-  pageRender: (
-    pageModel: CPage,
-    options: {
-      libs: Record<string, any>;
-    }
-  ) => void;
   // 将一个 组件 model 节点 转换为一个可被运行的渲染函数
   convertModelToComponent: () => void;
 }
@@ -31,7 +40,12 @@ const notImplements = (msg: string) => {
   };
 };
 
+// 高级的 render 渲染器，可以完全自定义
+const CustomAdvanceAdapter = ['customPageRootRender'] as const;
+
 const AdapterMethodList = [
+  // 页面渲染
+  'pageRender',
   'getComponent',
   'getContext',
   'getUtils',
@@ -43,38 +57,57 @@ const AdapterMethodList = [
   'errorCatch',
   // 渲染一个组件
   'componentRender',
-  // 页面渲染
-  'pageRender',
   // 将一个 组件 model 节点 转换为一个可被运行的渲染函数
   'convertModelToComponent',
 ] as const;
 
+type CustomAdvanceAdapterMethodListType = typeof CustomAdvanceAdapter[number];
+
+// 必须实现的方法
 type AdapterMethodListType = typeof AdapterMethodList[number];
 
-const EmptyAdapter = AdapterMethodList.reduce<
-  Record<AdapterMethodListType, any>
->((res, funcName: string) => {
-  res[funcName as AdapterMethodListType] = notImplements(funcName);
-  return res;
-}, {} as any);
-
-interface IPrototype {
-  prototype: any;
-}
 export const getAdapter = (
-  defineAdapter: Partial<AdapterType> | (Partial<AdapterType> & IPrototype)
+  defineAdapter: Partial<AdapterType>
 ): AdapterType => {
-  const proto = Object.getPrototypeOf(defineAdapter);
-  if (proto) {
-    Object.setPrototypeOf(
-      (defineAdapter as IPrototype).prototype,
-      EmptyAdapter
-    );
-    return new (defineAdapter as any)() as AdapterType;
-  } else {
-    return {
-      ...EmptyAdapter,
-      ...defineAdapter,
-    };
+  const adapter: AdapterType = [
+    ...AdapterMethodList,
+    ...CustomAdvanceAdapter,
+  ].reduce<Record<AdapterMethodListType, any>>((res, funcName) => {
+    if (defineAdapter?.[funcName]) {
+      res[funcName as AdapterMethodListType] =
+        defineAdapter[funcName]?.bind(defineAdapter);
+    } else {
+      if (AdapterMethodList.includes(funcName as AdapterMethodListType)) {
+        res[funcName as AdapterMethodListType] = notImplements;
+      }
+    }
+    return res;
+  }, {} as any);
+
+  return adapter;
+};
+
+export const getRuntimeRenderHelper = (
+  pageModel: CPage,
+  adapter: AdapterType,
+  options: {
+    libs: Record<string, any>;
   }
+): RuntimeRenderHelper => {
+  const runtimeHelper = {
+    renderPage: () => {
+      return adapter.pageRender(pageModel, {
+        ...options,
+        runtimeHelper: runtimeHelper,
+      });
+    },
+    renderComponent: () => {
+      // todo: 递归遍历每个节点，调用  componentRender 方法
+      return adapter.componentRender({} as any, pageModel, {
+        ...options,
+        runtimeHelper: runtimeHelper,
+      });
+    },
+  };
+  return runtimeHelper;
 };
