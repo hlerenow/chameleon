@@ -6,7 +6,7 @@ const parseMaterial = (data: CMaterialType) => {
   return data;
 };
 
-class CMaterial {
+export class CMaterial {
   private rawData: CMaterialType;
   private data: CMaterialType;
   constructor(data: CMaterialType) {

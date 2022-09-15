@@ -5,7 +5,7 @@ import { CSchemaDataType, CSchemaDataTypeDescribe } from '../../types/schema';
 import { checkComplexData } from '../../util/dataCheck';
 import { isArray } from '../../util/lodash';
 import { DataModelEmitter } from '../../util/modelEmitter';
-import { CNode } from './Node';
+import { CNode } from './Node/index';
 
 export const checkSchema = (data: any): CSchemaDataType => {
   checkComplexData({
@@ -32,6 +32,7 @@ export const parseSchema = (data: CSchemaDataType, parent: CSchema) => {
 };
 
 export class CSchema {
+  modeType = 'SCHEMA';
   private rawData: CSchemaDataType;
   emitter = DataModelEmitter;
   private data;

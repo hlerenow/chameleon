@@ -7,7 +7,7 @@ export const parseModel = (data: any) => {
 export * from './Material';
 export * from './Page';
 export * from './Page/Schema';
-export { CNode } from './Page/Schema/Node';
+export * from './Page/Schema/Node/index';
 export * from './Page/Schema/Node/props';
 export * from './const/schema';
 
@@ -16,3 +16,11 @@ export * from './types/material';
 export * from './types/node';
 export * from './types/page';
 export * from './types/schema';
+
+export {
+  isPageModel,
+  isJSSlotPropNode,
+  isNodeModel,
+  isSchemaModel,
+  isPropModel,
+} from './util/index';

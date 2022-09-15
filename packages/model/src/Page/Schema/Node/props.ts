@@ -27,6 +27,7 @@ const flatProps = (props: CMaterialPropsType): MaterialPropType[] => {
   return allProps;
 };
 export class CProp {
+  modeType = 'PROP';
   private rawData: PropType;
   parent: CNode;
   emitter = DataModelEmitter;

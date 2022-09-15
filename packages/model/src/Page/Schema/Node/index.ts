@@ -52,6 +52,7 @@ export const parseNode = (data: CNodeDataType, parent: CNode) => {
 };
 
 export class CNode {
+  modeType = 'NODE';
   private rawData: CNodeDataType | string;
   private data: CNodeModelDataType;
   emitter = DataModelEmitter;

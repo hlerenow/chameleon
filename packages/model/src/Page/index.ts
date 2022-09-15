@@ -4,6 +4,7 @@ import { DataModelEmitter } from '../util/modelEmitter';
 import { CSchema } from './Schema';
 import { ExportType } from '../const/schema';
 import { CMaterials } from '../Material';
+import { CNode } from './Schema/Node';
 
 export const checkPage = (data: any): CPageDataType => {
   checkComplexData({
@@ -26,6 +27,7 @@ export type CPpageDataModelType = Omit<CPageDataType, 'componentsTree'> & {
   componentsTree: CSchema;
 };
 export class CPage {
+  modeType = 'PAGE';
   rawData: CPageDataType;
   emitter = DataModelEmitter;
   data: CPpageDataModelType;
@@ -45,6 +47,30 @@ export class CPage {
 
   get value() {
     return this.data;
+  }
+
+  // 遍历每个 component tree node 节点
+  traverseNode(
+    fn: (params: {
+      currentNode: CSchema | CNode;
+      pageModel: CPage;
+      context: any;
+    }) => void
+  ) {
+    const context = {};
+    if (typeof fn !== 'function') {
+      throw new Error('traverseNode parameters must a function');
+    }
+    const componentsTree = this.data.componentsTree;
+    const dfs = (node: CSchema | CNode) => {
+      fn({
+        currentNode: node,
+        pageModel: this,
+        context: context,
+      });
+    };
+
+    return dfs(componentsTree);
   }
 
   // TODO
