@@ -64,7 +64,14 @@ var commonConfig = () => {
         }
       }
     },
-    plugins: [(0, import_vite_plugin_eslint.default)(), (0, import_plugin_react.default)(), (0, import_vite_plugin_dts.default)()]
+    plugins: [
+      (0, import_vite_plugin_eslint.default)(),
+      (0, import_plugin_react.default)(),
+      (0, import_vite_plugin_dts.default)({
+        skipDiagnostics: false,
+        logDiagnostics: true
+      })
+    ]
   });
 };
 

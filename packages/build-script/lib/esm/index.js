@@ -52,7 +52,14 @@ var commonConfig = () => {
         }
       }
     },
-    plugins: [eslint(), react(), dts()]
+    plugins: [
+      eslint(),
+      react(),
+      dts({
+        skipDiagnostics: false,
+        logDiagnostics: true
+      })
+    ]
   });
 };
 
