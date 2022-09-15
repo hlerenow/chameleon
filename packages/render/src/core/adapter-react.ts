@@ -1,10 +1,18 @@
-import { CPage } from '@chameleon/model';
+import { CNode, CPage } from '@chameleon/model';
 import { AdapterOptionsType, AdapterType, getAdapter } from './adapter';
 
 class DefineReactAdapter implements Partial<AdapterType> {
   pageRender(pageModel: CPage, options: AdapterOptionsType) {
     //做一些全局 store 操作
     return options.runtimeHelper.renderComponent();
+  }
+
+  componentRender(
+    nodeModal: CNode,
+    pageModel: CPage,
+    options: AdapterOptionsType
+  ) {
+    return 1;
   }
 }
 console.log(new DefineReactAdapter());

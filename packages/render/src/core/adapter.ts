@@ -1,4 +1,4 @@
-import { CPage, CNode } from '@chameleon/model';
+import { CPage, CNode, CSchema } from '@chameleon/model';
 
 export type RuntimeRenderHelper = {
   renderPage: () => any;
@@ -15,7 +15,7 @@ export interface AdapterType {
   pageRender: (pageModel: CPage, options: AdapterOptionsType) => any;
   // 渲染一个组件
   componentRender: (
-    nodeModal: CNode,
+    nodeModal: CNode | CSchema,
     pageModel: CPage,
     options: AdapterOptionsType
   ) => void;
@@ -102,10 +102,12 @@ export const getRuntimeRenderHelper = (
       });
     },
     renderComponent: () => {
-      // todo: 递归遍历每个节点，调用  componentRender 方法
-      return adapter.componentRender({} as any, pageModel, {
-        ...options,
-        runtimeHelper: runtimeHelper,
+      // todo: 递归遍历每个节点，调用  componentRender 方法, 考虑如何组装 页面树结构？？？
+      pageModel.traverseNode(({ currentNode }) => {
+        return adapter.componentRender(currentNode, pageModel, {
+          ...options,
+          runtimeHelper: runtimeHelper,
+        });
       });
     },
   };
