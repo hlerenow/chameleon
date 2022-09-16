@@ -24,6 +24,7 @@ export type CNodeModelDataType = Omit<CNodeDataType, 'children'> & {
   children: CNode[];
   props: Record<string, CProp>;
 };
+
 export const parseNode = (data: CNodeDataType, parent: CNode) => {
   const res: CNodeModelDataType = {
     ...data,
@@ -40,6 +41,7 @@ export const parseNode = (data: CNodeDataType, parent: CNode) => {
       });
     });
   }
+
   if (res.children?.length) {
     res.children = res.children.map((el) => {
       return new CNode(el, {

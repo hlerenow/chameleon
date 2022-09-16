@@ -1,11 +1,23 @@
 import { CPage } from '..';
 import { ExportType } from '../../const/schema';
 import { CMaterials } from '../../Material';
-import { CSchemaDataType, CSchemaDataTypeDescribe } from '../../types/schema';
+import {
+  CSchemaDataType,
+  CSchemaDataTypeDescribe,
+  InnerComponentNameEnum,
+} from '../../types/schema';
+import { getRandomStr } from '../../util';
 import { checkComplexData } from '../../util/dataCheck';
 import { isArray } from '../../util/lodash';
 import { DataModelEmitter } from '../../util/modelEmitter';
 import { CNode } from './Node/index';
+import { CProp } from './Node/props';
+
+export type CSchemaModelDataType = Omit<CSchemaDataType, 'children'> & {
+  id: string;
+  children: CNode[];
+  props: Record<string, CProp>;
+};
 
 export const checkSchema = (data: any): CSchemaDataType => {
   checkComplexData({
@@ -16,26 +28,44 @@ export const checkSchema = (data: any): CSchemaDataType => {
   return data;
 };
 
-export const parseSchema = (data: CSchemaDataType, parent: CSchema) => {
-  let res = [];
+export const parseSchema = (
+  data: CSchemaDataType,
+  parent: CSchema
+): CSchemaModelDataType => {
+  const res: CSchemaModelDataType = {
+    id: getRandomStr(),
+    props: {} as any,
+    componentName: InnerComponentNameEnum.PAGE,
+    children: [],
+  };
+  let child: any = [];
   if (isArray(data.children)) {
-    res = data.children.map((el: any) => {
+    child = data.children.map((el: any) => {
       return new CNode(el, { parent });
     });
   } else {
-    res.push(new CNode(data.children, { parent }));
+    child.push(new CNode(data.children, { parent }));
   }
-  return {
-    ...data,
-    children: res,
-  };
+
+  const propsKeys = Object.keys(data.props || {});
+
+  if (propsKeys.length) {
+    propsKeys.forEach((propKey) => {
+      res.props[propKey] = new CProp(propKey, data.props?.[propKey], {
+        parent: parent,
+      });
+    });
+  }
+  res.children = child;
+
+  return res;
 };
 
 export class CSchema {
   modeType = 'SCHEMA';
   private rawData: CSchemaDataType;
   emitter = DataModelEmitter;
-  private data;
+  private data: CSchemaModelDataType;
   materialModel: CMaterials;
   constructor(data: any, { parent }: { parent: CPage }) {
     this.materialModel = parent.materialModel;
@@ -45,6 +75,15 @@ export class CSchema {
 
   get value() {
     return this.data;
+  }
+
+  get props() {
+    return this.data.props;
+  }
+
+  get material() {
+    const materialModel = this.materialModel;
+    return materialModel?.findByComponentName(this.data.componentName);
   }
 
   export(mode: ExportType = ExportType.SAVE): CSchemaDataType {

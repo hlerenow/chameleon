@@ -1,4 +1,5 @@
 import { CNode } from '.';
+import { CSchema } from '..';
 import { ExportType } from '../../../const/schema';
 import {
   CMaterialPropsType,
@@ -29,11 +30,15 @@ const flatProps = (props: CMaterialPropsType): MaterialPropType[] => {
 export class CProp {
   modeType = 'PROP';
   private rawData: PropType;
-  parent: CNode;
+  parent: CNode | CSchema;
   emitter = DataModelEmitter;
   private data: PropType;
   name: string;
-  constructor(name: string, data: any, { parent }: { parent: CNode }) {
+  constructor(
+    name: string,
+    data: any,
+    { parent }: { parent: CNode | CSchema }
+  ) {
     this.parent = parent;
     this.rawData = data;
     this.name = name;

@@ -51,13 +51,8 @@ export class CPage {
 
   // 遍历每个 component tree node 节点
   traverseNode(
-    fn: (params: {
-      currentNode: CSchema | CNode;
-      pageModel: CPage;
-      context: any;
-    }) => void
+    fn: (params: { currentNode: CSchema | CNode; pageModel: CPage }) => void
   ) {
-    const context = {};
     if (typeof fn !== 'function') {
       throw new Error('traverseNode parameters must a function');
     }
@@ -66,7 +61,6 @@ export class CPage {
       fn({
         currentNode: node,
         pageModel: this,
-        context: context,
       });
     };
 

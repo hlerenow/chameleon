@@ -1,5 +1,5 @@
 import { array, literal, object } from 'superstruct';
-import { CNodeDataStructDescribe, CNodeDataType } from './node';
+import { CNodeDataStructDescribe, CNodeDataType, PropType } from './node';
 
 export enum InnerComponentNameEnum {
   PAGE = 'Page',
@@ -8,6 +8,8 @@ export enum InnerComponentNameEnum {
 export type CSchemaDataType = {
   componentName: InnerComponentNameEnum.PAGE;
   children: CNodeDataType[];
+  // 所有的 props 的 value 需要支持表达式 $$context
+  props?: Record<string, PropType>;
 };
 
 export const CSchemaDataTypeDescribe = object({
