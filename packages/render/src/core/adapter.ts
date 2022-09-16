@@ -13,14 +13,21 @@ export interface AdapterType {
   customPageRootRender?: (pageModel: CPage, options: AdapterOptionsType) => any;
   // 页面渲染
   pageRender: (pageModel: CPage, options: AdapterOptionsType) => any;
-  // 渲染一个组件
-  componentRender: (
+  // 将一个 组件 model 节点 转换为一个可被运行的渲染函数
+  convertModelToComponent: (
+    originalComponent: any,
     nodeModal: CNode | CSchema,
     pageModel: CPage,
     options: AdapterOptionsType
-  ) => void;
+  ) => any;
+  // 渲染一个组件
+  componentRender: (
+    originalComponent: any,
+    nodeModal: CNode | CSchema,
+    pageModel: CPage
+  ) => any;
   // find target component render function
-  getComponent: () => void;
+  getComponent: (currentNode: CNode | CSchema) => void;
   getContext: () => void;
   getUtils: () => void;
   // 获取数据域链
@@ -30,8 +37,6 @@ export interface AdapterType {
   transformData: () => void;
   transformGlobalData: () => void;
   errorCatch: () => void;
-  // 将一个 组件 model 节点 转换为一个可被运行的渲染函数
-  convertModelToComponent: () => void;
 }
 
 const notImplements = (msg: string) => {
@@ -94,6 +99,7 @@ export const getRuntimeRenderHelper = (
     libs: Record<string, any>;
   }
 ): RuntimeRenderHelper => {
+  const runtimeComponentCache = new WeakMap();
   const runtimeHelper = {
     renderPage: () => {
       return adapter.pageRender(pageModel, {
@@ -103,12 +109,27 @@ export const getRuntimeRenderHelper = (
     },
     renderComponent: () => {
       // todo: 递归遍历每个节点，调用  componentRender 方法, 考虑如何组装 页面树结构？？？
-      pageModel.traverseNode(({ currentNode }) => {
-        return adapter.componentRender(currentNode, pageModel, {
-          ...options,
-          runtimeHelper: runtimeHelper,
-        });
+      const res = pageModel.traverseNode(({ currentNode }) => {
+        const originalComponent = adapter.getComponent(currentNode);
+        const component = adapter.convertModelToComponent(
+          originalComponent,
+          currentNode,
+          pageModel,
+          {
+            ...options,
+            runtimeHelper: runtimeHelper,
+          }
+        );
+
+        // cache runtime component
+        if (!runtimeComponentCache.get(component)) {
+          runtimeComponentCache.set(component, component);
+        }
+
+        return adapter.componentRender(component, currentNode, pageModel);
       });
+
+      return res;
     },
   };
   return runtimeHelper;

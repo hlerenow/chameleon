@@ -1,4 +1,4 @@
-import { CNode, CPage } from '@chameleon/model';
+import { CNode, CPage, CSchema } from '@chameleon/model';
 import { AdapterOptionsType, AdapterType, getAdapter } from './adapter';
 
 class DefineReactAdapter implements Partial<AdapterType> {
@@ -8,9 +8,9 @@ class DefineReactAdapter implements Partial<AdapterType> {
   }
 
   componentRender(
-    nodeModal: CNode,
-    pageModel: CPage,
-    options: AdapterOptionsType
+    originalComponent: any,
+    nodeModal: CNode | CSchema,
+    pageModel: CPage
   ) {
     return 1;
   }
