@@ -3,7 +3,7 @@ import { AdapterType, getRuntimeRenderHelper } from './adapter';
 
 export type RenderPropsType = {
   page: CPageDataType;
-  components?: Record<any, (...args: any) => any>;
+  components: Record<any, any>;
 };
 
 export const getRenderComponent = (adapter: AdapterType) => {
@@ -11,12 +11,13 @@ export const getRenderComponent = (adapter: AdapterType) => {
     const pageModel = parseModel(props.page);
     // todo: 加载 page 资源
     // todo: 收集所有的 第三方库
-
     const PageRoot = adapter.pageRender(pageModel, {
       libs: {},
       runtimeHelper: getRuntimeRenderHelper(pageModel, adapter, {
         libs: {},
+        components: props.components,
       }),
+      components: props.components,
     });
 
     return PageRoot;
