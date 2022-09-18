@@ -8,6 +8,7 @@ import {
   SpecialMaterialPropType,
 } from '../../../types/material';
 import { PropType } from '../../../types/node';
+import { isArray, isPlainObject } from '../../../util/lodash';
 import { DataModelEmitter } from '../../../util/modelEmitter';
 
 const flatProps = (props: CMaterialPropsType): MaterialPropType[] => {
@@ -27,6 +28,21 @@ const flatProps = (props: CMaterialPropsType): MaterialPropType[] => {
 
   return allProps;
 };
+
+const parseData = (data: any) => {
+  if (isPlainObject(data)) {
+    if (data.type) {
+      return data;
+    }
+  }
+
+  if (isArray(data)) {
+    return data;
+  }
+
+  return data;
+};
+
 export class CProp {
   modeType = 'PROP';
   private rawData: PropType;

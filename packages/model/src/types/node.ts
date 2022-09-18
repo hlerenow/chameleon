@@ -32,7 +32,7 @@ export type FunctionPropType = {
 
 export type SpecialProp = RenderPropType | JSExpressionPropType;
 
-export type PropType = NormalPropType | SpecialProp;
+export type PropType = NormalPropType | SpecialProp | SpecialProp[];
 
 export const PropsDataStructDescribe: any = union([
   string(),
@@ -42,7 +42,7 @@ export const PropsDataStructDescribe: any = union([
     type: literal(CNodePropsTypeEnum.SLOT),
     // here can't use PropsDataStructDescribe, it will  caused  "Maximum call stack size exceeded" error
     value: dynamic(() => {
-      return CNodeDataStructDescribe;
+      return union([CNodeDataStructDescribe, array(CNodeDataStructDescribe)]);
     }),
   }),
   object({
@@ -53,6 +53,7 @@ export const PropsDataStructDescribe: any = union([
     type: literal(CNodePropsTypeEnum.FUNCTION),
     value: string(),
   }),
+  record(string(), any()),
 ]);
 
 // 开发模式使用的 key,导出为生产模式时，需要移除

@@ -1,5 +1,10 @@
-import { array, literal, object } from 'superstruct';
-import { CNodeDataStructDescribe, CNodeDataType, PropType } from './node';
+import { array, literal, object, optional, record, string } from 'superstruct';
+import {
+  CNodeDataStructDescribe,
+  CNodeDataType,
+  PropsDataStructDescribe,
+  PropType,
+} from './node';
 
 export enum InnerComponentNameEnum {
   PAGE = 'Page',
@@ -13,6 +18,7 @@ export type CSchemaDataType = {
 };
 
 export const CSchemaDataTypeDescribe = object({
+  props: optional(record(string(), PropsDataStructDescribe)),
   componentName: literal(InnerComponentNameEnum.PAGE),
   children: array(CNodeDataStructDescribe),
 });

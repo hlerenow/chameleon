@@ -26,6 +26,9 @@ export type CNodeModelDataType = Omit<CNodeDataType, 'children'> & {
 };
 
 export const parseNode = (data: CNodeDataType, parent: CNode) => {
+  if (typeof data === 'string') {
+    return data;
+  }
   const res: CNodeModelDataType = {
     ...data,
     id: data.id ?? getRandomStr(),
@@ -41,15 +44,21 @@ export const parseNode = (data: CNodeDataType, parent: CNode) => {
       });
     });
   }
-
-  if (res.children?.length) {
-    res.children = res.children.map((el) => {
-      return new CNode(el, {
-        parent: parent,
+  if (data.children) {
+    if (Array.isArray(data.children)) {
+      res.children = data.children.map((el) => {
+        return new CNode(el, {
+          parent: parent,
+        });
       });
-    });
+    } else {
+      res.children = [
+        new CNode(data.children, {
+          parent: parent,
+        }),
+      ];
+    }
   }
-
   return res;
 };
 
