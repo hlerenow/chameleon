@@ -2,6 +2,7 @@ import {
   CNodePropsTypeEnum,
   CPageDataType,
   InnerComponentNameEnum,
+  PropObjType,
 } from '@chameleon/model';
 
 const data = [
@@ -28,17 +29,19 @@ const data = [
   },
 ];
 
-const columns = [
+const columns: PropObjType[string] = [
   {
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
     render: {
       type: CNodePropsTypeEnum.SLOT,
-      value: {
-        component: 'Button',
-        children: ['slot'],
-      },
+      value: [
+        {
+          componentName: 'Button',
+          children: ['slot'],
+        },
+      ],
     },
   },
   {

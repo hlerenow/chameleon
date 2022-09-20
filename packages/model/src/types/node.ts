@@ -10,8 +10,11 @@ import {
   record,
   dynamic,
   array,
+  define,
+  validate,
 } from 'superstruct';
 import { CNodePropsTypeEnum } from '../const/schema';
+import { isPlainObject } from '../util/lodash';
 
 export type NormalPropType = string | boolean | number | Record<string, any>;
 
@@ -30,9 +33,36 @@ export type FunctionPropType = {
   value: string;
 };
 
-export type SpecialProp = RenderPropType | JSExpressionPropType;
+export type SpecialProp =
+  | RenderPropType
+  | JSExpressionPropType
+  | FunctionPropType;
 
-export type PropType = NormalPropType | SpecialProp | SpecialProp[];
+export type PropType = NormalPropType | SpecialProp | PropObjType;
+
+export type PropObjType = {
+  [key: string]: PropType | Record<string, PropType> | PropType[];
+};
+
+const normalObj = () =>
+  define('normalObj', (value: any) => {
+    if (!isPlainObject(value)) {
+      return false;
+    }
+    console.log(1111, value);
+    if (
+      [
+        CNodePropsTypeEnum.SLOT,
+        CNodePropsTypeEnum.EXPRESSION,
+        CNodePropsTypeEnum.FUNCTION,
+      ].includes(value?.type)
+    ) {
+      return false;
+    }
+    debugger;
+    validate(value, record(string(), PropsDataStructDescribe));
+    return true;
+  });
 
 export const PropsDataStructDescribe: any = union([
   string(),
@@ -42,7 +72,7 @@ export const PropsDataStructDescribe: any = union([
     type: literal(CNodePropsTypeEnum.SLOT),
     // here can't use PropsDataStructDescribe, it will  caused  "Maximum call stack size exceeded" error
     value: dynamic(() => {
-      return union([CNodeDataStructDescribe, array(CNodeDataStructDescribe)]);
+      return union([array(CNodeDataStructDescribe)]);
     }),
   }),
   object({
@@ -53,7 +83,12 @@ export const PropsDataStructDescribe: any = union([
     type: literal(CNodePropsTypeEnum.FUNCTION),
     value: string(),
   }),
-  record(string(), any()),
+  normalObj(),
+  array(
+    dynamic(() => {
+      return PropsDataStructDescribe;
+    })
+  ),
 ]);
 
 // 开发模式使用的 key,导出为生产模式时，需要移除
@@ -63,7 +98,7 @@ export type CNodeDataType = {
   id?: string;
   componentName: string;
   // 所有的 props 的 value 需要支持表达式 $$context
-  props?: Record<string, PropType>;
+  props?: PropObjType;
   children?: (string | CNodeDataType)[];
   /**
    * only used in dev mode, if you are run in prod, this key will be undefined

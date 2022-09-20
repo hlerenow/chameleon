@@ -15,6 +15,7 @@ export type DataCheckFunc = (parameters: BaseDataCheckParameters) => {
 export const checkFuncWrap = (func: DataCheckFunc): DataCheckFunc => {
   return ({ data, message, throwError }) => {
     const validateRes = func({ data, message, throwError });
+
     if (validateRes.isValidate) {
       return validateRes;
     } else {

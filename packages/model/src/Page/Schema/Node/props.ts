@@ -1,13 +1,19 @@
 import { CNode } from '.';
 import { CSchema } from '..';
-import { ExportType } from '../../../const/schema';
+import { CNodePropsTypeEnum, ExportType } from '../../../const/schema';
 import {
   CMaterialPropsType,
   MaterialPropType,
   PropsUIType,
   SpecialMaterialPropType,
 } from '../../../types/material';
-import { PropType } from '../../../types/node';
+import {
+  FunctionPropType,
+  JSExpressionPropType,
+  NormalPropType,
+  PropType,
+  RenderPropType,
+} from '../../../types/node';
 import { isArray, isPlainObject } from '../../../util/lodash';
 import { DataModelEmitter } from '../../../util/modelEmitter';
 
@@ -29,26 +35,57 @@ const flatProps = (props: CMaterialPropsType): MaterialPropType[] => {
   return allProps;
 };
 
+const handleObjProp = (data: any) => {
+  if (data.type) {
+    if (data.type === CNodePropsTypeEnum.SLOT) {
+      const tempData = data as RenderPropType;
+      const newData = {
+        type: data.type,
+        value: tempData.value?.map((el) => new CNode(el)) || [],
+      };
+      return newData;
+    }
+    return data;
+  } else {
+    const newData: CPropDataType = {};
+    Object.keys(data).forEach((key) => {
+      newData[key] = parseData(data[key]);
+    });
+    return newData;
+  }
+};
+
 const parseData = (data: any) => {
   if (isPlainObject(data)) {
-    if (data.type) {
-      return data;
-    }
+    return handleObjProp(data);
   }
 
   if (isArray(data)) {
-    return data;
+    return data.map((el) => handleObjProp(el));
   }
 
   return data;
 };
+
+export type CSpecialPropDataType =
+  | {
+      type: CNodePropsTypeEnum.SLOT;
+      value: CNode | CNode[];
+    }
+  | FunctionPropType
+  | JSExpressionPropType;
+
+export type CPropDataType =
+  | NormalPropType
+  | CSpecialPropDataType
+  | CSpecialPropDataType[];
 
 export class CProp {
   modeType = 'PROP';
   private rawData: PropType;
   parent: CNode | CSchema;
   emitter = DataModelEmitter;
-  private data: PropType;
+  private data: CPropDataType;
   name: string;
   constructor(
     name: string,
@@ -58,7 +95,27 @@ export class CProp {
     this.parent = parent;
     this.rawData = data;
     this.name = name;
-    this.data = data;
+    this.data = parseData(data);
+  }
+
+  isSlot() {
+    if (isArray(this.data) && this.data?.length) {
+      return this.data[0].type === CNodePropsTypeEnum.SLOT;
+    } else if (isPlainObject(this.data)) {
+      return (this.data as Record<any, any>).type === CNodePropsTypeEnum.SLOT;
+    }
+    return false;
+  }
+
+  isExpression() {
+    if (isArray(this.data) && this.data?.length) {
+      return this.data[0].type === CNodePropsTypeEnum.EXPRESSION;
+    } else if (isPlainObject(this.data)) {
+      return (
+        (this.data as Record<any, any>).type === CNodePropsTypeEnum.EXPRESSION
+      );
+    }
+    return false;
   }
 
   get value() {
