@@ -38,7 +38,7 @@ export interface AdapterType {
   // 获取数据域链
   getDataLink: () => void;
   createDataLink: () => void;
-  transformProps: () => void;
+  transformProps: (originalProps: Record<any, any>) => Record<any, any>;
   transformData: () => void;
   transformGlobalData: () => void;
   errorCatch: () => void;
