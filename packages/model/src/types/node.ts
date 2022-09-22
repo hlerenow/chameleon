@@ -49,7 +49,6 @@ const normalObj = () =>
     if (!isPlainObject(value)) {
       return false;
     }
-    console.log(1111, value);
     if (
       [
         CNodePropsTypeEnum.SLOT,
@@ -59,7 +58,6 @@ const normalObj = () =>
     ) {
       return false;
     }
-    debugger;
     validate(value, record(string(), PropsDataStructDescribe));
     return true;
   });

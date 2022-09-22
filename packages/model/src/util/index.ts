@@ -3,9 +3,8 @@ import { CPage } from '../Page';
 import { CSchema } from '../Page/Schema';
 import { CNode } from '../Page/Schema/Node';
 import { CProp } from '../Page/Schema/Node/props';
-import { RenderPropType } from '../types/node';
 
-export const isJSSlotPropNode = (arg: any): arg is RenderPropType => {
+export const isJSSlotPropNode = (arg: any) => {
   if (arg?.type == CNodePropsTypeEnum.SLOT) {
     return true;
   } else {

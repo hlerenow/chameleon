@@ -11,6 +11,7 @@ import {
   FunctionPropType,
   JSExpressionPropType,
   NormalPropType,
+  PropObjType,
   PropType,
   RenderPropType,
 } from '../../../types/node';
@@ -35,43 +36,55 @@ const flatProps = (props: CMaterialPropsType): MaterialPropType[] => {
   return allProps;
 };
 
-const handleObjProp = (data: any) => {
+// TODO: 需要递归处理每个节点，将特殊节点转换为 CProp Model
+const handleObjProp = (data: any): any => {
   if (data.type) {
     if (data.type === CNodePropsTypeEnum.SLOT) {
       const tempData = data as RenderPropType;
-      const newData = {
+      const newData: any = {
         type: data.type,
-        value: tempData.value?.map((el) => new CNode(el)) || [],
+        value: undefined,
       };
+      if (Array.isArray(tempData.value)) {
+        newData.value = tempData.value?.map((el) => new CNode(el)) || [];
+      } else {
+        newData.value = new CNode(tempData.value);
+      }
+
       return newData;
     }
     return data;
-  } else {
+  } else if (isPlainObject(data)) {
     const newData: CPropDataType = {};
     Object.keys(data).forEach((key) => {
       newData[key] = parseData(data[key]);
     });
     return newData;
+  } else if (Array.isArray(data)) {
+    return data.map((el) => handleObjProp(el));
+  } else {
+    return data;
   }
 };
 
+// 递归处理所有的节点
 const parseData = (data: any) => {
   if (isPlainObject(data)) {
     return handleObjProp(data);
   }
-
   if (isArray(data)) {
     return data.map((el) => handleObjProp(el));
   }
-
   return data;
 };
 
+export type CJSSlotPropDataType = {
+  type: CNodePropsTypeEnum.SLOT;
+  value: CNode | CNode[];
+};
+
 export type CSpecialPropDataType =
-  | {
-      type: CNodePropsTypeEnum.SLOT;
-      value: CNode | CNode[];
-    }
+  | CJSSlotPropDataType
   | FunctionPropType
   | JSExpressionPropType;
 
@@ -83,14 +96,14 @@ export type CPropDataType =
 export class CProp {
   modeType = 'PROP';
   private rawData: PropType;
-  parent: CNode | CSchema;
+  parent: CNode | CSchema | null;
   emitter = DataModelEmitter;
   private data: CPropDataType;
   name: string;
   constructor(
     name: string,
     data: any,
-    { parent }: { parent: CNode | CSchema }
+    { parent }: { parent: CNode | CSchema | null }
   ) {
     this.parent = parent;
     this.rawData = data;
@@ -124,17 +137,20 @@ export class CProp {
 
   set value(val) {
     this.emitter.emit('onPropChange', { value: val, preValue: this.data });
-    this.emitter.emit('onNodeChange', {
-      value: this.parent.export(),
-      preValue: this.parent.export(),
-    });
+    if (this.parent) {
+      this.emitter.emit('onNodeChange', {
+        value: this.parent.export(),
+        preValue: this.parent.export(),
+      });
+    }
+
     this.emitter.emit('onSchemaChange');
     this.emitter.emit('onPageChange');
     this.data = val;
   }
 
   get material() {
-    const parentMaterial = this.parent.material;
+    const parentMaterial = this.parent?.material;
     const allProps = flatProps(parentMaterial?.value.props || []);
     const target = allProps.find((el) => el.name === this.name);
     return target;
@@ -144,3 +160,19 @@ export class CProp {
     return this.data;
   }
 }
+
+export const transformObjToPropsModelObj = (
+  props: PropObjType,
+  parent: CNode | null = null
+) => {
+  const newProps: Record<string, CPropDataType> = {};
+  const propsKeys = Object.keys(props || {});
+  if (propsKeys.length) {
+    propsKeys.forEach((propKey) => {
+      newProps[propKey] = new CProp(propKey, props[propKey], {
+        parent: parent,
+      });
+    });
+  }
+  return newProps;
+};
