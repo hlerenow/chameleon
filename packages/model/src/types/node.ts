@@ -12,14 +12,17 @@ import {
   array,
   define,
   validate,
+  enums,
 } from 'superstruct';
-import { CNodePropsTypeEnum } from '../const/schema';
+import { CNodePropsTypeEnum, SlotRenderType } from '../const/schema';
 import { isPlainObject } from '../util/lodash';
 
 export type NormalPropType = string | boolean | number | Record<string, any>;
 
 export type RenderPropType = {
   type: CNodePropsTypeEnum.SLOT;
+  params?: string[];
+  renderType: SlotRenderType;
   value: CNodeDataType[];
 };
 
@@ -41,7 +44,7 @@ export type SpecialProp =
 export type PropType = NormalPropType | SpecialProp | PropObjType;
 
 export type PropObjType = {
-  [key: string]: PropType | Record<string, PropType> | PropType[];
+  [key: string]: PropType | PropType[] | Record<string, PropType>;
 };
 
 const normalObj = () =>
@@ -68,6 +71,9 @@ export const PropsDataStructDescribe: any = union([
   boolean(),
   object({
     type: literal(CNodePropsTypeEnum.SLOT),
+    renderType: enums([SlotRenderType.FUNC, SlotRenderType.COMP]),
+    // if renderType is Func， params will be useful
+    params: optional(array(string())),
     // here can't use PropsDataStructDescribe, it will  caused  "Maximum call stack size exceeded" error
     value: dynamic(() => {
       return union([array(CNodeDataStructDescribe)]);

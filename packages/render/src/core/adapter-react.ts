@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   CJSSlotPropDataType,
   CNode,
@@ -6,15 +6,47 @@ import {
   CProp,
   CPropDataType,
   CSchema,
+  isExpression,
   isJSSlotPropNode,
-  RenderPropType,
-  transformObjToPropsModelObj,
+  isPropModel,
+  JSExpressionPropType,
+  SlotRenderType,
 } from '@chameleon/model';
-import { AdapterOptionsType, AdapterType, getAdapter } from './adapter';
+import {
+  AdapterOptionsType,
+  AdapterType,
+  ContextType,
+  getAdapter,
+} from './adapter';
 import { isPlainObject } from 'lodash-es';
+
+const runExpression = (expStr: string, context: any) => {
+  const run = (expStr: string) => {
+    const contextVar = Object.keys(context).map((key) => {
+      return `const ${key} = $$context['${key}'];`;
+    });
+    const executeCode = `
+    ${contextVar}
+    return ${expStr};
+    `;
+    console.log(
+      '🚀 ~ file: adapter-react.ts ~ line 29 ~ run ~ executeCode',
+      executeCode
+    );
+
+    return new Function('$$context', executeCode)(context);
+  };
+  try {
+    return run(expStr);
+  } catch (e) {
+    console.warn(e);
+    return `[${expStr}] expression run failed`;
+  }
+};
 
 class DefineReactAdapter implements Partial<AdapterType> {
   components: AdapterOptionsType['components'] | undefined;
+  runtimeHelper: AdapterOptionsType['runtimeHelper'] | undefined;
   getComponent(currentNode: CNode | CSchema) {
     const componentName = currentNode.value.componentName;
     const res =
@@ -27,6 +59,7 @@ class DefineReactAdapter implements Partial<AdapterType> {
     { runtimeHelper, components }: AdapterOptionsType
   ) {
     this.components = components;
+    this.runtimeHelper = runtimeHelper;
     //做一些全局 store 操作
     const rootNode = pageModel.value.componentsTree;
     const component = this.getComponent(rootNode);
@@ -47,40 +80,97 @@ class DefineReactAdapter implements Partial<AdapterType> {
 
   componentRender(
     originalComponent: any,
-    props?:
-      | (React.InputHTMLAttributes<HTMLInputElement> &
-          React.ClassAttributes<HTMLInputElement>)
-      | null
-      | undefined,
+    props: Record<any, any> = {},
     ...children: React.ReactNode[]
   ) {
     if (typeof originalComponent === 'string') {
       return originalComponent;
     }
+    if ('$$context' in props) {
+      // delete props.$$context;
+    }
     return React.createElement(originalComponent, props, ...children);
   }
 
-  transformProps(originalProps: Record<any, any> = {}) {
+  transformProps(originalProps: Record<any, any> = {}, { $$context }: any) {
     const propsModel = originalProps;
-    const handlePropVal: any = (propVal: any) => {
+    const handlePropVal: any = (propVal: CPropDataType) => {
+      console.log(
+        '🚀 ~ file: adapter-react.ts ~ line 74 ~ DefineReactAdapter ~ transformProps ~ propVal',
+        propVal
+      );
       if (isJSSlotPropNode(propVal)) {
-        const tempVal = propVal;
-        if (Array.isArray(propVal)) {
-          const renderList = tempVal.value?.map((it: any) => {
-            const component = this.getComponent(it);
-            return this.convertModelToComponent(component);
+        const slotProp = propVal as CJSSlotPropDataType;
+        const tempVal = slotProp.value;
+        if (!tempVal) {
+          console.warn(
+            'slot value is null, this maybe cause some error, pls check it',
+            originalProps
+          );
+          return {};
+        }
+        const handleSingleSlot = (it: CNode) => {
+          const component = this.getComponent(it);
+          const runtimeComp = this.convertModelToComponent(component, it);
+          if (slotProp.renderType === SlotRenderType.FUNC) {
+            const parmaList = slotProp.params || [];
+            // 运行时组件函数
+            return (...args: any) => {
+              const params: Record<any, any> = {};
+              parmaList.forEach((paramName, index) => {
+                params[paramName] = args[index];
+              });
+
+              // handle children
+              let children: any[] = [];
+              if (it.value.children) {
+                children = it.value?.children?.map((el) =>
+                  this.runtimeHelper?.renderComponent(el)
+                );
+              }
+              const $$context = this.getContext({
+                params,
+              });
+              return this.componentRender(
+                runtimeComp,
+                { $$context },
+                ...children
+              );
+            };
+          } else {
+            return runtimeComp;
+          }
+        };
+        if (Array.isArray(tempVal)) {
+          const renderList = tempVal?.map((it: any) => {
+            return handleSingleSlot(it);
           });
+          // TODO: 需要做额外的处理
           return renderList;
         } else {
-          const component = this.getComponent(tempVal.value);
-          return this.convertModelToComponent(component);
+          return handleSingleSlot(tempVal);
         }
       } else if (Array.isArray(propVal)) {
         return propVal.map((it) => handlePropVal(it));
+      } else if (isPropModel(propVal)) {
+        return handlePropVal(propVal.value);
+      } else if (isExpression(propVal)) {
+        const expProp = propVal as JSExpressionPropType;
+        console.log('$$context', $$context || {});
+
+        const newVal = runExpression(expProp.value, $$context || {});
+
+        return newVal;
       } else if (isPlainObject(propVal)) {
+        // 可能是 普通的 props 模型
+        let specialPropVal = propVal;
+        if (isPropModel(propVal)) {
+          specialPropVal = (propVal as CProp).value;
+        }
+        const objPropVal = specialPropVal as Record<any, any>;
         const newVal: any = {};
-        Object.keys(propVal).forEach((k) => {
-          newVal[k] = handlePropVal(propVal[k]);
+        Object.keys(specialPropVal).forEach((k) => {
+          newVal[k] = handlePropVal(objPropVal[k]);
         });
         return newVal;
       } else {
@@ -96,22 +186,38 @@ class DefineReactAdapter implements Partial<AdapterType> {
     return newProps;
   }
 
-  convertModelToComponent(originalComponent: any) {
-    return (props: Record<any, any>) => {
+  convertModelToComponent(originalComponent: any, nodeMode: CNode | CSchema) {
+    // runtime 函数
+    return (p: Record<any, any>) => {
+      const { children, $$context, ...props } = p;
+
+      const newOriginalProps = {
+        ...nodeMode.props,
+        ...props,
+      };
       // handle props
-      const newProps: Record<any, any> = this.transformProps(props);
-      console.log(
-        '🚀 ~ file: adapter-react.ts ~ line 79 ~ DefineReactAdapter ~ return ~ newProps',
-        newProps
-      );
-      const children: any[] = [];
+      const newProps: Record<any, any> = useMemo(() => {
+        return this.transformProps(newOriginalProps, { $$context: $$context });
+      }, [props, nodeMode.props]);
+
+      let newChildren: any[] = [];
+      if (children !== undefined) {
+        newChildren = Array.isArray(children) ? children : [children];
+      }
       // handle children
-      return this.componentRender(
-        originalComponent,
-        { ...newProps },
-        ...children
-      );
+      return this.componentRender(originalComponent, newProps, ...newChildren);
     };
+  }
+
+  getContext(data: ContextType = {}, ctx?: ContextType | null): ContextType {
+    let newCtx: ContextType = data;
+    if (ctx) {
+      newCtx = {
+        ...data,
+      };
+      newCtx.__proto__ = ctx || null;
+    }
+    return newCtx;
   }
 }
 // eslint-disable-next-line @typescript-eslint/no-empty-function

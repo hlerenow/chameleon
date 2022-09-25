@@ -44,6 +44,7 @@ export const parseNode = (data: CNodeDataType, parent: CNode) => {
       });
     });
   }
+
   if (data.children) {
     if (Array.isArray(data.children)) {
       res.children = data.children.map((el) => {

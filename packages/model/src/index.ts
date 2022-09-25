@@ -17,10 +17,4 @@ export * from './types/node';
 export * from './types/page';
 export * from './types/schema';
 
-export {
-  isPageModel,
-  isJSSlotPropNode,
-  isNodeModel,
-  isSchemaModel,
-  isPropModel,
-} from './util/index';
+export * from './util/index';

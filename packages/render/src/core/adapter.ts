@@ -4,7 +4,9 @@ export type RuntimeRenderHelper = {
   renderComponent: (node: CNode | CSchema) => any;
 };
 
-type ComponentsType = Record<any, (...args: any[]) => any>;
+export type ComponentsType = Record<any, (...args: any[]) => any>;
+
+export type ContextType = Record<any, any>;
 
 export type AdapterOptionsType = {
   libs: Record<string, any>;
@@ -33,12 +35,15 @@ export interface AdapterType {
     currentNode: CNode | CSchema,
     components: ComponentsType
   ) => void;
-  getContext: () => void;
+  getContext: (data: Record<any, any>, ctx: ContextType | null) => ContextType;
   getUtils: () => void;
   // 获取数据域链
   getDataLink: () => void;
   createDataLink: () => void;
-  transformProps: (originalProps: Record<any, any>) => Record<any, any>;
+  transformProps: (
+    originalProps: Record<any, any>,
+    options: { $$context: Record<any, any> }
+  ) => Record<any, any>;
   transformData: () => void;
   transformGlobalData: () => void;
   errorCatch: () => void;
@@ -147,12 +152,13 @@ export const getRuntimeRenderHelper = (
         Object.keys(propsModel).forEach((key) => {
           props[key] = propsModel[key].value;
         });
-        // can't use children prop
-        if (props.children) {
-          delete props.children;
-        }
+
         const children: any[] = [];
         const childModel = currentNode.value.children;
+        // can't use children prop
+        // if (props.children) {
+        //   delete props.children;
+        // }
         childModel.forEach((node) => {
           const child = runtimeHelper.renderComponent(node);
           children.push(child);

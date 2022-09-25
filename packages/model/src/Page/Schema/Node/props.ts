@@ -18,6 +18,19 @@ import {
 import { isArray, isPlainObject } from '../../../util/lodash';
 import { DataModelEmitter } from '../../../util/modelEmitter';
 
+export type CJSSlotPropDataType = Omit<RenderPropType, 'value'> & {
+  value: CNode | CNode[] | null;
+};
+export type CSpecialPropDataType =
+  | CJSSlotPropDataType
+  | FunctionPropType
+  | JSExpressionPropType;
+
+export type CPropDataType =
+  | NormalPropType
+  | CSpecialPropDataType
+  | CSpecialPropDataType[];
+
 const flatProps = (props: CMaterialPropsType): MaterialPropType[] => {
   let allProps: MaterialPropType[] = [];
   props.forEach((el) => {
@@ -41,9 +54,11 @@ const handleObjProp = (data: any): any => {
   if (data.type) {
     if (data.type === CNodePropsTypeEnum.SLOT) {
       const tempData = data as RenderPropType;
-      const newData: any = {
-        type: data.type,
-        value: undefined,
+      const newData: CJSSlotPropDataType = {
+        type: tempData.type,
+        renderType: tempData.renderType,
+        params: tempData.params,
+        value: null,
       };
       if (Array.isArray(tempData.value)) {
         newData.value = tempData.value?.map((el) => new CNode(el)) || [];
@@ -77,21 +92,6 @@ const parseData = (data: any) => {
   }
   return data;
 };
-
-export type CJSSlotPropDataType = {
-  type: CNodePropsTypeEnum.SLOT;
-  value: CNode | CNode[];
-};
-
-export type CSpecialPropDataType =
-  | CJSSlotPropDataType
-  | FunctionPropType
-  | JSExpressionPropType;
-
-export type CPropDataType =
-  | NormalPropType
-  | CSpecialPropDataType
-  | CSpecialPropDataType[];
 
 export class CProp {
   modeType = 'PROP';

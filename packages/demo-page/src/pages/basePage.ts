@@ -3,6 +3,7 @@ import {
   CPageDataType,
   InnerComponentNameEnum,
   PropObjType,
+  SlotRenderType,
 } from '@chameleon/model';
 
 const data = [
@@ -36,12 +37,18 @@ const columns: PropObjType[string] = [
     key: 'name',
     render: {
       type: CNodePropsTypeEnum.SLOT,
-      value: [
-        {
-          componentName: 'Button',
-          children: ['slot'],
+      renderType: SlotRenderType.FUNC,
+      params: ['val', 'record', 'index'],
+      value: {
+        componentName: 'Button',
+        props: {
+          mark: 'nameRender',
+          children: {
+            type: CNodePropsTypeEnum.EXPRESSION,
+            value: '$$context.params.val',
+          },
         },
-      ],
+      },
     },
   },
   {

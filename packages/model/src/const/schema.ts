@@ -8,3 +8,8 @@ export enum ExportType {
   DESIGN = 'design',
   SAVE = 'save',
 }
+
+export enum SlotRenderType {
+  FUNC = 'FUNC',
+  COMP = 'COMP',
+}
