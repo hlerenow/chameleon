@@ -159,6 +159,10 @@ class DefineReactAdapter implements Partial<AdapterType> {
         console.log('$$context', $$context || {});
 
         const newVal = runExpression(expProp.value, $$context || {});
+        console.log(
+          '🚀 ~ file: adapter-react.ts ~ line 162 ~ DefineReactAdapter ~ transformProps ~ newVal',
+          newVal
+        );
 
         return newVal;
       } else if (isPlainObject(propVal)) {
@@ -189,7 +193,7 @@ class DefineReactAdapter implements Partial<AdapterType> {
   convertModelToComponent(originalComponent: any, nodeMode: CNode | CSchema) {
     // runtime 函数
     return (p: Record<any, any>) => {
-      const { children, $$context, ...props } = p;
+      const { $$context, ...props } = p;
 
       const newOriginalProps = {
         ...nodeMode.props,
@@ -199,9 +203,10 @@ class DefineReactAdapter implements Partial<AdapterType> {
       const newProps: Record<any, any> = useMemo(() => {
         return this.transformProps(newOriginalProps, { $$context: $$context });
       }, [props, nodeMode.props]);
-
+      const { children } = newProps;
       let newChildren: any[] = [];
       if (children !== undefined) {
+        delete newProps.children;
         newChildren = Array.isArray(children) ? children : [children];
       }
       // handle children

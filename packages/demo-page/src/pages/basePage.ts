@@ -40,14 +40,34 @@ const columns: PropObjType[string] = [
       renderType: SlotRenderType.FUNC,
       params: ['val', 'record', 'index'],
       value: {
-        componentName: 'Button',
-        props: {
-          mark: 'nameRender',
-          children: {
-            type: CNodePropsTypeEnum.EXPRESSION,
-            value: '$$context.params.val',
+        componentName: 'Row',
+        children: [
+          {
+            componentName: 'Button',
+            props: {
+              mark: 'nameRender',
+              children: {
+                type: CNodePropsTypeEnum.EXPRESSION,
+                value: '$$context.params.val',
+              },
+            },
           },
-        },
+          {
+            componentName: 'Col',
+            children: [
+              {
+                componentName: 'Button',
+                props: {
+                  mark: 'nameRender',
+                  children: {
+                    type: CNodePropsTypeEnum.EXPRESSION,
+                    value: '$$context.params.val',
+                  },
+                },
+              },
+            ],
+          },
+        ],
       },
     },
   },
