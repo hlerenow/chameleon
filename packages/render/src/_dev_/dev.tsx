@@ -19,6 +19,9 @@ const components = {
       <div style={{ border: '1px solid red', padding: '10px' }}>{children}</div>
     );
   },
+  div: (props: any) => {
+    return <div {...props}>I am Div</div>;
+  },
 };
 
 function App() {

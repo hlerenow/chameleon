@@ -112,7 +112,7 @@ export const getRuntimeRenderHelper = (
 ) => {
   const runtimeComponentCache = new Map();
   const runtimeHelper: RuntimeRenderHelper = {
-    renderComponent: (node: CNode | CSchema, $$context: any = {}) => {
+    renderComponent: (node: CNode | CSchema, { $$context = {} }) => {
       if (node.isText()) {
         return adapter.componentRender(node.value);
       }
@@ -158,7 +158,7 @@ export const getRuntimeRenderHelper = (
         const children: any[] = [];
         const childModel = currentNode.value.children;
         childModel.forEach((node) => {
-          const child = runtimeHelper.renderComponent(node, $$context);
+          const child = runtimeHelper.renderComponent(node, { $$context });
           children.push(child);
         });
 

@@ -86,6 +86,10 @@ class DefineReactAdapter implements Partial<AdapterType> {
     if (typeof originalComponent === 'string') {
       return originalComponent;
     }
+    console.log(
+      '🚀 ~ file: adapter-react.ts ~ line 85 ~ DefineReactAdapter ~ props',
+      props.$$context
+    );
     if ('$$context' in props && originalComponent.__CP_TYPE__ !== 'dynamic') {
       delete props.$$context;
     }
@@ -98,10 +102,6 @@ class DefineReactAdapter implements Partial<AdapterType> {
   ) {
     const propsModel = originalProps;
     const handlePropVal: any = (propVal: CPropDataType) => {
-      console.log(
-        '🚀 ~ file: adapter-react.ts ~ line 74 ~ DefineReactAdapter ~ transformProps ~ propVal',
-        propVal
-      );
       if (isJSSlotPropNode(propVal)) {
         const slotProp = propVal as CJSSlotPropDataType;
         const tempVal = slotProp.value;
@@ -139,7 +139,7 @@ class DefineReactAdapter implements Partial<AdapterType> {
                   })
                 );
               }
-       
+
               return this.componentRender(
                 runtimeComp,
                 { $$context },
@@ -165,14 +165,7 @@ class DefineReactAdapter implements Partial<AdapterType> {
         return handlePropVal(propVal.value);
       } else if (isExpression(propVal)) {
         const expProp = propVal as JSExpressionPropType;
-        console.log('$$context', parentContext || {});
-
         const newVal = runExpression(expProp.value, parentContext || {});
-        console.log(
-          '🚀 ~ file: adapter-react.ts ~ line 162 ~ DefineReactAdapter ~ transformProps ~ newVal',
-          newVal
-        );
-
         return newVal;
       } else if (isPlainObject(propVal)) {
         // 可能是 普通的 props 模型
