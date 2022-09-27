@@ -1,7 +1,7 @@
 import { CPage, CNode, CSchema } from '@chameleon/model';
 
 export type RuntimeRenderHelper = {
-  renderComponent: (node: CNode | CSchema) => any;
+  renderComponent: (node: CNode | CSchema, options: { $$context: any }) => any;
 };
 
 export type ComponentsType = Record<any, (...args: any[]) => any>;
@@ -112,7 +112,7 @@ export const getRuntimeRenderHelper = (
 ) => {
   const runtimeComponentCache = new Map();
   const runtimeHelper: RuntimeRenderHelper = {
-    renderComponent: (node: CNode | CSchema) => {
+    renderComponent: (node: CNode | CSchema, $$context: any = {}) => {
       if (node.isText()) {
         return adapter.componentRender(node.value);
       }
@@ -147,7 +147,9 @@ export const getRuntimeRenderHelper = (
           runtimeComponentCache.set(nodeId, component);
         }
 
-        const props: any = {};
+        const props: any = {
+          $$context,
+        };
         const propsModel = currentNode.props;
         Object.keys(propsModel).forEach((key) => {
           props[key] = propsModel[key].value;
@@ -155,12 +157,8 @@ export const getRuntimeRenderHelper = (
 
         const children: any[] = [];
         const childModel = currentNode.value.children;
-        // can't use children prop
-        // if (props.children) {
-        //   delete props.children;
-        // }
         childModel.forEach((node) => {
-          const child = runtimeHelper.renderComponent(node);
+          const child = runtimeHelper.renderComponent(node, $$context);
           children.push(child);
         });
 

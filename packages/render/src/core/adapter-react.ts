@@ -66,7 +66,7 @@ class DefineReactAdapter implements Partial<AdapterType> {
     const children: any[] = [];
     const childModel = rootNode.value.children;
     childModel.forEach((node) => {
-      children.push(runtimeHelper.renderComponent(node));
+      children.push(runtimeHelper.renderComponent(node, { $$context: {} }));
     });
 
     const props: any = {};
@@ -86,13 +86,16 @@ class DefineReactAdapter implements Partial<AdapterType> {
     if (typeof originalComponent === 'string') {
       return originalComponent;
     }
-    if ('$$context' in props) {
-      // delete props.$$context;
+    if ('$$context' in props && originalComponent.__CP_TYPE__ !== 'dynamic') {
+      delete props.$$context;
     }
     return React.createElement(originalComponent, props, ...children);
   }
 
-  transformProps(originalProps: Record<any, any> = {}, { $$context }: any) {
+  transformProps(
+    originalProps: Record<any, any> = {},
+    { $$context: parentContext }: any
+  ) {
     const propsModel = originalProps;
     const handlePropVal: any = (propVal: CPropDataType) => {
       console.log(
@@ -125,12 +128,17 @@ class DefineReactAdapter implements Partial<AdapterType> {
               let children: any[] = [];
               if (it.value.children) {
                 children = it.value?.children?.map((el) =>
-                  this.runtimeHelper?.renderComponent(el)
+                  this.runtimeHelper?.renderComponent(el, {
+                    $$context: parentContext,
+                  })
                 );
               }
-              const $$context = this.getContext({
-                params,
-              });
+              const $$context = this.getContext(
+                {
+                  params,
+                },
+                parentContext
+              );
               return this.componentRender(
                 runtimeComp,
                 { $$context },
@@ -156,9 +164,9 @@ class DefineReactAdapter implements Partial<AdapterType> {
         return handlePropVal(propVal.value);
       } else if (isExpression(propVal)) {
         const expProp = propVal as JSExpressionPropType;
-        console.log('$$context', $$context || {});
+        console.log('$$context', parentContext || {});
 
-        const newVal = runExpression(expProp.value, $$context || {});
+        const newVal = runExpression(expProp.value, parentContext || {});
         console.log(
           '🚀 ~ file: adapter-react.ts ~ line 162 ~ DefineReactAdapter ~ transformProps ~ newVal',
           newVal
@@ -192,7 +200,7 @@ class DefineReactAdapter implements Partial<AdapterType> {
 
   convertModelToComponent(originalComponent: any, nodeMode: CNode | CSchema) {
     // runtime 函数
-    return (p: Record<any, any>) => {
+    const dynamicComponent = (p: Record<any, any>) => {
       const { $$context, ...props } = p;
 
       const newOriginalProps = {
@@ -212,6 +220,8 @@ class DefineReactAdapter implements Partial<AdapterType> {
       // handle children
       return this.componentRender(originalComponent, newProps, ...newChildren);
     };
+    dynamicComponent.__CP_TYPE__ = 'dynamic';
+    return dynamicComponent;
   }
 
   getContext(data: ContextType = {}, ctx?: ContextType | null): ContextType {
