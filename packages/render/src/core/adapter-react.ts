@@ -123,22 +123,23 @@ class DefineReactAdapter implements Partial<AdapterType> {
               parmaList.forEach((paramName, index) => {
                 params[paramName] = args[index];
               });
-
-              // handle children
-              let children: any[] = [];
-              if (it.value.children) {
-                children = it.value?.children?.map((el) =>
-                  this.runtimeHelper?.renderComponent(el, {
-                    $$context: parentContext,
-                  })
-                );
-              }
               const $$context = this.getContext(
                 {
                   params,
                 },
                 parentContext
               );
+
+              // handle children
+              let children: any[] = [];
+              if (it.value.children) {
+                children = it.value?.children?.map((el) =>
+                  this.runtimeHelper?.renderComponent(el, {
+                    $$context,
+                  })
+                );
+              }
+       
               return this.componentRender(
                 runtimeComp,
                 { $$context },
@@ -217,6 +218,7 @@ class DefineReactAdapter implements Partial<AdapterType> {
         delete newProps.children;
         newChildren = Array.isArray(children) ? children : [children];
       }
+      newProps['$$context'] = $$context;
       // handle children
       return this.componentRender(originalComponent, newProps, ...newChildren);
     };
