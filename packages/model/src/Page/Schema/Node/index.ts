@@ -79,6 +79,10 @@ export class CNode {
     this.data = parseNode(data, this);
   }
 
+  get id() {
+    return this.data.id;
+  }
+
   get value(): CNodeModelDataType {
     return this.data;
   }

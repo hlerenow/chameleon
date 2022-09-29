@@ -59,11 +59,12 @@ const columns: PropObjType[string] = [
                 componentName: 'Button',
                 props: {
                   mark: 'nameRender',
-                  children: {
-                    type: CNodePropsTypeEnum.EXPRESSION,
-                    value: '$$context.params.val',
-                  },
                 },
+                children: [
+                  {
+                    componentName: 'div',
+                  },
+                ],
               },
             ],
           },

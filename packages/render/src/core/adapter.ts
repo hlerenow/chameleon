@@ -1,7 +1,15 @@
 import { CPage, CNode, CSchema } from '@chameleon/model';
 
 export type RuntimeRenderHelper = {
-  renderComponent: (node: CNode | CSchema, options: { $$context: any }) => any;
+  renderComponent: (
+    node: CNode | CSchema,
+    options: {
+      $$context: {
+        params?: Record<any, any>;
+      };
+      idx?: number;
+    }
+  ) => any;
 };
 
 export type ComponentsType = Record<any, (...args: any[]) => any>;
@@ -21,8 +29,10 @@ export interface AdapterType {
   convertModelToComponent: (
     originalComponent: any,
     nodeModal: CNode | CSchema,
-    pageModel: CPage,
-    options: AdapterOptionsType
+    options: {
+      pageModel: CPage;
+      idx?: number;
+    } & AdapterOptionsType
   ) => any;
   // 渲染一个组件
   componentRender: (
@@ -112,7 +122,7 @@ export const getRuntimeRenderHelper = (
 ) => {
   const runtimeComponentCache = new Map();
   const runtimeHelper: RuntimeRenderHelper = {
-    renderComponent: (node: CNode | CSchema, { $$context = {} }) => {
+    renderComponent: (node: CNode | CSchema, { $$context = {}, idx }) => {
       if (node.isText()) {
         return adapter.componentRender(node.value);
       }
@@ -134,10 +144,11 @@ export const getRuntimeRenderHelper = (
           component = adapter.convertModelToComponent(
             originalComponent,
             currentNode,
-            pageModel,
             {
               ...options,
+              pageModel,
               runtimeHelper: runtimeHelper,
+              idx,
             }
           );
         }
@@ -149,6 +160,7 @@ export const getRuntimeRenderHelper = (
 
         const props: any = {
           $$context,
+          key: `${nodeId}-dynamic`,
         };
         const propsModel = currentNode.props;
         Object.keys(propsModel).forEach((key) => {

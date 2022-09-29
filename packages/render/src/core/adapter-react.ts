@@ -65,8 +65,10 @@ class DefineReactAdapter implements Partial<AdapterType> {
     const component = this.getComponent(rootNode);
     const children: any[] = [];
     const childModel = rootNode.value.children;
-    childModel.forEach((node) => {
-      children.push(runtimeHelper.renderComponent(node, { $$context: {} }));
+    childModel.forEach((node, index) => {
+      children.push(
+        runtimeHelper.renderComponent(node, { $$context: {}, idx: index })
+      );
     });
 
     const props: any = {};
@@ -142,7 +144,7 @@ class DefineReactAdapter implements Partial<AdapterType> {
 
               return this.componentRender(
                 runtimeComp,
-                { $$context },
+                { $$context, key: `${it.id}-dynamic` },
                 ...children
               );
             };
@@ -174,7 +176,7 @@ class DefineReactAdapter implements Partial<AdapterType> {
           specialPropVal = (propVal as CProp).value;
         }
         const objPropVal = specialPropVal as Record<any, any>;
-        const newVal: any = {};
+        const newVal: Record<any, any> = {};
         Object.keys(specialPropVal).forEach((k) => {
           newVal[k] = handlePropVal(objPropVal[k]);
         });
@@ -194,10 +196,11 @@ class DefineReactAdapter implements Partial<AdapterType> {
 
   convertModelToComponent(originalComponent: any, nodeMode: CNode | CSchema) {
     // runtime 函数
-    const dynamicComponent = (p: Record<any, any>) => {
+    const DynamicComponent = (p: Record<any, any>) => {
       const { $$context, ...props } = p;
 
       const newOriginalProps = {
+        key: nodeMode.id,
         ...nodeMode.props,
         ...props,
       };
@@ -215,8 +218,8 @@ class DefineReactAdapter implements Partial<AdapterType> {
       // handle children
       return this.componentRender(originalComponent, newProps, ...newChildren);
     };
-    dynamicComponent.__CP_TYPE__ = 'dynamic';
-    return dynamicComponent;
+    DynamicComponent.__CP_TYPE__ = 'dynamic';
+    return DynamicComponent;
   }
 
   getContext(data: ContextType = {}, ctx?: ContextType | null): ContextType {

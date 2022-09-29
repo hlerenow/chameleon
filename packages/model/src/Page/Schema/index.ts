@@ -73,6 +73,10 @@ export class CSchema {
     this.data = parseSchema(data, this);
   }
 
+  get id() {
+    return this.data.id;
+  }
+
   get value() {
     return this.data;
   }
