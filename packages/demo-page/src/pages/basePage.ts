@@ -40,9 +40,11 @@ const columns: PropObjType[string] = [
       renderType: SlotRenderType.FUNC,
       params: ['val', 'record', 'index'],
       value: {
+        id: '5',
         componentName: 'Row',
         children: [
           {
+            id: '6',
             componentName: 'Button',
             props: {
               mark: 'nameRender',
@@ -53,6 +55,7 @@ const columns: PropObjType[string] = [
             },
           },
           {
+            id: '7',
             componentName: 'Col',
             children: [
               {
@@ -62,7 +65,13 @@ const columns: PropObjType[string] = [
                 },
                 children: [
                   {
+                    id: '8',
                     componentName: 'div',
+                    children: ['I am div'],
+                  },
+                  {
+                    id: '11111',
+                    componentName: 'Input',
                   },
                 ],
               },
@@ -86,21 +95,6 @@ const columns: PropObjType[string] = [
     title: 'Tags',
     key: 'tags',
     dataIndex: 'tags',
-    // render: (_, { tags }) => (
-    //   <>
-    //     {tags.map((tag) => {
-    //       let color = tag.length > 5 ? 'geekblue' : 'green';
-    //       if (tag === 'loser') {
-    //         color = 'volcano';
-    //       }
-    //       return (
-    //         <Tag color={color} key={tag}>
-    //           {tag.toUpperCase()}
-    //         </Tag>
-    //       );
-    //     })}
-    //   </>
-    // ),
   },
   {
     title: 'Action',
@@ -113,12 +107,21 @@ export const BasePage: CPageDataType = {
   pageName: 'BaseDemoPage',
   componentsMeta: [],
   componentsTree: {
+    id: '1',
     componentName: InnerComponentNameEnum.PAGE,
     props: {
       a: 1,
     },
     children: [
       {
+        id: 'Modal',
+        componentName: 'Modal',
+        props: {
+          open: false,
+        },
+      },
+      {
+        id: '2',
         componentName: 'Button',
         props: {
           type: 'primary',
@@ -126,26 +129,34 @@ export const BasePage: CPageDataType = {
         children: ['123'],
       },
       {
+        id: '3',
         componentName: 'Table',
         props: {
           columns,
           dataSource: data,
         },
       },
-      // {
-      //   componentName: 'Row',
-      //   children: [
-      //     {
-      //       componentName: 'Col',
-      //       children: [
-      //         {
-      //           componentName: 'Button',
-      //           children: ['123 木头人'],
-      //         },
-      //       ],
-      //     },
-      //   ],
-      // },
+      {
+        id: '4',
+        componentName: 'Row',
+        children: [
+          {
+            id: '10',
+            componentName: 'Col',
+            children: [
+              {
+                id: '11',
+                componentName: 'Button',
+                children: ['123 木头人'],
+              },
+            ],
+          },
+          {
+            id: '12',
+            componentName: 'Input',
+          },
+        ],
+      },
     ],
   },
 };

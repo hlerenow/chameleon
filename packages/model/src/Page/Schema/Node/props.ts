@@ -136,11 +136,16 @@ export class CProp {
   }
 
   set value(val) {
-    this.emitter.emit('onPropChange', { value: val, preValue: this.data });
+    this.emitter.emit('onPropChange', {
+      value: val,
+      preValue: this.data,
+      node: this,
+    });
     if (this.parent) {
       this.emitter.emit('onNodeChange', {
         value: this.parent.export(),
         preValue: this.parent.export(),
+        node: this,
       });
     }
 

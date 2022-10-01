@@ -11,6 +11,7 @@ export enum InnerComponentNameEnum {
 }
 
 export type CSchemaDataType = {
+  id?: string;
   componentName: InnerComponentNameEnum.PAGE;
   children: CNodeDataType[];
   // 所有的 props 的 value 需要支持表达式 $$context
@@ -18,7 +19,8 @@ export type CSchemaDataType = {
 };
 
 export const CSchemaDataTypeDescribe = object({
-  props: optional(record(string(), PropsDataStructDescribe)),
+  id: optional(string()),
   componentName: literal(InnerComponentNameEnum.PAGE),
+  props: optional(record(string(), PropsDataStructDescribe)),
   children: array(CNodeDataStructDescribe),
 });

@@ -17,6 +17,7 @@ import {
   AdapterType,
   ContextType,
   getAdapter,
+  runtimeComponentCache,
 } from './adapter';
 import { isPlainObject } from 'lodash-es';
 
@@ -29,10 +30,6 @@ const runExpression = (expStr: string, context: any) => {
     ${contextVar}
     return ${expStr};
     `;
-    console.log(
-      '🚀 ~ file: adapter-react.ts ~ line 29 ~ run ~ executeCode',
-      executeCode
-    );
 
     return new Function('$$context', executeCode)(context);
   };
@@ -79,25 +76,6 @@ class DefineReactAdapter implements Partial<AdapterType> {
     });
     return this.componentRender(component, props, ...children);
   }
-
-  componentRender(
-    originalComponent: any,
-    props: Record<any, any> = {},
-    ...children: React.ReactNode[]
-  ) {
-    if (typeof originalComponent === 'string') {
-      return originalComponent;
-    }
-    console.log(
-      '🚀 ~ file: adapter-react.ts ~ line 85 ~ DefineReactAdapter ~ props',
-      props.$$context
-    );
-    if ('$$context' in props && originalComponent.__CP_TYPE__ !== 'dynamic') {
-      delete props.$$context;
-    }
-    return React.createElement(originalComponent, props, ...children);
-  }
-
   transformProps(
     originalProps: Record<any, any> = {},
     { $$context: parentContext }: any
@@ -115,12 +93,16 @@ class DefineReactAdapter implements Partial<AdapterType> {
           return {};
         }
         const handleSingleSlot = (it: CNode) => {
+          // 复用
+          if (runtimeComponentCache.get(it.id)) {
+            return runtimeComponentCache.get(it.id);
+          }
           const component = this.getComponent(it);
           const runtimeComp = this.convertModelToComponent(component, it);
           if (slotProp.renderType === SlotRenderType.FUNC) {
             const parmaList = slotProp.params || [];
             // 运行时组件函数
-            return (...args: any) => {
+            const runtimeList = (...args: any) => {
               const params: Record<any, any> = {};
               parmaList.forEach((paramName, index) => {
                 params[paramName] = args[index];
@@ -148,7 +130,9 @@ class DefineReactAdapter implements Partial<AdapterType> {
                 ...children
               );
             };
+            return runtimeList;
           } else {
+            runtimeComponentCache.set(it.id, runtimeComp);
             return runtimeComp;
           }
         };
@@ -194,31 +178,65 @@ class DefineReactAdapter implements Partial<AdapterType> {
     return newProps;
   }
 
+  componentRender(
+    originalComponent: any,
+    props: Record<any, any> = {},
+    ...children: React.ReactNode[]
+  ) {
+    if (typeof originalComponent === 'string') {
+      return originalComponent;
+    }
+    if ('$$context' in props && originalComponent.__CP_TYPE__ !== 'dynamic') {
+      delete props.$$context;
+    }
+    const res = React.createElement(originalComponent, props, ...children);
+    return res;
+  }
+
   convertModelToComponent(originalComponent: any, nodeMode: CNode | CSchema) {
     // runtime 函数
-    const DynamicComponent = (p: Record<any, any>) => {
-      const { $$context, ...props } = p;
-
-      const newOriginalProps = {
-        key: nodeMode.id,
-        ...nodeMode.props,
-        ...props,
-      };
-      // handle props
-      const newProps: Record<any, any> = useMemo(() => {
-        return this.transformProps(newOriginalProps, { $$context: $$context });
-      }, [props, nodeMode.props]);
-      const { children } = newProps;
-      let newChildren: any[] = [];
-      if (children !== undefined) {
-        delete newProps.children;
-        newChildren = Array.isArray(children) ? children : [children];
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const that = this;
+    type PropsType = { $$context: ContextType };
+    class DynamicComponent extends React.Component<PropsType> {
+      static __CP_TYPE__ = 'dynamic';
+      constructor(props: PropsType) {
+        super(props);
       }
-      newProps['$$context'] = $$context;
-      // handle children
-      return this.componentRender(originalComponent, newProps, ...newChildren);
-    };
-    DynamicComponent.__CP_TYPE__ = 'dynamic';
+      componentDidMount(): void {
+        console.log(nodeMode, this);
+      }
+      render(): React.ReactNode {
+        const { $$context, ...props } = this.props;
+
+        const newOriginalProps = {
+          key: nodeMode.id,
+          ...nodeMode.props,
+          ...props,
+        };
+        // handle props
+        const newProps: Record<any, any> = that.transformProps(
+          newOriginalProps,
+          {
+            $$context: $$context,
+          }
+        );
+        const { children } = newProps;
+        let newChildren: any[] = [];
+        if (children !== undefined) {
+          delete newProps.children;
+          newChildren = Array.isArray(children) ? children : [children];
+        }
+        newProps['$$context'] = $$context;
+        // handle children
+        return that.componentRender(
+          originalComponent,
+          newProps,
+          ...newChildren
+        );
+      }
+    }
+
     return DynamicComponent;
   }
 
