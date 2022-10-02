@@ -122,7 +122,7 @@ export type CNodeDataType = {
   };
   style?: string;
   className?: string;
-  ref?: string;
+  refId?: string;
   // 逻辑编排使用
   onEvents?: Record<
     string,
@@ -148,6 +148,6 @@ export const CNodeDataStructDescribe: any = object({
   configure: optional(any()),
   style: optional(string()),
   className: optional(string()),
-  ref: optional(string()),
+  refId: optional(string()),
   extra: optional(record(any(), any())),
 });

@@ -116,6 +116,7 @@ export const BasePage: CPageDataType = {
       {
         id: 'Modal',
         componentName: 'Modal',
+        refId: 'ModalRef',
         props: {
           open: false,
         },

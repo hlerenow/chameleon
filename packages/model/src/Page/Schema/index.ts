@@ -33,6 +33,7 @@ export const parseSchema = (
   parent: CSchema
 ): CSchemaModelDataType => {
   const res: CSchemaModelDataType = {
+    ...data,
     id: getRandomStr(),
     props: {} as any,
     componentName: InnerComponentNameEnum.PAGE,

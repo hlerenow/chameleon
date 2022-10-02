@@ -1,5 +1,5 @@
 import { CPage, CPageDataType, parseModel } from '@chameleon/model';
-import React, { useRef } from 'react';
+import React, { MutableRefObject, useRef } from 'react';
 import { AdapterOptionType, AdapterType } from './adapter';
 import { runtimeComponentCache } from './adapterReact';
 import { RefManager } from './refManager';
@@ -54,7 +54,7 @@ export class Render extends React.Component<
 
   onGetRef: AdapterOptionType['onGetRef'] = (ref, nodeModel) => {
     this.props.onGetRef?.(ref, nodeModel);
-    this.refManager.add(nodeModel.id, ref);
+    this.refManager.add(nodeModel.value.refId || nodeModel.id, ref);
   };
 
   render() {

@@ -25,6 +25,7 @@ export type CSchemaDataType = {
   // 所有的 props 的 value 需要支持表达式 $$context
   props?: Record<string, CPropType>;
   state?: Record<string, string>;
+  refId?: string;
 };
 
 export const CSchemaDataTypeDescribe = object({
@@ -33,4 +34,5 @@ export const CSchemaDataTypeDescribe = object({
   props: optional(record(string(), PropsDataStructDescribe)),
   state: optional(record(string(), any())),
   children: array(CNodeDataStructDescribe),
+  refId: optional(string()),
 });
