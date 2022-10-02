@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactInstance } from 'react';
 import {
   CJSSlotPropDataType,
   CNode,
@@ -12,18 +12,14 @@ import {
   JSExpressionPropType,
   SlotRenderType,
 } from '@chameleon/model';
-import {
-  AdapterOptionsType,
-  AdapterType,
-  ContextType,
-  getAdapter,
-} from './adapter';
+import { AdapterOptionType, ContextType, getAdapter } from './adapter';
 import { isPlainObject } from 'lodash-es';
-import { DataModelEventType } from '@chameleon/model/dist/util/modelEmitter';
+import { canAcceptsRef, compWrapper } from '../util';
+import { DYNAMIC_COMPONENT_TYPE, InnerPropList } from '../const';
 
 export const runtimeComponentCache = new Map();
 
-const runExpression = (expStr: string, context: any) => {
+export const runExpression = (expStr: string, context: any) => {
   const run = (expStr: string) => {
     const contextVar = Object.keys(context).map((key) => {
       return `const ${key} = $$context['${key}'];`;
@@ -43,12 +39,21 @@ const runExpression = (expStr: string, context: any) => {
   }
 };
 
-class DefineReactAdapter implements Partial<AdapterType> {
-  components: AdapterOptionsType['components'] | undefined;
+class DefineReactAdapter {
+  components: AdapterOptionType['components'] = {};
+  onGetRef?: (
+    ref: React.RefObject<ReactInstance>,
+    nodeMode: CNode | CSchema
+  ) => void;
   getComponent(currentNode: CNode | CSchema) {
     const componentName = currentNode.value.componentName;
-    const res =
-      this.components?.[componentName] || (() => 'Component not found');
+    let res: any =
+      this.components[componentName] || (() => 'Component not found');
+    // check component can accept ref
+    if (!canAcceptsRef(res)) {
+      res = compWrapper(res);
+      this.components[componentName] = res;
+    }
     return res;
   }
 
@@ -63,15 +68,21 @@ class DefineReactAdapter implements Partial<AdapterType> {
     return newCtx;
   }
 
-  pageRender(pageModel: CPage, { components }: AdapterOptionsType) {
+  pageRender(
+    pageModel: CPage,
+    { components, onGetRef, $$context = {} }: AdapterOptionType
+  ) {
     this.components = components;
+    this.onGetRef = onGetRef;
     //做一些全局 store 操作
     const rootNode = pageModel.value.componentsTree;
     const component = this.getComponent(rootNode);
     const children: any[] = [];
     const childModel = rootNode.value.children;
     childModel.forEach((node, index) => {
-      children.push(this.buildComponent(node, { $$context: {}, idx: index }));
+      children.push(
+        this.buildComponent(node, { $$context: $$context, idx: index })
+      );
     });
 
     const props: any = {};
@@ -80,6 +91,7 @@ class DefineReactAdapter implements Partial<AdapterType> {
     Object.keys(propsModel).forEach((key) => {
       props[key] = propsModel[key].value;
     });
+    props.$$context = $$context;
     return this.render(component, props, ...children);
   }
 
@@ -120,10 +132,10 @@ class DefineReactAdapter implements Partial<AdapterType> {
                 },
                 parentContext
               );
-
+              const key = `${it.id}-${DYNAMIC_COMPONENT_TYPE}`;
               return this.render(runtimeComp, {
                 $$context,
-                key: `${it.id}-dynamic`,
+                key,
               });
             };
             runtimeComponentCache.set(it.id, runtimeList);
@@ -175,42 +187,36 @@ class DefineReactAdapter implements Partial<AdapterType> {
     return newProps;
   }
 
-  convertModelToComponent(originalComponent: any, nodeMode: CNode | CSchema) {
+  convertModelToComponent(originalComponent: any, nodeModel: CNode | CSchema) {
     // runtime 函数
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const that = this;
-    type PropsType = { $$context: ContextType };
+    type PropsType = { $$context: ContextType; $$nodeModel: CNode | CSchema };
     class DynamicComponent extends React.Component<PropsType> {
-      static __CP_TYPE__ = 'dynamic';
-      _updateHandle:
-        | (({ node }: DataModelEventType['onPropChange']) => void)
-        | undefined;
+      static __CP_TYPE__ = DYNAMIC_COMPONENT_TYPE;
+      NODE_ID = nodeModel.id;
+      targetComponentRef: React.MutableRefObject<any>;
       listenerHandle: (() => void)[] = [];
       constructor(props: PropsType) {
         super(props);
+        this.targetComponentRef = React.createRef();
       }
-      componentDidMount(): void {
-        // const remove = (nodeMode as CNode).onChange(() => {
-        //   this.forceUpdate();
-        // });
 
-        // this.listenerHandle.push(remove);
+      componentDidMount(): void {
+        if (that.onGetRef) {
+          that.onGetRef(this.targetComponentRef, nodeModel);
+        }
         const forceUpdate = () => {
           this.forceUpdate();
         };
-        nodeMode.emitter.on('onNodeChange', forceUpdate);
-        // this.forceUpdate();
-      }
-
-      componentWillUnmount(): void {
-        nodeMode.emitter.off('onNodeChange', this._updateHandle);
+        nodeModel.emitter.on('onNodeChange', forceUpdate);
       }
 
       render(): React.ReactNode {
         const { $$context, ...props } = this.props;
         const newOriginalProps = {
-          key: nodeMode.id,
-          ...nodeMode.props,
+          key: nodeModel.id,
+          ...nodeModel.props,
           ...props,
         };
         // handle props
@@ -227,14 +233,15 @@ class DefineReactAdapter implements Partial<AdapterType> {
           newChildren = Array.isArray(children) ? children : [children];
         } else {
           const children: any[] = [];
-          const childModel = nodeMode.value.children;
+          const childModel = nodeModel.value.children;
           childModel.forEach((node, index) => {
             const child = that.buildComponent(node, { $$context, idx: index });
             children.push(child);
           });
           newChildren = children;
         }
-        newProps['$$context'] = $$context;
+        newProps.ref = this.targetComponentRef;
+
         // handle children
         return that.render(originalComponent, newProps, ...newChildren);
       }
@@ -272,10 +279,11 @@ class DefineReactAdapter implements Partial<AdapterType> {
       if (!runtimeComponentCache.get(nodeId)) {
         runtimeComponentCache.set(nodeId, component);
       }
-
+      const key = `${nodeId}-${DYNAMIC_COMPONENT_TYPE}`;
       const props: any = {
         $$context,
-        key: `${nodeId}-dynamic`,
+        $$nodeModel: node,
+        key: key,
       };
 
       return this.render(component, props);
@@ -298,12 +306,18 @@ class DefineReactAdapter implements Partial<AdapterType> {
     ) {
       return String(originalComponent);
     }
-    if ('$$context' in props && originalComponent.__CP_TYPE__ !== 'dynamic') {
-      delete props.$$context;
-    }
+    InnerPropList.forEach((key) => {
+      if (
+        key in props &&
+        originalComponent.__CP_TYPE__ !== DYNAMIC_COMPONENT_TYPE
+      ) {
+        delete props[key];
+      }
+    });
     const res = React.createElement(originalComponent, props, ...children);
     return res;
   }
 }
+
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export const ReactAdapter = getAdapter(new DefineReactAdapter());

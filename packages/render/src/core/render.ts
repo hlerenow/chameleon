@@ -1,13 +1,15 @@
 import { CPage, CPageDataType, parseModel } from '@chameleon/model';
-import React, { Ref, useRef } from 'react';
-import { AdapterType } from './adapter';
-import { runtimeComponentCache } from './adapter-react';
+import React, { useRef } from 'react';
+import { AdapterOptionType, AdapterType } from './adapter';
+import { runtimeComponentCache } from './adapterReact';
+import { RefManager } from './refManager';
 
 export type RenderPropsType = {
   page: CPageDataType;
   components: Record<any, any>;
   render: UseRenderReturnType;
   adapter: AdapterType;
+  onGetRef?: AdapterOptionType['onGetRef'];
 };
 
 export class Render extends React.Component<
@@ -16,16 +18,13 @@ export class Render extends React.Component<
     pageModel: CPage | null;
   }
 > {
-  // static getDerivedStateFromProps(props: RenderPropsType) {
-  //   return {
-  //     pageModel: parseModel(props.page),
-  //   };
-  // }
+  refManager: RefManager;
   constructor(props: RenderPropsType) {
     super(props);
     this.state = {
       pageModel: parseModel(props.page),
     };
+    this.refManager = new RefManager();
   }
 
   componentDidMount(): void {
@@ -33,20 +32,30 @@ export class Render extends React.Component<
     if (render) {
       render.ref.current = this;
     }
+    console.log(this);
   }
 
-  rerender(newPage: CPageDataType) {
-    console.log('🚀 ~ file: render.ts ~ line 32 ~ rerender ~ newPage', newPage);
+  componentWillUnmount(): void {
+    this.refManager.destroy();
+  }
+
+  rerender = (newPage: CPageDataType) => {
     runtimeComponentCache.clear();
     this.setState({
       pageModel: parseModel(newPage),
     });
+    // 触发 model 变化
     this.state.pageModel?.emitter.emit('onNodeChange', {
       value: newPage as any,
       preValue: this.state.pageModel as any,
       node: this.state.pageModel as any,
     });
-  }
+  };
+
+  onGetRef: AdapterOptionType['onGetRef'] = (ref, nodeModel) => {
+    this.props.onGetRef?.(ref, nodeModel);
+    this.refManager.add(nodeModel.id, ref);
+  };
 
   render() {
     const { props } = this;
@@ -57,10 +66,13 @@ export class Render extends React.Component<
     if (!pageModel) {
       return null;
     }
-    console.log('Root update', pageModel);
     const PageRoot = adapter.pageRender(pageModel, {
       libs: {},
       components: props.components,
+      onGetRef: this.onGetRef,
+      $$context: {
+        refs: this.refManager,
+      },
     });
 
     return PageRoot;

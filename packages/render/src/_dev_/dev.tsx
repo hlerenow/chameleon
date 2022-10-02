@@ -29,8 +29,8 @@ function App() {
   const [page, setPage] = useState(BasePage);
   const update = () => {
     const newPage = { ...page };
-    // newPage.componentsTree.children[1].children = [Math.random().toString()];
-    newPage.componentsTree.children = [];
+    newPage.componentsTree.children[1].children = [Math.random().toString()];
+    // newPage.componentsTree.children = [];
     setPage(newPage);
     console.log('🚀 ~ file: dev.tsx ~ line 34 ~ update ~ newPage', newPage);
     renderHandle.rerender(newPage);
@@ -42,6 +42,13 @@ function App() {
   //     update();
   //   }, 1000);
   // }, []);
+
+  // const collectionRef = (
+  //   ref: React.RefObject<React.ReactInstance>,
+  //   nodeMode: any
+  // ) => {
+  //   console.log('ref', ref, nodeMode);
+  // };
   return (
     <div className="App">
       <Button onClick={update}>更新数据</Button>
@@ -50,6 +57,7 @@ function App() {
         components={components}
         render={renderHandle}
         adapter={ReactAdapter}
+        // onGetRef={collectionRef}
       />
     </div>
   );

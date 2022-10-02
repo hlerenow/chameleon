@@ -1,7 +1,9 @@
 import { CPage, CNode, CSchema } from '@chameleon/model';
+import { RefManager } from './refManager';
 
 export type ContextType = {
   params?: Record<any, any>;
+  refs?: RefManager;
 };
 
 export type RuntimeRenderHelper = {
@@ -16,14 +18,21 @@ export type RuntimeRenderHelper = {
 
 export type ComponentsType = Record<any, (...args: any[]) => any>;
 
-export type AdapterOptionsType = {
+export type AdapterOptionType = {
   libs: Record<string, any>;
   components: ComponentsType;
+  $$context: ContextType;
+  onGetRef?: (
+    ref: React.RefObject<React.ReactInstance>,
+    nodeMode: CNode | CSchema
+  ) => void;
 };
+
+// TODO: 后续考虑去掉
 export interface AdapterType {
-  customPageRootRender?: (pageModel: CPage, options: AdapterOptionsType) => any;
+  customPageRootRender?: (pageModel: CPage, options: AdapterOptionType) => any;
   // 页面渲染
-  pageRender: (pageModel: CPage, options: AdapterOptionsType) => any;
+  pageRender: (pageModel: CPage, options: AdapterOptionType) => any;
   // 将一个 组件 model 节点 转换为一个可被运行的渲染函数
   convertModelToComponent: (
     originalComponent: any,
@@ -31,7 +40,7 @@ export interface AdapterType {
     options: {
       pageModel: CPage;
       idx?: number;
-    } & AdapterOptionsType
+    } & AdapterOptionType
   ) => any;
   // 渲染一个组件
   render: (
