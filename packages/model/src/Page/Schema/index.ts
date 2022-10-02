@@ -51,7 +51,7 @@ export const parseSchema = (
 
   if (propsKeys.length) {
     propsKeys.forEach((propKey) => {
-      res.props[propKey] = new CProp(propKey, data.props?.[propKey], {
+      res.props[propKey] = new CProp(propKey, data.props?.[propKey] || '', {
         parent: parent,
       });
     });

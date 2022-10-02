@@ -18,7 +18,6 @@ export type ComponentsType = Record<any, (...args: any[]) => any>;
 
 export type AdapterOptionsType = {
   libs: Record<string, any>;
-  runtimeHelper: RuntimeRenderHelper;
   components: ComponentsType;
 };
 export interface AdapterType {
@@ -35,7 +34,7 @@ export interface AdapterType {
     } & AdapterOptionsType
   ) => any;
   // 渲染一个组件
-  componentRender: (
+  render: (
     originalComponent: any,
     props?: Record<any, any>,
     ...children: any[]
@@ -72,7 +71,7 @@ const AdapterMethodList = [
   // 页面渲染
   'pageRender',
   // 渲染一个组件
-  'componentRender',
+  'render',
   // 将一个 组件 model 节点 转换为一个可被运行的渲染函数
   'convertModelToComponent',
   'getComponent',
@@ -110,75 +109,4 @@ export const getAdapter = (
   }, {} as any);
 
   return adapter;
-};
-
-export const runtimeComponentCache = new Map();
-
-export const getRuntimeRenderHelper = (
-  pageModel: CPage,
-  adapter: AdapterType,
-  options: {
-    libs: Record<string, any>;
-    components: ComponentsType;
-  }
-) => {
-  const runtimeHelper: RuntimeRenderHelper = {
-    renderComponent: (node: CNode | CSchema, { $$context = {}, idx }) => {
-      if (node.isText()) {
-        return adapter.componentRender(node.value);
-      }
-
-      const handleNode = ({
-        currentNode,
-      }: {
-        currentNode: CSchema | CNode;
-      }) => {
-        const nodeId = currentNode.value.id;
-        let component = null;
-        if (runtimeComponentCache.get(nodeId)) {
-          component = runtimeComponentCache.get(nodeId);
-          console.log('复用', nodeId);
-        } else {
-          const originalComponent = adapter.getComponent(
-            currentNode,
-            options.components
-          );
-          component = adapter.convertModelToComponent(
-            originalComponent,
-            currentNode,
-            {
-              ...options,
-              pageModel,
-              runtimeHelper: runtimeHelper,
-              idx,
-            }
-          );
-        }
-
-        // cache runtime component
-        if (!runtimeComponentCache.get(nodeId)) {
-          runtimeComponentCache.set(nodeId, component);
-        }
-
-        const props: any = {
-          $$context,
-          key: `${nodeId}-dynamic`,
-        };
-
-        const children: any[] = [];
-        const childModel = currentNode.value.children;
-        childModel.forEach((node) => {
-          const child = runtimeHelper.renderComponent(node, { $$context });
-          children.push(child);
-        });
-
-        return adapter.componentRender(component, props, ...children);
-      };
-
-      return handleNode({
-        currentNode: node,
-      });
-    },
-  };
-  return runtimeHelper;
 };

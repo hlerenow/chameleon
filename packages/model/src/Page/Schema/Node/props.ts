@@ -11,8 +11,8 @@ import {
   FunctionPropType,
   JSExpressionPropType,
   NormalPropType,
-  PropObjType,
-  PropType,
+  CPropObjType,
+  CPropType,
   RenderPropType,
 } from '../../../types/node';
 import { isArray, isPlainObject } from '../../../util/lodash';
@@ -61,9 +61,17 @@ const handleObjProp = (data: any): any => {
         value: null,
       };
       if (Array.isArray(tempData.value)) {
-        newData.value = tempData.value?.map((el) => new CNode(el)) || [];
+        newData.value =
+          tempData.value?.map((el) => {
+            if (el instanceof CNode) {
+              return el;
+            }
+            return new CNode(el);
+          }) || [];
       } else {
-        newData.value = new CNode(tempData.value);
+        if (!((tempData.value as any) instanceof CNode)) {
+          newData.value = new CNode(tempData.value);
+        }
       }
 
       return newData;
@@ -95,14 +103,14 @@ const parseData = (data: any) => {
 
 export class CProp {
   modeType = 'PROP';
-  private rawData: PropType;
+  private rawData: CPropType;
   parent: CNode | CSchema | null;
   emitter = DataModelEmitter;
   private data: CPropDataType;
   name: string;
   constructor(
     name: string,
-    data: any,
+    data: CPropType,
     { parent }: { parent: CNode | CSchema | null }
   ) {
     this.parent = parent;
@@ -135,23 +143,24 @@ export class CProp {
     return this.data;
   }
 
-  set value(val) {
+  updateValue(val: CPropType) {
+    const oldData = this.data;
+    this.data = parseData(val);
     this.emitter.emit('onPropChange', {
       value: val,
-      preValue: this.data,
+      preValue: oldData,
       node: this,
     });
     if (this.parent) {
       this.emitter.emit('onNodeChange', {
-        value: this.parent.export(),
+        value: this.parent as any,
         preValue: this.parent.export(),
-        node: this,
+        node: this.parent,
       });
     }
 
     this.emitter.emit('onSchemaChange');
     this.emitter.emit('onPageChange');
-    this.data = val;
   }
 
   get material() {
@@ -161,13 +170,13 @@ export class CProp {
     return target;
   }
 
-  export(mode: ExportType) {
+  export(mode?: ExportType) {
     return this.data;
   }
 }
 
 export const transformObjToPropsModelObj = (
-  props: PropObjType,
+  props: CPropObjType,
   parent: CNode | null = null
 ) => {
   const newProps: Record<string, CPropDataType> = {};

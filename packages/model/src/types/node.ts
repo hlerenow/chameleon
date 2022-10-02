@@ -41,10 +41,10 @@ export type SpecialProp =
   | JSExpressionPropType
   | FunctionPropType;
 
-export type PropType = NormalPropType | SpecialProp | PropObjType;
+export type CPropType = NormalPropType | SpecialProp | CPropObjType;
 
-export type PropObjType = {
-  [key: string]: PropType | PropType[] | Record<string, PropType>;
+export type CPropObjType = {
+  [key: string]: CPropType | CPropType[] | Record<string, CPropType>;
 };
 
 const normalObj = () =>
@@ -102,7 +102,7 @@ export type CNodeDataType = {
   id?: string;
   componentName: string;
   // 所有的 props 的 value 需要支持表达式 $$context
-  props?: PropObjType;
+  props?: CPropObjType;
   children?: (string | CNodeDataType)[];
   /**
    * only used in dev mode, if you are run in prod, this key will be undefined

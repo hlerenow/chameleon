@@ -2,7 +2,7 @@ import mitt from 'mitt';
 import { CSchema } from '../Page/Schema';
 import { CNode } from '../Page/Schema/Node';
 import { CProp } from '../Page/Schema/Node/props';
-import { CNodeDataType, PropType } from '../types/node';
+import { CNodeDataType, CPropType } from '../types/node';
 
 export type DataModelEventType = {
   onPageChange: any;
@@ -13,8 +13,8 @@ export type DataModelEventType = {
     node: CProp | CNode | CSchema;
   };
   onPropChange: {
-    value: PropType;
-    preValue: PropType;
+    value: CPropType;
+    preValue: CPropType;
     node: CProp | CNode | CSchema;
   };
 };

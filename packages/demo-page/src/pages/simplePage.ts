@@ -102,7 +102,7 @@ const columns: CPropObjType[string] = [
   },
 ];
 
-export const BasePage: CPageDataType = {
+export const SamplePage: CPageDataType = {
   version: '1.0.0',
   pageName: 'BaseDemoPage',
   componentsMeta: [],
@@ -127,35 +127,6 @@ export const BasePage: CPageDataType = {
           type: 'primary',
         },
         children: ['123'],
-      },
-      {
-        id: '3',
-        componentName: 'Table',
-        props: {
-          columns,
-          dataSource: data,
-        },
-      },
-      {
-        id: '4',
-        componentName: 'Row',
-        children: [
-          {
-            id: '10',
-            componentName: 'Col',
-            children: [
-              {
-                id: '11',
-                componentName: 'Button',
-                children: ['123 木头人'],
-              },
-            ],
-          },
-          {
-            id: '12',
-            componentName: 'Input',
-          },
-        ],
       },
     ],
   },

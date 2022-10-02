@@ -3,7 +3,7 @@ import {
   CNodeDataStructDescribe,
   CNodeDataType,
   PropsDataStructDescribe,
-  PropType,
+  CPropType,
 } from './node';
 
 export enum InnerComponentNameEnum {
@@ -15,7 +15,7 @@ export type CSchemaDataType = {
   componentName: InnerComponentNameEnum.PAGE;
   children: CNodeDataType[];
   // 所有的 props 的 value 需要支持表达式 $$context
-  props?: Record<string, PropType>;
+  props?: Record<string, CPropType>;
 };
 
 export const CSchemaDataTypeDescribe = object({
