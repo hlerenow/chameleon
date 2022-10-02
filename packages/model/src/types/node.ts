@@ -103,6 +103,7 @@ export type CNodeDataType = {
   componentName: string;
   // 所有的 props 的 value 需要支持表达式 $$context
   props?: CPropObjType;
+  state?: Record<string, any>;
   children?: (string | CNodeDataType)[];
   /**
    * only used in dev mode, if you are run in prod, this key will be undefined
@@ -140,6 +141,7 @@ export const CNodeDataStructDescribe: any = object({
   id: optional(string()),
   componentName: string(),
   props: optional(record(string(), PropsDataStructDescribe)),
+  state: optional(record(string(), any())),
   children: dynamic(() => {
     return optional(array(union([string(), CNodeDataStructDescribe])));
   }),

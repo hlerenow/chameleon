@@ -123,6 +123,9 @@ export const BasePage: CPageDataType = {
       {
         id: '2',
         componentName: 'Button',
+        state: {
+          a: 1,
+        },
         props: {
           type: 'primary',
         },
@@ -131,6 +134,9 @@ export const BasePage: CPageDataType = {
       {
         id: '3',
         componentName: 'Table',
+        state: {
+          a: 3,
+        },
         props: {
           columns,
           dataSource: data,

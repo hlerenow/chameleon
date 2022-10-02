@@ -39,3 +39,23 @@ export function compWrapper(Comp: any) {
 
   return WrapperForRef;
 }
+
+export const runExpression = (expStr: string, context: any) => {
+  const run = (expStr: string) => {
+    const contextVar = Object.keys(context).map((key) => {
+      return `const ${key} = $$context['${key}'];`;
+    });
+    const executeCode = `
+    ${contextVar}
+    return ${expStr};
+    `;
+
+    return new Function('$$context', executeCode)(context);
+  };
+  try {
+    return run(expStr);
+  } catch (e) {
+    console.warn(e);
+    return `[${expStr}] expression run failed`;
+  }
+};

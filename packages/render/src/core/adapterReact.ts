@@ -14,30 +14,10 @@ import {
 } from '@chameleon/model';
 import { AdapterOptionType, ContextType, getAdapter } from './adapter';
 import { isPlainObject } from 'lodash-es';
-import { canAcceptsRef, compWrapper } from '../util';
+import { canAcceptsRef, compWrapper, runExpression } from '../util';
 import { DYNAMIC_COMPONENT_TYPE, InnerPropList } from '../const';
 
 export const runtimeComponentCache = new Map();
-
-export const runExpression = (expStr: string, context: any) => {
-  const run = (expStr: string) => {
-    const contextVar = Object.keys(context).map((key) => {
-      return `const ${key} = $$context['${key}'];`;
-    });
-    const executeCode = `
-    ${contextVar}
-    return ${expStr};
-    `;
-
-    return new Function('$$context', executeCode)(context);
-  };
-  try {
-    return run(expStr);
-  } catch (e) {
-    console.warn(e);
-    return `[${expStr}] expression run failed`;
-  }
-};
 
 class DefineReactAdapter {
   components: AdapterOptionType['components'] = {};
@@ -200,6 +180,7 @@ class DefineReactAdapter {
       constructor(props: PropsType) {
         super(props);
         this.targetComponentRef = React.createRef();
+        this.state = nodeModel.value.state || {};
       }
 
       componentDidMount(): void {
@@ -219,11 +200,17 @@ class DefineReactAdapter {
           ...nodeModel.props,
           ...props,
         };
+        const newContext = that.getContext(
+          {
+            state: this.state || {},
+          },
+          $$context
+        );
         // handle props
         const newProps: Record<any, any> = that.transformProps(
           newOriginalProps,
           {
-            $$context: $$context,
+            $$context: newContext,
           }
         );
         const { children } = newProps;
@@ -235,7 +222,10 @@ class DefineReactAdapter {
           const children: any[] = [];
           const childModel = nodeModel.value.children;
           childModel.forEach((node, index) => {
-            const child = that.buildComponent(node, { $$context, idx: index });
+            const child = that.buildComponent(node, {
+              $$context: newContext,
+              idx: index,
+            });
             children.push(child);
           });
           newChildren = children;
