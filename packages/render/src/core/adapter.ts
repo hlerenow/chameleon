@@ -4,6 +4,7 @@ import { RefManager } from './refManager';
 export type ContextType = {
   params?: Record<any, any>;
   state?: Record<any, any>;
+  updateState?: (newState: any) => void;
   refs?: RefManager;
 };
 

@@ -46,10 +46,9 @@ export const runExpression = (expStr: string, context: any) => {
       return `const ${key} = $$context['${key}'];`;
     });
     const executeCode = `
-    ${contextVar}
+    ${contextVar.join('\n')}
     return ${expStr};
     `;
-
     return new Function('$$context', executeCode)(context);
   };
   try {

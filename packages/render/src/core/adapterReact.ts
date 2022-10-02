@@ -203,6 +203,9 @@ class DefineReactAdapter {
         const newContext = that.getContext(
           {
             state: this.state || {},
+            updateState: (newState) => {
+              this.setState(newState);
+            },
           },
           $$context
         );
