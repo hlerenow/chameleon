@@ -9,7 +9,7 @@ import {
 import { getRandomStr } from '../../util';
 import { checkComplexData } from '../../util/dataCheck';
 import { isArray } from '../../util/lodash';
-import { DataModelEmitter } from '../../util/modelEmitter';
+import { DataModelEmitter, DataModelEventType } from '../../util/modelEmitter';
 import { CNode } from './Node/index';
 import { CProp } from './Node/props';
 
@@ -62,16 +62,43 @@ export const parseSchema = (
   return res;
 };
 
+type OnNodeChangeType = (params: DataModelEventType['onNodeChange']) => void;
+
 export class CSchema {
   modeType = 'SCHEMA';
   private rawData: CSchemaDataType;
   emitter = DataModelEmitter;
   private data: CSchemaModelDataType;
   materialModel: CMaterials;
+  listenerHandle: (() => void)[];
+  onChangeCbQueue: OnNodeChangeType[];
   constructor(data: any, { parent }: { parent: CPage }) {
     this.materialModel = parent.materialModel;
     this.rawData = JSON.parse(JSON.stringify(data));
     this.data = parseSchema(data, this);
+    this.listenerHandle = [];
+    this.onChangeCbQueue = [];
+    this.registerListener();
+  }
+
+  registerListener() {
+    const onNodeChange = (params: DataModelEventType['onNodeChange']) => {
+      const { node } = params;
+      if (node === this && node.id === this.id) {
+        this.onChangeCbQueue.forEach((it) => it(params));
+      }
+    };
+    this.emitter.on('onNodeChange', onNodeChange);
+    this.listenerHandle.push(() => {
+      this.emitter.off('onNodeChange', onNodeChange);
+    });
+  }
+
+  onChange(cb: OnNodeChangeType) {
+    this.onChangeCbQueue.push(cb);
+    return () => {
+      this.onChangeCbQueue = this.onChangeCbQueue.filter((el) => el !== cb);
+    };
   }
 
   get id() {

@@ -129,18 +129,32 @@ export const BasePage: CPageDataType = {
         },
         props: {
           type: 'primary',
+          onClick: {
+            type: CNodePropsTypeEnum.FUNCTION,
+            value: `function onClick(a,b) {
+              console.log(a, b);
+              b.updateState({a: 2})
+            }`,
+          },
+          children: {
+            type: CNodePropsTypeEnum.EXPRESSION,
+            value: '$$context.state.a',
+          },
         },
-        children: ['123'],
       },
       {
         id: '3',
         componentName: 'Table',
         state: {
           a: 3,
+          data: data,
         },
         props: {
           columns,
-          dataSource: data,
+          dataSource: {
+            type: CNodePropsTypeEnum.EXPRESSION,
+            value: '$$context.state.data',
+          },
         },
       },
       {

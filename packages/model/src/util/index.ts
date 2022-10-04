@@ -20,6 +20,14 @@ export const isJSSlotPropNode = (arg: any) => {
   }
 };
 
+export const isFunction = (arg: any) => {
+  if (arg?.type == CNodePropsTypeEnum.FUNCTION) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 export const getRandomStr = () => {
   return Math.random().toString(32).slice(3, 9);
 };

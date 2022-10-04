@@ -6,7 +6,9 @@ import {
   CProp,
   CPropDataType,
   CSchema,
+  FunctionPropType,
   isExpression,
+  isFunction,
   isJSSlotPropNode,
   isPropModel,
   JSExpressionPropType,
@@ -14,7 +16,12 @@ import {
 } from '@chameleon/model';
 import { AdapterOptionType, ContextType, getAdapter } from './adapter';
 import { isPlainObject } from 'lodash-es';
-import { canAcceptsRef, compWrapper, runExpression } from '../util';
+import {
+  canAcceptsRef,
+  compWrapper,
+  convertCodeStringToFunction,
+  runExpression,
+} from '../util';
 import { DYNAMIC_COMPONENT_TYPE, InnerPropList } from '../const';
 
 export const runtimeComponentCache = new Map();
@@ -81,7 +88,11 @@ class DefineReactAdapter {
   ) {
     const propsModel = originalProps;
     const handlePropVal: any = (propVal: CPropDataType) => {
-      if (isJSSlotPropNode(propVal)) {
+      if (Array.isArray(propVal)) {
+        return propVal.map((it) => handlePropVal(it));
+      } else if (isPropModel(propVal)) {
+        return handlePropVal(propVal.value);
+      } else if (isJSSlotPropNode(propVal)) {
         const slotProp = propVal as CJSSlotPropDataType;
         const tempVal = slotProp.value;
         if (!tempVal) {
@@ -134,14 +145,13 @@ class DefineReactAdapter {
         } else {
           return handleSingleSlot(tempVal);
         }
-      } else if (Array.isArray(propVal)) {
-        return propVal.map((it) => handlePropVal(it));
-      } else if (isPropModel(propVal)) {
-        return handlePropVal(propVal.value);
       } else if (isExpression(propVal)) {
         const expProp = propVal as JSExpressionPropType;
         const newVal = runExpression(expProp.value, parentContext || {});
         return newVal;
+      } else if (isFunction(propVal)) {
+        const funcProp = propVal as FunctionPropType;
+        return convertCodeStringToFunction(funcProp.value, parentContext);
       } else if (isPlainObject(propVal)) {
         // 可能是 普通的 props 模型
         let specialPropVal = propVal;
@@ -190,7 +200,14 @@ class DefineReactAdapter {
         const forceUpdate = () => {
           this.forceUpdate();
         };
-        nodeModel.emitter.on('onNodeChange', forceUpdate);
+
+        nodeModel.onChange(forceUpdate);
+        console.log(
+          '🚀 ~ file: adapterReact.ts ~ line 205 ~ DynamicComponent ~ componentDidMount ~ nodeModel',
+          nodeModel,
+          this.props.$$context
+        );
+        // nodeModel.emitter.on('onNodeChange', forceUpdate);
       }
 
       render(): React.ReactNode {

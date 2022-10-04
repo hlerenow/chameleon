@@ -1,4 +1,5 @@
 import { Component, createElement } from 'react';
+import { ContextType } from '../core/adapter';
 
 export const isClass = function (val: any) {
   if (!val) {
@@ -57,4 +58,23 @@ export const runExpression = (expStr: string, context: any) => {
     console.warn(e);
     return `[${expStr}] expression run failed`;
   }
+};
+
+export const convertCodeStringToFunction = (
+  functionStr: string,
+  $$context: ContextType
+) => {
+  const newFunc = function (...args: any[]) {
+    try {
+      const codeBody = `
+        var f = ${functionStr};
+        return f.apply(f, arguments)
+      `;
+      const f = new Function(codeBody);
+      f(...args, $$context);
+    } catch (e) {
+      console.warn(e);
+    }
+  };
+  return newFunc;
 };
