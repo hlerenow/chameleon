@@ -1,5 +1,5 @@
 import { CPage, CPageDataType, parseModel } from '@chameleon/model';
-import React, { MutableRefObject, useRef } from 'react';
+import React, { useRef } from 'react';
 import { AdapterOptionType, AdapterType } from './adapter';
 import { runtimeComponentCache } from './adapterReact';
 import { RefManager } from './refManager';

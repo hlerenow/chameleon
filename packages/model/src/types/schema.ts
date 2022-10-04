@@ -24,7 +24,7 @@ export type CSchemaDataType = {
   children: CNodeDataType[];
   // 所有的 props 的 value 需要支持表达式 $$context
   props?: Record<string, CPropType>;
-  state?: Record<string, string>;
+  state?: Record<string, any>;
   refId?: string;
 };
 

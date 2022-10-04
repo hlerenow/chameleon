@@ -7,6 +7,7 @@ import {
   CPropDataType,
   CSchema,
   FunctionPropType,
+  InnerComponentNameEnum,
   isExpression,
   isFunction,
   isJSSlotPropNode,
@@ -64,22 +65,18 @@ class DefineReactAdapter {
     //做一些全局 store 操作
     const rootNode = pageModel.value.componentsTree;
     const component = this.getComponent(rootNode);
-    const children: any[] = [];
-    const childModel = rootNode.value.children;
-    childModel.forEach((node, index) => {
-      children.push(
-        this.buildComponent(node, { $$context: $$context, idx: index })
-      );
-    });
+    const newComp = this.convertModelToComponent(
+      component,
+      pageModel.value.componentsTree
+    );
 
     const props: any = {};
-
     const propsModel = rootNode.props;
     Object.keys(propsModel).forEach((key) => {
       props[key] = propsModel[key].value;
     });
     props.$$context = $$context;
-    return this.render(component, props, ...children);
+    return this.render(newComp, props);
   }
 
   transformProps(
@@ -182,6 +179,7 @@ class DefineReactAdapter {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const that = this;
     type PropsType = { $$context: ContextType; $$nodeModel: CNode | CSchema };
+
     class DynamicComponent extends React.Component<PropsType> {
       static __CP_TYPE__ = DYNAMIC_COMPONENT_TYPE;
       NODE_ID = nodeModel.id;
@@ -193,6 +191,11 @@ class DefineReactAdapter {
         this.state = nodeModel.value.state || {};
       }
 
+      updateState = (newState: any) => {
+        console.log('update', newState);
+        this.setState(newState);
+      };
+
       componentDidMount(): void {
         if (that.onGetRef) {
           that.onGetRef(this.targetComponentRef, nodeModel);
@@ -202,11 +205,6 @@ class DefineReactAdapter {
         };
 
         nodeModel.onChange(forceUpdate);
-        console.log(
-          '🚀 ~ file: adapterReact.ts ~ line 205 ~ DynamicComponent ~ componentDidMount ~ nodeModel',
-          nodeModel,
-          this.props.$$context
-        );
         // nodeModel.emitter.on('onNodeChange', forceUpdate);
       }
 
@@ -217,15 +215,29 @@ class DefineReactAdapter {
           ...nodeModel.props,
           ...props,
         };
-        const newContext = that.getContext(
-          {
-            state: this.state || {},
-            updateState: (newState) => {
-              this.setState(newState);
-            },
-          },
-          $$context
+        const tempContext: ContextType = {
+          state: this.state || {},
+          updateState: this.updateState,
+        };
+        console.log(
+          'nodeModel.value.componentName',
+          nodeModel.value.componentName
         );
+        if (nodeModel.value.componentName === InnerComponentNameEnum.PAGE) {
+          tempContext.globalState = this.state;
+          tempContext.updateGlobalState = this.updateState;
+          console.log(
+            '🚀 ~ file: adapterReact.ts ~ line 240 ~ DynamicComponent ~ render ~ tempContext',
+            tempContext
+          );
+        }
+        const newContext = that.getContext(tempContext, $$context);
+        console.log(
+          '🚀 ~ file: adapterReact.ts ~ line 246 ~ DynamicComponent ~ render ~ newContext',
+          $$context,
+          newContext
+        );
+
         // handle props
         const newProps: Record<any, any> = that.transformProps(
           newOriginalProps,
@@ -289,6 +301,7 @@ class DefineReactAdapter {
       if (!runtimeComponentCache.get(nodeId)) {
         runtimeComponentCache.set(nodeId, component);
       }
+      console.log('11111 $$context', $$context);
       const key = `${nodeId}-${DYNAMIC_COMPONENT_TYPE}`;
       const props: any = {
         $$context,

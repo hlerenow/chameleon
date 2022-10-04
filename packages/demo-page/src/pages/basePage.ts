@@ -112,6 +112,9 @@ export const BasePage: CPageDataType = {
     props: {
       a: 1,
     },
+    state: {
+      b: 1,
+    },
     children: [
       {
         id: 'Modal',
@@ -133,12 +136,13 @@ export const BasePage: CPageDataType = {
             type: CNodePropsTypeEnum.FUNCTION,
             value: `function onClick(a,b) {
               console.log(a, b);
-              b.updateState({a: 2})
+              b.updateState({a: b.state.a + 1})
+              b.updateGlobalState({ b: b.globalState.b + 1})
             }`,
           },
           children: {
             type: CNodePropsTypeEnum.EXPRESSION,
-            value: '$$context.state.a',
+            value: '$$context.globalState.b',
           },
         },
       },
@@ -175,6 +179,23 @@ export const BasePage: CPageDataType = {
           {
             id: '12',
             componentName: 'Input',
+            props: {
+              value: {
+                type: CNodePropsTypeEnum.EXPRESSION,
+                value: '$$context.globalState.b',
+              },
+              onChange: {
+                type: CNodePropsTypeEnum.FUNCTION,
+                value: `
+                  function(value, $$context) {
+                    console.log(value, $$context);
+                    $$context.updateGlobalState({
+                      b: value.target.value
+                    })
+                  }
+                `,
+              },
+            },
           },
         ],
       },
