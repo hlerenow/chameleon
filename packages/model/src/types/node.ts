@@ -41,10 +41,13 @@ export type SpecialProp =
   | JSExpressionPropType
   | FunctionPropType;
 
-export type CPropType = NormalPropType | SpecialProp | CPropObjType;
+export type CPropDataType = NormalPropType | SpecialProp | CPropObjDataType;
 
-export type CPropObjType = {
-  [key: string]: CPropType | CPropType[] | Record<string, CPropType>;
+export type CPropObjDataType = {
+  [key: string]:
+    | CPropDataType
+    | CPropDataType[]
+    | Record<string, CPropDataType>;
 };
 
 const normalObj = () =>
@@ -102,7 +105,7 @@ export type CNodeDataType = {
   id?: string;
   componentName: string;
   // 所有的 props 的 value 需要支持表达式 $$context
-  props?: CPropObjType;
+  props?: CPropObjDataType;
   state?: Record<string, any>;
   children?: (string | CNodeDataType)[];
   /**
@@ -134,6 +137,15 @@ export type CNodeDataType = {
       }[];
     }
   >;
+  // 组件的一些方法，可用于逻辑编排
+  actions?: any[];
+  loop?: {
+    open: boolean;
+    data: any[];
+    args: ['item', 'index'];
+  };
+  // 是否渲染
+  condition?: boolean;
   extra?: Record<any, any>;
 };
 

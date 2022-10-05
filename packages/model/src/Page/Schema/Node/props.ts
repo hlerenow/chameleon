@@ -11,9 +11,9 @@ import {
   FunctionPropType,
   JSExpressionPropType,
   NormalPropType,
-  CPropObjType,
-  CPropType,
+  CPropDataType,
   RenderPropType,
+  CPropObjDataType,
 } from '../../../types/node';
 import { isArray, isPlainObject } from '../../../util/lodash';
 import { DataModelEmitter } from '../../../util/modelEmitter';
@@ -26,7 +26,7 @@ export type CSpecialPropDataType =
   | FunctionPropType
   | JSExpressionPropType;
 
-export type CPropDataType =
+export type CPropModelDataType =
   | NormalPropType
   | CSpecialPropDataType
   | CSpecialPropDataType[];
@@ -101,17 +101,19 @@ const parseData = (data: any) => {
   return data;
 };
 
+type ParentType = CNode | CSchema | null;
+
 export class CProp {
   modeType = 'PROP';
-  private rawData: CPropType;
-  parent: CNode | CSchema | null;
+  private rawData: CPropDataType;
+  parent: ParentType;
   emitter = DataModelEmitter;
-  private data: CPropDataType;
+  private data: CPropModelDataType;
   name: string;
   constructor(
     name: string,
-    data: CPropType,
-    { parent }: { parent: CNode | CSchema | null }
+    data: CPropDataType,
+    { parent }: { parent: ParentType }
   ) {
     this.parent = parent;
     this.rawData = data;
@@ -143,18 +145,18 @@ export class CProp {
     return this.data;
   }
 
-  updateValue(val: CPropType) {
+  updateValue(val: CPropDataType | CPropModelDataType) {
     const oldData = this.data;
     this.data = parseData(val);
     this.emitter.emit('onPropChange', {
-      value: val,
+      value: this.data,
       preValue: oldData,
       node: this,
     });
     if (this.parent) {
       this.emitter.emit('onNodeChange', {
-        value: this.parent as any,
-        preValue: this.parent.export(),
+        value: this.parent.value,
+        preValue: this.parent.value,
         node: this.parent,
       });
     }
@@ -176,10 +178,10 @@ export class CProp {
 }
 
 export const transformObjToPropsModelObj = (
-  props: CPropObjType,
+  props: CPropObjDataType,
   parent: CNode | null = null
 ) => {
-  const newProps: Record<string, CPropDataType> = {};
+  const newProps: Record<string, CPropModelDataType> = {};
   const propsKeys = Object.keys(props || {});
   if (propsKeys.length) {
     propsKeys.forEach((propKey) => {

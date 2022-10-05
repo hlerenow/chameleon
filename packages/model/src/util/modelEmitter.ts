@@ -1,21 +1,21 @@
 import mitt from 'mitt';
-import { CSchema } from '../Page/Schema';
-import { CNode } from '../Page/Schema/Node';
+import { CSchema, CSchemaModelDataType } from '../Page/Schema';
+import { CNode, CNodeModelDataType } from '../Page/Schema/Node';
 import { CProp } from '../Page/Schema/Node/props';
-import { CNodeDataType, CPropType } from '../types/node';
+import { CPropDataType } from '../types/node';
 
 export type DataModelEventType = {
   onPageChange: any;
   onSchemaChange: any;
   onNodeChange: {
-    value: string | CNodeDataType;
-    preValue: string | CNodeDataType;
-    node: CProp | CNode | CSchema;
+    value: CNodeModelDataType | CSchemaModelDataType;
+    preValue: CNodeModelDataType | CSchemaModelDataType;
+    node: CNode | CSchema;
   };
   onPropChange: {
-    value: CPropType;
-    preValue: CPropType;
-    node: CProp | CNode | CSchema;
+    value: CPropDataType;
+    preValue: CPropDataType;
+    node: CProp;
   };
 };
 
