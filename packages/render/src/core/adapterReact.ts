@@ -205,7 +205,7 @@ class DefineReactAdapter {
         };
 
         nodeModel.onChange(forceUpdate);
-        // nodeModel.emitter.on('onNodeChange', forceUpdate);
+        console.log('nodeModel 11111  ', nodeModel);
       }
 
       render(): React.ReactNode {
@@ -219,25 +219,21 @@ class DefineReactAdapter {
           state: this.state || {},
           updateState: this.updateState,
         };
-        console.log(
-          'nodeModel.value.componentName',
-          nodeModel.value.componentName
-        );
         if (nodeModel.value.componentName === InnerComponentNameEnum.PAGE) {
           tempContext.globalState = this.state;
           tempContext.updateGlobalState = this.updateState;
-          console.log(
-            '🚀 ~ file: adapterReact.ts ~ line 240 ~ DynamicComponent ~ render ~ tempContext',
-            tempContext
-          );
         }
         const newContext = that.getContext(tempContext, $$context);
-        console.log(
-          '🚀 ~ file: adapterReact.ts ~ line 246 ~ DynamicComponent ~ render ~ newContext',
-          $$context,
-          newContext
-        );
 
+        let condition = nodeModel.value.condition ?? true;
+        if (typeof condition !== 'boolean') {
+          const conditionObj = condition as JSExpressionPropType;
+          condition = runExpression(conditionObj.value, newContext || {});
+        }
+
+        if (!condition) {
+          return null;
+        }
         // handle props
         const newProps: Record<any, any> = that.transformProps(
           newOriginalProps,
@@ -245,6 +241,7 @@ class DefineReactAdapter {
             $$context: newContext,
           }
         );
+
         const { children } = newProps;
         let newChildren: any[] = [];
         if (children !== undefined) {
@@ -301,7 +298,6 @@ class DefineReactAdapter {
       if (!runtimeComponentCache.get(nodeId)) {
         runtimeComponentCache.set(nodeId, component);
       }
-      console.log('11111 $$context', $$context);
       const key = `${nodeId}-${DYNAMIC_COMPONENT_TYPE}`;
       const props: any = {
         $$context,

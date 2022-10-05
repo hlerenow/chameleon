@@ -29,7 +29,7 @@ export type CNodeModelDataType = Omit<CNodeDataType, 'children'> & {
 };
 
 export const parseNode = (
-  data: CNodeDataType,
+  data: CNodeDataType | CNodeModelDataType,
   parent: CNode | CSchema | null
 ) => {
   if (typeof data === 'string') {
@@ -133,20 +133,19 @@ export class CNode {
     return this.data;
   }
 
-  updateValue(val: Partial<CNodeDataType>) {
-    const newVal: CNodeDataType | string = {
-      ...this.export(),
+  updateValue(val: CNodeModelDataType) {
+    const oldData = this.data;
+    const newVal: CNodeModelDataType = {
+      ...this.data,
       ...val,
     };
 
     this.data = parseNode(newVal, this.parent);
     this.emitter.emit('onNodeChange', {
       value: newVal,
-      preValue: this.export(),
+      preValue: oldData,
       node: this,
     });
-    this.emitter.emit('onSchemaChange');
-    this.emitter.emit('onPageChange');
   }
 
   get props() {

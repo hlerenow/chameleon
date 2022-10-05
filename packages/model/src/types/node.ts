@@ -145,7 +145,7 @@ export type CNodeDataType = {
     args: ['item', 'index'];
   };
   // 是否渲染
-  condition?: boolean;
+  condition?: boolean | JSExpressionPropType;
   extra?: Record<any, any>;
 };
 
@@ -162,4 +162,13 @@ export const CNodeDataStructDescribe: any = object({
   className: optional(string()),
   refId: optional(string()),
   extra: optional(record(any(), any())),
+  condition: optional(
+    union([
+      boolean(),
+      object({
+        type: literal(CNodePropsTypeEnum.EXPRESSION),
+        value: string(),
+      }),
+    ])
+  ),
 });

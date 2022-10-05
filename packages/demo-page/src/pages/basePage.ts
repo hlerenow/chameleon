@@ -2,7 +2,7 @@ import {
   CNodePropsTypeEnum,
   CPageDataType,
   InnerComponentNameEnum,
-  CPropObjType,
+  CPropObjDataType,
   SlotRenderType,
 } from '@chameleon/model';
 
@@ -30,7 +30,7 @@ const data = [
   },
 ];
 
-const columns: CPropObjType[string] = [
+const columns: CPropObjDataType[string] = [
   {
     title: 'Name',
     dataIndex: 'name',
@@ -114,6 +114,7 @@ export const BasePage: CPageDataType = {
     },
     state: {
       b: 1,
+      buttonVisible: true,
     },
     children: [
       {
@@ -122,6 +123,25 @@ export const BasePage: CPageDataType = {
         refId: 'ModalRef',
         props: {
           open: false,
+        },
+      },
+      {
+        id: '999',
+        componentName: 'Button',
+        state: {
+          a: 1,
+        },
+        props: {
+          type: 'primary',
+          onClick: {
+            type: CNodePropsTypeEnum.FUNCTION,
+            value: `function onClick(a,b) {
+              console.log(a, b);
+              b.updateState({a: b.state.a + 1})
+              b.updateGlobalState({ buttonVisible: !b.globalState.buttonVisible})
+            }`,
+          },
+          children: ['控制右边按钮的显示隐藏'],
         },
       },
       {
@@ -145,7 +165,12 @@ export const BasePage: CPageDataType = {
             value: '$$context.globalState.b',
           },
         },
+        condition: {
+          type: CNodePropsTypeEnum.EXPRESSION,
+          value: '$$context.globalState.buttonVisible',
+        },
       },
+
       {
         id: '3',
         componentName: 'Table',

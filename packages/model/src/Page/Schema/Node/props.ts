@@ -145,9 +145,9 @@ export class CProp {
     return this.data;
   }
 
-  updateValue(val: CPropDataType | CPropModelDataType) {
+  updateValue(val?: CPropDataType | CPropModelDataType) {
     const oldData = this.data;
-    this.data = parseData(val);
+    this.data = parseData(val ?? oldData);
     this.emitter.emit('onPropChange', {
       value: this.data,
       preValue: oldData,
@@ -160,9 +160,6 @@ export class CProp {
         node: this.parent,
       });
     }
-
-    this.emitter.emit('onSchemaChange');
-    this.emitter.emit('onPageChange');
   }
 
   get material() {

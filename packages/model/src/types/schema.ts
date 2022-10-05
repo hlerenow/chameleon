@@ -1,38 +1,17 @@
-import {
-  any,
-  array,
-  literal,
-  object,
-  optional,
-  record,
-  string,
-} from 'superstruct';
-import {
-  CNodeDataStructDescribe,
-  CNodeDataType,
-  PropsDataStructDescribe,
-  CPropType,
-} from './node';
+import { assign, literal, object, omit } from 'superstruct';
+import { CNodeDataStructDescribe, CNodeDataType } from './node';
 
 export enum InnerComponentNameEnum {
   PAGE = 'Page',
 }
 
-export type CSchemaDataType = {
-  id?: string;
+export type CSchemaDataType = CNodeDataType & {
   componentName: InnerComponentNameEnum.PAGE;
-  children: CNodeDataType[];
-  // 所有的 props 的 value 需要支持表达式 $$context
-  props?: Record<string, CPropType>;
-  state?: Record<string, any>;
-  refId?: string;
 };
 
-export const CSchemaDataTypeDescribe = object({
-  id: optional(string()),
-  componentName: literal(InnerComponentNameEnum.PAGE),
-  props: optional(record(string(), PropsDataStructDescribe)),
-  state: optional(record(string(), any())),
-  children: array(CNodeDataStructDescribe),
-  refId: optional(string()),
-});
+export const CSchemaDataTypeDescribe = assign(
+  omit(CNodeDataStructDescribe, ['componentName']),
+  object({
+    componentName: literal(InnerComponentNameEnum.PAGE),
+  })
+);
