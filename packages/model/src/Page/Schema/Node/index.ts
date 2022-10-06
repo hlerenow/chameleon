@@ -166,7 +166,24 @@ export class CNode {
     }
   }
 
-  export(mode?: ExportType) {
-    return this.rawData;
+  export(mode?: ExportType): CNodeDataType {
+    const data = this.data;
+    if (typeof data === 'string') {
+      return data;
+    }
+    const props: any = {};
+    Object.keys(data.props || {}).forEach((key) => {
+      props[key] = data.props[key].export();
+    });
+    const children: any[] = data.children?.map((child) => {
+      return child.export();
+    });
+
+    const newRes = {
+      ...data,
+      props: props,
+      children,
+    };
+    return newRes;
   }
 }

@@ -128,6 +128,21 @@ export class CSchema {
   }
 
   export(mode: ExportType = ExportType.SAVE): CSchemaDataType {
-    return this.rawData;
+    const data = this.data;
+    const props: any = {};
+    Object.keys(data.props || {}).forEach((key) => {
+      props[key] = data.props[key].export();
+    });
+    const children: any[] = data.children?.map((child) => {
+      return child.export();
+    });
+
+    const newRes: CSchemaDataType = {
+      ...data,
+      props: props,
+      children,
+    };
+
+    return newRes;
   }
 }

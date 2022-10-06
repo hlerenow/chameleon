@@ -15,6 +15,7 @@ import {
   RenderPropType,
   CPropObjDataType,
 } from '../../../types/node';
+import { isJSSlotPropNode } from '../../../util';
 import { isArray, isPlainObject } from '../../../util/lodash';
 import { DataModelEmitter } from '../../../util/modelEmitter';
 
@@ -120,24 +121,12 @@ export class CProp {
     this.name = name;
     this.data = parseData(data);
   }
-
-  isSlot() {
-    if (isArray(this.data) && this.data?.length) {
-      return this.data[0].type === CNodePropsTypeEnum.SLOT;
-    } else if (isPlainObject(this.data)) {
-      return (this.data as Record<any, any>).type === CNodePropsTypeEnum.SLOT;
-    }
+  // TODO:
+  isIncludeSlot() {
     return false;
   }
-
-  isExpression() {
-    if (isArray(this.data) && this.data?.length) {
-      return this.data[0].type === CNodePropsTypeEnum.EXPRESSION;
-    } else if (isPlainObject(this.data)) {
-      return (
-        (this.data as Record<any, any>).type === CNodePropsTypeEnum.EXPRESSION
-      );
-    }
+  // TODO:
+  isIncludeExpression() {
     return false;
   }
 
@@ -170,7 +159,29 @@ export class CProp {
   }
 
   export(mode?: ExportType) {
-    return this.data;
+    const data = this.data;
+    const handleSingleProps = (propVal: any) => {
+      if (propVal instanceof CNode) {
+        return propVal.export();
+      }
+      if (isPlainObject(propVal)) {
+        const newObj: Record<string, any> = {};
+
+        Object.keys(propVal || {}).forEach((key) => {
+          newObj[key] = handleSingleProps(propVal[key]);
+        });
+        return newObj;
+      }
+
+      if (isArray(propVal)) {
+        const newList: any[] = propVal.map((el) => {
+          return handleSingleProps(el);
+        });
+        return newList;
+      }
+      return propVal;
+    };
+    return handleSingleProps(data);
   }
 }
 

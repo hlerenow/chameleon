@@ -1,11 +1,12 @@
-import { CPage, CPageDataType, parseModel } from '@chameleon/model';
+import { CPage, CPageDataType, parsePageModel } from '@chameleon/model';
 import React, { useRef } from 'react';
 import { AdapterOptionType, AdapterType } from './adapter';
 import { runtimeComponentCache } from './adapterReact';
 import { RefManager } from './refManager';
 
 export type RenderPropsType = {
-  page: CPageDataType;
+  page?: CPageDataType;
+  pageModel?: CPage;
   components: Record<any, any>;
   render: UseRenderReturnType;
   adapter: AdapterType;
@@ -22,7 +23,7 @@ export class Render extends React.Component<
   constructor(props: RenderPropsType) {
     super(props);
     this.state = {
-      pageModel: parseModel(props.page),
+      pageModel: props.pageModel || parsePageModel(props.page),
     };
     this.refManager = new RefManager();
   }
@@ -42,7 +43,7 @@ export class Render extends React.Component<
   rerender = (newPage: CPageDataType) => {
     runtimeComponentCache.clear();
     this.setState({
-      pageModel: parseModel(newPage),
+      pageModel: parsePageModel(newPage),
     });
     // 触发 model 变化
     this.state.pageModel?.emitter.emit('onNodeChange', {

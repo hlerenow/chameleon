@@ -1,6 +1,6 @@
 import { CPage } from './Page/index';
 
-export const parseModel = (data: any) => {
+export const parsePageModel = (data: any) => {
   return new CPage(data);
 };
 
