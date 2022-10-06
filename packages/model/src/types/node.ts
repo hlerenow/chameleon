@@ -141,13 +141,18 @@ export type CNodeDataType = {
   actions?: any[];
   loop?: {
     open: boolean;
-    data: any[];
-    args: ['item', 'index'];
+    data: any[] | JSExpressionPropType;
+    args?: ['item', 'index'];
   };
   // 是否渲染
   condition?: boolean | JSExpressionPropType;
   extra?: Record<any, any>;
 };
+
+const JSExpressionDescribe = object({
+  type: literal(CNodePropsTypeEnum.EXPRESSION),
+  value: string(),
+});
 
 export const CNodeDataStructDescribe: any = object({
   id: optional(string()),
@@ -162,13 +167,12 @@ export const CNodeDataStructDescribe: any = object({
   className: optional(string()),
   refId: optional(string()),
   extra: optional(record(any(), any())),
-  condition: optional(
-    union([
-      boolean(),
-      object({
-        type: literal(CNodePropsTypeEnum.EXPRESSION),
-        value: string(),
-      }),
-    ])
+  condition: optional(union([boolean(), JSExpressionDescribe])),
+  loop: optional(
+    object({
+      open: boolean(),
+      data: union([array(any()), JSExpressionDescribe]),
+      args: optional(array(string())),
+    })
   ),
 });

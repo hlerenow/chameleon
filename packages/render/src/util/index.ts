@@ -78,3 +78,18 @@ export const convertCodeStringToFunction = (
   };
   return newFunc;
 };
+
+/**
+ *
+ * @param args 对象的值
+ * @param argsName 对因位置的 名称
+ * @returns
+ */
+export const getObjFromArrayMap = (args: any[], argsName: string[]) => {
+  const params: Record<any, any> = {};
+  argsName.forEach((paramName, index) => {
+    params[paramName] = args[index];
+  });
+
+  return params;
+};

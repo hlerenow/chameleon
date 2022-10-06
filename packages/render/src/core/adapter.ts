@@ -8,6 +8,7 @@ export type ContextType = {
   state?: Record<any, any>;
   updateState?: (newState: any) => void;
   refs?: RefManager;
+  loopData?: Record<any, any>;
 };
 
 export type RuntimeRenderHelper = {

@@ -118,6 +118,32 @@ export const BasePage: CPageDataType = {
     },
     children: [
       {
+        id: 'div1',
+        componentName: 'div',
+        children: [
+          {
+            id: 'div1btn',
+            componentName: 'Button',
+            state: {
+              list: [11, 22, 33, 44, 55],
+            },
+            props: {
+              children: {
+                type: CNodePropsTypeEnum.EXPRESSION,
+                value: '$$context.loopData.index',
+              },
+            },
+            loop: {
+              open: true,
+              data: {
+                type: CNodePropsTypeEnum.EXPRESSION,
+                value: '$$context.state.list',
+              },
+            },
+          },
+        ],
+      },
+      {
         id: 'Modal',
         componentName: 'Modal',
         refId: 'ModalRef',

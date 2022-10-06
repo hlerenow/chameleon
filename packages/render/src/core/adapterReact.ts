@@ -21,6 +21,7 @@ import {
   canAcceptsRef,
   compWrapper,
   convertCodeStringToFunction,
+  getObjFromArrayMap,
   runExpression,
 } from '../util';
 import { DYNAMIC_COMPONENT_TYPE, InnerPropList } from '../const';
@@ -110,10 +111,10 @@ class DefineReactAdapter {
             const parmaList = slotProp.params || [];
             // 运行时组件函数
             const runtimeList = (...args: any) => {
-              const params: Record<any, any> = {};
-              parmaList.forEach((paramName, index) => {
-                params[paramName] = args[index];
-              });
+              const params: Record<any, any> = getObjFromArrayMap(
+                args,
+                parmaList
+              );
               const $$context = this.getContext(
                 {
                   params,
@@ -192,7 +193,6 @@ class DefineReactAdapter {
       }
 
       updateState = (newState: any) => {
-        console.log('update', newState);
         this.setState(newState);
       };
 
@@ -205,7 +205,6 @@ class DefineReactAdapter {
         };
 
         nodeModel.onChange(forceUpdate);
-        console.log('nodeModel 11111  ', nodeModel);
       }
 
       render(): React.ReactNode {
@@ -234,6 +233,67 @@ class DefineReactAdapter {
         if (!condition) {
           return null;
         }
+        // 处理循环
+        const loopObj = nodeModel.value.loop;
+        let loopRes: any[] = [];
+        if (loopObj && loopObj.open) {
+          this.targetComponentRef.current = [];
+          let loopList: any[] = [];
+          if (isExpression(loopObj.data)) {
+            const expProp = loopObj.data as JSExpressionPropType;
+            loopList = runExpression(expProp.value, newContext || {});
+          }
+          loopRes = loopList.map((...args) => {
+            const innerIndex = args[1];
+            const argsName = loopObj.args || ['item', 'index'];
+            const loopData = getObjFromArrayMap(args, argsName);
+            const loopContext = that.getContext(
+              {
+                loopData,
+              },
+              newContext
+            );
+            // 可能能复用
+            // handle props
+            const newProps: Record<any, any> = that.transformProps(
+              newOriginalProps,
+              {
+                $$context: loopContext,
+              }
+            );
+
+            const { children } = newProps;
+            let newChildren: any[] = [];
+            if (children !== undefined) {
+              delete newProps.children;
+              newChildren = Array.isArray(children) ? children : [children];
+            } else {
+              const children: any[] = [];
+              const childModel = nodeModel.value.children;
+              childModel.forEach((node, index) => {
+                const child = that.buildComponent(node, {
+                  $$context: newContext,
+                  idx: index,
+                });
+                children.push(child);
+              });
+              newChildren = children;
+            }
+
+            newProps.key = `${newProps.key}-${innerIndex}`;
+
+            newProps.ref = (ref: any) => {
+              this.targetComponentRef.current[innerIndex] = ref;
+            };
+
+            // handle children
+            return that.render(originalComponent, newProps, ...newChildren);
+          });
+
+          // 结束循环渲染
+          return loopRes;
+        }
+
         // handle props
         const newProps: Record<any, any> = that.transformProps(
           newOriginalProps,
@@ -241,7 +301,6 @@ class DefineReactAdapter {
             $$context: newContext,
           }
         );
-
         const { children } = newProps;
         let newChildren: any[] = [];
         if (children !== undefined) {
@@ -259,10 +318,12 @@ class DefineReactAdapter {
           });
           newChildren = children;
         }
+
         newProps.ref = this.targetComponentRef;
 
         // handle children
         return that.render(originalComponent, newProps, ...newChildren);
+        // 可能能复用 end
       }
     }
 
