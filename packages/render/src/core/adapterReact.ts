@@ -221,8 +221,25 @@ class DefineReactAdapter {
         if (nodeModel.value.componentName === InnerComponentNameEnum.PAGE) {
           tempContext.globalState = this.state;
           tempContext.updateGlobalState = this.updateState;
+          // 不能不修改，只能修改属性
+          tempContext.stateManager = {};
         }
+
         const newContext = that.getContext(tempContext, $$context);
+
+        // 判断是否有全局的 stateName
+        const stateName = nodeModel.value.stateName;
+        if (
+          nodeModel.value.stateName &&
+          typeof stateName === 'string' &&
+          newContext.stateManager
+        ) {
+          // stateName 可能会重复
+          newContext.stateManager[stateName] = {
+            state: this.state || {},
+            updateState: this.updateState,
+          };
+        }
 
         let condition = nodeModel.value.condition ?? true;
         if (typeof condition !== 'boolean') {

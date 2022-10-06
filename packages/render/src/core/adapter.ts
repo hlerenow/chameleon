@@ -9,6 +9,8 @@ export type ContextType = {
   updateState?: (newState: any) => void;
   refs?: RefManager;
   loopData?: Record<any, any>;
+  // 用于访访问和管理页面被注册为全局的局部 state
+  stateManager?: Record<string, any>;
 };
 
 export type RuntimeRenderHelper = {

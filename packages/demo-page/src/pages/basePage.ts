@@ -215,7 +215,21 @@ export const BasePage: CPageDataType = {
       {
         id: '4',
         componentName: 'Row',
+        state: {
+          rowMark: 1,
+        },
+        stateName: 'RowState',
         children: [
+          {
+            componentName: 'div',
+            props: {
+              children: {
+                type: CNodePropsTypeEnum.EXPRESSION,
+                value:
+                  '"rowState to reshow: " + $$context.stateManager.RowState.state.rowMark',
+              },
+            },
+          },
           {
             id: '10',
             componentName: 'Col',
@@ -247,6 +261,37 @@ export const BasePage: CPageDataType = {
                 `,
               },
             },
+          },
+          {
+            componentName: 'div',
+            children: [
+              '2222',
+              {
+                componentName: 'div',
+                children: [
+                  '1111',
+                  {
+                    componentName: 'Button',
+                    props: {
+                      onClick: {
+                        type: CNodePropsTypeEnum.FUNCTION,
+                        value: `
+                          function (a, ctx) {
+                            console.log(a, ctx);
+                            const stateManager = ctx.stateManager;
+                            const state = stateManager.RowState.state;
+                            stateManager.RowState.updateState({
+                              rowMark: state.rowMark  +1
+                            })
+                          }
+                        `,
+                      },
+                    },
+                    children: ['change row state value'],
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
