@@ -49,24 +49,6 @@ export class CPage {
     return this.data;
   }
 
-  // 遍历每个 component tree node 节点
-  traverseNode(
-    fn: (params: { currentNode: CSchema | CNode; pageModel: CPage }) => void
-  ) {
-    if (typeof fn !== 'function') {
-      throw new Error('traverseNode parameters must a function');
-    }
-    const componentsTree = this.data.componentsTree;
-    const dfs = (node: CSchema | CNode) => {
-      fn({
-        currentNode: node,
-        pageModel: this,
-      });
-    };
-
-    return dfs(componentsTree);
-  }
-
   // TODO
   export(mode: ExportType = ExportType.SAVE) {
     const res = {

@@ -32,8 +32,12 @@ class DefineReactAdapter {
   components: AdapterOptionType['components'] = {};
   onGetRef?: (
     ref: React.RefObject<ReactInstance>,
-    nodeMode: CNode | CSchema
+    nodeMode: CNode | CSchema,
+    handle: ReactInstance
   ) => void;
+  onGetComponent:
+    | ((component: (...args: any) => any, currentNode: CNode | CSchema) => void)
+    | undefined;
   getComponent(currentNode: CNode | CSchema) {
     const componentName = currentNode.value.componentName;
     let res: any =
@@ -42,6 +46,10 @@ class DefineReactAdapter {
     if (!canAcceptsRef(res)) {
       res = compWrapper(res);
       this.components[componentName] = res;
+    }
+    // 定制钩子
+    if (this.onGetComponent) {
+      res = this.onGetComponent?.(res, currentNode);
     }
     return res;
   }
@@ -59,13 +67,15 @@ class DefineReactAdapter {
 
   pageRender(
     pageModel: CPage,
-    { components, onGetRef, $$context = {} }: AdapterOptionType
+    { components, onGetRef, $$context = {}, onGetComponent }: AdapterOptionType
   ) {
     this.components = components;
     this.onGetRef = onGetRef;
+    this.onGetComponent = onGetComponent;
     //做一些全局 store 操作
     const rootNode = pageModel.value.componentsTree;
     const component = this.getComponent(rootNode);
+
     const newComp = this.convertModelToComponent(
       component,
       pageModel.value.componentsTree
@@ -198,7 +208,7 @@ class DefineReactAdapter {
 
       componentDidMount(): void {
         if (that.onGetRef) {
-          that.onGetRef(this.targetComponentRef, nodeModel);
+          that.onGetRef(this.targetComponentRef, nodeModel, this);
         }
         const forceUpdate = () => {
           this.forceUpdate();
@@ -318,6 +328,7 @@ class DefineReactAdapter {
             $$context: newContext,
           }
         );
+
         const { children } = newProps;
         let newChildren: any[] = [];
         if (children !== undefined) {
@@ -366,6 +377,7 @@ class DefineReactAdapter {
         component = runtimeComponentCache.get(nodeId);
       } else {
         const originalComponent = this.getComponent(currentNode);
+
         component = this.convertModelToComponent(
           originalComponent,
           currentNode

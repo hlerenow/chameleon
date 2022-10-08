@@ -7,11 +7,9 @@ import { RefManager } from './refManager';
 export type RenderPropsType = {
   page?: CPageDataType;
   pageModel?: CPage;
-  components: Record<any, any>;
-  render: UseRenderReturnType;
   adapter: AdapterType;
-  onGetRef?: AdapterOptionType['onGetRef'];
-};
+  render: UseRenderReturnType;
+} & Partial<AdapterOptionType>;
 
 export class Render extends React.Component<
   RenderPropsType,
@@ -53,14 +51,14 @@ export class Render extends React.Component<
     });
   };
 
-  onGetRef: AdapterOptionType['onGetRef'] = (ref, nodeModel) => {
-    this.props.onGetRef?.(ref, nodeModel);
+  onGetRef: AdapterOptionType['onGetRef'] = (ref, nodeModel, instance) => {
+    this.props.onGetRef?.(ref, nodeModel, instance);
     this.refManager.add(nodeModel.value.refId || nodeModel.id, ref);
   };
 
   render() {
     const { props } = this;
-    const { adapter } = props;
+    const { adapter, onGetComponent } = props;
     const { pageModel } = this.state;
     // todo: 加载 page 资源
     // todo: 收集所有的 第三方库
@@ -69,8 +67,9 @@ export class Render extends React.Component<
     }
     const PageRoot = adapter.pageRender(pageModel, {
       libs: {},
-      components: props.components,
+      components: props.components || {},
       onGetRef: this.onGetRef,
+      onGetComponent,
       $$context: {
         refs: this.refManager,
       },
@@ -81,12 +80,12 @@ export class Render extends React.Component<
 }
 
 export type UseRenderReturnType = {
-  ref: React.MutableRefObject<any>;
-  rerender: (newPage: CPageDataType | CPage) => void;
+  ref: React.MutableRefObject<Render | null>;
+  rerender: (newPage: CPageDataType) => void;
 };
 
 export const useRender = (): UseRenderReturnType => {
-  const ref = useRef<any>();
+  const ref = useRef<Render>(null);
 
   return {
     ref: ref,
