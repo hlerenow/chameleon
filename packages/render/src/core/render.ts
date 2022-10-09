@@ -31,7 +31,6 @@ export class Render extends React.Component<
     if (render) {
       render.ref.current = this;
     }
-    console.log(this);
   }
 
   componentWillUnmount(): void {
@@ -58,7 +57,8 @@ export class Render extends React.Component<
 
   render() {
     const { props } = this;
-    const { adapter, onGetComponent } = props;
+    const { adapter, onGetComponent, onComponentDestroy, onComponentMount } =
+      props;
     const { pageModel } = this.state;
     // todo: 加载 page 资源
     // todo: 收集所有的 第三方库
@@ -70,6 +70,8 @@ export class Render extends React.Component<
       components: props.components || {},
       onGetRef: this.onGetRef,
       onGetComponent,
+      onComponentMount,
+      onComponentDestroy,
       $$context: {
         refs: this.refManager,
       },

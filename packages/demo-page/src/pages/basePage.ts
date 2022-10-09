@@ -115,6 +115,7 @@ export const BasePage: CPageDataType = {
     state: {
       b: 1,
       buttonVisible: true,
+      modalVisible: false,
     },
     children: [
       {
@@ -148,7 +149,10 @@ export const BasePage: CPageDataType = {
         componentName: 'Modal',
         refId: 'ModalRef',
         props: {
-          open: false,
+          open: {
+            type: CNodePropsTypeEnum.EXPRESSION,
+            value: '$$context.globalState.modalVisible',
+          },
         },
       },
       {
@@ -164,7 +168,10 @@ export const BasePage: CPageDataType = {
             value: `function onClick(a,b) {
               console.log(a, b);
               b.updateState({a: b.state.a + 1})
-              b.updateGlobalState({ buttonVisible: !b.globalState.buttonVisible})
+              b.updateGlobalState({
+                buttonVisible: !b.globalState.buttonVisible,
+                modalVisible: !b.globalState.modalVisible
+              })
             }`,
           },
           children: ['控制右边按钮的显示隐藏'],

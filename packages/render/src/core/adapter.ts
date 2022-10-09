@@ -39,6 +39,8 @@ export type AdapterOptionType = {
     component: (...args: any) => any,
     currentNode: CNode | CSchema
   ) => void;
+  onComponentMount?: (instance: ReactInstance, node: CNode | CSchema) => void;
+  onComponentDestroy?: (instance: ReactInstance, node: CNode | CSchema) => void;
 };
 
 // TODO: 后续考虑去掉

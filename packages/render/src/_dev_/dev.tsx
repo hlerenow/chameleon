@@ -3,13 +3,12 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import * as antD from 'antd';
 import { Button } from 'antd';
-import { CNode, CSchema, parsePageModel } from '@chameleon/model';
+import { parsePageModel } from '@chameleon/model';
 import { BasePage, SamplePage } from '@chameleon/demo-page';
-import { Render, ReactAdapter, useRender } from '../index';
+import { ReactAdapter } from '../index';
 import '@chameleon/material/dist/style.css';
-import * as ReactDOMAll from 'react-dom';
 import './index.css';
-import { isArray } from 'lodash-es';
+import { DesignRender, useDesignRender } from '../core/designRender';
 
 window.React = React;
 export type AppProp = {
@@ -31,12 +30,35 @@ const components = {
 function App() {
   SamplePage;
   const [page] = useState(parsePageModel(BasePage));
-  const renderHandle = useRender();
+  const renderHandle = useDesignRender();
   (window as any).renderHandle = renderHandle;
   useEffect(() => {
-    console.log('🚀 ~ file: dev.tsx ~ line 31 ~ App ~ page', page);
-    console.log('🚀 ~ file: dev.tsx ~ line 44 ~ useEffect ~ btnListDom');
+    // console.log('🚀 ~ file: dev.tsx ~ line 31 ~ App ~ page', page);
+    // console.log('🚀 ~ file: dev.tsx ~ line 44 ~ useEffect ~ btnListDom');
     // console.log(JSON.stringify(page.export(), null, 2));
+
+    document.documentElement.addEventListener(
+      'click',
+      (e) => {
+        const eventTargetDom = e.target;
+        const instance = renderHandle.getInstanceByDom(eventTargetDom as any);
+        console.log(
+          '🚀 ~ file: dev.tsx ~ line 50 ~ useEffect ~ instance',
+          instance
+        );
+        const targetDom = renderHandle.getDomById(instance?._NODE_ID || '');
+        const targetDomRectList = renderHandle.getDomRectById(
+          instance?._NODE_ID || ''
+        );
+
+        console.log(
+          '🚀 ~ file: dev.tsx ~ line 51 ~ useEffect ~ targetDom',
+          targetDom,
+          targetDomRectList
+        );
+      },
+      true
+    );
   }, []);
 
   // const collectionRef = (
@@ -46,41 +68,23 @@ function App() {
   //   console.log('ref', ref, nodeMode);
   // };
 
-  const onGetComponent = (comp: any, node: CSchema | CNode) => {
-    console.log(
-      '🚀 ~ file: dev.tsx ~ line 65 ~ onGetComponent ~ comp',
-      comp,
-      node.value.componentName
-    );
-
-    class DesignWrap extends React.Component<any> {
-      _DESIGN_BOX = true;
-      _NODE_MODEL = node;
-      _NODE_ID = node.id;
-
-      render() {
-        const { children = [], ...restProps } = this.props;
-        let newChildren = children;
-        if (!isArray(children)) {
-          newChildren = [children];
-        }
-        return React.createElement(comp, restProps, ...newChildren);
-      }
-    }
-
-    return DesignWrap;
-  };
   return (
     <div className="App">
       <Button>Outer</Button>
-      <Render
+      <DesignRender
+        pageModel={page}
+        components={components}
+        render={renderHandle}
+        adapter={ReactAdapter}
+      />
+      {/* <Render
         pageModel={page}
         components={components}
         render={renderHandle}
         adapter={ReactAdapter}
         onGetComponent={onGetComponent}
         // onGetRef={collectionRef}
-      />
+      /> */}
     </div>
   );
 }

@@ -38,6 +38,12 @@ class DefineReactAdapter {
   onGetComponent:
     | ((component: (...args: any) => any, currentNode: CNode | CSchema) => void)
     | undefined;
+  onComponentMount:
+    | ((instance: React.ReactInstance, node: CNode | CSchema) => void)
+    | undefined;
+  onComponentDestroy:
+    | ((instance: React.ReactInstance, node: CNode | CSchema) => void)
+    | undefined;
   getComponent(currentNode: CNode | CSchema) {
     const componentName = currentNode.value.componentName;
     let res: any =
@@ -67,11 +73,20 @@ class DefineReactAdapter {
 
   pageRender(
     pageModel: CPage,
-    { components, onGetRef, $$context = {}, onGetComponent }: AdapterOptionType
+    {
+      components,
+      onGetRef,
+      $$context = {},
+      onGetComponent,
+      onComponentMount,
+      onComponentDestroy,
+    }: AdapterOptionType
   ) {
     this.components = components;
     this.onGetRef = onGetRef;
     this.onGetComponent = onGetComponent;
+    this.onComponentMount = onComponentMount;
+    this.onComponentDestroy = onComponentDestroy;
     //做一些全局 store 操作
     const rootNode = pageModel.value.componentsTree;
     const component = this.getComponent(rootNode);
@@ -210,11 +225,15 @@ class DefineReactAdapter {
         if (that.onGetRef) {
           that.onGetRef(this.targetComponentRef, nodeModel, this);
         }
+        that.onComponentMount?.(this, nodeModel);
         const forceUpdate = () => {
           this.forceUpdate();
         };
-
         nodeModel.onChange(forceUpdate);
+      }
+
+      componentWillUnmount(): void {
+        that.onComponentDestroy?.(this, nodeModel);
       }
 
       render(): React.ReactNode {
