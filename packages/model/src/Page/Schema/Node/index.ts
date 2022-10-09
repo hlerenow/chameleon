@@ -30,7 +30,7 @@ export type CNodeModelDataType = Omit<CNodeDataType, 'children'> & {
 
 export const parseNode = (
   data: CNodeDataType | CNodeModelDataType,
-  parent: CNode | CSchema | null
+  self: CNode | CSchema
 ) => {
   if (typeof data === 'string') {
     return data;
@@ -49,7 +49,7 @@ export const parseNode = (
         return;
       }
       res.props[propKey] = new CProp(propKey, data.props?.[propKey] || '', {
-        parent: parent,
+        parent: self,
       });
     });
   }
@@ -61,7 +61,7 @@ export const parseNode = (
           return el;
         }
         return new CNode(el, {
-          parent: parent,
+          parent: self,
         });
       });
     } else {
@@ -70,7 +70,7 @@ export const parseNode = (
       }
       res.children = [
         new CNode(data.children, {
-          parent: parent,
+          parent: self,
         }),
       ];
     }
@@ -95,7 +95,7 @@ export class CNode {
     checkNode(data);
     this.parent = options?.parent || null;
     this.materialModel = options?.parent?.materialModel || null;
-    this.data = parseNode(data, this.parent);
+    this.data = parseNode(data, this);
     this.listenerHandle = [];
     this.onChangeCbQueue = [];
     this.registerListener();
@@ -133,14 +133,22 @@ export class CNode {
     return this.data;
   }
 
-  updateValue(val: CNodeModelDataType) {
+  clone(id?: string) {
+    const newData = {
+      ...this.export(),
+      id: id || getRandomStr(),
+    };
+    return new CNode(newData);
+  }
+
+  updateValue(val?: Partial<CNodeModelDataType>) {
     const oldData = this.data;
     const newVal: CNodeModelDataType = {
       ...this.data,
       ...val,
     };
 
-    this.data = parseNode(newVal, this.parent);
+    this.data = parseNode(newVal, this);
     this.emitter.emit('onNodeChange', {
       value: newVal,
       preValue: oldData,

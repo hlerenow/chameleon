@@ -70,7 +70,9 @@ const handleObjProp = (data: any): any => {
             return new CNode(el);
           }) || [];
       } else {
-        if (!((tempData.value as any) instanceof CNode)) {
+        if ((tempData.value as unknown) instanceof CNode) {
+          newData.value = tempData.value;
+        } else {
           newData.value = new CNode(tempData.value);
         }
       }

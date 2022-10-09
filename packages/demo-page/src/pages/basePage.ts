@@ -145,6 +145,11 @@ export const BasePage: CPageDataType = {
         ],
       },
       {
+        id: 'div12222',
+        componentName: 'div',
+        children: ['566666'],
+      },
+      {
         id: 'Modal',
         componentName: 'Modal',
         refId: 'ModalRef',
@@ -152,6 +157,16 @@ export const BasePage: CPageDataType = {
           open: {
             type: CNodePropsTypeEnum.EXPRESSION,
             value: '$$context.globalState.modalVisible',
+          },
+          onCancel: {
+            type: CNodePropsTypeEnum.FUNCTION,
+            value: `
+            function (a, b) {
+                b.updateGlobalState({
+                 modalVisible: false
+                });
+            }
+            `,
           },
         },
       },

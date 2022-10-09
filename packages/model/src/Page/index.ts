@@ -5,6 +5,7 @@ import { CSchema } from './Schema';
 import { ExportType } from '../const/schema';
 import { CMaterials } from '../Material';
 import { CNode } from './Schema/Node';
+import { CNodeDataType } from '../types/node';
 
 export const checkPage = (data: any): CPageDataType => {
   checkComplexData({
@@ -48,6 +49,29 @@ export class CPage {
   get value() {
     return this.data;
   }
+
+  // replaceNode() {}
+
+  // moveNode(from, to, pos) {}
+
+  addNode(
+    newNode: CNode,
+    targetNode: CNode,
+    pos: 'BEFORE' | 'AFTER' = 'AFTER'
+  ) {
+    console.log('pos', pos);
+  }
+
+  getNode(id: string) {
+    const nodeTree = this.data.componentsTree;
+  }
+
+  createNode(nodeData: CNodeDataType) {
+    const newNode = new CNode(nodeData);
+    return newNode;
+  }
+
+  // deleteNode(node) {}
 
   // TODO
   export(mode: ExportType = ExportType.SAVE) {

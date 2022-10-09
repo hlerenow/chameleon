@@ -123,7 +123,8 @@ class DefineReactAdapter {
             'slot value is null, this maybe cause some error, pls check it',
             originalProps
           );
-          return {};
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          return () => {};
         }
         const handleSingleSlot = (it: CNode) => {
           // 复用
@@ -131,11 +132,11 @@ class DefineReactAdapter {
             return runtimeComponentCache.get(it.id);
           }
           const component = this.getComponent(it);
-          const runtimeComp = this.convertModelToComponent(component, it);
+          const PropNodeRender = this.convertModelToComponent(component, it);
           if (slotProp.renderType === SlotRenderType.FUNC) {
             const parmaList = slotProp.params || [];
             // 运行时组件函数
-            const runtimeList = (...args: any) => {
+            const PropNodeFuncWrap = (...args: any) => {
               const params: Record<any, any> = getObjFromArrayMap(
                 args,
                 parmaList
@@ -147,16 +148,16 @@ class DefineReactAdapter {
                 parentContext
               );
               const key = `${it.id}-${DYNAMIC_COMPONENT_TYPE}`;
-              return this.render(runtimeComp, {
+              return this.render(PropNodeRender, {
                 $$context,
                 key,
               });
             };
-            runtimeComponentCache.set(it.id, runtimeList);
-            return runtimeList;
+            runtimeComponentCache.set(it.id, PropNodeFuncWrap);
+            return PropNodeFuncWrap;
           } else {
-            runtimeComponentCache.set(it.id, runtimeComp);
-            return runtimeComp;
+            runtimeComponentCache.set(it.id, PropNodeRender);
+            return PropNodeRender;
           }
         };
         if (Array.isArray(tempVal)) {

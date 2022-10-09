@@ -29,7 +29,7 @@ export const checkSchema = (data: any): CSchemaDataType => {
 };
 
 export const parseSchema = (
-  data: CSchemaDataType,
+  data: CSchemaDataType | CSchemaModelDataType,
   parent: CSchema
 ): CSchemaModelDataType => {
   const res: CSchemaModelDataType = {
@@ -42,10 +42,17 @@ export const parseSchema = (
   let child: any = [];
   if (isArray(data.children)) {
     child = data.children.map((el: any) => {
-      return new CNode(el, { parent });
+      if (el instanceof CNode) {
+        return el;
+      }
+      return new CNode(el, { parent: parent });
     });
   } else {
-    child.push(new CNode(data.children, { parent }));
+    if ((data.children as unknown) instanceof CNode) {
+      child.push(data.children);
+    } else {
+      child.push(new CNode(data.children, { parent: parent }));
+    }
   }
 
   const propsKeys = Object.keys(data.props || {});
@@ -125,6 +132,20 @@ export class CSchema {
     } else {
       return false;
     }
+  }
+
+  updateValue(val?: CSchemaModelDataType) {
+    const oldData = this.data;
+    const newVal = {
+      ...this.data,
+      ...val,
+    };
+    this.data = parseSchema(newVal, this);
+    this.emitter.emit('onNodeChange', {
+      value: this.data,
+      preValue: oldData,
+      node: this,
+    });
   }
 
   export(mode: ExportType = ExportType.SAVE): CSchemaDataType {

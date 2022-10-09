@@ -59,6 +59,29 @@ function App() {
       },
       true
     );
+
+    setTimeout(() => {
+      const newNode = page.createNode({
+        componentName: 'Button',
+        children: ['动态添加的按钮'],
+      });
+      const boxNode = page.value.componentsTree.value.children[1];
+      const [node] = page.value.componentsTree.value.children.splice(3, 1);
+      page.value.componentsTree.updateValue();
+      console.log(
+        '🚀 ~ file: dev.tsx ~ line 70 ~ setTimeout ~ boxNode',
+        boxNode
+      );
+
+      boxNode.value.children.push(node, newNode);
+
+      boxNode.updateValue();
+      const tableNode = page.value.componentsTree.value.children[4];
+      console.log(tableNode);
+      (tableNode.props.columns.value as any)['0'].render.value =
+        newNode.clone();
+      tableNode.props.columns.updateValue();
+    }, 500);
   }, []);
 
   // const collectionRef = (
