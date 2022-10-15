@@ -6,6 +6,8 @@ import { ExportType } from '../const/schema';
 import { CMaterials } from '../Material';
 import { CNode } from './Schema/Node';
 import { CNodeDataType } from '../types/node';
+import { isArray, isPlainObject } from 'lodash-es';
+import { CProp } from './Schema/Node/props';
 
 export const checkPage = (data: any): CPageDataType => {
   checkComplexData({
@@ -53,18 +55,61 @@ export class CPage {
   // replaceNode() {}
 
   // moveNode(from, to, pos) {}
+  getNode(id: string) {
+    const nodeTree = this.data.componentsTree;
+    const nodeList: (CSchema | CNode)[] = [nodeTree];
+    while (nodeList.length) {
+      const target = nodeList.shift();
+      if (target?.id === id) {
+        return target;
+      }
+
+      const props = target?.props || {};
+
+      const dpProps = (prop: unknown) => {
+        if (prop instanceof CNode) {
+          nodeList.push(prop);
+          return;
+        }
+
+        if (prop instanceof CProp) {
+          dpProps(prop.value);
+          return;
+        }
+        if (isPlainObject(prop)) {
+          const obj = prop as Record<string, any>;
+          Object.keys(obj).map((key) => {
+            dpProps(obj[key]);
+          });
+          return;
+        }
+
+        if (isArray(prop)) {
+          prop.forEach((it) => {
+            dpProps(it);
+          });
+          return;
+        }
+      };
+
+      // 检索所有的 props 中的节点
+      dpProps(props);
+      // 合并入待索引的列表
+      nodeList.push(...(target?.value.children || []));
+    }
+
+    return null;
+  }
 
   addNode(
     newNode: CNode,
     targetNode: CNode,
-    pos: 'BEFORE' | 'AFTER' = 'AFTER'
+    pos: 'BEFORE' | 'AFTER' | 'CHILD' = 'AFTER'
   ) {
     console.log('pos', pos);
   }
 
-  getNode(id: string) {
-    const nodeTree = this.data.componentsTree;
-  }
+  // replaceNode(targetNode, node) {}
 
   createNode(nodeData: CNodeDataType) {
     const newNode = new CNode(nodeData);

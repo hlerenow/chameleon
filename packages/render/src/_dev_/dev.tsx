@@ -33,7 +33,9 @@ function App() {
   const renderHandle = useDesignRender();
   (window as any).renderHandle = renderHandle;
   useEffect(() => {
-    // console.log('🚀 ~ file: dev.tsx ~ line 31 ~ App ~ page', page);
+    console.log('🚀 ~ file: dev.tsx ~ line 31 ~ App ~ page', page);
+    debugger;
+    page.getNode('5');
     // console.log('🚀 ~ file: dev.tsx ~ line 44 ~ useEffect ~ btnListDom');
     // console.log(JSON.stringify(page.export(), null, 2));
 
