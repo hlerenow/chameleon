@@ -51,7 +51,7 @@ const flatProps = (props: CMaterialPropsType): MaterialPropType[] => {
 };
 
 // TODO: 需要递归处理每个节点，将特殊节点转换为 CProp Model
-const handleObjProp = (data: any): any => {
+const handleObjProp = (data: any, parent: ParentType): any => {
   if (data.type) {
     if (data.type === CNodePropsTypeEnum.SLOT) {
       const tempData = data as RenderPropType;
@@ -67,13 +67,13 @@ const handleObjProp = (data: any): any => {
             if (el instanceof CNode) {
               return el;
             }
-            return new CNode(el);
+            return new CNode(el, { parent });
           }) || [];
       } else {
         if ((tempData.value as unknown) instanceof CNode) {
           newData.value = tempData.value;
         } else {
-          newData.value = new CNode(tempData.value);
+          newData.value = new CNode(tempData.value, { parent });
         }
       }
 
@@ -83,28 +83,27 @@ const handleObjProp = (data: any): any => {
   } else if (isPlainObject(data)) {
     const newData: CPropDataType = {};
     Object.keys(data).forEach((key) => {
-      newData[key] = parseData(data[key]);
+      newData[key] = parseData(data[key], parent);
     });
     return newData;
   } else if (Array.isArray(data)) {
-    return data.map((el) => handleObjProp(el));
+    return data.map((el) => handleObjProp(el, parent));
   } else {
     return data;
   }
 };
+type ParentType = CNode | CSchema | null;
 
 // 递归处理所有的节点
-const parseData = (data: any) => {
+const parseData = (data: any, parent: ParentType) => {
   if (isPlainObject(data)) {
-    return handleObjProp(data);
+    return handleObjProp(data, parent);
   }
   if (isArray(data)) {
-    return data.map((el) => handleObjProp(el));
+    return data.map((el) => handleObjProp(el, parent));
   }
   return data;
 };
-
-type ParentType = CNode | CSchema | null;
 
 export class CProp {
   modeType = 'PROP';
@@ -121,7 +120,7 @@ export class CProp {
     this.parent = parent;
     this.rawData = data;
     this.name = name;
-    this.data = parseData(data);
+    this.data = parseData(data, parent);
   }
   // TODO:
   isIncludeSlot() {
@@ -138,7 +137,7 @@ export class CProp {
 
   updateValue(val?: CPropDataType | CPropModelDataType) {
     const oldData = this.data;
-    this.data = parseData(val ?? oldData);
+    this.data = parseData(val ?? oldData, this.parent);
     this.emitter.emit('onPropChange', {
       value: this.data,
       preValue: oldData,

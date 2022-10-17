@@ -6,6 +6,7 @@ describe('test page model', () => {
   it('test getNode', () => {
     const page = new CPage(mockPageData);
     const node = page.getNode('5');
+    const node2 = page.getNode('10');
     expect(node).not.toBeNull();
   });
 });
