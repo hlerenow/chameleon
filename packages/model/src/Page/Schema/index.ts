@@ -8,7 +8,7 @@ import {
 } from '../../types/schema';
 import { getRandomStr } from '../../util';
 import { checkComplexData } from '../../util/dataCheck';
-import { isArray } from '../../util/lodash';
+import { isArray, isPlainObject } from '../../util/lodash';
 import { DataModelEmitter, DataModelEventType } from '../../util/modelEmitter';
 import { CNode } from './Node/index';
 import { CProp } from './Node/props';
@@ -45,13 +45,21 @@ export const parseSchema = (
       if (el instanceof CNode) {
         return el;
       }
-      return new CNode(el, { parent: parent });
+      if (isPlainObject(el)) {
+        return new CNode(el, { parent: parent });
+      } else {
+        return el;
+      }
     });
   } else {
     if ((data.children as unknown) instanceof CNode) {
       child.push(data.children);
     } else {
-      child.push(new CNode(data.children, { parent: parent }));
+      if (data.children && isPlainObject(data.children)) {
+        child.push(new CNode(data.children, { parent: parent }));
+      } else {
+        child.push(data.children, { parent: parent });
+      }
     }
   }
 
@@ -72,13 +80,14 @@ export const parseSchema = (
 type OnNodeChangeType = (params: DataModelEventType['onNodeChange']) => void;
 
 export class CSchema {
-  modeType = 'SCHEMA';
   private rawData: CSchemaDataType;
-  emitter = DataModelEmitter;
   private data: CSchemaModelDataType;
+  modeType = 'SCHEMA';
+  emitter = DataModelEmitter;
   materialModel: CMaterials;
   listenerHandle: (() => void)[];
   onChangeCbQueue: OnNodeChangeType[];
+  parent: null;
   constructor(data: any, { parent }: { parent: CPage }) {
     this.materialModel = parent.materialModel;
     this.rawData = JSON.parse(JSON.stringify(data));
@@ -86,6 +95,7 @@ export class CSchema {
     this.listenerHandle = [];
     this.onChangeCbQueue = [];
     this.registerListener();
+    this.parent = null;
   }
 
   registerListener() {

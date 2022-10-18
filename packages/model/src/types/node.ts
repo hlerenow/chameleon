@@ -19,20 +19,23 @@ import { isPlainObject } from '../util/lodash';
 
 export type NormalPropType = string | boolean | number | Record<string, any>;
 
+// get enum value listr
+type IValue = `${SlotRenderType}`;
+
 export type RenderPropType = {
-  type: CNodePropsTypeEnum.SLOT;
+  type: CNodePropsTypeEnum.SLOT | `${CNodePropsTypeEnum.SLOT}`;
   params?: string[];
-  renderType: SlotRenderType;
+  renderType: SlotRenderType | IValue;
   value: CNodeDataType[];
 };
 
 export type JSExpressionPropType = {
-  type: CNodePropsTypeEnum.EXPRESSION;
+  type: CNodePropsTypeEnum.EXPRESSION | `${CNodePropsTypeEnum.EXPRESSION}`;
   value: string;
 };
 
 export type FunctionPropType = {
-  type: CNodePropsTypeEnum.FUNCTION;
+  type: CNodePropsTypeEnum.FUNCTION | `${CNodePropsTypeEnum.FUNCTION}`;
   value: string;
 };
 

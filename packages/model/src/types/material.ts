@@ -54,7 +54,7 @@ export const MTitleDescribe = union([
 ]);
 
 export type ShapeDataType = {
-  type: AdvanceDataType.SHAPE;
+  type: AdvanceDataType.SHAPE | `${AdvanceDataType.SHAPE}`;
   value: {
     name: string;
     title: MTitle;
@@ -76,7 +76,7 @@ export const ShapeDataTypeDescribe = object({
 });
 
 export type EnumDataType = {
-  type: AdvanceDataType.ENUMS;
+  type: AdvanceDataType.ENUMS | `${AdvanceDataType.ENUMS}`;
   value: string[];
 };
 
@@ -86,7 +86,7 @@ export const EnumDataTypeDescribe = object({
 });
 
 export type ArrayDataType = {
-  type: BaseDataType.ARRAY;
+  type: BaseDataType.ARRAY | `${BaseDataType.ARRAY}`;
   value: PropsValueType;
 };
 
@@ -98,7 +98,7 @@ export const ArrayDataTypeDescribe = object({
 });
 
 export type UnionDataType = {
-  type: AdvanceDataType.UNION;
+  type: AdvanceDataType.UNION | `${AdvanceDataType.UNION}`;
   value: PropsValueType[];
 };
 
@@ -111,7 +111,9 @@ export const UnionDataTypeDescribe = object({
 
 export type PropsValueType =
   | BaseDataType
+  | `${BaseDataType}`
   | SpecialDataType
+  | `${SpecialDataType}`
   | ShapeDataType
   | EnumDataType
   | ArrayDataType
@@ -147,8 +149,9 @@ export enum SetterTypeEnum {
 
 export type SetterType =
   | SetterTypeEnum
+  | `${SetterTypeEnum}`
   | {
-      componentName: SetterTypeEnum;
+      componentName: SetterTypeEnum | `${SetterTypeEnum}`;
       props: Record<any, any>;
       // 被设置属性的初始值
       initialValue: any;
@@ -197,11 +200,11 @@ export enum PropsUIType {
 
 export type SpecialMaterialPropType =
   | {
-      type: PropsUIType.SINGLE;
+      type: PropsUIType.SINGLE | `${PropsUIType.SINGLE}`;
       content: MaterialPropType;
     }
   | {
-      type: PropsUIType.GROUP;
+      type: PropsUIType.GROUP | `${PropsUIType.GROUP}`;
       content: MaterialPropType[];
     };
 

@@ -29,6 +29,20 @@ export const parsePage = (data: CPageDataType, parent: CPage) => {
 export type CPpageDataModelType = Omit<CPageDataType, 'componentsTree'> & {
   componentsTree: CSchema;
 };
+
+export type PosObj = {
+  type: 'CHILD';
+  index: number;
+  pos: 'BEFORE' | 'AFTER';
+};
+
+export type InsertNodePosType =
+  | 'BEFORE'
+  | 'AFTER'
+  | 'CHILD_START'
+  | 'CHILD_END'
+  | PosObj;
+
 export class CPage {
   modeType = 'PAGE';
   rawData: CPageDataType;
@@ -37,7 +51,7 @@ export class CPage {
   parent: null | undefined;
   materialModel: CMaterials;
   constructor(
-    data: any,
+    data: CPageDataType,
     options?: {
       materials?: any;
     }
@@ -51,8 +65,6 @@ export class CPage {
   get value() {
     return this.data;
   }
-
-  // replaceNode() {}
 
   // moveNode(from, to, pos) {}
   getNode(id: string) {
@@ -95,7 +107,11 @@ export class CPage {
       // 检索所有的 props 中的节点
       dpProps(props);
       // 合并入待索引的列表
-      nodeList.push(...(target?.value.children || []));
+      const tempNodeList: CNode[] =
+        (target?.value.children.filter(
+          (el) => el instanceof CNode
+        ) as CNode[]) || [];
+      nodeList.push(...tempNodeList);
     }
 
     return null;
@@ -103,10 +119,73 @@ export class CPage {
 
   addNode(
     newNode: CNode,
-    targetNode: CNode,
-    pos: 'BEFORE' | 'AFTER' | 'CHILD' = 'AFTER'
+    targetNode: CNode | CSchema,
+    pos: InsertNodePosType = 'AFTER'
   ) {
     console.log('pos', pos);
+    if (pos === 'AFTER' || pos === 'BEFORE') {
+      const parentNode = targetNode.parent;
+      // 说明是容器节点, 只能插入 child
+      if (parentNode === null && targetNode instanceof CSchema) {
+        throw new Error('Not found parent node');
+      }
+
+      // find it on children;
+      const targetIndex =
+        parentNode?.value.children.findIndex((el) => el === targetNode) ?? -1;
+      if (targetIndex >= 0) {
+        if (pos === 'BEFORE') {
+          parentNode?.value.children.splice(targetIndex, 0, newNode);
+        } else {
+          parentNode?.value.children.splice(targetIndex + 1, 0, newNode);
+        }
+        parentNode?.updateValue();
+        return;
+      }
+      console.warn('Not found target node');
+      return;
+    }
+
+    if (pos === 'CHILD_START') {
+      targetNode.value.children.unshift(newNode);
+      targetNode.updateValue();
+      return;
+    }
+
+    if (pos === 'CHILD_END') {
+      targetNode.value.children.push(newNode);
+      targetNode.updateValue();
+      return;
+    }
+
+    if (isPlainObject(pos)) {
+      const posObj = pos as PosObj;
+      if (posObj.type === 'CHILD') {
+        const subPos = posObj.pos;
+        const index = posObj.index || 0;
+        if (subPos === 'BEFORE') {
+          targetNode?.value.children.splice(index, 0, newNode);
+        } else {
+          targetNode?.value.children.splice(index + 1, 0, newNode);
+        }
+        targetNode.updateValue();
+      } else {
+        console.warn('Can not parse pos obj');
+      }
+    }
+  }
+
+  addNodeById(
+    newNode: CNode,
+    targetNodeId: string,
+    pos: InsertNodePosType = 'AFTER'
+  ) {
+    const targetNode = this.getNode(targetNodeId);
+    if (targetNode) {
+      this.addNode(newNode, targetNode, pos);
+    } else {
+      console.warn(`Not find a node by ${targetNodeId}, pls check it`);
+    }
   }
 
   // replaceNode(targetNode, node) {}

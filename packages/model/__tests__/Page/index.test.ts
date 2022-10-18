@@ -1,9 +1,7 @@
 import { CPage } from '../../src/Page/index';
-import {
-  BaseDataType,
-  CMaterialType,
-  SpecialDataType,
-} from '../../src/types/material';
+import { CMaterialType } from '../../src/types/material';
+import { CNodeDataType } from '../../src/types/node';
+import { CPageDataType } from '../../src/types/page';
 
 const mockMaterial: CMaterialType[] = [
   {
@@ -14,7 +12,7 @@ const mockMaterial: CMaterialType[] = [
       {
         title: '文案',
         name: 'text',
-        valueType: BaseDataType.STRING,
+        valueType: 'string',
       },
     ],
     npm: {
@@ -36,17 +34,17 @@ const mockMaterial: CMaterialType[] = [
       {
         name: 'key',
         title: '唯一标记',
-        valueType: BaseDataType.STRING,
+        valueType: 'string',
       },
       {
         name: 'age',
         title: '年龄',
-        valueType: BaseDataType.NUMBER,
+        valueType: 'number',
       },
       {
         name: 'itemRender',
         title: 'itemRender',
-        valueType: SpecialDataType.COMPONENT,
+        valueType: 'string',
       },
     ],
     npm: {
@@ -58,7 +56,7 @@ const mockMaterial: CMaterialType[] = [
   },
 ];
 
-const mockNodeData = {
+const mockNodeData: CNodeDataType = {
   id: '1',
   componentName: 'Header',
   props: {
@@ -66,15 +64,18 @@ const mockNodeData = {
     age: 12,
     itemRender: {
       type: 'SLOT',
-      value: {
-        id: '2',
-        componentName: 'Button',
-      },
+      renderType: 'COMP',
+      value: [
+        {
+          id: '2',
+          componentName: 'Button',
+        },
+      ],
     },
   },
 };
 
-const mockPageData = {
+const mockPageData: CPageDataType = {
   version: '1.1.0',
   pageName: 'testPage',
   style: '',

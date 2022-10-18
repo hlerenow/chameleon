@@ -1,3 +1,4 @@
+import { isPlainObject } from 'lodash-es';
 import { CSchema } from '..';
 import { ExportType } from '../../../const/schema';
 import { CMaterials } from '../../../Material';
@@ -24,7 +25,7 @@ export const checkNode = (data: any) => {
 
 export type CNodeModelDataType = Omit<CNodeDataType, 'children'> & {
   id: string;
-  children: CNode[];
+  children: (CNode | string)[];
   props: Record<string, CProp>;
 };
 
@@ -60,9 +61,14 @@ export const parseNode = (
         if (el instanceof CNode) {
           return el;
         }
-        return new CNode(el, {
-          parent: self,
-        });
+        if (isPlainObject(el)) {
+          const tmpObj = el as CNodeDataType;
+          return new CNode(tmpObj, {
+            parent: self,
+          });
+        } else {
+          return el as string;
+        }
       });
     } else {
       if ((data.children as any) instanceof CNode) {
@@ -90,7 +96,10 @@ export class CNode {
   listenerHandle: (() => void)[];
   onChangeCbQueue: OnNodeChangeType[];
 
-  constructor(data: any, options?: { parent?: CNode | CSchema | null }) {
+  constructor(
+    data: CNodeDataType,
+    options?: { parent?: CNode | CSchema | null }
+  ) {
     this.rawData = JSON.parse(JSON.stringify(data));
     checkNode(data);
     this.parent = options?.parent || null;
@@ -184,7 +193,11 @@ export class CNode {
       props[key] = data.props[key].export();
     });
     const children: any[] = data.children?.map((child) => {
-      return child.export();
+      if (child instanceof CNode) {
+        return child.export();
+      } else {
+        return child;
+      }
     });
 
     const newRes = {

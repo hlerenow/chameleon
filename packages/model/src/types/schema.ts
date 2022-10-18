@@ -6,7 +6,7 @@ export enum InnerComponentNameEnum {
 }
 
 export type CSchemaDataType = CNodeDataType & {
-  componentName: InnerComponentNameEnum.PAGE;
+  componentName: InnerComponentNameEnum.PAGE | `${InnerComponentNameEnum.PAGE}`;
 };
 
 export const CSchemaDataTypeDescribe = assign(
