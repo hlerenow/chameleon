@@ -26,7 +26,7 @@ export type RenderPropType = {
   type: CNodePropsTypeEnum.SLOT | `${CNodePropsTypeEnum.SLOT}`;
   params?: string[];
   renderType: SlotRenderType | IValue;
-  value: CNodeDataType[];
+  value: CNodeDataType | CNodeDataType[];
 };
 
 export type JSExpressionPropType = {
@@ -82,7 +82,7 @@ export const PropsDataStructDescribe: any = union([
     params: optional(array(string())),
     // here can't use PropsDataStructDescribe, it will  caused  "Maximum call stack size exceeded" error
     value: dynamic(() => {
-      return union([array(CNodeDataStructDescribe)]);
+      return union([CNodeDataStructDescribe, array(CNodeDataStructDescribe)]);
     }),
   }),
   object({

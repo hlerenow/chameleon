@@ -2,6 +2,7 @@ import { CPage } from '../../src/Page/index';
 import { CMaterialType } from '../../src/types/material';
 import { CNodeDataType } from '../../src/types/node';
 import { CPageDataType } from '../../src/types/page';
+import { BasePage } from '@chameleon/demo-page';
 
 const mockMaterial: CMaterialType[] = [
   {
@@ -94,6 +95,11 @@ const mockPageData: CPageDataType = {
 };
 
 describe('test page model', () => {
+  it('new a page instance with jsslot', () => {
+    const node = new CPage(BasePage);
+    expect(node).not.toBeNull();
+  });
+
   it('new a page instance', () => {
     const node = new CPage(mockPageData);
     expect(node).not.toBeNull();

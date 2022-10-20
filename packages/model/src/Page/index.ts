@@ -7,7 +7,8 @@ import { CMaterials } from '../Material';
 import { CNode } from './Schema/Node';
 import { CNodeDataType } from '../types/node';
 import { isArray, isPlainObject } from 'lodash-es';
-import { CProp } from './Schema/Node/props';
+import { CProp } from './Schema/Node/prop';
+import { CSlot } from './Schema/Node/slot';
 
 export const checkPage = (data: any): CPageDataType => {
   checkComplexData({
@@ -19,10 +20,17 @@ export const checkPage = (data: any): CPageDataType => {
   return data;
 };
 
-export const parsePage = (data: CPageDataType, parent: CPage) => {
+export const parsePage = (
+  data: CPageDataType,
+  parent: CPage,
+  materials: CMaterials
+) => {
   return {
     ...data,
-    componentsTree: new CSchema(data.componentsTree, { parent: parent }),
+    componentsTree: new CSchema(data.componentsTree, {
+      parent: parent,
+      materials,
+    }),
   };
 };
 
@@ -44,12 +52,12 @@ export type InsertNodePosType =
   | PosObj;
 
 export class CPage {
-  modeType = 'PAGE';
+  nodeType = 'PAGE';
   rawData: CPageDataType;
   emitter = DataModelEmitter;
   data: CPpageDataModelType;
   parent: null | undefined;
-  materialModel: CMaterials;
+  materialsModel: CMaterials;
   constructor(
     data: CPageDataType,
     options?: {
@@ -58,8 +66,8 @@ export class CPage {
   ) {
     checkPage(data);
     this.rawData = JSON.parse(JSON.stringify(data));
-    this.materialModel = new CMaterials(options?.materials || []);
-    this.data = parsePage(data, this);
+    this.materialsModel = new CMaterials(options?.materials || []);
+    this.data = parsePage(data, this, this.materialsModel);
   }
 
   get value() {
@@ -130,6 +138,18 @@ export class CPage {
         throw new Error('Not found parent node');
       }
 
+      if (parentNode instanceof CProp) {
+        console.log('CProp can not add node');
+        return;
+      }
+      // TODO:
+      if (parentNode instanceof CSlot) {
+        return;
+      }
+      // TODO:
+      if (parentNode instanceof CPage) {
+        return;
+      }
       // find it on children;
       const targetIndex =
         parentNode?.value.children.findIndex((el) => el === targetNode) ?? -1;
@@ -142,6 +162,7 @@ export class CPage {
         parentNode?.updateValue();
         return;
       }
+
       console.warn('Not found target node');
       return;
     }

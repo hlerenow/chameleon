@@ -1,6 +1,7 @@
 import { CPage } from '../../src/Page/index';
 import { BasePage } from '@chameleon/demo-page';
 import { CNode } from '../../src/Page/Schema/Node';
+import { CSlot } from '../../src/Page/Schema/Node/slot';
 
 const mockPageData = BasePage;
 describe('test page model methods', () => {
@@ -51,8 +52,11 @@ describe('test page model methods', () => {
     });
     page.addNode(n1, targetNode2!, 'BEFORE');
     page.addNode(n2, targetNode2!, 'AFTER');
-
-    expect(targetNode2?.parent?.value.children[0]).toEqual(n1);
-    expect(targetNode2?.parent?.value.children[2]).toEqual(n2);
+    const parentNode = targetNode2?.parent;
+    // 当节点不是 CPage 活着 CSlot 时
+    if (!(parentNode instanceof CSlot) && !(parentNode instanceof CPage)) {
+      expect(parentNode?.value.children[0]).toEqual(n1);
+      expect(parentNode?.value.children[2]).toEqual(n2);
+    }
   });
 });

@@ -11,7 +11,7 @@ import { checkComplexData } from '../../util/dataCheck';
 import { isArray, isPlainObject } from '../../util/lodash';
 import { DataModelEmitter, DataModelEventType } from '../../util/modelEmitter';
 import { CNode } from './Node/index';
-import { CProp } from './Node/props';
+import { CProp } from './Node/prop';
 
 export type CSchemaModelDataType = Omit<CSchemaDataType, 'children'> & {
   id: string;
@@ -30,7 +30,8 @@ export const checkSchema = (data: any): CSchemaDataType => {
 
 export const parseSchema = (
   data: CSchemaDataType | CSchemaModelDataType,
-  parent: CSchema
+  parent: CSchema,
+  materials: CMaterials
 ): CSchemaModelDataType => {
   const res: CSchemaModelDataType = {
     ...data,
@@ -46,7 +47,7 @@ export const parseSchema = (
         return el;
       }
       if (isPlainObject(el)) {
-        return new CNode(el, { parent: parent });
+        return new CNode(el, { parent: parent, materials });
       } else {
         return el;
       }
@@ -82,20 +83,23 @@ type OnNodeChangeType = (params: DataModelEventType['onNodeChange']) => void;
 export class CSchema {
   private rawData: CSchemaDataType;
   private data: CSchemaModelDataType;
-  modeType = 'SCHEMA';
+  nodeType = 'SCHEMA';
   emitter = DataModelEmitter;
-  materialModel: CMaterials;
+  materialsModel: CMaterials;
   listenerHandle: (() => void)[];
   onChangeCbQueue: OnNodeChangeType[];
-  parent: null;
-  constructor(data: any, { parent }: { parent: CPage }) {
-    this.materialModel = parent.materialModel;
+  parent: CPage;
+  constructor(
+    data: any,
+    { parent, materials }: { parent: CPage; materials: CMaterials }
+  ) {
+    this.materialsModel = materials;
     this.rawData = JSON.parse(JSON.stringify(data));
-    this.data = parseSchema(data, this);
+    this.data = parseSchema(data, this, materials);
     this.listenerHandle = [];
     this.onChangeCbQueue = [];
     this.registerListener();
-    this.parent = null;
+    this.parent = parent;
   }
 
   registerListener() {
@@ -131,7 +135,7 @@ export class CSchema {
   }
 
   get material() {
-    const materialModel = this.materialModel;
+    const materialModel = this.materialsModel;
     return materialModel?.findByComponentName(this.data.componentName);
   }
 
@@ -150,7 +154,7 @@ export class CSchema {
       ...this.data,
       ...val,
     };
-    this.data = parseSchema(newVal, this);
+    this.data = parseSchema(newVal, this, this.materialsModel);
     this.emitter.emit('onNodeChange', {
       value: this.data,
       preValue: oldData,

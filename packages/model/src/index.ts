@@ -8,7 +8,7 @@ export * from './Material';
 export * from './Page';
 export * from './Page/Schema';
 export * from './Page/Schema/Node/index';
-export * from './Page/Schema/Node/props';
+export * from './Page/Schema/Node/prop';
 export * from './const/schema';
 
 export * from './types/base';

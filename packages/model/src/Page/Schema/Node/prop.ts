@@ -1,12 +1,14 @@
 import { CNode } from '.';
 import { CSchema } from '..';
 import { CNodePropsTypeEnum, ExportType } from '../../../const/schema';
+import { CMaterials } from '../../../Material';
 import {
   CMaterialPropsType,
   MaterialPropType,
   PropsUIType,
   SpecialMaterialPropType,
 } from '../../../types/material';
+
 import {
   FunctionPropType,
   JSExpressionPropType,
@@ -15,9 +17,9 @@ import {
   RenderPropType,
   CPropObjDataType,
 } from '../../../types/node';
-import { isJSSlotPropNode } from '../../../util';
 import { isArray, isPlainObject } from '../../../util/lodash';
 import { DataModelEmitter } from '../../../util/modelEmitter';
+import { CSlot } from './slot';
 
 export type CJSSlotPropDataType = Omit<RenderPropType, 'value'> & {
   value: CNode | CNode[] | null;
@@ -51,33 +53,20 @@ const flatProps = (props: CMaterialPropsType): MaterialPropType[] => {
 };
 
 // TODO: 需要递归处理每个节点，将特殊节点转换为 CProp Model
-const handleObjProp = (data: any, parent: ParentType): any => {
+const handleObjProp = (
+  data: any,
+  parent: ParentType,
+  materials?: CMaterials | null
+): any => {
   if (data.type) {
     if (data.type === CNodePropsTypeEnum.SLOT) {
       const tempData = data as RenderPropType;
-      const newData: CJSSlotPropDataType = {
-        type: tempData.type,
-        renderType: tempData.renderType,
-        params: tempData.params,
-        value: null,
-      };
-      if (Array.isArray(tempData.value)) {
-        newData.value =
-          tempData.value?.map((el) => {
-            if (el instanceof CNode) {
-              return el;
-            }
-            return new CNode(el, { parent });
-          }) || [];
-      } else {
-        if ((tempData.value as unknown) instanceof CNode) {
-          newData.value = tempData.value;
-        } else {
-          newData.value = new CNode(tempData.value, { parent });
-        }
-      }
+      // 转换为 Slot Node
 
-      return newData;
+      const newNode = new CSlot(data, { parent, materials });
+      return newNode;
+
+      // return newData;
     }
     return data;
   } else if (isPlainObject(data)) {
@@ -87,40 +76,49 @@ const handleObjProp = (data: any, parent: ParentType): any => {
     });
     return newData;
   } else if (Array.isArray(data)) {
-    return data.map((el) => handleObjProp(el, parent));
+    return data.map((el) => handleObjProp(el, parent, materials));
   } else {
     return data;
   }
 };
-type ParentType = CNode | CSchema | null;
+type ParentType = CProp | null;
 
 // 递归处理所有的节点
-const parseData = (data: any, parent: ParentType) => {
+const parseData = (
+  data: any,
+  parent: ParentType,
+  materials?: CMaterials | null
+) => {
   if (isPlainObject(data)) {
-    return handleObjProp(data, parent);
+    return handleObjProp(data, parent, materials);
   }
   if (isArray(data)) {
-    return data.map((el) => handleObjProp(el, parent));
+    return data.map((el) => handleObjProp(el, parent, materials));
   }
   return data;
 };
 
 export class CProp {
-  modeType = 'PROP';
+  nodeType = 'PROP';
   private rawData: CPropDataType;
-  parent: ParentType;
+  parent: CNode | CSchema | null;
   emitter = DataModelEmitter;
   private data: CPropModelDataType;
   name: string;
+  materialsMode: CMaterials | undefined | null;
   constructor(
     name: string,
     data: CPropDataType,
-    { parent }: { parent: ParentType }
+    {
+      parent,
+      materials,
+    }: { parent: CNode | CSchema | null; materials?: CMaterials | null }
   ) {
+    this.materialsMode = materials;
     this.parent = parent;
     this.rawData = data;
     this.name = name;
-    this.data = parseData(data, parent);
+    this.data = parseData(data, this, materials);
   }
   // TODO:
   isIncludeSlot() {
@@ -137,13 +135,14 @@ export class CProp {
 
   updateValue(val?: CPropDataType | CPropModelDataType) {
     const oldData = this.data;
-    this.data = parseData(val ?? oldData, this.parent);
+    this.data = parseData(val ?? oldData, this);
     this.emitter.emit('onPropChange', {
       value: this.data,
       preValue: oldData,
       node: this,
     });
-    if (this.parent) {
+    // 排除 CSlot 类型
+    if (this.parent && !(this.parent instanceof CSlot)) {
       this.emitter.emit('onNodeChange', {
         value: this.parent.value,
         preValue: this.parent.value,
@@ -153,10 +152,15 @@ export class CProp {
   }
 
   get material() {
-    const parentMaterial = this.parent?.material;
-    const allProps = flatProps(parentMaterial?.value.props || []);
-    const target = allProps.find((el) => el.name === this.name);
-    return target;
+    const parent = this.parent;
+    if (parent instanceof CNode) {
+      const parentMaterial = parent.material;
+      const allProps = flatProps(parentMaterial?.value.props || []);
+      const target = allProps.find((el) => el.name === this.name);
+      return target;
+    } else {
+      return null;
+    }
   }
 
   export(mode?: ExportType) {

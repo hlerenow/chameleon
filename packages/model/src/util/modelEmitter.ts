@@ -1,7 +1,7 @@
 import mitt from 'mitt';
 import { CSchema, CSchemaModelDataType } from '../Page/Schema';
 import { CNode, CNodeModelDataType } from '../Page/Schema/Node';
-import { CProp } from '../Page/Schema/Node/props';
+import { CProp } from '../Page/Schema/Node/prop';
 import { CPropDataType } from '../types/node';
 
 export type DataModelEventType = {

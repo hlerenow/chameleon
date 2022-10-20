@@ -2,7 +2,7 @@ import { CNodePropsTypeEnum } from '../const/schema';
 import { CPage } from '../Page';
 import { CSchema } from '../Page/Schema';
 import { CNode } from '../Page/Schema/Node';
-import { CProp } from '../Page/Schema/Node/props';
+import { CProp } from '../Page/Schema/Node/prop';
 
 export const isExpression = (arg: any) => {
   if (arg?.type === CNodePropsTypeEnum.EXPRESSION) {
@@ -33,7 +33,7 @@ export const getRandomStr = () => {
 };
 
 export const isSchemaModel = (val: any): val is CSchema => {
-  if (val?.modeType === 'SCHEMA' && val instanceof CSchema) {
+  if (val?.nodeType === 'SCHEMA' && val instanceof CSchema) {
     return true;
   }
 
@@ -41,7 +41,7 @@ export const isSchemaModel = (val: any): val is CSchema => {
 };
 
 export const isPageModel = (val: any): val is CPage => {
-  if (val?.modeType === 'PAGE' && val instanceof CPage) {
+  if (val?.nodeType === 'PAGE' && val instanceof CPage) {
     return true;
   }
 
@@ -49,7 +49,7 @@ export const isPageModel = (val: any): val is CPage => {
 };
 
 export const isNodeModel = (val: any): val is CNode => {
-  if (val?.modeType === 'NODE' && val instanceof CNode) {
+  if (val?.nodeType === 'NODE' && val instanceof CNode) {
     return true;
   }
 
@@ -57,7 +57,7 @@ export const isNodeModel = (val: any): val is CNode => {
 };
 
 export const isPropModel = (val: any): val is CProp => {
-  if (val?.modeType === 'PROP' && val instanceof CProp) {
+  if (val?.nodeType === 'PROP' && val instanceof CProp) {
     return true;
   }
   return false;

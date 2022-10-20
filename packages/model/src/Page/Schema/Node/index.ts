@@ -9,7 +9,8 @@ import {
   DataModelEmitter,
   DataModelEventType,
 } from '../../../util/modelEmitter';
-import { CProp } from './props';
+import { CProp } from './prop';
+import { CSlot } from './slot';
 
 export const checkNode = (data: any) => {
   if (typeof data === 'string') {
@@ -31,7 +32,8 @@ export type CNodeModelDataType = Omit<CNodeDataType, 'children'> & {
 
 export const parseNode = (
   data: CNodeDataType | CNodeModelDataType,
-  self: CNode | CSchema
+  self: CNode | CSchema,
+  materials?: CMaterials | null
 ) => {
   if (typeof data === 'string') {
     return data;
@@ -51,6 +53,7 @@ export const parseNode = (
       }
       res.props[propKey] = new CProp(propKey, data.props?.[propKey] || '', {
         parent: self,
+        materials,
       });
     });
   }
@@ -65,6 +68,7 @@ export const parseNode = (
           const tmpObj = el as CNodeDataType;
           return new CNode(tmpObj, {
             parent: self,
+            materials,
           });
         } else {
           return el as string;
@@ -77,6 +81,7 @@ export const parseNode = (
       res.children = [
         new CNode(data.children, {
           parent: self,
+          materials,
         }),
       ];
     }
@@ -85,26 +90,27 @@ export const parseNode = (
 };
 
 type OnNodeChangeType = (params: DataModelEventType['onNodeChange']) => void;
+type ParentType = CNode | CSchema | CSlot | null;
 
 export class CNode {
-  modeType = 'NODE';
+  nodeType = 'NODE';
   private rawData: CNodeDataType;
   private data: CNodeModelDataType;
   emitter = DataModelEmitter;
-  parent: CNode | CSchema | null;
-  materialModel: CMaterials | null;
+  parent: ParentType;
+  materialsModel: CMaterials | null;
   listenerHandle: (() => void)[];
   onChangeCbQueue: OnNodeChangeType[];
 
   constructor(
     data: CNodeDataType,
-    options?: { parent?: CNode | CSchema | null }
+    options?: { parent?: ParentType; materials?: CMaterials | null }
   ) {
     this.rawData = JSON.parse(JSON.stringify(data));
     checkNode(data);
     this.parent = options?.parent || null;
-    this.materialModel = options?.parent?.materialModel || null;
-    this.data = parseNode(data, this);
+    this.materialsModel = options?.materials || null;
+    this.data = parseNode(data, this, options?.materials);
     this.listenerHandle = [];
     this.onChangeCbQueue = [];
     this.registerListener();
@@ -170,7 +176,7 @@ export class CNode {
   }
 
   get material() {
-    const materialModel = this.materialModel;
+    const materialModel = this.materialsModel;
     return materialModel?.findByComponentName(this.data.componentName);
   }
 
