@@ -180,15 +180,6 @@ export class CNode {
     return materialModel?.findByComponentName(this.data.componentName);
   }
 
-  // 该节点是不是纯文本节点
-  isText() {
-    if (typeof this.data === 'string') {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   export(mode?: ExportType): CNodeDataType {
     const data = this.data;
     if (typeof data === 'string') {

@@ -139,15 +139,6 @@ export class CSchema {
     return materialModel?.findByComponentName(this.data.componentName);
   }
 
-  // 该节点是不是纯文本节点
-  isText() {
-    if (typeof this.data === 'string') {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   updateValue(val?: CSchemaModelDataType) {
     const oldData = this.data;
     const newVal = {

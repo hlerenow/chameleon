@@ -19,11 +19,8 @@ import {
 } from '../../../types/node';
 import { isArray, isPlainObject } from '../../../util/lodash';
 import { DataModelEmitter } from '../../../util/modelEmitter';
-import { CSlot } from './slot';
+import { CJSSlotPropDataType, CSlot } from './slot';
 
-export type CJSSlotPropDataType = Omit<RenderPropType, 'value'> & {
-  value: CNode | CNode[] | null;
-};
 export type CSpecialPropDataType =
   | CJSSlotPropDataType
   | FunctionPropType

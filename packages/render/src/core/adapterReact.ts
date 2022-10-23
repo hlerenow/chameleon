@@ -1,16 +1,15 @@
 import React, { ReactInstance } from 'react';
 import {
-  CJSSlotPropDataType,
   CNode,
   CPage,
   CProp,
   CPropDataType,
   CSchema,
+  CSlot,
   FunctionPropType,
   InnerComponentNameEnum,
   isExpression,
   isFunction,
-  isJSSlotPropNode,
   isPropModel,
   JSExpressionPropType,
   SlotRenderType,
@@ -115,8 +114,8 @@ class DefineReactAdapter {
         return propVal.map((it) => handlePropVal(it));
       } else if (isPropModel(propVal)) {
         return handlePropVal(propVal.value);
-      } else if (isJSSlotPropNode(propVal)) {
-        const slotProp = propVal as CJSSlotPropDataType;
+      } else if (propVal instanceof CSlot) {
+        const slotProp = propVal.value;
         const tempVal = slotProp.value;
         if (!tempVal) {
           console.warn(
@@ -165,7 +164,11 @@ class DefineReactAdapter {
             return handleSingleSlot(it);
           });
           // TODO: 需要做额外的处理
-          return renderList;
+          return (...args: any[]) => {
+            return renderList.map((func) => {
+              return func(...args);
+            });
+          };
         } else {
           return handleSingleSlot(tempVal);
         }
@@ -379,7 +382,7 @@ class DefineReactAdapter {
   }
   // 递归建页面组件结构
   buildComponent(
-    node: CNode | CSchema,
+    node: CNode | CSchema | string,
     {
       $$context = {},
     }: {
@@ -387,8 +390,8 @@ class DefineReactAdapter {
       idx?: number;
     }
   ) {
-    if (node.isText()) {
-      return this.render(node.value);
+    if (typeof node === 'string') {
+      return this.render(node);
     }
     const handleNode = ({ currentNode }: { currentNode: CSchema | CNode }) => {
       const nodeId = currentNode.value.id;
