@@ -233,7 +233,28 @@ export class CPage {
     return newNode;
   }
 
-  // deleteNode(node) {}
+  deleteNode(node: CNode | CSchema) {
+    const parent = node.parent;
+    if (!parent) {
+      throw new Error('parent node is null or undefined, pls check it');
+    }
+
+    if (parent instanceof CSlot) {
+      const childList = parent.value.value;
+      const targetIndex = childList.findIndex((el) => el === node);
+      childList.splice(targetIndex, 1);
+      parent.parent?.updateValue();
+      return;
+    }
+
+    if (parent instanceof CNode || parent instanceof CSchema) {
+      const childList = parent.value.children;
+      const targetIndex = childList.findIndex((el) => el === node);
+      childList.splice(targetIndex, 1);
+      parent.updateValue();
+      return;
+    }
+  }
 
   // TODO
   export(mode: ExportType = ExportType.SAVE) {

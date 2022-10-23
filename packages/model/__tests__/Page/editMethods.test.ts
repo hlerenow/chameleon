@@ -65,4 +65,16 @@ describe('test page model methods', () => {
       expect(parentNode?.value.children[2]).toEqual(n2);
     }
   });
+
+  it('test delete node', () => {
+    const page = new CPage(mockPageData);
+
+    const targetNode1 = page.getNode('5');
+    const targetNode2 = page.getNode('div1');
+
+    page.deleteNode(targetNode1!);
+    page.deleteNode(targetNode2!);
+    expect(page.getNode('5')).toBeFalsy();
+    expect(page.getNode('div1')).toBeFalsy();
+  });
 });
