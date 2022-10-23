@@ -92,6 +92,10 @@ export class CPage {
           return;
         }
 
+        if (prop instanceof CSlot) {
+          dpProps(prop.value.value);
+        }
+
         if (prop instanceof CProp) {
           dpProps(prop.value);
           return;
