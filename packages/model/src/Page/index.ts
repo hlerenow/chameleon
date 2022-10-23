@@ -148,6 +148,19 @@ export class CPage {
       }
       // TODO:
       if (parentNode instanceof CSlot) {
+        const parentList = parentNode.value.value;
+        // find it on children;
+        const targetIndex =
+          parentList.findIndex((el) => el === targetNode) ?? -1;
+        if (targetIndex >= 0) {
+          if (pos === 'BEFORE') {
+            parentList.splice(targetIndex, 0, newNode);
+          } else {
+            parentList.splice(targetIndex + 1, 0, newNode);
+          }
+          parentNode.parent?.updateValue();
+          return;
+        }
         return;
       }
       // TODO:

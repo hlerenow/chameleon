@@ -30,9 +30,15 @@ describe('test page model methods', () => {
       componentName: 'Button',
       children: ['动态添加的按钮 current After'],
     });
+
+    const newNode4 = new CNode({
+      componentName: 'Button',
+      children: ['动态添加的按钮 current Before'],
+    });
     page.addNode(newNode, node!, 'CHILD_START');
     page.addNode(newNode2, node!, 'CHILD_END');
     page.addNode(newNode3, node!, 'AFTER');
+    page.addNode(newNode4, node!, 'BEFORE');
     expect(node?.value.children[0]).toEqual(newNode);
     expect(node?.value.children[node?.value.children.length - 1]).toEqual(
       newNode2
