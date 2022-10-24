@@ -158,6 +158,7 @@ export class CPage {
           } else {
             parentList.splice(targetIndex + 1, 0, newNode);
           }
+          newNode.parent = parentNode;
           parentNode.parent?.updateValue();
           return true;
         }
@@ -176,6 +177,7 @@ export class CPage {
         } else {
           parentNode?.value.children.splice(targetIndex + 1, 0, newNode);
         }
+        newNode.parent = parentNode;
         parentNode?.updateValue();
         return true;
       }
@@ -186,12 +188,15 @@ export class CPage {
 
     if (pos === 'CHILD_START') {
       targetNode.value.children.unshift(newNode);
+      newNode.parent = targetNode;
       targetNode.updateValue();
+
       return true;
     }
 
     if (pos === 'CHILD_END') {
       targetNode.value.children.push(newNode);
+      newNode.parent = targetNode;
       targetNode.updateValue();
       return true;
     }
@@ -206,6 +211,7 @@ export class CPage {
         } else {
           targetNode?.value.children.splice(index + 1, 0, newNode);
         }
+        newNode.parent = targetNode;
         targetNode.updateValue();
         return true;
       } else {
@@ -216,7 +222,10 @@ export class CPage {
   }
 
   createNode(nodeData: CNodeDataType) {
-    const newNode = new CNode(nodeData);
+    delete nodeData.id;
+    const newNode = new CNode(nodeData, {
+      parent: null,
+    });
     return newNode;
   }
 
@@ -237,7 +246,9 @@ export class CPage {
   copyNode(node: CNode) {
     const newNodeData = node.export('design');
     newNodeData.id = getRandomStr();
-    const newNode = new CNode(newNodeData);
+    const newNode = new CNode(newNodeData, {
+      parent: node.parent,
+    });
     this.addNode(newNode, node, 'AFTER');
     return newNode;
   }
@@ -253,8 +264,24 @@ export class CPage {
 
   moveNode(from: CNode, to: CNode, pos: InsertNodePosType) {
     this.deleteNode(from);
-    const newNode = new CNode(from.export('design'));
-    this.addNode(newNode, to, pos);
+    let parent: any = to;
+    const tempTypeList: InsertNodePosType[] = ['AFTER', 'BEFORE'];
+    if (tempTypeList.includes(pos)) {
+      parent = to.parent;
+    }
+    from.parent = parent;
+
+    this.addNode(from, to, pos);
+  }
+
+  moveNodeById(fromId: string, toId: string, pos: InsertNodePosType) {
+    const from = this.getNode(fromId);
+    const to = this.getNode(toId);
+    if (from && to && from instanceof CNode && to instanceof CNode) {
+      return this.moveNode(from, to, pos);
+    }
+
+    return false;
   }
 
   // replaceNode(targetNode, node) {}

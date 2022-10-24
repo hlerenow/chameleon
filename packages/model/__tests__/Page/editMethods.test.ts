@@ -80,10 +80,24 @@ describe('test page model methods', () => {
 
   it('test copy a node', () => {
     const page = new CPage(mockPageData);
+    const sourceNode = page.getNode('5');
     const newNode = page.copyNodeById('5');
     expect(newNode).not.toBeNull();
     if (newNode) {
       expect(newNode.value.componentName).toEqual('Row');
+      expect(newNode.id).not.toEqual(sourceNode?.id);
     }
+  });
+  it('test move a node', () => {
+    const page = new CPage(mockPageData);
+
+    page.moveNodeById('5', '2', 'AFTER');
+    const targetNode = page.getNode('5');
+    const anchorNode = page.getNode('2');
+    expect(page.getNode('5')).not.toBeNull();
+    expect(targetNode?.parent).toEqual(anchorNode?.parent);
+    const parent = anchorNode?.parent as CNode;
+    const findNodeRes = parent?.value.children.find((el) => el === targetNode);
+    expect(findNodeRes).not.toBeNull();
   });
 });

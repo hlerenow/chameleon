@@ -197,12 +197,14 @@ export class CNode {
       }
     });
 
-    let newRes = {
+    let newRes: any = {
       ...data,
       props: props,
       children,
     };
-
+    if (mode === 'design') {
+      delete newRes.id;
+    }
     newRes = clearSchema(newRes);
     return newRes;
   }

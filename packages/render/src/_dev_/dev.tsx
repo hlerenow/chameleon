@@ -79,8 +79,6 @@ function App() {
       boxNode.updateValue();
       const tableNode = page.value.componentsTree.value.children[4];
       console.log(tableNode);
-      (tableNode.props.columns.value as any)['0'].render.value =
-        newNode.clone();
       tableNode.props.columns.updateValue();
     }, 500);
   }, []);
