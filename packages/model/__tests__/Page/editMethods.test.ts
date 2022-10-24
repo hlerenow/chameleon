@@ -77,4 +77,13 @@ describe('test page model methods', () => {
     expect(page.getNode('5')).toBeFalsy();
     expect(page.getNode('div1')).toBeFalsy();
   });
+
+  it('test copy a node', () => {
+    const page = new CPage(mockPageData);
+    const newNode = page.copyNodeById('5');
+    expect(newNode).not.toBeNull();
+    if (newNode) {
+      expect(newNode.value.componentName).toEqual('Row');
+    }
+  });
 });

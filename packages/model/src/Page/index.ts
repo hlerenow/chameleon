@@ -9,7 +9,7 @@ import { CNodeDataType } from '../types/node';
 import { isArray, isPlainObject, omit } from 'lodash-es';
 import { CProp } from './Schema/Node/prop';
 import { CSlot } from './Schema/Node/slot';
-import { clearSchema } from '../util';
+import { clearSchema, getRandomStr } from '../util';
 
 export const checkPage = (data: any): CPageDataType => {
   checkComplexData({
@@ -236,6 +236,7 @@ export class CPage {
 
   copyNode(node: CNode) {
     const newNodeData = node.export('design');
+    newNodeData.id = getRandomStr();
     const newNode = new CNode(newNodeData);
     this.addNode(newNode, node, 'AFTER');
     return newNode;
