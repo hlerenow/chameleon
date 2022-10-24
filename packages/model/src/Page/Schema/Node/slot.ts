@@ -56,7 +56,7 @@ export class CSlot {
     const data = this.data;
     const handleSingleProps = (propVal: any) => {
       if (propVal instanceof CNode) {
-        return propVal.export();
+        return propVal.export(mode);
       }
       if (isPlainObject(propVal)) {
         const newObj: Record<string, any> = {};

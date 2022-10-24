@@ -129,6 +129,6 @@ describe('test page model', () => {
     expect(
       page.value.componentsTree.value.children[0].material
     ).not.toBeUndefined();
-    expect(page.export()).toEqual(mockPageData);
+    expect(page.export()).toMatchSnapshot();
   });
 });

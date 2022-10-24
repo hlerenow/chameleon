@@ -6,9 +6,10 @@ import { ExportType } from '../const/schema';
 import { CMaterials } from '../Material';
 import { CNode } from './Schema/Node';
 import { CNodeDataType } from '../types/node';
-import { isArray, isPlainObject } from 'lodash-es';
+import { isArray, isPlainObject, omit, omitBy } from 'lodash-es';
 import { CProp } from './Schema/Node/prop';
 import { CSlot } from './Schema/Node/slot';
+import { clearSchema } from '../util';
 
 export const checkPage = (data: any): CPageDataType => {
   checkComplexData({
@@ -258,10 +259,13 @@ export class CPage {
 
   // TODO
   export(mode: ExportType = ExportType.SAVE) {
-    const res = {
+    let res = {
       ...this.data,
       componentsTree: this.data.componentsTree.export(mode),
     };
+
+    res = omit(res, ['id']) as any;
+    res = clearSchema(res);
 
     return JSON.parse(JSON.stringify(res));
   }

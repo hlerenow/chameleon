@@ -1,3 +1,4 @@
+import { isArray, isPlainObject, omitBy } from 'lodash-es';
 import { CNodePropsTypeEnum } from '../const/schema';
 import { CPage } from '../Page';
 import { CSchema } from '../Page/Schema';
@@ -61,4 +62,21 @@ export const isPropModel = (val: any): val is CProp => {
     return true;
   }
   return false;
+};
+
+/**
+ *
+ * @param res clear empty array and object
+ */
+export const clearSchema = (res: any) => {
+  const newRes: any = omitBy(res, (val) => {
+    if (isPlainObject(val)) {
+      return !Object.keys(val).length;
+    }
+    if (isArray(val)) {
+      return !val.length;
+    }
+    return !val;
+  });
+  return newRes;
 };

@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test page model test export function 1`] = `
+Object {
+  "componentsMeta": Array [
+    Object {
+      "componentName": "Button",
+      "exportName": "Button",
+      "package": "antd",
+      "version": "1.0",
+    },
+  ],
+  "componentsTree": Object {
+    "children": Array [
+      Object {
+        "componentName": "Header",
+        "id": "1",
+        "props": Object {
+          "age": 12,
+          "itemRender": Object {
+            "renderType": "COMP",
+            "type": "SLOT",
+            "value": Array [
+              Object {
+                "componentName": "Button",
+                "id": "2",
+              },
+            ],
+          },
+          "key": "1",
+        },
+      },
+    ],
+    "componentName": "Page",
+  },
+  "pageName": "testPage",
+  "version": "1.1.0",
+}
+`;

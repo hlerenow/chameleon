@@ -1,3 +1,4 @@
+import { omit } from 'lodash-es';
 import { CPage } from '..';
 import { ExportType } from '../../const/schema';
 import { CMaterials } from '../../Material';
@@ -6,7 +7,7 @@ import {
   CSchemaDataTypeDescribe,
   InnerComponentNameEnum,
 } from '../../types/schema';
-import { getRandomStr } from '../../util';
+import { clearSchema, getRandomStr } from '../../util';
 import { checkComplexData } from '../../util/dataCheck';
 import { isArray, isPlainObject } from '../../util/lodash';
 import { DataModelEmitter, DataModelEventType } from '../../util/modelEmitter';
@@ -157,18 +158,20 @@ export class CSchema {
     const data = this.data;
     const props: any = {};
     Object.keys(data.props || {}).forEach((key) => {
-      props[key] = data.props[key].export();
+      props[key] = data.props[key].export(mode);
     });
     const children: any[] = data.children?.map((child) => {
-      return child.export();
+      return child.export(mode);
     });
 
-    const newRes: CSchemaDataType = {
+    const tempData: CSchemaDataType = {
       ...data,
       props: props,
       children,
     };
+    let finalRes: any = omit(tempData, ['id']);
+    finalRes = clearSchema(finalRes);
 
-    return newRes;
+    return finalRes;
   }
 }
