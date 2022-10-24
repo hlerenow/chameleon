@@ -4,10 +4,12 @@ export enum CNodePropsTypeEnum {
   EXPRESSION = 'EXPRESSION',
 }
 
-export enum ExportType {
+export enum ExportTypeEnum {
   DESIGN = 'design',
   SAVE = 'save',
 }
+
+export type ExportType = ExportTypeEnum | `${ExportTypeEnum}`;
 
 export enum SlotRenderType {
   FUNC = 'FUNC',

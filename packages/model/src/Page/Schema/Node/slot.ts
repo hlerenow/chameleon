@@ -52,11 +52,11 @@ export class CSlot {
     return this.data;
   }
 
-  export(mode?: ExportType) {
+  export(mode: ExportType) {
     const data = this.data;
     const handleSingleProps = (propVal: any) => {
       if (propVal instanceof CNode) {
-        return propVal.export();
+        return propVal.export(mode);
       }
       if (isPlainObject(propVal)) {
         const newObj: Record<string, any> = {};
@@ -72,6 +72,9 @@ export class CSlot {
           return handleSingleProps(el);
         });
         return newList;
+      }
+      if (mode === 'design') {
+        delete propVal.id;
       }
       return propVal;
     };

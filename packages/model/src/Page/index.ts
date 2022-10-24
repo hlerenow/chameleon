@@ -2,13 +2,14 @@ import { checkComplexData } from '../util/dataCheck';
 import { CPageDataType, CPageDataTypeDescribe } from '../types/page';
 import { DataModelEmitter } from '../util/modelEmitter';
 import { CSchema } from './Schema';
-import { ExportType } from '../const/schema';
+import { ExportType, ExportTypeEnum } from '../const/schema';
 import { CMaterials } from '../Material';
 import { CNode } from './Schema/Node';
 import { CNodeDataType } from '../types/node';
-import { isArray, isPlainObject } from 'lodash-es';
+import { isArray, isPlainObject, omit } from 'lodash-es';
 import { CProp } from './Schema/Node/prop';
 import { CSlot } from './Schema/Node/slot';
+import { clearSchema, getRandomStr } from '../util';
 
 export const checkPage = (data: any): CPageDataType => {
   checkComplexData({
@@ -134,7 +135,6 @@ export class CPage {
     targetNode: CNode | CSchema,
     pos: InsertNodePosType = 'AFTER'
   ) {
-    console.log('pos', pos);
     if (pos === 'AFTER' || pos === 'BEFORE') {
       const parentNode = targetNode.parent;
       // 说明是容器节点, 只能插入 child
@@ -158,8 +158,9 @@ export class CPage {
           } else {
             parentList.splice(targetIndex + 1, 0, newNode);
           }
+          newNode.parent = parentNode;
           parentNode.parent?.updateValue();
-          return;
+          return true;
         }
         return;
       }
@@ -176,8 +177,9 @@ export class CPage {
         } else {
           parentNode?.value.children.splice(targetIndex + 1, 0, newNode);
         }
+        newNode.parent = parentNode;
         parentNode?.updateValue();
-        return;
+        return true;
       }
 
       console.warn('Not found target node');
@@ -186,14 +188,17 @@ export class CPage {
 
     if (pos === 'CHILD_START') {
       targetNode.value.children.unshift(newNode);
+      newNode.parent = targetNode;
       targetNode.updateValue();
-      return;
+
+      return true;
     }
 
     if (pos === 'CHILD_END') {
       targetNode.value.children.push(newNode);
+      newNode.parent = targetNode;
       targetNode.updateValue();
-      return;
+      return true;
     }
 
     if (isPlainObject(pos)) {
@@ -206,11 +211,22 @@ export class CPage {
         } else {
           targetNode?.value.children.splice(index + 1, 0, newNode);
         }
+        newNode.parent = targetNode;
         targetNode.updateValue();
+        return true;
       } else {
         console.warn('Can not parse pos obj');
       }
     }
+    return false;
+  }
+
+  createNode(nodeData: CNodeDataType) {
+    delete nodeData.id;
+    const newNode = new CNode(nodeData, {
+      parent: null,
+    });
+    return newNode;
   }
 
   addNodeById(
@@ -220,18 +236,55 @@ export class CPage {
   ) {
     const targetNode = this.getNode(targetNodeId);
     if (targetNode) {
-      this.addNode(newNode, targetNode, pos);
+      return this.addNode(newNode, targetNode, pos);
     } else {
       console.warn(`Not find a node by ${targetNodeId}, pls check it`);
+      return false;
     }
   }
 
-  // replaceNode(targetNode, node) {}
-
-  createNode(nodeData: CNodeDataType) {
-    const newNode = new CNode(nodeData);
+  copyNode(node: CNode) {
+    const newNodeData = node.export('design');
+    newNodeData.id = getRandomStr();
+    const newNode = new CNode(newNodeData, {
+      parent: node.parent,
+    });
+    this.addNode(newNode, node, 'AFTER');
     return newNode;
   }
+
+  copyNodeById(nodeId: string) {
+    const node = this.getNode(nodeId);
+    if (node && node instanceof CNode) {
+      return this.copyNode(node);
+    } else {
+      return false;
+    }
+  }
+
+  moveNode(from: CNode, to: CNode, pos: InsertNodePosType) {
+    this.deleteNode(from);
+    let parent: any = to;
+    const tempTypeList: InsertNodePosType[] = ['AFTER', 'BEFORE'];
+    if (tempTypeList.includes(pos)) {
+      parent = to.parent;
+    }
+    from.parent = parent;
+
+    this.addNode(from, to, pos);
+  }
+
+  moveNodeById(fromId: string, toId: string, pos: InsertNodePosType) {
+    const from = this.getNode(fromId);
+    const to = this.getNode(toId);
+    if (from && to && from instanceof CNode && to instanceof CNode) {
+      return this.moveNode(from, to, pos);
+    }
+
+    return false;
+  }
+
+  // replaceNode(targetNode, node) {}
 
   deleteNode(node: CNode | CSchema) {
     const parent = node.parent;
@@ -242,26 +295,41 @@ export class CPage {
     if (parent instanceof CSlot) {
       const childList = parent.value.value;
       const targetIndex = childList.findIndex((el) => el === node);
+      const deleteNode = childList[targetIndex];
+
       childList.splice(targetIndex, 1);
       parent.parent?.updateValue();
-      return;
+
+      return deleteNode;
     }
 
     if (parent instanceof CNode || parent instanceof CSchema) {
       const childList = parent.value.children;
       const targetIndex = childList.findIndex((el) => el === node);
+      const deleteNode = childList[targetIndex];
+
       childList.splice(targetIndex, 1);
       parent.updateValue();
-      return;
+      return deleteNode;
+    }
+  }
+
+  deleteNodeById(nodeId: string) {
+    const node = this.getNode(nodeId);
+    if (node) {
+      return this.deleteNode(node);
     }
   }
 
   // TODO
-  export(mode: ExportType = ExportType.SAVE) {
-    const res = {
+  export(mode: ExportType = ExportTypeEnum.SAVE) {
+    let res = {
       ...this.data,
       componentsTree: this.data.componentsTree.export(mode),
     };
+
+    res = omit(res, ['id']) as any;
+    res = clearSchema(res);
 
     return JSON.parse(JSON.stringify(res));
   }

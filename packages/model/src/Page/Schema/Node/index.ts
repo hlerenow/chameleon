@@ -3,7 +3,7 @@ import { CSchema } from '..';
 import { ExportType } from '../../../const/schema';
 import { CMaterials } from '../../../Material';
 import { CNodeDataStructDescribe, CNodeDataType } from '../../../types/node';
-import { getRandomStr } from '../../../util';
+import { getRandomStr, clearSchema } from '../../../util';
 import { checkComplexData } from '../../../util/dataCheck';
 import {
   DataModelEmitter,
@@ -150,7 +150,7 @@ export class CNode {
 
   clone(id?: string) {
     const newData = {
-      ...this.export(),
+      ...this.export('design'),
       id: id || getRandomStr(),
     };
     return new CNode(newData);
@@ -180,28 +180,32 @@ export class CNode {
     return materialModel?.findByComponentName(this.data.componentName);
   }
 
-  export(mode?: ExportType): CNodeDataType {
+  export(mode: ExportType): CNodeDataType {
     const data = this.data;
     if (typeof data === 'string') {
       return data;
     }
     const props: any = {};
     Object.keys(data.props || {}).forEach((key) => {
-      props[key] = data.props[key].export();
+      props[key] = data.props[key].export(mode);
     });
     const children: any[] = data.children?.map((child) => {
       if (child instanceof CNode) {
-        return child.export();
+        return child.export(mode);
       } else {
         return child;
       }
     });
 
-    const newRes = {
+    let newRes: any = {
       ...data,
       props: props,
       children,
     };
+    if (mode === 'design') {
+      delete newRes.id;
+    }
+    newRes = clearSchema(newRes);
     return newRes;
   }
 }

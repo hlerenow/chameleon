@@ -160,11 +160,15 @@ export class CProp {
     }
   }
 
-  export(mode?: ExportType) {
+  export(mode: ExportType) {
     const data = this.data;
     const handleSingleProps = (propVal: any) => {
+      if (propVal instanceof CSlot) {
+        return propVal.export(mode);
+      }
+
       if (propVal instanceof CNode) {
-        return propVal.export();
+        return propVal.export(mode);
       }
       if (isPlainObject(propVal)) {
         const newObj: Record<string, any> = {};
@@ -180,6 +184,10 @@ export class CProp {
           return handleSingleProps(el);
         });
         return newList;
+      }
+
+      if (mode === 'design') {
+        delete propVal.id;
       }
       return propVal;
     };

@@ -10,6 +10,7 @@ describe('test node model', () => {
         age: 12,
         itemRender: {
           type: 'SLOT',
+          renderType: 'FUNC',
           value: {
             id: '2',
             componentName: 'Button',
