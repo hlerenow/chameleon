@@ -6,7 +6,7 @@ import { ExportType, ExportTypeEnum } from '../const/schema';
 import { CMaterials } from '../Material';
 import { CNode } from './Schema/Node';
 import { CNodeDataType } from '../types/node';
-import { isArray, isPlainObject, omit, omitBy } from 'lodash-es';
+import { isArray, isPlainObject, omit } from 'lodash-es';
 import { CProp } from './Schema/Node/prop';
 import { CSlot } from './Schema/Node/slot';
 import { clearSchema } from '../util';
@@ -135,7 +135,6 @@ export class CPage {
     targetNode: CNode | CSchema,
     pos: InsertNodePosType = 'AFTER'
   ) {
-    console.log('pos', pos);
     if (pos === 'AFTER' || pos === 'BEFORE') {
       const parentNode = targetNode.parent;
       // 说明是容器节点, 只能插入 child
@@ -160,7 +159,7 @@ export class CPage {
             parentList.splice(targetIndex + 1, 0, newNode);
           }
           parentNode.parent?.updateValue();
-          return;
+          return true;
         }
         return;
       }
@@ -178,7 +177,7 @@ export class CPage {
           parentNode?.value.children.splice(targetIndex + 1, 0, newNode);
         }
         parentNode?.updateValue();
-        return;
+        return true;
       }
 
       console.warn('Not found target node');
@@ -188,13 +187,13 @@ export class CPage {
     if (pos === 'CHILD_START') {
       targetNode.value.children.unshift(newNode);
       targetNode.updateValue();
-      return;
+      return true;
     }
 
     if (pos === 'CHILD_END') {
       targetNode.value.children.push(newNode);
       targetNode.updateValue();
-      return;
+      return true;
     }
 
     if (isPlainObject(pos)) {
@@ -208,10 +207,12 @@ export class CPage {
           targetNode?.value.children.splice(index + 1, 0, newNode);
         }
         targetNode.updateValue();
+        return true;
       } else {
         console.warn('Can not parse pos obj');
       }
     }
+    return false;
   }
 
   createNode(nodeData: CNodeDataType) {
@@ -226,14 +227,33 @@ export class CPage {
   ) {
     const targetNode = this.getNode(targetNodeId);
     if (targetNode) {
-      this.addNode(newNode, targetNode, pos);
+      return this.addNode(newNode, targetNode, pos);
     } else {
       console.warn(`Not find a node by ${targetNodeId}, pls check it`);
+      return false;
     }
   }
 
   copyNode(node: CNode) {
     const newNodeData = node.export('design');
+    const newNode = new CNode(newNodeData);
+    this.addNode(newNode, node, 'AFTER');
+    return newNode;
+  }
+
+  copyNodeById(nodeId: string) {
+    const node = this.getNode(nodeId);
+    if (node && node instanceof CNode) {
+      return this.copyNode(node);
+    } else {
+      return false;
+    }
+  }
+
+  moveNode(from: CNode, to: CNode, pos: InsertNodePosType) {
+    this.deleteNode(from);
+    const newNode = new CNode(from.export('design'));
+    this.addNode(newNode, to, pos);
   }
 
   // replaceNode(targetNode, node) {}
@@ -247,17 +267,22 @@ export class CPage {
     if (parent instanceof CSlot) {
       const childList = parent.value.value;
       const targetIndex = childList.findIndex((el) => el === node);
+      const deleteNode = childList[targetIndex];
+
       childList.splice(targetIndex, 1);
       parent.parent?.updateValue();
-      return;
+
+      return deleteNode;
     }
 
     if (parent instanceof CNode || parent instanceof CSchema) {
       const childList = parent.value.children;
       const targetIndex = childList.findIndex((el) => el === node);
+      const deleteNode = childList[targetIndex];
+
       childList.splice(targetIndex, 1);
       parent.updateValue();
-      return;
+      return deleteNode;
     }
   }
 

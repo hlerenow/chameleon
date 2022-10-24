@@ -150,7 +150,7 @@ export class CNode {
 
   clone(id?: string) {
     const newData = {
-      ...this.export(),
+      ...this.export('design'),
       id: id || getRandomStr(),
     };
     return new CNode(newData);
@@ -180,7 +180,7 @@ export class CNode {
     return materialModel?.findByComponentName(this.data.componentName);
   }
 
-  export(mode?: ExportType): CNodeDataType {
+  export(mode: ExportType): CNodeDataType {
     const data = this.data;
     if (typeof data === 'string') {
       return data;
@@ -191,7 +191,7 @@ export class CNode {
     });
     const children: any[] = data.children?.map((child) => {
       if (child instanceof CNode) {
-        return child.export();
+        return child.export(mode);
       } else {
         return child;
       }

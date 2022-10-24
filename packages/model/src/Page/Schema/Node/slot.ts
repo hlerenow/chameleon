@@ -52,7 +52,7 @@ export class CSlot {
     return this.data;
   }
 
-  export(mode?: ExportType) {
+  export(mode: ExportType) {
     const data = this.data;
     const handleSingleProps = (propVal: any) => {
       if (propVal instanceof CNode) {

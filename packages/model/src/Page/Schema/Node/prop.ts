@@ -160,7 +160,7 @@ export class CProp {
     }
   }
 
-  export(mode?: ExportType) {
+  export(mode: ExportType) {
     const data = this.data;
     const handleSingleProps = (propVal: any) => {
       if (propVal instanceof CSlot) {
