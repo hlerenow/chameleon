@@ -1,6 +1,6 @@
 import { omit } from 'lodash-es';
 import { CPage } from '..';
-import { ExportType } from '../../const/schema';
+import { ExportType, ExportTypeEnum } from '../../const/schema';
 import { CMaterials } from '../../Material';
 import {
   CSchemaDataType,
@@ -154,7 +154,7 @@ export class CSchema {
     });
   }
 
-  export(mode: ExportType = ExportType.SAVE): CSchemaDataType {
+  export(mode: ExportType = ExportTypeEnum.SAVE): CSchemaDataType {
     const data = this.data;
     const props: any = {};
     Object.keys(data.props || {}).forEach((key) => {

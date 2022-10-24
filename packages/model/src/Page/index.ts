@@ -2,7 +2,7 @@ import { checkComplexData } from '../util/dataCheck';
 import { CPageDataType, CPageDataTypeDescribe } from '../types/page';
 import { DataModelEmitter } from '../util/modelEmitter';
 import { CSchema } from './Schema';
-import { ExportType } from '../const/schema';
+import { ExportType, ExportTypeEnum } from '../const/schema';
 import { CMaterials } from '../Material';
 import { CNode } from './Schema/Node';
 import { CNodeDataType } from '../types/node';
@@ -214,6 +214,11 @@ export class CPage {
     }
   }
 
+  createNode(nodeData: CNodeDataType) {
+    const newNode = new CNode(nodeData);
+    return newNode;
+  }
+
   addNodeById(
     newNode: CNode,
     targetNodeId: string,
@@ -227,12 +232,11 @@ export class CPage {
     }
   }
 
-  // replaceNode(targetNode, node) {}
-
-  createNode(nodeData: CNodeDataType) {
-    const newNode = new CNode(nodeData);
-    return newNode;
+  copyNode(node: CNode) {
+    const newNodeData = node.export('design');
   }
+
+  // replaceNode(targetNode, node) {}
 
   deleteNode(node: CNode | CSchema) {
     const parent = node.parent;
@@ -257,8 +261,15 @@ export class CPage {
     }
   }
 
+  deleteNodeById(nodeId: string) {
+    const node = this.getNode(nodeId);
+    if (node) {
+      return this.deleteNode(node);
+    }
+  }
+
   // TODO
-  export(mode: ExportType = ExportType.SAVE) {
+  export(mode: ExportType = ExportTypeEnum.SAVE) {
     let res = {
       ...this.data,
       componentsTree: this.data.componentsTree.export(mode),

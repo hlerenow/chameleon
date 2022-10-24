@@ -187,7 +187,7 @@ export class CNode {
     }
     const props: any = {};
     Object.keys(data.props || {}).forEach((key) => {
-      props[key] = data.props[key].export();
+      props[key] = data.props[key].export(mode);
     });
     const children: any[] = data.children?.map((child) => {
       if (child instanceof CNode) {
