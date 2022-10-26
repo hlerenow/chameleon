@@ -38,7 +38,7 @@ export function compWrapper(Comp: any) {
   }
   (WrapperForRef as any).displayName = Comp.displayName;
 
-  return WrapperForRef;
+  return WrapperForRef as any;
 }
 
 export const runExpression = (expStr: string, context: any) => {

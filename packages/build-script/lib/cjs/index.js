@@ -89,7 +89,6 @@ var devConfig = () => {
 
 // src/core/devServer.ts
 var doDev = async () => {
-  console.log("doDe1v");
   const server = await (0, import_vite4.createServer)(devConfig());
   await server.listen();
   server.printUrls();

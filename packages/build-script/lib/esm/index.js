@@ -77,7 +77,6 @@ var devConfig = () => {
 
 // src/core/devServer.ts
 var doDev = async () => {
-  console.log("doDe1v");
   const server = await createServer(devConfig());
   await server.listen();
   server.printUrls();

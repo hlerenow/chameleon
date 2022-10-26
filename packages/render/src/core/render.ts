@@ -8,7 +8,8 @@ export type RenderPropsType = {
   page?: CPageDataType;
   pageModel?: CPage;
   adapter: AdapterType;
-  render: UseRenderReturnType;
+  render?: UseRenderReturnType;
+  ref?: React.MutableRefObject<Render>;
 } & Partial<AdapterOptionType>;
 
 export class Render extends React.Component<

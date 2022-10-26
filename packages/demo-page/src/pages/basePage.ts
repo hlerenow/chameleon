@@ -1,11 +1,3 @@
-import {
-  CNodePropsTypeEnum,
-  CPageDataType,
-  InnerComponentNameEnum,
-  CPropObjDataType,
-  SlotRenderType,
-} from '@chameleon/model';
-
 const data = [
   {
     key: '1',
@@ -30,14 +22,14 @@ const data = [
   },
 ];
 
-const columns: CPropObjDataType[string] = [
+const columns = [
   {
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
     render: {
-      type: CNodePropsTypeEnum.SLOT,
-      renderType: SlotRenderType.FUNC,
+      type: 'SLOT',
+      renderType: 'FUNC',
       params: ['val', 'record', 'index'],
       value: {
         id: '5',
@@ -49,7 +41,7 @@ const columns: CPropObjDataType[string] = [
             props: {
               mark: 'nameRender',
               children: {
-                type: CNodePropsTypeEnum.EXPRESSION,
+                type: 'EXPRESSION',
                 value: '$$context.params.val',
               },
             },
@@ -68,10 +60,6 @@ const columns: CPropObjDataType[string] = [
                     id: '8',
                     componentName: 'div',
                     children: ['I am div'],
-                  },
-                  {
-                    id: '11111',
-                    componentName: 'Input',
                   },
                 ],
               },
@@ -102,13 +90,13 @@ const columns: CPropObjDataType[string] = [
   },
 ];
 
-export const BasePage: CPageDataType = {
+export const BasePage = {
   version: '1.0.0',
   pageName: 'BaseDemoPage',
   componentsMeta: [],
   componentsTree: {
     id: '1',
-    componentName: InnerComponentNameEnum.PAGE,
+    componentName: 'Page',
     props: {
       a: 1,
     },
@@ -130,14 +118,14 @@ export const BasePage: CPageDataType = {
             },
             props: {
               children: {
-                type: CNodePropsTypeEnum.EXPRESSION,
+                type: 'EXPRESSION',
                 value: '$$context.loopData.index',
               },
             },
             loop: {
               open: true,
               data: {
-                type: CNodePropsTypeEnum.EXPRESSION,
+                type: 'EXPRESSION',
                 value: '$$context.state.list',
               },
             },
@@ -155,11 +143,11 @@ export const BasePage: CPageDataType = {
         refId: 'ModalRef',
         props: {
           open: {
-            type: CNodePropsTypeEnum.EXPRESSION,
+            type: 'EXPRESSION',
             value: '$$context.globalState.modalVisible',
           },
           onCancel: {
-            type: CNodePropsTypeEnum.FUNCTION,
+            type: 'FUNCTION',
             value: `
             function (a, b) {
                 b.updateGlobalState({
@@ -179,7 +167,7 @@ export const BasePage: CPageDataType = {
         props: {
           type: 'primary',
           onClick: {
-            type: CNodePropsTypeEnum.FUNCTION,
+            type: 'FUNCTION',
             value: `function onClick(a,b) {
               console.log(a, b);
               b.updateState({a: b.state.a + 1})
@@ -201,7 +189,7 @@ export const BasePage: CPageDataType = {
         props: {
           type: 'primary',
           onClick: {
-            type: CNodePropsTypeEnum.FUNCTION,
+            type: 'FUNCTION',
             value: `function onClick(a,b) {
               console.log(a, b);
               b.updateState({a: b.state.a + 1})
@@ -209,12 +197,12 @@ export const BasePage: CPageDataType = {
             }`,
           },
           children: {
-            type: CNodePropsTypeEnum.EXPRESSION,
+            type: 'EXPRESSION',
             value: '$$context.globalState.b',
           },
         },
         condition: {
-          type: CNodePropsTypeEnum.EXPRESSION,
+          type: 'EXPRESSION',
           value: '$$context.globalState.buttonVisible',
         },
       },
@@ -229,7 +217,7 @@ export const BasePage: CPageDataType = {
         props: {
           columns,
           dataSource: {
-            type: CNodePropsTypeEnum.EXPRESSION,
+            type: 'EXPRESSION',
             value: '$$context.state.data',
           },
         },
@@ -246,7 +234,7 @@ export const BasePage: CPageDataType = {
             componentName: 'div',
             props: {
               children: {
-                type: CNodePropsTypeEnum.EXPRESSION,
+                type: 'EXPRESSION',
                 value:
                   '"rowState to reshow: " + $$context.stateManager.RowState.state.rowMark',
               },
@@ -268,11 +256,11 @@ export const BasePage: CPageDataType = {
             componentName: 'Input',
             props: {
               value: {
-                type: CNodePropsTypeEnum.EXPRESSION,
+                type: 'EXPRESSION',
                 value: '$$context.globalState.b',
               },
               onChange: {
-                type: CNodePropsTypeEnum.FUNCTION,
+                type: 'FUNCTION',
                 value: `
                   function(value, $$context) {
                     console.log(value, $$context);
@@ -296,7 +284,7 @@ export const BasePage: CPageDataType = {
                     componentName: 'Button',
                     props: {
                       onClick: {
-                        type: CNodePropsTypeEnum.FUNCTION,
+                        type: 'FUNCTION',
                         value: `
                           function (a, ctx) {
                             console.log(a, ctx);

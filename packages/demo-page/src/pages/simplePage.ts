@@ -1,12 +1,10 @@
-import { CPageDataType, InnerComponentNameEnum } from '@chameleon/model';
-
-export const SamplePage: CPageDataType = {
+export const SamplePage = {
   version: '1.0.0',
   pageName: 'BaseDemoPage',
   componentsMeta: [],
   componentsTree: {
     id: '1',
-    componentName: InnerComponentNameEnum.PAGE,
+    componentName: 'Page',
     props: {
       a: 1,
     },
