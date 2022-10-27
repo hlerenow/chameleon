@@ -6,7 +6,10 @@
     "build": "build-script --build",
     "lint": "eslint --ext .tsx,.ts src/",
     "prettier": "prettier --write ./src",
-    "test": "jest"
+    "test": "jest",
+    "copyAssets": "cp ../render/dist/index.umd.js ./public/render.umd.js",
+    "prestart": "yarn copyAssets",
+    "prebuild": "yarn copyAssets"
   },
   "dependencies": {
     "@chameleon/render": "*",

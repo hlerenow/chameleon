@@ -3,6 +3,7 @@
 // entry 作为打包库入口
 module.exports = {
   entry: './src/index.ts',
+  formats: ['es', 'cjs', 'umd'],
   libName: 'demo',
   fileName: 'index',
   external: ['react', 'react-dom'],

@@ -14,6 +14,7 @@ export const commonConfig = () => {
     root: PROJECT_ROOT,
     build: {
       lib: {
+        name: CUSTOM_CONFIG.libName,
         entry: path.resolve(PROJECT_ROOT, CUSTOM_CONFIG.entry),
         formats: CUSTOM_CONFIG.formats || ['cjs', 'es'],
         fileName: (format) => `${CUSTOM_CONFIG.fileName || CUSTOM_CONFIG.libName}.${format}.js`,

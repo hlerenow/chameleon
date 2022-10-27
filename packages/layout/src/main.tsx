@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
+import ReactDOMAll from 'react-dom';
 import { BasePage } from '@chameleon/demo-page';
 import Layout from './Layout';
 import * as antD from 'antd';
 import '@chameleon/material/dist/style.css';
 import './index.css';
+
+console.log(window, React, ReactDOMAll);
+(window as any).React = React;
+(window as any).ReactDOM = ReactDOMAll;
 
 const components = {
   ...antD,

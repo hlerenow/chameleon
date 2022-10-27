@@ -25,9 +25,7 @@ export class ComponentInstanceManager {
   }
 }
 
-export type DesignRenderProp = Omit<RenderPropsType, 'render'> & {
-  render: UseDesignRenderReturnType;
-};
+export type DesignRenderProp = Omit<RenderPropsType, 'ref'>;
 
 type DesignWrapType = {
   _DESIGN_BOX: boolean;
@@ -36,8 +34,8 @@ type DesignWrapType = {
 };
 
 export class DesignRender extends React.Component<DesignRenderProp> {
-  renderRef: React.RefObject<Render>;
   instanceManager = new ComponentInstanceManager();
+  renderRef: React.MutableRefObject<Render | null>;
 
   constructor(props: DesignRenderProp) {
     super(props);
