@@ -6,17 +6,23 @@
     "build": "build-script --build",
     "lint": "eslint --ext .tsx,.ts src/",
     "prettier": "prettier --write ./src",
-    "test": "jest"
+    "test": "jest",
+    "copyAssets": "sh ./scripts/copyAssets.sh",
+    "prestart": "yarn copyAssets",
+    "prebuild": "yarn copyAssets"
   },
   "dependencies": {
+    "@chameleon/render": "*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sass": "^1.54.0"
   },
   "devDependencies": {
     "@chameleon/build-script": "*",
+    "@chameleon/demo-page": "*",
     "@types/react": "^18.0.15",
-    "@types/react-dom": "^18.0.6"
+    "@types/react-dom": "^18.0.6",
+    "antd": "^4.23.6"
   },
   "config": {
     "commitizen": {

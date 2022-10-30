@@ -52,7 +52,9 @@ var commonConfig = () => {
   return (0, import_vite.defineConfig)({
     root: PROJECT_ROOT,
     build: {
+      sourcemap: true,
       lib: {
+        name: CUSTOM_CONFIG.libName,
         entry: import_path2.default.resolve(PROJECT_ROOT, CUSTOM_CONFIG.entry),
         formats: CUSTOM_CONFIG.formats || ["cjs", "es"],
         fileName: (format) => `${CUSTOM_CONFIG.fileName || CUSTOM_CONFIG.libName}.${format}.js`
@@ -89,7 +91,6 @@ var devConfig = () => {
 
 // src/core/devServer.ts
 var doDev = async () => {
-  console.log("doDe1v");
   const server = await (0, import_vite4.createServer)(devConfig());
   await server.listen();
   server.printUrls();

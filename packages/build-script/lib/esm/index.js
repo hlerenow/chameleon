@@ -40,7 +40,9 @@ var commonConfig = () => {
   return defineConfig({
     root: PROJECT_ROOT,
     build: {
+      sourcemap: true,
       lib: {
+        name: CUSTOM_CONFIG.libName,
         entry: path2.resolve(PROJECT_ROOT, CUSTOM_CONFIG.entry),
         formats: CUSTOM_CONFIG.formats || ["cjs", "es"],
         fileName: (format) => `${CUSTOM_CONFIG.fileName || CUSTOM_CONFIG.libName}.${format}.js`
@@ -77,7 +79,6 @@ var devConfig = () => {
 
 // src/core/devServer.ts
 var doDev = async () => {
-  console.log("doDe1v");
   const server = await createServer(devConfig());
   await server.listen();
   server.printUrls();

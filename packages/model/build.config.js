@@ -3,7 +3,7 @@
 // entry 作为打包库入口
 module.exports = {
   entry: './src/index.ts',
-  libName: 'ChameleonModel',
+  libName: 'CModel',
   fileName: 'index',
   external: ['react', 'react-dom'],
   global: {

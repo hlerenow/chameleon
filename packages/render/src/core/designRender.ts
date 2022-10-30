@@ -1,5 +1,5 @@
 /* eslint-disable react/no-find-dom-node */
-import { CNode, CSchema } from '@chameleon/model';
+import { CNode, CPageDataType, CSchema } from '@chameleon/model';
 import { isArray } from 'lodash-es';
 import React, { useRef } from 'react';
 import { AdapterOptionType } from './adapter';
@@ -25,9 +25,7 @@ export class ComponentInstanceManager {
   }
 }
 
-const instanceManager = new ComponentInstanceManager();
-
-export type DesignRenderProp = RenderPropsType;
+export type DesignRenderProp = Omit<RenderPropsType, 'ref'>;
 
 type DesignWrapType = {
   _DESIGN_BOX: boolean;
@@ -36,8 +34,12 @@ type DesignWrapType = {
 };
 
 export class DesignRender extends React.Component<DesignRenderProp> {
+  instanceManager = new ComponentInstanceManager();
+  renderRef: React.MutableRefObject<Render | null>;
+
   constructor(props: DesignRenderProp) {
     super(props);
+    this.renderRef = React.createRef<Render>();
   }
 
   onGetComponent = (comp: any, node: CSchema | CNode) => {
@@ -55,20 +57,55 @@ export class DesignRender extends React.Component<DesignRenderProp> {
         return React.createElement(comp, restProps, ...newChildren);
       }
     }
-
-    return DesignWrap;
+    // ts error, if type is not any: Public property 'onGetComponent' of exported class has or is using private name 'DesignWrap'.
+    return DesignWrap as any;
   };
 
   onComponentMount: AdapterOptionType['onComponentMount'] = (
     instance,
     node
   ) => {
-    instanceManager.add(node.id, instance);
+    this.instanceManager.add(node.id, instance);
   };
 
   onComponentDestroy: AdapterOptionType['onComponentDestroy'] = (_, node) => {
-    instanceManager.remove(node.id);
+    this.instanceManager.remove(node.id);
   };
+
+  rerender(newPage: CPageDataType) {
+    return this.renderRef.current?.rerender(newPage);
+  }
+
+  getInstanceById(id: string): DesignRenderInstance | null {
+    return this.instanceManager.get(id);
+  }
+  getInstanceByDom(el: HTMLHtmlElement | Element): DesignRenderInstance | null {
+    const fiberNode = findClosetFiberNode(el);
+    if (!fiberNode) {
+      return null;
+    }
+    const containerFiber = findClosetContainerFiberNode(fiberNode);
+    return containerFiber?.stateNode || null;
+  }
+  getDomById(id: string, selector?: string) {
+    const instance = this.getInstanceById(id);
+    const dom = ReactDOM.findDOMNode(instance);
+    if (selector && dom && !(dom instanceof Text)) {
+      // 判断是不是数组
+      return Array.from(dom.querySelectorAll(selector));
+    }
+    return [dom];
+  }
+  getDomRectById(id: string, selector?: string) {
+    const domList = this.getDomById(id, selector) as HTMLElement[];
+    // 判断是不是数组
+    const rectList = domList
+      .map((el) => {
+        return el?.getBoundingClientRect();
+      })
+      .filter(Boolean);
+    return rectList;
+  }
 
   render() {
     const { props, onGetComponent, onComponentDestroy, onComponentMount } =
@@ -78,17 +115,23 @@ export class DesignRender extends React.Component<DesignRenderProp> {
       onComponentMount,
       onComponentDestroy,
       ...props,
+      ref: this.renderRef,
     });
   }
 }
 
-export type DesignRenderInstance = React.ReactInstance & DesignWrapType;
+export type DesignRenderInstance =
+  | (React.ReactInstance & DesignWrapType)
+  | null
+  | undefined;
 
-export type UseDesignRenderReturnType = UseRenderReturnType & {
+export type UseDesignRenderReturnType = Pick<
+  UseRenderReturnType,
+  'rerender'
+> & {
+  ref: React.MutableRefObject<DesignRender | null>;
   getInstanceById: (id: string) => DesignRenderInstance;
-  getInstanceByDom: (
-    dom: HTMLHtmlElement | Element
-  ) => DesignRenderInstance | null;
+  getInstanceByDom: (dom: HTMLHtmlElement | Element) => DesignRenderInstance;
   getDomById: (
     id: string,
     selector?: string
@@ -135,7 +178,7 @@ const findClosetContainerFiberNode = (
 };
 
 export const useDesignRender = (): UseDesignRenderReturnType => {
-  const ref = useRef<Render>(null);
+  const ref = useRef<DesignRender>(null);
   return {
     ref: ref,
     rerender: function (...args) {
@@ -144,34 +187,16 @@ export const useDesignRender = (): UseDesignRenderReturnType => {
       }
     },
     getInstanceById(id) {
-      return instanceManager.get(id);
+      return ref.current?.getInstanceById(id);
     },
     getInstanceByDom(el) {
-      const fiberNode = findClosetFiberNode(el);
-      if (!fiberNode) {
-        return null;
-      }
-      const containerFiber = findClosetContainerFiberNode(fiberNode);
-      return containerFiber?.stateNode || null;
+      return ref.current?.getInstanceByDom(el);
     },
     getDomById(id: string, selector?: string) {
-      const instance = this.getInstanceById(id);
-      const dom = ReactDOM.findDOMNode(instance);
-      if (selector && dom && !(dom instanceof Text)) {
-        // 判断是不是数组
-        return Array.from(dom.querySelectorAll(selector));
-      }
-      return [dom];
+      return ref.current?.getDomById(id, selector) || [];
     },
     getDomRectById(id: string, selector?: string) {
-      const domList = this.getDomById(id, selector) as HTMLElement[];
-      // 判断是不是数组
-      const rectList = domList
-        .map((el) => {
-          return el?.getBoundingClientRect();
-        })
-        .filter(Boolean);
-      return rectList;
+      return ref.current?.getDomRectById(id, selector) || [];
     },
   };
 };
