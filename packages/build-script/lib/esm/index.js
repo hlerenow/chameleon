@@ -40,6 +40,7 @@ var commonConfig = () => {
   return defineConfig({
     root: PROJECT_ROOT,
     build: {
+      sourcemap: true,
       lib: {
         name: CUSTOM_CONFIG.libName,
         entry: path2.resolve(PROJECT_ROOT, CUSTOM_CONFIG.entry),

@@ -52,6 +52,7 @@ var commonConfig = () => {
   return (0, import_vite.defineConfig)({
     root: PROJECT_ROOT,
     build: {
+      sourcemap: true,
       lib: {
         name: CUSTOM_CONFIG.libName,
         entry: import_path2.default.resolve(PROJECT_ROOT, CUSTOM_CONFIG.entry),
