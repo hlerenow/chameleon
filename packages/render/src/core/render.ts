@@ -1,5 +1,6 @@
 import { CPage, CPageDataType, parsePageModel } from '@chameleon/model';
 import React, { useRef } from 'react';
+import { InnerComponent } from '../commonComponent';
 import { AdapterOptionType, AdapterType } from './adapter';
 import { runtimeComponentCache } from './adapterReact';
 import { RefManager } from './refManager';
@@ -66,9 +67,13 @@ export class Render extends React.Component<
     if (!pageModel) {
       return null;
     }
+    const finalComponents = {
+      ...InnerComponent,
+      ...props.components,
+    };
     const PageRoot = adapter.pageRender(pageModel, {
       libs: {},
-      components: props.components || {},
+      components: finalComponents,
       onGetRef: this.onGetRef,
       onGetComponent,
       onComponentMount,

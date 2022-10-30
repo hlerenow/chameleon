@@ -13,6 +13,8 @@
     "test": "jest"
   },
   "dependencies": {
+    "html-tag-names": "^2.0.1",
+    "loadjs": "^4.2.0",
     "lodash-es": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -23,6 +25,7 @@
     "@chameleon/demo-page": "*",
     "@chameleon/material": "*",
     "@chameleon/model": "*",
+    "@types/loadjs": "^4.0.1",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "antd": "^4.23.2"

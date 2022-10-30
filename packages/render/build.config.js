@@ -4,7 +4,7 @@
 module.exports = {
   entry: './src/index.ts',
   formats: ['es', 'cjs', 'umd'],
-  libName: 'demo',
+  libName: 'CRender',
   fileName: 'index',
   external: ['react', 'react-dom'],
   global: {
