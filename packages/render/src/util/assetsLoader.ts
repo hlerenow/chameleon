@@ -67,9 +67,11 @@ export class AssetLoader {
 
   onSuccess(cb: () => void) {
     this._onSuccessList.push(cb);
+    return this;
   }
 
   onError(cb: () => void) {
     this._onErrorList.push(cb);
+    return this;
   }
 }
