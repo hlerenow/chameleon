@@ -1,12 +1,16 @@
 import React from 'react';
 import styles from './Layout.module.scss';
+import { Asset } from '@chameleon/render';
 import {
   DesignRender,
   DesignRenderProp,
   ReactAdapter,
 } from '@chameleon/render';
 
-export type LayoutPropsType = Omit<DesignRenderProp, 'adapter'>;
+export type LayoutPropsType = Omit<DesignRenderProp, 'adapter'> & {
+  renderScriptPath?: string;
+  assets?: Asset;
+};
 
 class Layout extends React.Component<LayoutPropsType> {
   designRenderRef: React.RefObject<DesignRender>;

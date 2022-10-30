@@ -3,7 +3,8 @@
 // entry 作为打包库入口
 module.exports = {
   entry: './src/Layout.tsx',
-  libName: 'ChameleonLayout',
+  libName: 'CLayout',
+  fileName: 'index',
   external: ['react', 'react-dom'],
   global: {
     react: 'React',

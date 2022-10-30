@@ -7,20 +7,11 @@ import * as antD from 'antd';
 import '@chameleon/material/dist/style.css';
 import './index.css';
 
-console.log(window, React, ReactDOMAll);
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOMAll;
 
 const components = {
   ...antD,
-  Page: ({ children }: any) => {
-    return (
-      <div style={{ border: '1px solid red', padding: '10px' }}>{children}</div>
-    );
-  },
-  div: ({ children, ...props }: any) => {
-    return <div {...props}>{children}</div>;
-  },
 };
 
 const App = () => {

@@ -7,7 +7,7 @@
     "lint": "eslint --ext .tsx,.ts src/",
     "prettier": "prettier --write ./src",
     "test": "jest",
-    "copyAssets": "cp ../render/dist/index.umd.js ./public/render.umd.js",
+    "copyAssets": "sh ./scripts/copyAssets.sh",
     "prestart": "yarn copyAssets",
     "prebuild": "yarn copyAssets"
   },
