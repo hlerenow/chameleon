@@ -1,8 +1,9 @@
 import React from 'react';
 import styles from './Layout.module.scss';
-import { Asset } from '@chameleon/render';
+import { Asset, DesignRenderInstance } from '@chameleon/render';
 import { DesignRender, DesignRenderProp } from '@chameleon/render';
 import { IFrameContainer } from './core/iframeContainer';
+import { addEventListenerReturnCancel } from './utils';
 
 export type LayoutPropsType = Omit<DesignRenderProp, 'adapter'> & {
   renderScriptPath?: string;
@@ -12,10 +13,18 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter'> & {
 export class Layout extends React.Component<LayoutPropsType> {
   designRenderRef: React.RefObject<DesignRender>;
   iframeContainer: IFrameContainer;
+  eventExposeHandler: (() => void)[];
+  state: {
+    selectComponentInstances: DesignRenderInstance[];
+  };
   constructor(props: LayoutPropsType) {
     super(props);
     this.designRenderRef = React.createRef<DesignRender>();
     this.iframeContainer = new IFrameContainer();
+    this.eventExposeHandler = [];
+    this.state = {
+      selectComponentInstances: [],
+    };
   }
 
   componentDidMount(): void {
@@ -58,32 +67,67 @@ export class Layout extends React.Component<LayoutPropsType> {
       .onSuccess(() => {
         // 从子窗口获取物料对象
         const components = (iframeWindow as any).antd;
-        const App = IframeReact?.createElement(CRender.Render, {
+        const App = IframeReact?.createElement(CRender.DesignRender, {
           adapter: CRender?.ReactAdapter,
           page: this.props.page,
           pageModel: this.props.pageModel,
           components,
+          ref: this.designRenderRef,
         });
 
         console.log(iframeDoc.getElementById('app'));
 
         IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
+        this.registerSelectEvent();
       })
       .load();
   }
 
+  registerSelectEvent() {
+    const iframeDoc = this.iframeContainer.getDocument();
+    if (!iframeDoc) {
+      return;
+    }
+    const handle = addEventListenerReturnCancel(
+      iframeDoc as unknown as HTMLElement,
+      'click',
+      (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        console.log(e, e.target);
+        const componentInstance =
+          this.designRenderRef.current?.getInstanceByDom(
+            e.target as unknown as HTMLElement
+          );
+
+        // 目前只支持单选
+        this.setState({
+          selectComponentInstances: [componentInstance],
+        });
+      },
+      true
+    );
+
+    this.eventExposeHandler.push(handle);
+  }
+
+  componentWillUnmount(): void {
+    this.eventExposeHandler.forEach((el) => el());
+  }
+
   render() {
-    const { designRenderRef } = this;
-    const { page, pageModel, components } = this.props;
+    const { selectComponentInstances } = this.state;
     return (
       <div className={styles.layoutContainer} id="iframeBox">
-        {/* <DesignRender
-          pageModel={pageModel}
-          page={page}
-          components={components}
-          ref={designRenderRef}
-          adapter={ReactAdapter}
-        /> */}
+        <div className={styles.borderDrawBox}>
+          {selectComponentInstances.map((el) => {
+            return (
+              <div key={el?._NODE_ID} className={styles.elementHighlightBox}>
+                {el?._NODE_MODEL?.value?.componentName + '' + el?._NODE_ID}
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   }

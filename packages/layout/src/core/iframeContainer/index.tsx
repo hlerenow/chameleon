@@ -52,8 +52,11 @@ export class IFrameContainer {
       console.warn('iframe not exits');
       return;
     }
-    const iframeDoc = this.getDocument()!;
-    const iframeWin = this.getWindow()!;
+    const iframeDoc = this.getDocument();
+    const iframeWin = this.getWindow();
+    if (!(iframeDoc && iframeWin)) {
+      return;
+    }
 
     iframeDoc.open();
     const tpl = this.getHTMLTemplate();
