@@ -11,3 +11,22 @@ export function addEventListenerReturnCancel<
     dom.removeEventListener(type, listener);
   };
 }
+
+export const isDOM = (dom: unknown) => {
+  let cb;
+  if (typeof HTMLElement === 'object') {
+    cb = function (obj: unknown) {
+      return obj instanceof HTMLElement;
+    };
+  } else {
+    cb = function (obj: any) {
+      return (
+        obj &&
+        typeof obj === 'object' &&
+        obj.nodeType === 1 &&
+        typeof obj.nodeName === 'string'
+      );
+    };
+  }
+  return cb(dom);
+};
