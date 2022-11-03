@@ -2,3 +2,21 @@
   border: 2px solid red;
   position: absolute;
 }
+
+.borderDrawBox {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 999;
+  pointer-events: none;
+}
+
+.toolBox {
+  position: absolute;
+  right: 0;
+  top: -20px;
+  border: 1px solid black;
+  box-sizing: border-box;
+}

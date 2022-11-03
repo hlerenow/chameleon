@@ -4,7 +4,7 @@ import { Asset, DesignRenderInstance } from '@chameleon/render';
 import { DesignRender, DesignRenderProp } from '@chameleon/render';
 import { IFrameContainer } from './core/iframeContainer';
 import { addEventListenerReturnCancel } from './utils';
-import { HighlightBox } from './components/HighlightBox';
+import { HighlightCanvas } from './components/HighlightBox';
 
 export type LayoutPropsType = Omit<DesignRenderProp, 'adapter'> & {
   renderScriptPath?: string;
@@ -120,11 +120,10 @@ export class Layout extends React.Component<LayoutPropsType> {
     const { selectComponentInstances } = this.state;
     return (
       <div className={styles.layoutContainer} id="iframeBox">
-        <div className={styles.borderDrawBox}>
-          {selectComponentInstances.map((el) => {
-            return <HighlightBox key={el?._NODE_ID} instance={el} />;
-          })}
-        </div>
+        <HighlightCanvas
+          instances={selectComponentInstances}
+          toolRender={<div>toolbar</div>}
+        />
       </div>
     );
   }
