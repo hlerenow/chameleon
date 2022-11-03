@@ -7,6 +7,7 @@ import {
   CSchema,
   CSlot,
   FunctionPropType,
+  getRandomStr,
   InnerComponentNameEnum,
   isExpression,
   isFunction,
@@ -213,6 +214,7 @@ class DefineReactAdapter {
     class DynamicComponent extends React.Component<PropsType> {
       static __CP_TYPE__ = DYNAMIC_COMPONENT_TYPE;
       NODE_ID = nodeModel.id;
+      UNIQUE_ID = `${nodeModel.id}_${getRandomStr()}`;
       targetComponentRef: React.MutableRefObject<any>;
       listenerHandle: (() => void)[] = [];
       constructor(props: PropsType) {

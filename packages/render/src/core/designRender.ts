@@ -1,5 +1,5 @@
 /* eslint-disable react/no-find-dom-node */
-import { CNode, CPageDataType, CSchema } from '@chameleon/model';
+import { CNode, CPageDataType, CSchema, getRandomStr } from '@chameleon/model';
 import { isArray } from 'lodash-es';
 import React, { useRef } from 'react';
 import { AdapterOptionType } from './adapter';
@@ -7,17 +7,28 @@ import { RenderPropsType, Render, UseRenderReturnType } from './render';
 import * as ReactDOM from 'react-dom';
 
 export class ComponentInstanceManager {
-  private instanceMap = new Map();
+  private instanceMap = new Map<string, any[]>();
 
   get(id: string) {
     return this.instanceMap.get(id);
   }
   add(id: string, handle: any) {
-    this.instanceMap.set(id, handle);
+    const val = this.instanceMap.get(id);
+    if (val) {
+      val.push(handle);
+    } else {
+      this.instanceMap.set(id, [handle]);
+    }
   }
 
-  remove(id: string) {
-    this.instanceMap.delete(id);
+  remove(id: string, val?: any) {
+    const valList = this.instanceMap.get(id);
+    if (val !== undefined && Array.isArray(valList)) {
+      const newList = valList.filter((el) => el === val);
+      this.instanceMap.set(id, newList);
+    } else {
+      this.instanceMap.delete(id);
+    }
   }
 
   destroy() {
@@ -25,12 +36,16 @@ export class ComponentInstanceManager {
   }
 }
 
-export type DesignRenderProp = Omit<RenderPropsType, 'ref'>;
+export type DesignRenderProp = Omit<RenderPropsType, 'ref' | 'render'> & {
+  ref?: React.MutableRefObject<DesignRender | null>;
+  render?: UseDesignRenderReturnType;
+};
 
 type DesignWrapType = {
   _DESIGN_BOX: boolean;
   _NODE_MODEL: CNode | CSchema;
   _NODE_ID: string;
+  _UNIQUE_ID: string;
 };
 
 export class DesignRender extends React.Component<DesignRenderProp> {
@@ -43,10 +58,21 @@ export class DesignRender extends React.Component<DesignRenderProp> {
   }
 
   onGetComponent = (comp: any, node: CSchema | CNode) => {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const self = this;
     class DesignWrap extends React.Component<any> {
       _DESIGN_BOX = true;
       _NODE_MODEL = node;
       _NODE_ID = node.id;
+      _UNIQUE_ID = `${node.id}_${getRandomStr()}`;
+
+      componentDidMount(): void {
+        self.instanceManager.add(node.id, this);
+      }
+
+      componentWillUnmount(): void {
+        self.instanceManager.remove(node.id, this);
+      }
 
       render() {
         const { children = [], ...restProps } = this.props;
@@ -61,23 +87,23 @@ export class DesignRender extends React.Component<DesignRenderProp> {
     return DesignWrap as any;
   };
 
-  onComponentMount: AdapterOptionType['onComponentMount'] = (
-    instance,
-    node
-  ) => {
-    this.instanceManager.add(node.id, instance);
-  };
+  // onComponentMount: AdapterOptionType['onComponentMount'] = (
+  //   instance,
+  //   node
+  // ) => {
+  //   this.instanceManager.add(node.id, instance);
+  // };
 
-  onComponentDestroy: AdapterOptionType['onComponentDestroy'] = (_, node) => {
-    this.instanceManager.remove(node.id);
-  };
+  // onComponentDestroy: AdapterOptionType['onComponentDestroy'] = (_, node) => {
+  //   this.instanceManager.remove(node.id, node);
+  // };
 
   rerender(newPage: CPageDataType) {
     return this.renderRef.current?.rerender(newPage);
   }
 
-  getInstanceById(id: string): DesignRenderInstance | null {
-    return this.instanceManager.get(id);
+  getInstancesById(id: string): DesignRenderInstance[] {
+    return this.instanceManager.get(id) || [];
   }
   getInstanceByDom(el: HTMLHtmlElement | Element): DesignRenderInstance | null {
     const fiberNode = findClosetFiberNode(el);
@@ -87,17 +113,29 @@ export class DesignRender extends React.Component<DesignRenderProp> {
     const containerFiber = findClosetContainerFiberNode(fiberNode);
     return containerFiber?.stateNode || null;
   }
-  getDomById(id: string, selector?: string) {
-    const instance = this.getInstanceById(id);
-    const dom = ReactDOM.findDOMNode(instance);
-    if (selector && dom && !(dom instanceof Text)) {
-      // 判断是不是数组
-      return Array.from(dom.querySelectorAll(selector));
-    }
-    return [dom];
+  getDomsById(id: string, selector?: string) {
+    const instances = this.getInstancesById(id);
+    const doms: HTMLElement[] = [];
+    instances?.forEach((el) => {
+      const dom = ReactDOM.findDOMNode(el);
+
+      if (dom && !(dom instanceof Text)) {
+        if (selector) {
+          // 判断是不是数组
+          const list: HTMLElement[] = Array.from(
+            dom.querySelectorAll(selector)
+          );
+          doms.push(...list);
+        } else {
+          doms.push(dom as unknown as HTMLElement);
+        }
+      }
+    });
+
+    return doms;
   }
   getDomRectById(id: string, selector?: string) {
-    const domList = this.getDomById(id, selector) as HTMLElement[];
+    const domList = this.getDomsById(id, selector) as HTMLElement[];
     // 判断是不是数组
     const rectList = domList
       .map((el) => {
@@ -108,13 +146,14 @@ export class DesignRender extends React.Component<DesignRenderProp> {
   }
 
   render() {
-    const { props, onGetComponent, onComponentDestroy, onComponentMount } =
-      this;
+    const { props, onGetComponent } = this;
+    const { render, ...renderProps } = props;
+    if (render) {
+      render.ref.current = this;
+    }
     return React.createElement(Render, {
       onGetComponent,
-      onComponentMount,
-      onComponentDestroy,
-      ...props,
+      ...renderProps,
       ref: this.renderRef,
     });
   }
@@ -130,12 +169,9 @@ export type UseDesignRenderReturnType = Pick<
   'rerender'
 > & {
   ref: React.MutableRefObject<DesignRender | null>;
-  getInstanceById: (id: string) => DesignRenderInstance;
+  getInstancesById: (id: string) => DesignRenderInstance[];
   getInstanceByDom: (dom: HTMLHtmlElement | Element) => DesignRenderInstance;
-  getDomById: (
-    id: string,
-    selector?: string
-  ) => (HTMLHtmlElement | Element | Text | null)[];
+  getDomsById: (id: string, selector?: string) => HTMLElement[];
   getDomRectById: (id: string, selector?: string) => DOMRect | DOMRect[];
 };
 
@@ -186,14 +222,14 @@ export const useDesignRender = (): UseDesignRenderReturnType => {
         ref.current.rerender(...args);
       }
     },
-    getInstanceById(id) {
-      return ref.current?.getInstanceById(id);
+    getInstancesById(id) {
+      return ref.current?.getInstancesById(id) || [];
     },
     getInstanceByDom(el) {
       return ref.current?.getInstanceByDom(el);
     },
-    getDomById(id: string, selector?: string) {
-      return ref.current?.getDomById(id, selector) || [];
+    getDomsById(id: string, selector?: string) {
+      return ref.current?.getDomsById(id, selector) || [];
     },
     getDomRectById(id: string, selector?: string) {
       return ref.current?.getDomRectById(id, selector) || [];
