@@ -1,6 +1,7 @@
 .highlightBox {
-  border: 2px solid red;
   position: absolute;
+  will-change: transform, width, height;
+  border: 2px solid red;
 }
 
 .borderDrawBox {

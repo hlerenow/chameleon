@@ -16,7 +16,19 @@ const components = {
 
 const App = () => {
   const [page] = useState<any>(BasePage);
-  return <Layout page={page} components={components} />;
+  return (
+    <div style={{ width: '100%', height: '100%', padding: '50px' }}>
+      <div
+        style={{
+          width: '800px',
+          height: '100%',
+          margin: '0 auto',
+        }}
+      >
+        <Layout page={page} components={components} />
+      </div>
+    </div>
+  );
 };
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

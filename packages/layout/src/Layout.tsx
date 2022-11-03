@@ -4,7 +4,10 @@ import { Asset, DesignRenderInstance } from '@chameleon/render';
 import { DesignRender, DesignRenderProp } from '@chameleon/render';
 import { IFrameContainer } from './core/iframeContainer';
 import { addEventListenerReturnCancel } from './utils';
-import { HighlightCanvas } from './components/HighlightBox';
+import {
+  HighlightCanvas,
+  HighlightCanvasRefType,
+} from './components/HighlightBox';
 
 export type LayoutPropsType = Omit<DesignRenderProp, 'adapter'> & {
   renderScriptPath?: string;
@@ -18,6 +21,7 @@ export class Layout extends React.Component<LayoutPropsType> {
   state: {
     selectComponentInstances: DesignRenderInstance[];
   };
+  highlightCanvasRef: React.RefObject<HighlightCanvasRefType>;
   constructor(props: LayoutPropsType) {
     super(props);
     this.designRenderRef = React.createRef<DesignRender>();
@@ -26,6 +30,7 @@ export class Layout extends React.Component<LayoutPropsType> {
     this.state = {
       selectComponentInstances: [],
     };
+    this.highlightCanvasRef = React.createRef<HighlightCanvasRefType>();
   }
 
   componentDidMount(): void {
@@ -86,30 +91,57 @@ export class Layout extends React.Component<LayoutPropsType> {
 
   registerSelectEvent() {
     const iframeDoc = this.iframeContainer.getDocument();
-    if (!iframeDoc) {
+    const subWin = this.iframeContainer.getWindow();
+
+    if (!iframeDoc || !subWin) {
       return;
     }
+    const subDoc = iframeDoc as unknown as HTMLElement;
     const handle = addEventListenerReturnCancel(
-      iframeDoc as unknown as HTMLElement,
+      subDoc,
       'click',
       (e) => {
         e.stopPropagation();
         e.preventDefault();
-        console.log(e, e.target);
-        const componentInstance =
-          this.designRenderRef.current?.getInstanceByDom(
-            e.target as unknown as HTMLElement
-          );
+        if (!this.designRenderRef.current) {
+          return;
+        }
+        const componentInstance = this.designRenderRef.current.getInstanceByDom(
+          e.target as unknown as HTMLElement
+        );
+        if (!componentInstance) {
+          return;
+        }
 
+        const instanceList = this.designRenderRef.current.getInstancesById(
+          componentInstance._NODE_ID || ''
+        );
+        console.log(componentInstance, instanceList);
         // 目前只支持单选
         this.setState({
-          selectComponentInstances: [componentInstance],
+          selectComponentInstances: [...instanceList],
         });
       },
       true
     );
-
     this.eventExposeHandler.push(handle);
+
+    this.eventExposeHandler.push(
+      addEventListenerReturnCancel(subWin as any, 'resize', () => {
+        this.highlightCanvasRef.current?.update();
+      })
+    );
+
+    this.eventExposeHandler.push(
+      addEventListenerReturnCancel(subDoc, 'resize', () => {
+        this.highlightCanvasRef.current?.update();
+      })
+    );
+    this.eventExposeHandler.push(
+      addEventListenerReturnCancel(subDoc, 'scroll', () => {
+        this.highlightCanvasRef.current?.update();
+      })
+    );
   }
 
   componentWillUnmount(): void {
@@ -121,6 +153,7 @@ export class Layout extends React.Component<LayoutPropsType> {
     return (
       <div className={styles.layoutContainer} id="iframeBox">
         <HighlightCanvas
+          ref={this.highlightCanvasRef}
           instances={selectComponentInstances}
           toolRender={<div>toolbar</div>}
         />
