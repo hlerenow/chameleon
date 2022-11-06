@@ -8,6 +8,8 @@ import {
   HighlightCanvas,
   HighlightCanvasRefType,
 } from './components/HighlightBox';
+import { DragAndDrop } from './core/dragAndDrop';
+import { Sensor } from './core/dragAndDrop/sensor';
 
 export type LayoutPropsType = Omit<DesignRenderProp, 'adapter'> & {
   renderScriptPath?: string;
@@ -85,6 +87,7 @@ export class Layout extends React.Component<LayoutPropsType> {
 
         IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
         this.registerSelectEvent();
+        this.registerDragAndDropEvent();
       })
       .load();
   }
@@ -142,6 +145,40 @@ export class Layout extends React.Component<LayoutPropsType> {
         this.highlightCanvasRef.current?.update();
       })
     );
+  }
+
+  registerDragAndDropEvent() {
+    const iframeDoc = this.iframeContainer.getDocument()!;
+    const dnd = new DragAndDrop({
+      doc: document,
+    });
+    const sensor = new Sensor({
+      container: document.body,
+      offset: {
+        x: 0,
+        y: 0,
+      },
+    });
+    sensor.emitter.on('onMouseChange', (e) => {
+      console.log(e.pointer);
+    });
+
+    const sensor2 = new Sensor({
+      container: iframeDoc.body,
+      offsetDom: document.getElementById('iframeBox'),
+    });
+
+    sensor2.emitter.on('onEnter', (e) => {
+      console.log(e);
+    });
+    sensor2.emitter.on('onLeave', (e) => {
+      console.log(e);
+    });
+    sensor2.emitter.on('onMouseChange', (e) => {
+      console.log(e.pointer);
+    });
+    dnd.registerSensor(sensor);
+    dnd.registerSensor(sensor2);
   }
 
   componentWillUnmount(): void {
