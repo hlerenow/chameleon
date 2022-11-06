@@ -8,24 +8,19 @@ export type SensorOffsetType = {
   y: number;
 };
 
-type EventType = {
-  onLeave: {
-    sensor: Sensor;
-  };
-  onEnter: {
-    sensor: Sensor;
-  };
-  onDestroy: {
-    sensor: Sensor;
-  };
-  onMouseMove: {
-    sensor: Sensor;
-    pointer: Pointer;
-  };
-  onMouseChange: {
-    sensor: Sensor;
-    pointer: Pointer;
-  };
+export type SensorEventType = {
+  sensor: Sensor;
+  pointer: Pointer;
+  event: MouseEvent;
+};
+
+export type EventType = {
+  onLeave: Omit<SensorEventType, 'pointer'>;
+  onEnter: Omit<SensorEventType, 'pointer'>;
+  onMouseChange: SensorEventType;
+  onMouseUp: SensorEventType;
+  onMouseDown: SensorEventType;
+  onMouseMove: SensorEventType;
 };
 
 export class Sensor extends DEmitter<EventType> {
@@ -37,8 +32,8 @@ export class Sensor extends DEmitter<EventType> {
   container: HTMLElement;
   offsetDom?: HTMLElement | null;
 
-  private _canDrag: () => void = () => {};
-  private _canDrop: () => void = () => {};
+  canDrag: (params: SensorEventType) => boolean = () => true;
+  canDrop: (params: SensorEventType) => boolean = () => true;
 
   private eventDisposeQueue: (() => void)[] = [];
   constructor(options: {
@@ -78,24 +73,32 @@ export class Sensor extends DEmitter<EventType> {
 
   registerEvent() {
     const container = this.container as unknown as HTMLElement;
-    addEventListenerReturnCancel(container, 'mouseenter', () => {
+    addEventListenerReturnCancel(container, 'mouseenter', (e) => {
       this.emitter.emit('onEnter', {
         sensor: this,
+        event: e,
       });
     });
-    addEventListenerReturnCancel(container, 'mouseleave', () => {
+    addEventListenerReturnCancel(container, 'mouseleave', (e) => {
       this.emitter.emit('onLeave', {
         sensor: this,
+        event: e,
       });
     });
     addEventListenerReturnCancel(
       container,
       'mousedown',
       (e) => {
-        console.log('mousedown');
         this.emitter.emit('onMouseChange', {
           sensor: this,
           pointer: this.getPointer(e),
+          event: e,
+        });
+
+        this.emitter.emit('onMouseDown', {
+          sensor: this,
+          pointer: this.getPointer(e),
+          event: e,
         });
       },
       true
@@ -104,10 +107,15 @@ export class Sensor extends DEmitter<EventType> {
       container,
       'mouseup',
       (e) => {
-        console.log('mouseup');
         this.emitter.emit('onMouseChange', {
           sensor: this,
           pointer: this.getPointer(e),
+          event: e,
+        });
+        this.emitter.emit('onMouseUp', {
+          sensor: this,
+          pointer: this.getPointer(e),
+          event: e,
         });
       },
       true
@@ -116,9 +124,15 @@ export class Sensor extends DEmitter<EventType> {
       container,
       'mousemove',
       (e) => {
+        this.emitter.emit('onMouseMove', {
+          sensor: this,
+          pointer: this.getPointer(e),
+          event: e,
+        });
         this.emitter.emit('onMouseChange', {
           sensor: this,
           pointer: this.getPointer(e),
+          event: e,
         });
       },
       true
@@ -140,11 +154,11 @@ export class Sensor extends DEmitter<EventType> {
     return this.offset;
   }
 
-  canDrag(cb: Sensor['_canDrag']) {
-    this._canDrag = cb;
+  setCanDrag(cb: Sensor['canDrag']) {
+    this.canDrag = cb;
   }
 
-  canDrop(cb: Sensor['_canDrop']) {
-    this._canDrop = cb;
+  setCanDrop(cb: Sensor['canDrop']) {
+    this.canDrop = cb;
   }
 }

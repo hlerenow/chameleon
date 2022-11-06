@@ -159,26 +159,28 @@ export class Layout extends React.Component<LayoutPropsType> {
         y: 0,
       },
     });
-    sensor.emitter.on('onMouseChange', (e) => {
-      console.log(e.pointer);
-    });
 
     const sensor2 = new Sensor({
       container: iframeDoc.body,
       offsetDom: document.getElementById('iframeBox'),
     });
 
-    sensor2.emitter.on('onEnter', (e) => {
-      console.log(e);
-    });
-    sensor2.emitter.on('onLeave', (e) => {
-      console.log(e);
-    });
-    sensor2.emitter.on('onMouseChange', (e) => {
-      console.log(e.pointer);
-    });
     dnd.registerSensor(sensor);
     dnd.registerSensor(sensor2);
+
+    dnd.emitter.on('dragStart', (e) => {
+      console.log('dragStart', e);
+    });
+
+    dnd.emitter.on('dragging', (e) => {
+      console.log('dragging', e);
+    });
+    dnd.emitter.on('dragEnd', (e) => {
+      console.log('dragEnd', e);
+    });
+    dnd.emitter.on('drop', (e) => {
+      console.log('drop', e);
+    });
   }
 
   componentWillUnmount(): void {
