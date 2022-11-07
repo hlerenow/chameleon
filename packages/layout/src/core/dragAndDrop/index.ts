@@ -59,50 +59,54 @@ export class DragAndDrop {
     }
   }
 
-  registerSensor(senor: Sensor) {
-    this.senors.push(senor);
+  registerSensor(sensor: Sensor) {
+    this.senors.push(sensor);
     const onMouseDown = (eventObj: EventType['onMouseDown']) => {
       this.dragStartObj = eventObj;
-      const { sensor, event } = eventObj;
+      const { event } = eventObj;
       event.stopPropagation();
       event.preventDefault();
     };
-    senor.emitter.on('onMouseDown', onMouseDown);
+    sensor.emitter.on('onMouseDown', onMouseDown);
     this.eventHandler.push(() => {
-      senor.emitter.off('onMouseDown', onMouseDown);
+      sensor.emitter.off('onMouseDown', onMouseDown);
     });
 
     // mouseup
     const onMouseUp = ({ sensor, event, pointer }: EventType['onMouseUp']) => {
-      this.currentState = 'NORMAL';
-      this.emitter.emit('dragEnd', {
-        from: this.dragStartObj!.event,
-        fromSensor: this.dragStartObj!.sensor,
-        fromPointer: this.dragStartObj!.pointer,
-        current: event,
-        currentSensor: senor,
-        pointer: pointer,
-      });
-      const canDrop = senor.canDrop({
-        sensor,
-        event,
-        pointer,
-      });
-      if (canDrop) {
-        this.emitter.emit('drop', {
+      if (this.currentState === 'DRAGGING') {
+        this.currentState = 'NORMAL';
+        this.emitter.emit('dragEnd', {
           from: this.dragStartObj!.event,
           fromSensor: this.dragStartObj!.sensor,
           fromPointer: this.dragStartObj!.pointer,
           current: event,
-          currentSensor: senor,
+          currentSensor: sensor,
           pointer: pointer,
         });
+        const canDrop = sensor.canDrop({
+          sensor,
+          event,
+          pointer,
+        });
+        if (canDrop) {
+          this.emitter.emit('drop', {
+            from: this.dragStartObj!.event,
+            fromSensor: this.dragStartObj!.sensor,
+            fromPointer: this.dragStartObj!.pointer,
+            current: event,
+            currentSensor: sensor,
+            pointer: pointer,
+          });
+        }
       }
+
+      this.dragStartObj = null;
     };
 
-    senor.emitter.on('onMouseUp', onMouseUp);
+    sensor.emitter.on('onMouseUp', onMouseUp);
     this.eventHandler.push(() => {
-      senor.emitter.off('onMouseUp', onMouseDown);
+      sensor.emitter.off('onMouseUp', onMouseDown);
     });
 
     // mousemove
@@ -112,7 +116,10 @@ export class DragAndDrop {
       event,
     }: EventType['onMouseMove']) => {
       if (this.currentState !== 'DRAGGING') {
-        if (senor !== this.dragStartObj?.sensor) {
+        if (this.dragStartObj === null) {
+          return;
+        }
+        if (sensor !== this.dragStartObj?.sensor) {
           return;
         }
         const pointer1 = pointer;
@@ -144,13 +151,13 @@ export class DragAndDrop {
         fromSensor: this.dragStartObj!.sensor,
         fromPointer: this.dragStartObj!.pointer,
         current: event,
-        currentSensor: senor,
+        currentSensor: sensor,
         pointer: pointer,
       });
     };
-    senor.emitter.on('onMouseMove', onMouseMove);
+    sensor.emitter.on('onMouseMove', onMouseMove);
     this.eventHandler.push(() => {
-      senor.emitter.off('onMouseMove', onMouseMove);
+      sensor.emitter.off('onMouseMove', onMouseMove);
     });
   }
 }
