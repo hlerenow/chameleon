@@ -8,7 +8,7 @@ import {
   HighlightCanvas,
   HighlightCanvasRefType,
 } from './components/HighlightBox';
-import { DragAndDrop } from './core/dragAndDrop';
+import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
 import { Sensor } from './core/dragAndDrop/sensor';
 
 export type LayoutPropsType = Omit<DesignRenderProp, 'adapter'> & {
@@ -86,8 +86,8 @@ export class Layout extends React.Component<LayoutPropsType> {
         console.log(iframeDoc.getElementById('app'));
 
         IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
-        this.registerSelectEvent();
         this.registerDragAndDropEvent();
+        this.registerSelectEvent();
       })
       .load();
   }
@@ -99,35 +99,7 @@ export class Layout extends React.Component<LayoutPropsType> {
     if (!iframeDoc || !subWin) {
       return;
     }
-    const subDoc = iframeDoc as unknown as HTMLElement;
-    const handle = addEventListenerReturnCancel(
-      subDoc,
-      'click',
-      (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        if (!this.designRenderRef.current) {
-          return;
-        }
-        const componentInstance = this.designRenderRef.current.getInstanceByDom(
-          e.target as unknown as HTMLElement
-        );
-        if (!componentInstance) {
-          return;
-        }
-
-        const instanceList = this.designRenderRef.current.getInstancesById(
-          componentInstance._NODE_ID || ''
-        );
-        console.log(componentInstance, instanceList);
-        // 目前只支持单选
-        this.setState({
-          selectComponentInstances: [...instanceList],
-        });
-      },
-      true
-    );
-    this.eventExposeHandler.push(handle);
+    const subDoc = iframeDoc;
 
     this.eventExposeHandler.push(
       addEventListenerReturnCancel(subWin as any, 'resize', () => {
@@ -136,16 +108,44 @@ export class Layout extends React.Component<LayoutPropsType> {
     );
 
     this.eventExposeHandler.push(
-      addEventListenerReturnCancel(subDoc, 'resize', () => {
+      addEventListenerReturnCancel(subDoc as any, 'resize', () => {
         this.highlightCanvasRef.current?.update();
       })
     );
     this.eventExposeHandler.push(
-      addEventListenerReturnCancel(subDoc, 'scroll', () => {
+      addEventListenerReturnCancel(subDoc.body, 'scroll', () => {
         this.highlightCanvasRef.current?.update();
       })
     );
   }
+
+  onSelectNode = (eventObj: DragAndDropEventType['click']) => {
+    const { event: e, sensor } = eventObj;
+    if (sensor.name === 'layout') {
+      e.stopPropagation();
+      e.preventDefault();
+      if (!this.designRenderRef.current) {
+        return;
+      }
+      const componentInstance = this.designRenderRef.current.getInstanceByDom(
+        e.target as unknown as HTMLElement
+      );
+      if (!componentInstance) {
+        return;
+      }
+
+      const instanceList = this.designRenderRef.current.getInstancesById(
+        componentInstance._NODE_ID || ''
+      );
+      console.log('layout click', componentInstance, instanceList);
+      // 目前只支持单选
+      this.setState({
+        selectComponentInstances: [...instanceList],
+      });
+    } else {
+      console.log('dnd click');
+    }
+  };
 
   registerDragAndDropEvent() {
     const iframeDoc = this.iframeContainer.getDocument()!;
@@ -153,14 +153,18 @@ export class Layout extends React.Component<LayoutPropsType> {
       doc: document,
     });
     const sensor = new Sensor({
+      name: 'parentDoc',
       container: document.body,
       offset: {
         x: 0,
         y: 0,
       },
     });
+    //
+    dnd.emitter.on('click', this.onSelectNode);
 
     const sensor2 = new Sensor({
+      name: 'layout',
       container: iframeDoc.body,
       offsetDom: document.getElementById('iframeBox'),
     });

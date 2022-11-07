@@ -21,6 +21,7 @@ export type EventType = {
   onMouseUp: SensorEventType;
   onMouseDown: SensorEventType;
   onMouseMove: SensorEventType;
+  onClick: Omit<SensorEventType, 'pointer'>;
 };
 
 export class Sensor extends DEmitter<EventType> {
@@ -36,12 +37,15 @@ export class Sensor extends DEmitter<EventType> {
   canDrop: (params: SensorEventType) => boolean = () => true;
 
   private eventDisposeQueue: (() => void)[] = [];
+  name: string;
   constructor(options: {
+    name: string;
     container: Sensor['container'];
     offset?: Sensor['offset'];
     offsetDom?: Sensor['offsetDom'];
   }) {
     super();
+    this.name = options.name;
     this.container = options.container;
     if (options.offset) {
       this.offset = options.offset || { x: 0, y: 0 };
@@ -132,6 +136,17 @@ export class Sensor extends DEmitter<EventType> {
         this.emitter.emit('onMouseChange', {
           sensor: this,
           pointer: this.getPointer(e),
+          event: e,
+        });
+      },
+      true
+    );
+    addEventListenerReturnCancel(
+      container,
+      'click',
+      (e) => {
+        this.emitter.emit('onClick', {
+          sensor: this,
           event: e,
         });
       },

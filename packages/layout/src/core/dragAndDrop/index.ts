@@ -1,5 +1,5 @@
 import { Pointer } from './common';
-import { EventType, Sensor } from './sensor';
+import { EventType, Sensor, SensorEventType } from './sensor';
 import mitt from 'mitt';
 
 type EmptyFunc = () => void;
@@ -33,6 +33,7 @@ export type DragAndDropEventType = {
     currentSensor: Sensor;
     pointer: Pointer;
   };
+  click: Omit<SensorEventType, 'pointer'>;
 };
 export class DragAndDrop {
   senors: Sensor[] = [];
@@ -47,6 +48,8 @@ export class DragAndDrop {
   currentState: 'NORMAL' | 'DRAGGING' = 'NORMAL';
   dragStartObj: EventType['onMouseDown'] | null = null;
   emitter = mitt<DragAndDropEventType>();
+  // 拖动结束后是否可以触发点击事件
+  canTriggerClick = true;
   constructor(options: {
     doc: Document;
     dragConfig?: {
@@ -61,6 +64,13 @@ export class DragAndDrop {
 
   registerSensor(sensor: Sensor) {
     this.senors.push(sensor);
+
+    sensor.emitter.on('onClick', (e) => {
+      if (this.canTriggerClick) {
+        this.emitter.emit('click', e);
+      }
+    });
+
     const onMouseDown = (eventObj: EventType['onMouseDown']) => {
       this.dragStartObj = eventObj;
       const { event } = eventObj;
@@ -75,6 +85,10 @@ export class DragAndDrop {
     // mouseup
     const onMouseUp = ({ sensor, event, pointer }: EventType['onMouseUp']) => {
       if (this.currentState === 'DRAGGING') {
+        this.canTriggerClick = false;
+        setTimeout(() => {
+          this.canTriggerClick = true;
+        }, 100);
         this.currentState = 'NORMAL';
         this.emitter.emit('dragEnd', {
           from: this.dragStartObj!.event,
