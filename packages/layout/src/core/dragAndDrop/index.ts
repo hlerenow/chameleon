@@ -69,6 +69,7 @@ export class DragAndDrop {
       if (!this.canTriggerClick) {
         event.stopPropagation();
         event.preventDefault();
+        event.stopImmediatePropagation();
       }
     });
 

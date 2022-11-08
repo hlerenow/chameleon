@@ -8,7 +8,7 @@ import {
   HighlightCanvas,
   HighlightCanvasRefType,
 } from './components/HighlightBox';
-import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
+import { DragAndDrop } from './core/dragAndDrop';
 import { Sensor } from './core/dragAndDrop/sensor';
 
 export type LayoutPropsType = Omit<DesignRenderProp, 'adapter'> & {
@@ -102,28 +102,36 @@ export class Layout extends React.Component<LayoutPropsType> {
     const subDoc = iframeDoc;
 
     this.eventExposeHandler.push(
-      addEventListenerReturnCancel(subWin as any, 'click', (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        if (!this.designRenderRef.current) {
-          return;
-        }
-        const componentInstance = this.designRenderRef.current.getInstanceByDom(
-          e.target as unknown as HTMLElement
-        );
-        if (!componentInstance) {
-          return;
-        }
+      addEventListenerReturnCancel(
+        iframeDoc.body,
+        'click',
+        (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          e.stopImmediatePropagation();
 
-        const instanceList = this.designRenderRef.current.getInstancesById(
-          componentInstance._NODE_ID || ''
-        );
-        console.log('layout click', componentInstance, instanceList);
-        // 目前只支持单选
-        this.setState({
-          selectComponentInstances: [...instanceList],
-        });
-      })
+          if (!this.designRenderRef.current) {
+            return;
+          }
+          const componentInstance =
+            this.designRenderRef.current.getInstanceByDom(
+              e.target as unknown as HTMLElement
+            );
+          if (!componentInstance) {
+            return;
+          }
+
+          const instanceList = this.designRenderRef.current.getInstancesById(
+            componentInstance._NODE_ID || ''
+          );
+          console.log('layout click', componentInstance, instanceList);
+          // 目前只支持单选
+          this.setState({
+            selectComponentInstances: [...instanceList],
+          });
+        },
+        true
+      )
     );
 
     this.eventExposeHandler.push(
