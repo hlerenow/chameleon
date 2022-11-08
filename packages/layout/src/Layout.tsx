@@ -102,6 +102,31 @@ export class Layout extends React.Component<LayoutPropsType> {
     const subDoc = iframeDoc;
 
     this.eventExposeHandler.push(
+      addEventListenerReturnCancel(subWin as any, 'click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        if (!this.designRenderRef.current) {
+          return;
+        }
+        const componentInstance = this.designRenderRef.current.getInstanceByDom(
+          e.target as unknown as HTMLElement
+        );
+        if (!componentInstance) {
+          return;
+        }
+
+        const instanceList = this.designRenderRef.current.getInstancesById(
+          componentInstance._NODE_ID || ''
+        );
+        console.log('layout click', componentInstance, instanceList);
+        // 目前只支持单选
+        this.setState({
+          selectComponentInstances: [...instanceList],
+        });
+      })
+    );
+
+    this.eventExposeHandler.push(
       addEventListenerReturnCancel(subWin as any, 'resize', () => {
         this.highlightCanvasRef.current?.update();
       })
@@ -119,34 +144,6 @@ export class Layout extends React.Component<LayoutPropsType> {
     );
   }
 
-  onSelectNode = (eventObj: DragAndDropEventType['click']) => {
-    const { event: e, sensor } = eventObj;
-    if (sensor.name === 'layout') {
-      e.stopPropagation();
-      e.preventDefault();
-      if (!this.designRenderRef.current) {
-        return;
-      }
-      const componentInstance = this.designRenderRef.current.getInstanceByDom(
-        e.target as unknown as HTMLElement
-      );
-      if (!componentInstance) {
-        return;
-      }
-
-      const instanceList = this.designRenderRef.current.getInstancesById(
-        componentInstance._NODE_ID || ''
-      );
-      console.log('layout click', componentInstance, instanceList);
-      // 目前只支持单选
-      this.setState({
-        selectComponentInstances: [...instanceList],
-      });
-    } else {
-      console.log('dnd click');
-    }
-  };
-
   registerDragAndDropEvent() {
     const iframeDoc = this.iframeContainer.getDocument()!;
     const dnd = new DragAndDrop({
@@ -161,7 +158,6 @@ export class Layout extends React.Component<LayoutPropsType> {
       },
     });
     //
-    dnd.emitter.on('click', this.onSelectNode);
 
     const sensor2 = new Sensor({
       name: 'layout',
