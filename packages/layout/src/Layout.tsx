@@ -200,6 +200,19 @@ export class Layout extends React.Component<LayoutPropsType> {
       this.highlightHoverCanvasRef.current?.update();
     });
     this.eventExposeHandler.push(handler);
+
+    this.eventExposeHandler.push(
+      addEventListenerReturnCancel(
+        iframeDoc.body,
+        'mouseleave',
+        () => {
+          this.setState({
+            hoverComponentInstance: [],
+          });
+        },
+        true
+      )
+    );
   }
 
   registerDragAndDropEvent() {
