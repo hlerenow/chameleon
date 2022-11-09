@@ -30,3 +30,17 @@ export const isDOM = (dom: unknown) => {
   }
   return cb(dom);
 };
+
+export const animationFrame = (stepCb: () => void) => {
+  let handle = true;
+  const innerCb = () => {
+    if (handle) {
+      stepCb();
+      requestAnimationFrame(innerCb);
+    }
+  };
+  requestAnimationFrame(innerCb);
+  return () => {
+    handle = false;
+  };
+};

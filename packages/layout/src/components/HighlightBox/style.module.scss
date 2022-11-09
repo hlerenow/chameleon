@@ -1,6 +1,6 @@
 .highlightBox {
   position: absolute;
-  will-change: transform, width, height;
+  will-change: transform, width, height, left, right;
   border: 2px solid red;
 }
 

@@ -17,6 +17,7 @@ export type HighlightCanvasRefType = {
 export type HighlightBoxPropsType = {
   instance: DesignRenderInstance;
   toolRender?: React.ReactNode;
+  style?: React.CSSProperties;
   getRef?: (ref: React.RefObject<HighlightCanvasRefType>) => void;
 };
 
@@ -24,10 +25,8 @@ export const HighlightBox = ({
   instance,
   toolRender,
   getRef,
+  style,
 }: HighlightBoxPropsType) => {
-  let instanceDom: HTMLElement | null = null;
-  // eslint-disable-next-line react/no-find-dom-node
-  const dom = ReactDOM.findDOMNode(instance);
   const [styleObj, setStyleObj] = useState<Record<string, string>>({});
   const [rect, setRect] = useState<DOMRect>();
   const ref = useRef<HighlightCanvasRefType>(null);
@@ -36,37 +35,53 @@ export const HighlightBox = ({
     height: 0,
   });
   const toolBoxRef = useRef<HTMLDivElement>(null);
-
+  const [targetDom, setTargetDom] = useState<HTMLElement>();
   useEffect(() => {
     getRef?.(ref);
-  }, []);
-  useEffect(() => {
-    const toolBoxDom = toolBoxRef.current;
-    if (!toolBoxDom) {
-      return;
+    // eslint-disable-next-line react/no-find-dom-node
+    const dom = ReactDOM.findDOMNode(instance);
+    if (isDOM(dom)) {
+      setTargetDom(dom as unknown as HTMLElement);
     }
-    const resizeObserver = new ResizeObserver((e) => {
+  }, []);
+
+  const updateRef = useRef<() => void>();
+  updateRef.current = () => {
+    const toolBoxDom = toolBoxRef.current;
+    const toolRect = toolBoxDom?.getBoundingClientRect();
+    if (toolRect) {
       setToolBoxSize({
-        width: e[0].contentRect.width,
-        height: e[0].contentRect.height,
+        width: toolRect.width,
+        height: toolRect.height,
       });
-    });
-    resizeObserver.observe(toolBoxDom);
-    () => {
-      resizeObserver.disconnect();
+    }
+  };
+  useEffect(() => {
+    let handle = true;
+    const stepFrame = () => {
+      updateRef.current?.();
+      if (handle) {
+        requestAnimationFrame(stepFrame);
+      }
+    };
+
+    requestAnimationFrame(stepFrame);
+    return () => {
+      handle = false;
     };
   }, []);
 
-  if (!dom) {
-    return <></>;
-  }
-  if (isDOM(dom)) {
-    instanceDom = dom as unknown as HTMLElement;
-  }
   const updatePos = useCallback(() => {
-    if (!instanceDom) {
+    let instanceDom: HTMLElement | null = null;
+    // eslint-disable-next-line react/no-find-dom-node
+    const dom = ReactDOM.findDOMNode(instance);
+    if (isDOM(dom)) {
+      instanceDom = dom as unknown as HTMLElement;
+      setTargetDom(instanceDom);
+    } else {
       return;
     }
+
     const tempRect = instanceDom.getBoundingClientRect();
     setRect(tempRect);
     const transformStr = `translate3d(${tempRect?.left}px, ${tempRect.top}px, 0)`;
@@ -82,11 +97,11 @@ export const HighlightBox = ({
       toolBoxDom.style.height = tempRect?.height + 'px';
     }
     setStyleObj(tempObj);
-  }, [instanceDom]);
+  }, [instance]);
 
   useEffect(() => {
     updatePos();
-  }, []);
+  }, [instance]);
 
   (ref as any).current = {
     update() {
@@ -94,24 +109,31 @@ export const HighlightBox = ({
     },
   };
 
+  if (!targetDom || !instance) {
+    return <></>;
+  }
   return (
     <div
       className={styles.highlightBox}
       id={instance?._UNIQUE_ID}
       style={{
+        ...style,
+        ...styleObj,
         opacity: rect ? 1 : 0,
       }}
     >
-      <div
-        ref={toolBoxRef}
-        className={styles.toolBox}
-        style={{
-          top: `-${toolBoxSize.height + 5}px`,
-          opacity: toolBoxSize.width ? 1 : 0,
-        }}
-      >
-        {toolRender}
-      </div>
+      {toolRender && (
+        <div
+          ref={toolBoxRef}
+          className={styles.toolBox}
+          style={{
+            top: `-${toolBoxSize.height + 5}px`,
+            opacity: toolBoxSize.width ? 1 : 0,
+          }}
+        >
+          {toolRender}
+        </div>
+      )}
     </div>
   );
 };
@@ -120,9 +142,11 @@ export const HighlightCanvasCore = (
   {
     instances,
     toolRender,
+    style,
   }: {
     instances: DesignRenderInstance[];
     toolRender?: React.ReactNode;
+    style?: React.CSSProperties;
   },
   ref: React.Ref<HighlightCanvasRefType>
 ) => {
@@ -152,6 +176,7 @@ export const HighlightCanvasCore = (
         }
         return (
           <HighlightBox
+            style={style}
             key={el?._UNIQUE_ID}
             instance={el}
             toolRender={toolRender}

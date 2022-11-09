@@ -1,6 +1,7 @@
 import * as CRender from '@chameleon/render';
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom';
+import ReactDOMClient from 'react-dom/client';
 
 export class IFrameContainer {
   iframe: HTMLIFrameElement | null;
@@ -105,6 +106,7 @@ export class IFrameContainer {
         CRender?: typeof CRender;
         React?: typeof React;
         ReactDOM?: typeof ReactDOM;
+        ReactDOMClient?: typeof ReactDOMClient;
       })
     | undefined
     | null {

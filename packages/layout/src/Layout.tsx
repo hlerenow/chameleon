@@ -3,7 +3,7 @@ import styles from './Layout.module.scss';
 import { Asset, DesignRenderInstance } from '@chameleon/render';
 import { DesignRender, DesignRenderProp } from '@chameleon/render';
 import { IFrameContainer } from './core/iframeContainer';
-import { addEventListenerReturnCancel } from './utils';
+import { addEventListenerReturnCancel, animationFrame } from './utils';
 import {
   HighlightCanvas,
   HighlightCanvasRefType,
@@ -22,8 +22,11 @@ export class Layout extends React.Component<LayoutPropsType> {
   eventExposeHandler: (() => void)[];
   state: {
     selectComponentInstances: DesignRenderInstance[];
+    hoverComponentInstance: DesignRenderInstance[];
   };
   highlightCanvasRef: React.RefObject<HighlightCanvasRefType>;
+  dnd!: DragAndDrop;
+  highlightHoverCanvasRef: React.RefObject<HighlightCanvasRefType>;
   constructor(props: LayoutPropsType) {
     super(props);
     this.designRenderRef = React.createRef<DesignRender>();
@@ -31,8 +34,10 @@ export class Layout extends React.Component<LayoutPropsType> {
     this.eventExposeHandler = [];
     this.state = {
       selectComponentInstances: [],
+      hoverComponentInstance: [],
     };
     this.highlightCanvasRef = React.createRef<HighlightCanvasRefType>();
+    this.highlightHoverCanvasRef = React.createRef<HighlightCanvasRefType>();
   }
 
   componentDidMount(): void {
@@ -44,7 +49,7 @@ export class Layout extends React.Component<LayoutPropsType> {
       iframeContainer.injectJsText(`
         window.React = window.parent.React;
         window.ReactDOM = window.parent.ReactDOM;
-        console.log(React, ReactDOM)
+        window.ReactDOMClient = window.parent.ReactDOMClient;
       `);
       await iframeContainer.injectJs(renderScriptPath || './index.umd.js');
       this.initIframeLogic();
@@ -56,7 +61,7 @@ export class Layout extends React.Component<LayoutPropsType> {
     const iframeDoc = this.iframeContainer.getDocument()!;
     const CRender = iframeWindow.CRender!;
     const IframeReact = iframeWindow.React!;
-    const IframeReactDOM = iframeWindow.ReactDOM!;
+    const IframeReactDOM = iframeWindow.ReactDOMClient!;
     // 注入组件物料资源
     const assetLoader = new CRender.AssetLoader([
       {
@@ -83,11 +88,10 @@ export class Layout extends React.Component<LayoutPropsType> {
           ref: this.designRenderRef,
         });
 
-        console.log(iframeDoc.getElementById('app'));
-
         IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
         this.registerDragAndDropEvent();
         this.registerSelectEvent();
+        this.registerHoverEvent();
       })
       .load();
   }
@@ -124,7 +128,6 @@ export class Layout extends React.Component<LayoutPropsType> {
           const instanceList = this.designRenderRef.current.getInstancesById(
             componentInstance._NODE_ID || ''
           );
-          console.log('layout click', componentInstance, instanceList);
           // 目前只支持单选
           this.setState({
             selectComponentInstances: [...instanceList],
@@ -146,10 +149,57 @@ export class Layout extends React.Component<LayoutPropsType> {
       })
     );
     this.eventExposeHandler.push(
-      addEventListenerReturnCancel(subDoc.body, 'scroll', () => {
+      addEventListenerReturnCancel(subDoc as any, 'scroll', () => {
         this.highlightCanvasRef.current?.update();
       })
     );
+  }
+
+  registerHoverEvent() {
+    const iframeDoc = this.iframeContainer.getDocument();
+    if (!iframeDoc) {
+      return;
+    }
+    const hoverInstance = (e: MouseEvent) => {
+      if (!e.target) {
+        return;
+      }
+
+      const targetDom = e.target as HTMLElement;
+      const instance =
+        this.designRenderRef.current?.getInstanceByDom(targetDom);
+      if (
+        instance?._NODE_ID ===
+          this.state.selectComponentInstances[0]?._NODE_ID ||
+        this.dnd.currentState === 'DRAGGING'
+      ) {
+        this.setState({
+          hoverComponentInstance: [],
+        });
+        return;
+      }
+
+      const instanceList =
+        this.designRenderRef.current?.getInstancesById(
+          instance?._NODE_ID || ''
+        ) || [];
+
+      this.setState({
+        hoverComponentInstance: instanceList,
+      });
+    };
+    this.eventExposeHandler.push(
+      addEventListenerReturnCancel(
+        iframeDoc.body,
+        'mouseover',
+        hoverInstance,
+        true
+      )
+    );
+    const handler = animationFrame(() => {
+      this.highlightHoverCanvasRef.current?.update();
+    });
+    this.eventExposeHandler.push(handler);
   }
 
   registerDragAndDropEvent() {
@@ -167,6 +217,8 @@ export class Layout extends React.Component<LayoutPropsType> {
     });
     //
 
+    this.dnd = dnd;
+
     const sensor2 = new Sensor({
       name: 'layout',
       container: iframeDoc.body,
@@ -177,6 +229,9 @@ export class Layout extends React.Component<LayoutPropsType> {
     dnd.registerSensor(sensor2);
 
     dnd.emitter.on('dragStart', (e) => {
+      this.setState({
+        hoverComponentInstance: [],
+      });
       console.log('dragStart', e);
     });
 
@@ -196,13 +251,24 @@ export class Layout extends React.Component<LayoutPropsType> {
   }
 
   render() {
-    const { selectComponentInstances } = this.state;
+    const { selectComponentInstances, hoverComponentInstance } = this.state;
     return (
       <div className={styles.layoutContainer} id="iframeBox">
         <HighlightCanvas
           ref={this.highlightCanvasRef}
           instances={selectComponentInstances}
-          toolRender={<div>toolbar</div>}
+          toolRender={<div>toolbar1</div>}
+        />
+        <HighlightCanvas
+          ref={this.highlightHoverCanvasRef}
+          instances={hoverComponentInstance}
+          style={{
+            pointerEvents: 'none',
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            border: '1px dashed rgba(0,0,255, .8)',
+          }}
         />
       </div>
     );

@@ -9,6 +9,7 @@ import './index.css';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOMAll;
+(window as any).ReactDOMClient = ReactDOM;
 
 const components = {
   ...antD,
