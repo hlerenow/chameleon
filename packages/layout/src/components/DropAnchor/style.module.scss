@@ -1,0 +1,41 @@
+.highlightBox {
+  position: absolute;
+  will-change: transform, width, height, left, right;
+  background: rgba(80, 80, 80, 0.322);
+}
+
+.borderDrawBox {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 999;
+  pointer-events: none;
+}
+
+.toolBox {
+  position: absolute;
+  right: 0;
+  top: -20px;
+  border: 1px solid black;
+  box-sizing: border-box;
+}
+
+.horizontal {
+  &.before {
+    border-left: 2px solid red;
+  }
+  &.after {
+    border-right: 2px solid red;
+  }
+}
+
+.vertical {
+  &.before {
+    border-top: 2px solid red;
+  }
+  &.after {
+    border-bottom: 2px solid red;
+  }
+}

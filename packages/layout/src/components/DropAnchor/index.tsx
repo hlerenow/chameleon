@@ -9,27 +9,114 @@ import styles from './style.module.scss';
 import ReactDOM from 'react-dom';
 import { animationFrame, isDOM } from '../../utils';
 import { DesignRenderInstance } from '@chameleon/render';
+import { DragAndDropEventType } from '../../core/dragAndDrop';
+import clsx from 'clsx';
 
 export type HighlightCanvasRefType = {
   update: () => void;
 };
 
-export type HighlightBoxPropsType = {
+export type DropPosType = {
+  direction: 'vertical' | 'horizontal';
+  pos: 'before' | 'after' | 'current';
+};
+
+// todo: 位置计算有缺陷， styles 应该取被 drop 的组件来计算
+export function judgeVertical(
+  styles: CSSStyleDeclaration,
+  parentStyle: CSSStyleDeclaration
+) {
+  const { display: parentDisplay, flexDirection } = parentStyle;
+  if (
+    parentDisplay === 'flex' &&
+    ['row', 'row-reverse'].includes(flexDirection)
+  ) {
+    return false;
+  }
+
+  const { display } = styles;
+  if (['inline', 'inline-block', 'float', 'grid'].includes(display)) {
+    return false;
+  }
+
+  return true;
+}
+
+function calculateDropPosInfo(params: {
+  point: { x: number; y: number };
+  dom: HTMLElement;
+  originalDom?: HTMLElement;
+  innerClass?: string;
+}): DropPosType {
+  const { point, dom, originalDom, innerClass } = params;
+  let pos: DropPosType['pos'];
+  const targetDomStyle = getComputedStyle(dom);
+  let isVertical = true;
+
+  if (dom.parentElement) {
+    const parentStyle = getComputedStyle(dom.parentElement);
+    isVertical = judgeVertical(targetDomStyle, parentStyle);
+  }
+  const mousePos = point;
+  const targetRect = dom.getBoundingClientRect();
+  const targetDomW = targetRect.width;
+  const targetDomH = targetRect.height;
+  const xCenter = targetRect.x + Math.round(targetDomW / 2);
+  const yCenter = targetRect.y + Math.round(targetDomH / 2);
+
+  const hotAreaSpace = 10;
+  if (innerClass && originalDom?.classList.contains(innerClass)) {
+    if (
+      mousePos.y > targetRect.y + hotAreaSpace &&
+      mousePos.y < targetRect.y + targetRect.height - hotAreaSpace &&
+      mousePos.x > targetRect.x + hotAreaSpace &&
+      mousePos.x < targetRect.x + targetRect.width - hotAreaSpace
+    ) {
+      pos = 'current';
+      return {
+        pos,
+        direction: 'horizontal',
+      };
+    }
+  }
+
+  if (isVertical) {
+    if (mousePos.y > yCenter) {
+      pos = 'after';
+    } else {
+      pos = 'before';
+    }
+  } else if (mousePos.x > xCenter) {
+    pos = 'after';
+  } else {
+    pos = 'before';
+  }
+
+  return {
+    pos,
+    direction: isVertical ? 'vertical' : 'horizontal',
+  };
+}
+
+export type DropAnchorPropsType = {
   instance: DesignRenderInstance;
   toolRender?: React.ReactNode;
+  mouseEvent: DragAndDropEventType['dragging'] | null;
   style?: React.CSSProperties;
   getRef?: (ref: React.RefObject<HighlightCanvasRefType>) => void;
   onRefDestroy?: (ref: React.RefObject<HighlightCanvasRefType>) => void;
 };
 
-export const HighlightBox = ({
+export const DropAnchor = ({
   instance,
   toolRender,
   getRef,
   onRefDestroy,
   style,
-}: HighlightBoxPropsType) => {
+  mouseEvent,
+}: DropAnchorPropsType) => {
   const [styleObj, setStyleObj] = useState<Record<string, string>>({});
+  const [posClassName, setPosClassName] = useState<string[]>([]);
   const [rect, setRect] = useState<DOMRect>();
   const ref = useRef<HighlightCanvasRefType>(null);
   const [toolBoxSize, setToolBoxSize] = useState({
@@ -71,6 +158,7 @@ export const HighlightBox = ({
     };
   }, []);
 
+  // 绘制落点
   const updatePos = useCallback(() => {
     let instanceDom: HTMLElement | null = null;
     // eslint-disable-next-line react/no-find-dom-node
@@ -97,11 +185,37 @@ export const HighlightBox = ({
       toolBoxDom.style.height = tempRect?.height + 'px';
     }
     setStyleObj(tempObj);
-  }, [instance]);
+
+    if (!mouseEvent) {
+      return null;
+    }
+    const { current: originalEvent } = mouseEvent;
+    const dropInfo = calculateDropPosInfo({
+      point: {
+        x: originalEvent.clientX,
+        y: originalEvent.clientY,
+      },
+      dom: instanceDom,
+      originalDom: originalEvent.target as HTMLElement,
+      innerClass: 'drop-inner-placeholder',
+    });
+    const classNameMap = {
+      horizontal: styles.horizontal,
+      vertical: styles.vertical,
+      before: styles.before,
+      after: styles.after,
+      current: styles.current,
+    };
+    const classList = [
+      classNameMap[dropInfo.direction],
+      classNameMap[dropInfo.pos],
+    ];
+    setPosClassName(classList);
+  }, [instance, mouseEvent]);
 
   useEffect(() => {
     updatePos();
-  }, [instance]);
+  }, [instance, mouseEvent]);
 
   (ref as any).current = {
     update() {
@@ -114,7 +228,7 @@ export const HighlightBox = ({
   }
   return (
     <div
-      className={styles.highlightBox}
+      className={clsx([styles.highlightBox, ...posClassName])}
       id={instance?._UNIQUE_ID}
       style={{
         ...style,
@@ -138,13 +252,15 @@ export const HighlightBox = ({
   );
 };
 
-export const HighlightCanvasCore = (
+export const DropAnchorCanvasCore = (
   {
     instances,
     toolRender,
     style,
+    mouseEvent,
   }: {
     instances: DesignRenderInstance[];
+    mouseEvent: DragAndDropEventType['dragging'] | null;
     toolRender?: React.ReactNode;
     style?: React.CSSProperties;
   },
@@ -179,7 +295,8 @@ export const HighlightCanvasCore = (
           return null;
         }
         return (
-          <HighlightBox
+          <DropAnchor
+            mouseEvent={mouseEvent}
             style={style}
             key={el?._UNIQUE_ID}
             instance={el}
@@ -197,4 +314,4 @@ export const HighlightCanvasCore = (
   );
 };
 
-export const HighlightCanvas = React.forwardRef(HighlightCanvasCore);
+export const DropAnchorCanvas = React.forwardRef(DropAnchorCanvasCore);

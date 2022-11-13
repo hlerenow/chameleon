@@ -8,25 +8,30 @@ import {
   HighlightCanvas,
   HighlightCanvasRefType,
 } from './components/HighlightBox';
-import { DragAndDrop } from './core/dragAndDrop';
+import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
 import { Sensor } from './core/dragAndDrop/sensor';
+import { DropAnchorCanvas } from './components/DropAnchor';
 
 export type LayoutPropsType = Omit<DesignRenderProp, 'adapter'> & {
   renderScriptPath?: string;
   assets?: Asset;
 };
 
-export class Layout extends React.Component<LayoutPropsType> {
+export type LayoutStateType = {
+  selectComponentInstances: DesignRenderInstance[];
+  hoverComponentInstances: DesignRenderInstance[];
+  dropComponentInstances: DesignRenderInstance[];
+  dropEvent: DragAndDropEventType['dragging'] | null;
+};
+export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   designRenderRef: React.RefObject<DesignRender>;
   iframeContainer: IFrameContainer;
   eventExposeHandler: (() => void)[];
-  state: {
-    selectComponentInstances: DesignRenderInstance[];
-    hoverComponentInstance: DesignRenderInstance[];
-  };
+  state: LayoutStateType;
   highlightCanvasRef: React.RefObject<HighlightCanvasRefType>;
   dnd!: DragAndDrop;
   highlightHoverCanvasRef: React.RefObject<HighlightCanvasRefType>;
+  highlightDropAnchorCanvasRef: React.RefObject<HighlightCanvasRefType>;
   constructor(props: LayoutPropsType) {
     super(props);
     this.designRenderRef = React.createRef<DesignRender>();
@@ -34,10 +39,14 @@ export class Layout extends React.Component<LayoutPropsType> {
     this.eventExposeHandler = [];
     this.state = {
       selectComponentInstances: [],
-      hoverComponentInstance: [],
+      hoverComponentInstances: [],
+      dropComponentInstances: [],
+      dropEvent: null,
     };
     this.highlightCanvasRef = React.createRef<HighlightCanvasRefType>();
     this.highlightHoverCanvasRef = React.createRef<HighlightCanvasRefType>();
+    this.highlightDropAnchorCanvasRef =
+      React.createRef<HighlightCanvasRefType>();
   }
 
   componentDidMount(): void {
@@ -128,7 +137,6 @@ export class Layout extends React.Component<LayoutPropsType> {
           const instanceList = this.designRenderRef.current.getInstancesById(
             componentInstance._NODE_ID || ''
           );
-          // 目前只支持单选
           this.setState({
             selectComponentInstances: [...instanceList],
           });
@@ -174,7 +182,7 @@ export class Layout extends React.Component<LayoutPropsType> {
         this.dnd.currentState === 'DRAGGING'
       ) {
         this.setState({
-          hoverComponentInstance: [],
+          hoverComponentInstances: [],
         });
         return;
       }
@@ -185,7 +193,7 @@ export class Layout extends React.Component<LayoutPropsType> {
         ) || [];
 
       this.setState({
-        hoverComponentInstance: instanceList,
+        hoverComponentInstances: instanceList,
       });
     };
     this.eventExposeHandler.push(
@@ -197,7 +205,11 @@ export class Layout extends React.Component<LayoutPropsType> {
       )
     );
     const handler = animationFrame(() => {
-      this.highlightHoverCanvasRef.current?.update();
+      if (this.highlightHoverCanvasRef.current) {
+        this.highlightHoverCanvasRef.current?.update();
+      } else {
+        handler();
+      }
     });
     this.eventExposeHandler.push(handler);
 
@@ -207,7 +219,7 @@ export class Layout extends React.Component<LayoutPropsType> {
         'mouseleave',
         () => {
           this.setState({
-            hoverComponentInstance: [],
+            hoverComponentInstances: [],
           });
         },
         true
@@ -241,18 +253,42 @@ export class Layout extends React.Component<LayoutPropsType> {
     dnd.registerSensor(sensor);
     dnd.registerSensor(sensor2);
 
-    dnd.emitter.on('dragStart', (e) => {
+    dnd.emitter.on('dragStart', (eventObj) => {
+      console.log(eventObj, 'eventObj');
       this.setState({
-        hoverComponentInstance: [],
+        hoverComponentInstances: [],
       });
-      console.log('dragStart', e);
+      // console.log('dragStart', e);
     });
 
     dnd.emitter.on('dragging', (e) => {
-      console.log('dragging', e);
+      // console.log('dragging', e);
+      const { current: event } = e;
+
+      if (!this.designRenderRef.current) {
+        return;
+      }
+      const componentInstance = this.designRenderRef.current.getInstanceByDom(
+        event.target as unknown as HTMLElement
+      );
+      if (!componentInstance) {
+        return;
+      }
+      // const instanceList = this.designRenderRef.current.getInstancesById(
+      //   componentInstance._NODE_ID || ''
+      // );
+      this.setState({
+        dropComponentInstances: [componentInstance],
+        dropEvent: e,
+      });
     });
+
     dnd.emitter.on('dragEnd', (e) => {
-      console.log('dragEnd', e);
+      // console.log('dragEnd', e);
+      this.setState({
+        dropEvent: null,
+        dropComponentInstances: [],
+      });
     });
     dnd.emitter.on('drop', (e) => {
       console.log('drop', e);
@@ -264,7 +300,13 @@ export class Layout extends React.Component<LayoutPropsType> {
   }
 
   render() {
-    const { selectComponentInstances, hoverComponentInstance } = this.state;
+    const {
+      selectComponentInstances,
+      hoverComponentInstances,
+      dropComponentInstances,
+      dropEvent,
+    } = this.state;
+
     return (
       <div className={styles.layoutContainer} id="iframeBox">
         <HighlightCanvas
@@ -273,8 +315,9 @@ export class Layout extends React.Component<LayoutPropsType> {
           toolRender={<div>toolbar1</div>}
         />
         <HighlightCanvas
+          key={'highlightHoverCanvasRef'}
           ref={this.highlightHoverCanvasRef}
-          instances={hoverComponentInstance}
+          instances={hoverComponentInstances}
           style={{
             pointerEvents: 'none',
             position: 'absolute',
@@ -282,6 +325,11 @@ export class Layout extends React.Component<LayoutPropsType> {
             top: 0,
             border: '1px dashed rgba(0,0,255, .8)',
           }}
+        />
+        <DropAnchorCanvas
+          ref={this.highlightDropAnchorCanvasRef}
+          instances={dropComponentInstances}
+          mouseEvent={dropEvent}
         />
       </div>
     );
