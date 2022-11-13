@@ -305,6 +305,66 @@ export const BasePage = {
           },
         ],
       },
+      {
+        id: '34',
+        componentName: 'Table',
+        state: {
+          a: 3,
+          data: data,
+        },
+        props: {
+          columns,
+          dataSource: {
+            type: 'EXPRESSION',
+            value: '$$context.state.data',
+          },
+        },
+      },
+      {
+        id: '33',
+        componentName: 'Table',
+        state: {
+          a: 3,
+          data: data,
+        },
+        props: {
+          columns,
+          dataSource: {
+            type: 'EXPRESSION',
+            value: '$$context.state.data',
+          },
+        },
+      },
+      {
+        id: '32',
+        componentName: 'Table',
+        state: {
+          a: 3,
+          data: data,
+        },
+        props: {
+          columns,
+          dataSource: {
+            type: 'EXPRESSION',
+            value: '$$context.state.data',
+          },
+        },
+      },
+      {
+        id: '31',
+        componentName: 'Table',
+        state: {
+          a: 3,
+          data: data,
+        },
+        props: {
+          columns,
+          dataSource: {
+            type: 'EXPRESSION',
+            value: '$$context.state.data',
+          },
+        },
+      },
     ],
   },
 };
