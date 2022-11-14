@@ -20,10 +20,16 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter'> & {
 export type LayoutStateType = {
   currentSelectInstance: DesignRenderInstance;
   selectComponentInstances: DesignRenderInstance[];
+  selectLockStyle: React.CSSProperties;
   hoverComponentInstances: DesignRenderInstance[];
   dropComponentInstances: DesignRenderInstance[];
   dropEvent: DragAndDropEventType['dragging'] | null;
 };
+
+const SELECT_LOCK_STYLE: React.CSSProperties = {
+  backgroundColor: 'rgba(0,0,0,0.2)',
+};
+
 export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   designRenderRef: React.RefObject<DesignRender>;
   iframeContainer: IFrameContainer;
@@ -41,6 +47,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     this.state = {
       currentSelectInstance: null,
       selectComponentInstances: [],
+      selectLockStyle: {},
       hoverComponentInstances: [],
       dropComponentInstances: [],
       dropEvent: null,
@@ -180,9 +187,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       const instance =
         this.designRenderRef.current?.getInstanceByDom(targetDom);
       if (
-        instance?._NODE_ID ===
-          this.state.selectComponentInstances[0]?._NODE_ID ||
-        this.dnd.currentState === 'DRAGGING'
+        instance?._NODE_ID === this.state.selectComponentInstances[0]?._NODE_ID
       ) {
         this.setState({
           hoverComponentInstances: [],
@@ -261,8 +266,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       const startInstance = this.designRenderRef.current?.getInstanceByDom(
         eventObj.from.target as HTMLElement
       );
-      console.log(eventObj, 'eventObj');
-      console.log(this.state.currentSelectInstance);
       const currentSelectDom = this.designRenderRef.current?.getDomsById(
         currentSelectInstance?._NODE_ID || ''
       );
@@ -281,7 +284,15 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             hoverComponentInstances: [],
           });
         }
-        console.log('不包含选中元素');
+      } else if (!currentSelectDom?.length) {
+        this.setState({
+          currentSelectInstance: startInstance,
+          selectComponentInstances:
+            this.designRenderRef.current?.getInstancesById(
+              startInstance?._NODE_ID || ''
+            ) || [],
+          hoverComponentInstances: [],
+        });
       } else {
         this.setState({
           hoverComponentInstances: [],
@@ -295,6 +306,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     dnd.emitter.on('dragging', (e) => {
       // console.log('dragging', e);
       const { current: event } = e;
+      this.setState({
+        selectLockStyle: SELECT_LOCK_STYLE,
+      });
 
       if (!this.designRenderRef.current) {
         return;
@@ -335,6 +349,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       this.setState({
         dropEvent: null,
         dropComponentInstances: [],
+        selectLockStyle: {},
       });
     });
     dnd.emitter.on('drop', (e) => {
@@ -352,6 +367,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       hoverComponentInstances,
       dropComponentInstances,
       dropEvent,
+      selectLockStyle,
     } = this.state;
 
     return (
@@ -360,6 +376,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         <HighlightCanvas
           ref={this.highlightCanvasRef}
           instances={selectComponentInstances}
+          style={selectLockStyle}
           toolRender={<div>toolbar1</div>}
         />
         {/* 左上角添加显示元素名功能 */}

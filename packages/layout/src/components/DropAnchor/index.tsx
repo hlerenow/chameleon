@@ -172,10 +172,13 @@ export const DropAnchor = ({
 
     const tempRect = instanceDom.getBoundingClientRect();
     setRect(tempRect);
-    const transformStr = `translate3d(${tempRect?.left}px, ${tempRect.top}px, 0)`;
+    const space = 3;
+    const transformStr = `translate3d(${tempRect?.left - space}px, ${
+      tempRect.top - space
+    }px, 0)`;
     const tempObj = {
-      width: tempRect?.width + 'px',
-      height: tempRect?.height + 'px',
+      width: tempRect?.width + space * 2 + 'px',
+      height: tempRect?.height + space * 2 + 'px',
       transform: transformStr,
     };
     const toolBoxDom = document.getElementById(instance?._UNIQUE_ID || '');
