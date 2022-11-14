@@ -1,5 +1,4 @@
 import { CNode } from '.';
-import { CSchema } from '..';
 import { ExportType } from '../../../const/schema';
 import { CMaterials } from '../../../Material';
 

@@ -57,9 +57,7 @@ const handleObjProp = (
 ): any => {
   if (data.type) {
     if (data.type === CNodePropsTypeEnum.SLOT) {
-      const tempData = data as RenderPropType;
       // 转换为 Slot Node
-
       const newNode = new CSlot(data, { parent, materials });
       return newNode;
 

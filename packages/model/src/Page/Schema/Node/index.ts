@@ -3,7 +3,7 @@ import { CSchema } from '..';
 import { ExportType } from '../../../const/schema';
 import { CMaterials } from '../../../Material';
 import { CNodeDataStructDescribe, CNodeDataType } from '../../../types/node';
-import { getRandomStr, clearSchema } from '../../../util';
+import { getRandomStr, clearSchema, getNode } from '../../../util';
 import { checkComplexData } from '../../../util/dataCheck';
 import {
   DataModelEmitter,
@@ -169,6 +169,11 @@ export class CNode {
       preValue: oldData,
       node: this,
     });
+  }
+
+  contains(nodeId: string) {
+    const res = getNode(this, nodeId);
+    return res;
   }
 
   get props() {

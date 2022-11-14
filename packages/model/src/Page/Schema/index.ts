@@ -7,7 +7,7 @@ import {
   CSchemaDataTypeDescribe,
   InnerComponentNameEnum,
 } from '../../types/schema';
-import { clearSchema, getRandomStr } from '../../util';
+import { clearSchema, getNode, getRandomStr } from '../../util';
 import { checkComplexData } from '../../util/dataCheck';
 import { isArray, isPlainObject } from '../../util/lodash';
 import { DataModelEmitter, DataModelEventType } from '../../util/modelEmitter';
@@ -152,6 +152,10 @@ export class CSchema {
       preValue: oldData,
       node: this,
     });
+  }
+  contains(nodeId: string) {
+    const res = getNode(this, nodeId);
+    return res;
   }
 
   export(mode: ExportType = ExportTypeEnum.SAVE): CSchemaDataType {

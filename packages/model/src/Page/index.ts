@@ -6,10 +6,10 @@ import { ExportType, ExportTypeEnum } from '../const/schema';
 import { CMaterials } from '../Material';
 import { CNode } from './Schema/Node';
 import { CNodeDataType } from '../types/node';
-import { isArray, isPlainObject, omit } from 'lodash-es';
+import { isPlainObject, omit } from 'lodash-es';
 import { CProp } from './Schema/Node/prop';
 import { CSlot } from './Schema/Node/slot';
-import { clearSchema, getRandomStr } from '../util';
+import { clearSchema, getNode, getRandomStr } from '../util';
 
 export const checkPage = (data: any): CPageDataType => {
   checkComplexData({
@@ -78,56 +78,7 @@ export class CPage {
   // moveNode(from, to, pos) {}
   getNode(id: string) {
     const nodeTree = this.data.componentsTree;
-    const nodeList: (CSchema | CNode)[] = [nodeTree];
-    while (nodeList.length) {
-      const target = nodeList.shift();
-      if (target?.id === id) {
-        return target;
-      }
-
-      const props = target?.props || {};
-
-      const dpProps = (prop: unknown) => {
-        if (prop instanceof CNode) {
-          nodeList.push(prop);
-          return;
-        }
-
-        if (prop instanceof CSlot) {
-          dpProps(prop.value.value);
-        }
-
-        if (prop instanceof CProp) {
-          dpProps(prop.value);
-          return;
-        }
-        if (isPlainObject(prop)) {
-          const obj = prop as Record<string, any>;
-          Object.keys(obj).map((key) => {
-            dpProps(obj[key]);
-          });
-          return;
-        }
-
-        if (isArray(prop)) {
-          prop.forEach((it) => {
-            dpProps(it);
-          });
-          return;
-        }
-      };
-
-      // 检索所有的 props 中的节点
-      dpProps(props);
-      // 合并入待索引的列表
-      const tempNodeList: CNode[] =
-        (target?.value.children.filter(
-          (el) => el instanceof CNode
-        ) as CNode[]) || [];
-      nodeList.push(...tempNodeList);
-    }
-
-    return null;
+    return getNode(nodeTree, id);
   }
 
   addNode(

@@ -18,6 +18,7 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter'> & {
 };
 
 export type LayoutStateType = {
+  currentSelectInstance: DesignRenderInstance;
   selectComponentInstances: DesignRenderInstance[];
   hoverComponentInstances: DesignRenderInstance[];
   dropComponentInstances: DesignRenderInstance[];
@@ -38,6 +39,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     this.iframeContainer = new IFrameContainer();
     this.eventExposeHandler = [];
     this.state = {
+      currentSelectInstance: null,
       selectComponentInstances: [],
       hoverComponentInstances: [],
       dropComponentInstances: [],
@@ -138,6 +140,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             componentInstance._NODE_ID || ''
           );
           this.setState({
+            currentSelectInstance: componentInstance,
             selectComponentInstances: [...instanceList],
           });
         },
@@ -254,10 +257,38 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     dnd.registerSensor(sensor2);
 
     dnd.emitter.on('dragStart', (eventObj) => {
+      const { currentSelectInstance } = this.state;
+      const startInstance = this.designRenderRef.current?.getInstanceByDom(
+        eventObj.from.target as HTMLElement
+      );
       console.log(eventObj, 'eventObj');
-      this.setState({
-        hoverComponentInstances: [],
-      });
+      console.log(this.state.currentSelectInstance);
+      const currentSelectDom = this.designRenderRef.current?.getDomsById(
+        currentSelectInstance?._NODE_ID || ''
+      );
+      const dragStartDom = this.designRenderRef.current?.getDomsById(
+        startInstance?._NODE_ID || ''
+      );
+
+      if (currentSelectDom?.length && dragStartDom?.length) {
+        if (!currentSelectDom[0].contains(dragStartDom[0])) {
+          this.setState({
+            currentSelectInstance: startInstance,
+            selectComponentInstances:
+              this.designRenderRef.current?.getInstancesById(
+                startInstance?._NODE_ID || ''
+              ) || [],
+            hoverComponentInstances: [],
+          });
+        }
+        console.log('不包含选中元素');
+      } else {
+        this.setState({
+          hoverComponentInstances: [],
+        });
+        console.log('包含选中元素');
+      }
+
       // console.log('dragStart', e);
     });
 
@@ -271,9 +302,25 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       const componentInstance = this.designRenderRef.current.getInstanceByDom(
         event.target as unknown as HTMLElement
       );
+
       if (!componentInstance) {
         return;
       }
+
+      // TODO: 如果落点元素是拖动元素的子元素则不允许放置
+      const isContainDragStartEl =
+        this.state.currentSelectInstance?._NODE_MODEL?.contains(
+          componentInstance._NODE_ID
+        );
+
+      if (isContainDragStartEl) {
+        this.setState({
+          dropEvent: null,
+          dropComponentInstances: [],
+        });
+        return;
+      }
+
       // const instanceList = this.designRenderRef.current.getInstancesById(
       //   componentInstance._NODE_ID || ''
       // );
@@ -309,11 +356,13 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
     return (
       <div className={styles.layoutContainer} id="iframeBox">
+        {/* TODO:  选中框， 添加锁定功能 */}
         <HighlightCanvas
           ref={this.highlightCanvasRef}
           instances={selectComponentInstances}
           toolRender={<div>toolbar1</div>}
         />
+        {/* 左上角添加显示元素名功能 */}
         <HighlightCanvas
           key={'highlightHoverCanvasRef'}
           ref={this.highlightHoverCanvasRef}
