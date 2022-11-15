@@ -1,3 +1,4 @@
+import { BaseDragAndDropEventType } from '../../types/dragAndDrop';
 import { addEventListenerReturnCancel } from '../../utils';
 import { Pointer } from './common';
 import { DEmitter } from './emitter';
@@ -8,24 +9,26 @@ export type SensorOffsetType = {
   y: number;
 };
 
-export type SensorEventType = {
+export type SensorEventObjType = {
   sensor: Sensor;
   pointer: Pointer;
   event: MouseEvent;
   extraData?: Record<string, any>;
 };
 
-export type EventType = {
-  onLeave: Omit<SensorEventType, 'pointer'>;
-  onEnter: Omit<SensorEventType, 'pointer'>;
-  onMouseChange: SensorEventType;
-  onMouseUp: SensorEventType;
-  onMouseDown: SensorEventType;
-  onMouseMove: SensorEventType;
-  onClick: Omit<SensorEventType, 'pointer'>;
-};
+export type SensorEventType = {
+  onLeave: Omit<SensorEventObjType, 'pointer'>;
+  onEnter: Omit<SensorEventObjType, 'pointer'>;
+  onMouseChange: SensorEventObjType;
+  onMouseUp: SensorEventObjType;
+  onMouseDown: SensorEventObjType;
+  onMouseMove: SensorEventObjType;
+  onClick: Omit<SensorEventObjType, 'pointer'>;
+} & BaseDragAndDropEventType;
 
-export class Sensor extends DEmitter<EventType> {
+export type SensorEventNameType = keyof SensorEventType;
+
+export class Sensor extends DEmitter<SensorEventType> {
   private offset: SensorOffsetType = {
     x: 0,
     y: 0,
@@ -34,8 +37,10 @@ export class Sensor extends DEmitter<EventType> {
   container: HTMLElement;
   offsetDom?: HTMLElement | null;
 
-  canDrag: (params: SensorEventType) => SensorEventType = (params) => params;
-  canDrop: (params: SensorEventType) => SensorEventType = (params) => params;
+  canDrag: (params: SensorEventObjType) => SensorEventObjType = (params) =>
+    params;
+  canDrop: (params: SensorEventObjType) => SensorEventObjType = (params) =>
+    params;
 
   private eventDisposeQueue: (() => void)[] = [];
   name: string;

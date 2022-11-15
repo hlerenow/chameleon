@@ -6,7 +6,7 @@ import { Layout } from './Layout';
 import * as antD from 'antd';
 import '@chameleon/material/dist/style.css';
 import './index.css';
-import { Sensor, SensorEventType } from './core/dragAndDrop/sensor';
+import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOMAll;
@@ -27,7 +27,7 @@ const App = () => {
         name: 'widgetListBox',
         container: leftBoxRef.current!,
       });
-      boxSensor.setCanDrag((eventObj: SensorEventType) => {
+      boxSensor.setCanDrag((eventObj: SensorEventObjType) => {
         return {
           ...eventObj,
           extraData: {
@@ -40,6 +40,19 @@ const App = () => {
         };
       });
       layoutRef.current?.dnd.registerSensor(boxSensor);
+
+      boxSensor.emitter.on('dragStart', (eventObj) => {
+        console.log('box drag start', eventObj);
+      });
+      boxSensor.emitter.on('dragging', (eventObj) => {
+        console.log('box dragging', eventObj);
+      });
+      boxSensor.emitter.on('dragEnd', (eventObj) => {
+        console.log('box dragEnd', eventObj);
+      });
+      boxSensor.emitter.on('drop', (eventObj) => {
+        console.log('box drop', eventObj);
+      });
     });
   }, []);
   return (

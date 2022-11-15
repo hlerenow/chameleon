@@ -274,7 +274,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
     dnd.registerSensor(sensor);
     const { onSelectNode } = this.props;
-    dnd.emitter.on('dragStart', (eventObj) => {
+    sensor.emitter.on('dragStart', (eventObj) => {
       const { currentSelectInstance } = this.state;
       const { extraData } = eventObj;
       const startInstance = this.designRenderRef.current?.getInstanceByDom(
@@ -329,7 +329,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       // console.log('dragStart', e);
     });
 
-    dnd.emitter.on('dragging', (e) => {
+    sensor.emitter.on('dragging', (e) => {
       // console.log('dragging', e);
       const { current: event } = e;
       this.setState({
@@ -370,7 +370,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       });
     });
 
-    dnd.emitter.on('dragEnd', (e) => {
+    sensor.emitter.on('dragEnd', (e) => {
       // console.log('dragEnd', e);
       this.setState({
         dropEvent: null,
@@ -378,7 +378,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         selectLockStyle: {},
       });
     });
-    dnd.emitter.on('drop', (e) => {
+    sensor.emitter.on('drop', (e) => {
       console.log('drop', e, this.state.dropInfo);
     });
   }
