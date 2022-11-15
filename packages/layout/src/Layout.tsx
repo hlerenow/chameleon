@@ -12,7 +12,7 @@ import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
 import { Sensor } from './core/dragAndDrop/sensor';
 import { DropAnchorCanvas } from './components/DropAnchor';
 
-export type LayoutPropsType = Omit<DesignRenderProp, 'adapter'> & {
+export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   renderScriptPath?: string;
   assets?: Asset;
 };
@@ -24,6 +24,7 @@ export type LayoutStateType = {
   hoverComponentInstances: DesignRenderInstance[];
   dropComponentInstances: DesignRenderInstance[];
   dropEvent: DragAndDropEventType['dragging'] | null;
+  ready: boolean;
 };
 
 const SELECT_LOCK_STYLE: React.CSSProperties = {
@@ -39,12 +40,14 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   dnd!: DragAndDrop;
   highlightHoverCanvasRef: React.RefObject<HighlightCanvasRefType>;
   highlightDropAnchorCanvasRef: React.RefObject<HighlightCanvasRefType>;
+  readyCbList: ((layoutInstance: Layout) => void)[] = [];
   constructor(props: LayoutPropsType) {
     super(props);
     this.designRenderRef = React.createRef<DesignRender>();
     this.iframeContainer = new IFrameContainer();
     this.eventExposeHandler = [];
     this.state = {
+      ready: false,
       currentSelectInstance: null,
       selectComponentInstances: [],
       selectLockStyle: {},
@@ -110,8 +113,21 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         this.registerDragAndDropEvent();
         this.registerSelectEvent();
         this.registerHoverEvent();
+        this.readyOk();
       })
       .load();
+  }
+
+  readyOk() {
+    this.setState({
+      ready: true,
+    });
+    const readyCbList = this.readyCbList;
+    this.readyCbList = [];
+    while (readyCbList.length) {
+      const cb = readyCbList.shift();
+      cb?.(this);
+    }
   }
 
   registerSelectEvent() {
@@ -240,26 +256,16 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     const dnd = new DragAndDrop({
       doc: document,
     });
-    const sensor = new Sensor({
-      name: 'parentDoc',
-      container: document.body,
-      offset: {
-        x: 0,
-        y: 0,
-      },
-    });
-    //
 
     this.dnd = dnd;
 
-    const sensor2 = new Sensor({
+    const sensor = new Sensor({
       name: 'layout',
       container: iframeDoc.body,
       offsetDom: document.getElementById('iframeBox'),
     });
 
     dnd.registerSensor(sensor);
-    dnd.registerSensor(sensor2);
 
     dnd.emitter.on('dragStart', (eventObj) => {
       const { currentSelectInstance } = this.state;
@@ -359,6 +365,14 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
   componentWillUnmount(): void {
     this.eventExposeHandler.forEach((el) => el());
+  }
+
+  ready(cb: (layoutInstance: Layout) => void) {
+    if (this.state.ready) {
+      cb(this);
+    } else {
+      this.readyCbList.push(cb);
+    }
   }
 
   render() {

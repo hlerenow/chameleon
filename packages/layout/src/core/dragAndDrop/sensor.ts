@@ -12,6 +12,7 @@ export type SensorEventType = {
   sensor: Sensor;
   pointer: Pointer;
   event: MouseEvent;
+  extraData?: Record<string, any>;
 };
 
 export type EventType = {
@@ -33,8 +34,8 @@ export class Sensor extends DEmitter<EventType> {
   container: HTMLElement;
   offsetDom?: HTMLElement | null;
 
-  canDrag: (params: SensorEventType) => boolean = () => true;
-  canDrop: (params: SensorEventType) => boolean = () => true;
+  canDrag: (params: SensorEventType) => SensorEventType = (params) => params;
+  canDrop: (params: SensorEventType) => SensorEventType = (params) => params;
 
   private eventDisposeQueue: (() => void)[] = [];
   name: string;

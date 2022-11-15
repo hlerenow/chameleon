@@ -8,6 +8,7 @@ export type DragAndDropEventType = {
     from: MouseEvent;
     fromSensor: Sensor;
     pointer: Pointer;
+    extraData?: Record<string, any>;
   };
   dragging: {
     from: MouseEvent;
@@ -16,6 +17,7 @@ export type DragAndDropEventType = {
     current: MouseEvent;
     currentSensor: Sensor;
     pointer: Pointer;
+    extraData?: Record<string, any>;
   };
   dragEnd: {
     from: MouseEvent;
@@ -24,6 +26,7 @@ export type DragAndDropEventType = {
     current: MouseEvent;
     currentSensor: Sensor;
     pointer: Pointer;
+    extraData?: Record<string, any>;
   };
   drop: {
     from: MouseEvent;
@@ -32,6 +35,7 @@ export type DragAndDropEventType = {
     current: MouseEvent;
     currentSensor: Sensor;
     pointer: Pointer;
+    extraData?: Record<string, any>;
   };
   click: Omit<SensorEventType, 'pointer'>;
 };
@@ -96,6 +100,7 @@ export class DragAndDrop {
           from: this.dragStartObj!.event,
           fromSensor: this.dragStartObj!.sensor,
           fromPointer: this.dragStartObj!.pointer,
+          extraData: this.dragStartObj!.extraData || {},
           current: event,
           currentSensor: sensor,
           pointer: pointer,
@@ -110,6 +115,7 @@ export class DragAndDrop {
             from: this.dragStartObj!.event,
             fromSensor: this.dragStartObj!.sensor,
             fromPointer: this.dragStartObj!.pointer,
+            extraData: this.dragStartObj!.extraData || {},
             current: event,
             currentSensor: sensor,
             pointer: pointer,
@@ -154,11 +160,13 @@ export class DragAndDrop {
         if (!canDrag) {
           return;
         }
+        this.dragStartObj = canDrag;
         this.currentState = 'DRAGGING';
         this.emitter.emit('dragStart', {
           from: this.dragStartObj.event,
           fromSensor: this.dragStartObj.sensor,
           pointer: this.dragStartObj.pointer,
+          extraData: this.dragStartObj.extraData || {},
         });
       }
 
@@ -166,6 +174,7 @@ export class DragAndDrop {
         from: this.dragStartObj!.event,
         fromSensor: this.dragStartObj!.sensor,
         fromPointer: this.dragStartObj!.pointer,
+        extraData: this.dragStartObj!.extraData || {},
         current: event,
         currentSensor: sensor,
         pointer: pointer,
