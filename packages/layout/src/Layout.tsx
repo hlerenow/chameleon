@@ -10,11 +10,13 @@ import {
 } from './components/HighlightBox';
 import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
 import { Sensor } from './core/dragAndDrop/sensor';
-import { DropAnchorCanvas } from './components/DropAnchor';
+import { DropAnchorCanvas, DropPosType } from './components/DropAnchor';
+import { CNode, CSchema } from '@chameleon/model';
 
 export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   renderScriptPath?: string;
   assets?: Asset;
+  onSelectNode?: (node: CNode | CSchema | null) => void;
 };
 
 export type LayoutStateType = {
@@ -25,6 +27,7 @@ export type LayoutStateType = {
   dropComponentInstances: DesignRenderInstance[];
   dropEvent: DragAndDropEventType['dragging'] | null;
   ready: boolean;
+  dropInfo: DropPosType | null;
 };
 
 const SELECT_LOCK_STYLE: React.CSSProperties = {
@@ -54,6 +57,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       hoverComponentInstances: [],
       dropComponentInstances: [],
       dropEvent: null,
+      dropInfo: null,
     };
     this.highlightCanvasRef = React.createRef<HighlightCanvasRefType>();
     this.highlightHoverCanvasRef = React.createRef<HighlightCanvasRefType>();
@@ -64,6 +68,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   componentDidMount(): void {
     const { renderScriptPath } = this.props;
     console.log(this.designRenderRef);
+    (window as any).DesignRender = this.designRenderRef;
     const iframeContainer = this.iframeContainer;
     iframeContainer.load(document.getElementById('iframeBox')!);
     iframeContainer.ready(async () => {
@@ -131,6 +136,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   }
 
   registerSelectEvent() {
+    const { onSelectNode } = this.props;
     const iframeDoc = this.iframeContainer.getDocument();
     const subWin = this.iframeContainer.getWindow();
 
@@ -162,6 +168,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           const instanceList = this.designRenderRef.current.getInstancesById(
             componentInstance._NODE_ID || ''
           );
+          onSelectNode?.(componentInstance._NODE_MODEL);
           this.setState({
             currentSelectInstance: componentInstance,
             selectComponentInstances: [...instanceList],
@@ -266,9 +273,10 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
 
     dnd.registerSensor(sensor);
-
+    const { onSelectNode } = this.props;
     dnd.emitter.on('dragStart', (eventObj) => {
       const { currentSelectInstance } = this.state;
+      const { extraData } = eventObj;
       const startInstance = this.designRenderRef.current?.getInstanceByDom(
         eventObj.from.target as HTMLElement
       );
@@ -279,8 +287,19 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         startInstance?._NODE_ID || ''
       );
 
+      if (extraData?.triggerData) {
+        this.setState({
+          currentSelectInstance: null,
+          selectComponentInstances: [],
+          hoverComponentInstances: [],
+        });
+        onSelectNode?.(null);
+        return;
+      }
+
       if (currentSelectDom?.length && dragStartDom?.length) {
         if (!currentSelectDom[0].contains(dragStartDom[0])) {
+          onSelectNode?.(startInstance?._NODE_MODEL || null);
           this.setState({
             currentSelectInstance: startInstance,
             selectComponentInstances:
@@ -291,6 +310,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           });
         }
       } else if (!currentSelectDom?.length) {
+        onSelectNode?.(startInstance?._NODE_MODEL || null);
         this.setState({
           currentSelectInstance: startInstance,
           selectComponentInstances:
@@ -359,7 +379,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       });
     });
     dnd.emitter.on('drop', (e) => {
-      console.log('drop', e);
+      console.log('drop', e, this.state.dropInfo);
     });
   }
 
@@ -410,6 +430,11 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           ref={this.highlightDropAnchorCanvasRef}
           instances={dropComponentInstances}
           mouseEvent={dropEvent}
+          onDropInfoChange={(di) => {
+            this.setState({
+              dropInfo: di,
+            });
+          }}
         />
       </div>
     );

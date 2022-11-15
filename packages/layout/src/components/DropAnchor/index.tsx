@@ -105,6 +105,7 @@ export type DropAnchorPropsType = {
   style?: React.CSSProperties;
   getRef?: (ref: React.RefObject<HighlightCanvasRefType>) => void;
   onRefDestroy?: (ref: React.RefObject<HighlightCanvasRefType>) => void;
+  onDropInfoChange?: (dropInfo: DropPosType) => void;
 };
 
 export const DropAnchor = ({
@@ -114,6 +115,7 @@ export const DropAnchor = ({
   onRefDestroy,
   style,
   mouseEvent,
+  onDropInfoChange,
 }: DropAnchorPropsType) => {
   const [styleObj, setStyleObj] = useState<Record<string, string>>({});
   const [posClassName, setPosClassName] = useState<string[]>([]);
@@ -202,6 +204,7 @@ export const DropAnchor = ({
       originalDom: originalEvent.target as HTMLElement,
       innerClass: 'drop-inner-placeholder',
     });
+    onDropInfoChange?.(dropInfo);
     const classNameMap = {
       horizontal: styles.horizontal,
       vertical: styles.vertical,
@@ -261,11 +264,13 @@ export const DropAnchorCanvasCore = (
     toolRender,
     style,
     mouseEvent,
+    onDropInfoChange,
   }: {
     instances: DesignRenderInstance[];
     mouseEvent: DragAndDropEventType['dragging'] | null;
     toolRender?: React.ReactNode;
     style?: React.CSSProperties;
+    onDropInfoChange?: (dropInfo: DropPosType) => void;
   },
   ref: React.Ref<HighlightCanvasRefType>
 ) => {
@@ -299,6 +304,7 @@ export const DropAnchorCanvasCore = (
         }
         return (
           <DropAnchor
+            onDropInfoChange={onDropInfoChange}
             mouseEvent={mouseEvent}
             style={style}
             key={el?._UNIQUE_ID}

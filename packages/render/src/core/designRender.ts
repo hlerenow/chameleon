@@ -56,6 +56,9 @@ export class DesignRender extends React.Component<DesignRenderProp> {
     super(props);
     this.renderRef = React.createRef<Render>();
   }
+  getPageModel() {
+    return this.renderRef.current?.state.pageModel;
+  }
 
   onGetComponent = (comp: any, node: CSchema | CNode) => {
     // eslint-disable-next-line @typescript-eslint/no-this-alias

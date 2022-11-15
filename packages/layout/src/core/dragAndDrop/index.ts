@@ -68,7 +68,6 @@ export class DragAndDrop {
 
   registerSensor(sensor: Sensor) {
     this.senors.push(sensor);
-
     sensor.emitter.on('onClick', ({ event }) => {
       if (!this.canTriggerClick) {
         event.stopPropagation();

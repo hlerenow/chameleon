@@ -30,7 +30,13 @@ const App = () => {
       boxSensor.setCanDrag((eventObj: SensorEventType) => {
         return {
           ...eventObj,
-          extraData: { a: 1 },
+          extraData: {
+            triggerData: {
+              id: '111',
+              componentName: 'Button',
+              children: ['insertData'],
+            },
+          },
         };
       });
       layoutRef.current?.dnd.registerSensor(boxSensor);
