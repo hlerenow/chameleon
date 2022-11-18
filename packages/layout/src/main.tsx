@@ -56,6 +56,9 @@ const App = () => {
         return {
           ...eventObj,
           extraData: {
+            dropInfo: {
+              pos: 'before',
+            },
             dropNode: dropInstance?._NODE_MODEL,
             dropNodeUid: dropInstance?._UNIQUE_ID,
           } as LayoutDragAndDropExtraDataType,

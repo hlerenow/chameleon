@@ -162,6 +162,7 @@ export const DropAnchor = ({
 
   // 绘制落点
   const updatePos = useCallback(() => {
+    console.log(1111, mouseEvent?.extraData);
     let instanceDom: HTMLElement | null = null;
     // eslint-disable-next-line react/no-find-dom-node
     const dom = ReactDOM.findDOMNode(instance);
@@ -195,7 +196,7 @@ export const DropAnchor = ({
       return null;
     }
     const { current: originalEvent } = mouseEvent;
-    const dropInfo = calculateDropPosInfo({
+    let dropInfo = calculateDropPosInfo({
       point: {
         x: originalEvent.clientX,
         y: originalEvent.clientY,
@@ -204,7 +205,14 @@ export const DropAnchor = ({
       originalDom: originalEvent.target as HTMLElement,
       innerClass: 'drop-inner-placeholder',
     });
+    if (mouseEvent?.extraData.dropInfo) {
+      dropInfo = {
+        ...dropInfo,
+        ...mouseEvent?.extraData.dropInfo,
+      };
+    }
     onDropInfoChange?.(dropInfo);
+
     const classNameMap = {
       horizontal: styles.horizontal,
       vertical: styles.vertical,
@@ -216,6 +224,12 @@ export const DropAnchor = ({
       classNameMap[dropInfo.direction],
       classNameMap[dropInfo.pos],
     ];
+    console.log(
+      '🚀 ~ file: index.tsx ~ line 215 ~ updatePos ~ dropInfo',
+      dropInfo,
+      rect,
+      posClassName
+    );
     setPosClassName(classList);
   }, [instance, mouseEvent]);
 

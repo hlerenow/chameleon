@@ -12,6 +12,7 @@ import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
 import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
 import { DropAnchorCanvas, DropPosType } from './components/DropAnchor';
 import { CNode, CSchema } from '@chameleon/model';
+import { Pointer } from './core/dragAndDrop/common';
 
 export type LayoutDragAndDropExtraDataType = {
   type: 'NEW_ADD';
@@ -19,6 +20,7 @@ export type LayoutDragAndDropExtraDataType = {
   startNodeUid?: string;
   dropNode?: CNode | CSchema;
   dropNodeUid?: string;
+  dropInfo: Partial<DropPosType>;
 };
 
 export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
@@ -28,13 +30,15 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
 };
 
 export type LayoutStateType = {
+  ready: boolean;
+  isDragging: boolean;
+  mousePointer: Pointer;
   currentSelectInstance: DesignRenderInstance;
   selectComponentInstances: DesignRenderInstance[];
   selectLockStyle: React.CSSProperties;
   hoverComponentInstances: DesignRenderInstance[];
   dropComponentInstances: DesignRenderInstance[];
   dropEvent: DragAndDropEventType['dragging'] | null;
-  ready: boolean;
   dropInfo: DropPosType | null;
 };
 
@@ -58,7 +62,12 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     this.iframeContainer = new IFrameContainer();
     this.eventExposeHandler = [];
     this.state = {
+      isDragging: false,
       ready: false,
+      mousePointer: {
+        x: 0,
+        y: 0,
+      },
       currentSelectInstance: null,
       selectComponentInstances: [],
       selectLockStyle: {},
@@ -309,6 +318,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     dnd.registerSensor(sensor);
     const { onSelectNode } = this.props;
     sensor.emitter.on('dragStart', (eventObj) => {
+      this.setState({
+        isDragging: true,
+      });
       const { currentSelectInstance } = this.state;
       const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
       const dragStartNode = extraData.startNode!;
@@ -367,6 +379,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     sensor.emitter.on('dragging', (e) => {
       console.log('dragging', e);
       this.setState({
+        mousePointer: e.pointer,
+      });
+      this.setState({
         selectLockStyle: SELECT_LOCK_STYLE,
       });
 
@@ -422,6 +437,8 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     sensor.emitter.on('dragEnd', (e) => {
       // console.log('dragEnd', e);
       this.setState({
+        isDragging: false,
+        mousePointer: { x: 0, y: 0 },
         dropEvent: null,
         dropComponentInstances: [],
         selectLockStyle: {},
@@ -434,6 +451,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
   componentWillUnmount(): void {
     this.eventExposeHandler.forEach((el) => el());
+    this.iframeContainer.iframe?.parentNode?.removeChild(
+      this.iframeContainer.iframe
+    );
   }
 
   ready(cb: (layoutInstance: Layout) => void) {
@@ -451,6 +471,8 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       dropComponentInstances,
       dropEvent,
       selectLockStyle,
+      isDragging,
+      mousePointer,
     } = this.state;
 
     return (
@@ -485,6 +507,25 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             });
           }}
         />
+        {isDragging && (
+          <div
+            style={{
+              position: 'fixed',
+              left: mousePointer?.x - 5 + 'px',
+              top: mousePointer?.y - 8 + 'px',
+              backgroundColor: 'rgba(0, 0, 0,0.5)',
+              padding: '2px 20px',
+              borderRadius: '2px',
+              cursor: 'move',
+              fontSize: '14px',
+              width: '100px',
+              textAlign: 'center',
+              pointerEvents: 'none',
+            }}
+          >
+            ghost
+          </div>
+        )}
       </div>
     );
   }
