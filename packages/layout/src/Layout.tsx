@@ -9,9 +9,17 @@ import {
   HighlightCanvasRefType,
 } from './components/HighlightBox';
 import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
-import { Sensor } from './core/dragAndDrop/sensor';
+import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
 import { DropAnchorCanvas, DropPosType } from './components/DropAnchor';
 import { CNode, CSchema } from '@chameleon/model';
+
+export type LayoutDragAndDropExtraDataType = {
+  type: 'NEW_ADD';
+  startNode?: CNode | CSchema;
+  startNodeUid?: string;
+  dropNode?: CNode | CSchema;
+  dropNodeUid?: string;
+};
 
 export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   renderScriptPath?: string;
@@ -153,7 +161,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           e.stopPropagation();
           e.preventDefault();
           e.stopImmediatePropagation();
-
           if (!this.designRenderRef.current) {
             return;
           }
@@ -272,22 +279,50 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       offsetDom: document.getElementById('iframeBox'),
     });
 
+    sensor.setCanDrag((eventObj: SensorEventObjType) => {
+      const startInstance = this.designRenderRef.current?.getInstanceByDom(
+        eventObj.event.target as HTMLElement
+      );
+      return {
+        ...eventObj,
+        extraData: {
+          startNode: startInstance?._NODE_MODEL,
+          startNodeUid: startInstance?._UNIQUE_ID,
+        },
+      };
+    });
+
+    sensor.setCanDrop((eventObj: SensorEventObjType) => {
+      const dropInstance = this.designRenderRef.current?.getInstanceByDom(
+        eventObj.event.target as HTMLElement
+      );
+      console.log(dropInstance?._NODE_ID, dropInstance?._UNIQUE_ID);
+      return {
+        ...eventObj,
+        extraData: {
+          dropNode: dropInstance?._NODE_MODEL,
+          dropNodeUid: dropInstance?._UNIQUE_ID,
+        } as LayoutDragAndDropExtraDataType,
+      };
+    });
+
     dnd.registerSensor(sensor);
     const { onSelectNode } = this.props;
     sensor.emitter.on('dragStart', (eventObj) => {
       const { currentSelectInstance } = this.state;
-      const { extraData } = eventObj;
-      const startInstance = this.designRenderRef.current?.getInstanceByDom(
-        eventObj.from.target as HTMLElement
-      );
+      const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
+      const dragStartNode = extraData.startNode!;
+      const startInstance: DesignRenderInstance = (
+        this.designRenderRef.current?.getInstancesById(dragStartNode.id) || []
+      ).shift();
       const currentSelectDom = this.designRenderRef.current?.getDomsById(
         currentSelectInstance?._NODE_ID || ''
       );
       const dragStartDom = this.designRenderRef.current?.getDomsById(
-        startInstance?._NODE_ID || ''
+        dragStartNode.id
       );
 
-      if (extraData?.triggerData) {
+      if (extraData?.type === 'NEW_ADD') {
         this.setState({
           currentSelectInstance: null,
           selectComponentInstances: [],
@@ -330,8 +365,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
 
     sensor.emitter.on('dragging', (e) => {
-      // console.log('dragging', e);
-      const { current: event } = e;
+      console.log('dragging', e);
       this.setState({
         selectLockStyle: SELECT_LOCK_STYLE,
       });
@@ -339,10 +373,25 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       if (!this.designRenderRef.current) {
         return;
       }
-      const componentInstance = this.designRenderRef.current.getInstanceByDom(
-        event.target as unknown as HTMLElement
-      );
 
+      const extraData = e.extraData as LayoutDragAndDropExtraDataType;
+      console.log('drop', extraData.dropNode?.id, extraData?.dropNodeUid);
+
+      const componentInstance = (
+        this.designRenderRef.current.getInstancesById(
+          extraData.dropNode?.id || '',
+          extraData.dropNodeUid
+        ) || []
+      ).shift();
+      console.log(
+        'res',
+        componentInstance?._NODE_ID,
+        componentInstance?._UNIQUE_ID,
+        this.designRenderRef.current.getInstancesById(
+          extraData.dropNode?.id || '',
+          extraData.dropNodeUid
+        )
+      );
       if (!componentInstance) {
         return;
       }

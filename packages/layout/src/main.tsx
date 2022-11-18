@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import ReactDOMAll from 'react-dom';
 import { BasePage } from '@chameleon/demo-page';
-import { Layout } from './Layout';
+import { Layout, LayoutDragAndDropExtraDataType } from './Layout';
 import * as antD from 'antd';
 import '@chameleon/material/dist/style.css';
 import './index.css';
@@ -31,7 +31,7 @@ const App = () => {
         return {
           ...eventObj,
           extraData: {
-            triggerData: {
+            startNode: {
               id: '111',
               componentName: 'Button',
               children: ['insertData'],
@@ -41,17 +41,38 @@ const App = () => {
       });
       layoutRef.current?.dnd.registerSensor(boxSensor);
 
+      boxSensor.setCanDrop((eventObj) => {
+        const dropInstance = (
+          layoutRef.current?.designRenderRef.current?.getInstancesById(
+            'div1'
+          ) || []
+        ).shift();
+
+        console.log(
+          dropInstance,
+          dropInstance?._NODE_ID,
+          dropInstance?._UNIQUE_ID
+        );
+        return {
+          ...eventObj,
+          extraData: {
+            dropNode: dropInstance?._NODE_MODEL,
+            dropNodeUid: dropInstance?._UNIQUE_ID,
+          } as LayoutDragAndDropExtraDataType,
+        };
+      });
+
       boxSensor.emitter.on('dragStart', (eventObj) => {
-        console.log('box drag start', eventObj);
+        // console.log('box drag start', eventObj);
       });
       boxSensor.emitter.on('dragging', (eventObj) => {
-        console.log('box dragging', eventObj);
+        // console.log('box dragging', eventObj);
       });
       boxSensor.emitter.on('dragEnd', (eventObj) => {
-        console.log('box dragEnd', eventObj);
+        // console.log('box dragEnd', eventObj);
       });
       boxSensor.emitter.on('drop', (eventObj) => {
-        console.log('box drop', eventObj);
+        // console.log('box drop', eventObj);
       });
     });
   }, []);

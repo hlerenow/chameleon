@@ -7,7 +7,7 @@ import { RenderPropsType, Render, UseRenderReturnType } from './render';
 import * as ReactDOM from 'react-dom';
 
 export class ComponentInstanceManager {
-  private instanceMap = new Map<string, any[]>();
+  private instanceMap = new Map<string, DesignRenderInstance[]>();
 
   get(id: string) {
     return this.instanceMap.get(id);
@@ -105,8 +105,14 @@ export class DesignRender extends React.Component<DesignRenderProp> {
     return this.renderRef.current?.rerender(newPage);
   }
 
-  getInstancesById(id: string): DesignRenderInstance[] {
-    return this.instanceManager.get(id) || [];
+  getInstancesById(id: string, uniqueId?: string): DesignRenderInstance[] {
+    let res = [...(this.instanceManager.get(id) || [])];
+    if (uniqueId !== undefined) {
+      res = res.filter((el) => {
+        return uniqueId === el?._UNIQUE_ID;
+      });
+    }
+    return res;
   }
   getInstanceByDom(el: HTMLHtmlElement | Element): DesignRenderInstance | null {
     const fiberNode = findClosetFiberNode(el);
@@ -172,7 +178,7 @@ export type UseDesignRenderReturnType = Pick<
   'rerender'
 > & {
   ref: React.MutableRefObject<DesignRender | null>;
-  getInstancesById: (id: string) => DesignRenderInstance[];
+  getInstancesById: (id: string, uid?: string) => DesignRenderInstance[];
   getInstanceByDom: (dom: HTMLHtmlElement | Element) => DesignRenderInstance;
   getDomsById: (id: string, selector?: string) => HTMLElement[];
   getDomRectById: (id: string, selector?: string) => DOMRect | DOMRect[];
@@ -225,8 +231,8 @@ export const useDesignRender = (): UseDesignRenderReturnType => {
         ref.current.rerender(...args);
       }
     },
-    getInstancesById(id) {
-      return ref.current?.getInstancesById(id) || [];
+    getInstancesById(id, uid) {
+      return ref.current?.getInstancesById(id, uid) || [];
     },
     getInstanceByDom(el) {
       return ref.current?.getInstanceByDom(el);

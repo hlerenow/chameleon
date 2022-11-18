@@ -1,10 +1,7 @@
 import { Pointer } from './common';
-import { SensorEventType, Sensor, SensorEventObjType } from './sensor';
+import { SensorEventType, Sensor } from './sensor';
 import mitt from 'mitt';
-import {
-  BaseDragAndDropEventType,
-  DragAndDropEventObj,
-} from '../../types/dragAndDrop';
+import { BaseDragAndDropEventType } from '../../types/dragAndDrop';
 
 type EmptyFunc = () => void;
 export type DragAndDropEventType = {
@@ -35,6 +32,31 @@ export class DragAndDrop {
     if (options.dragConfig?.shakeDistance !== undefined) {
       this.shakeDistance = options.dragConfig?.shakeDistance;
     }
+
+    // global sensor
+    const sensor = new Sensor({
+      name: 'globalSensor',
+      container: this.doc as unknown as HTMLElement,
+    });
+
+    sensor.setCanDrag(() => {
+      return null;
+    });
+
+    this.registerSensor(sensor, {
+      banEvent: false,
+    });
+
+    // sensor.emitter.on('onMouseMove', (e) => {
+    //   console.log(Math.random(), e);
+    // });
+    sensor.emitter.on('onMouseUp', (e) => {
+      console.log('onMouseUp global', Math.random(), e);
+      this.currentState = 'NORMAL';
+      this.dragStartObj = null;
+
+      this.batchSensorEmit('dragEnd', {} as any);
+    });
   }
 
   batchSensorEmit(
@@ -47,7 +69,13 @@ export class DragAndDrop {
     });
   }
 
-  registerSensor(sensor: Sensor) {
+  registerSensor(
+    sensor: Sensor,
+    options?: {
+      banEvent: boolean;
+    }
+  ) {
+    const { banEvent = true } = options || {};
     this.senors.push(sensor);
     sensor.emitter.on('onClick', ({ event }) => {
       if (!this.canTriggerClick) {
@@ -60,20 +88,20 @@ export class DragAndDrop {
     const onMouseDown = (eventObj: SensorEventType['onMouseDown']) => {
       this.dragStartObj = eventObj;
       const { event } = eventObj;
-      event.stopPropagation();
-      event.preventDefault();
+      if (banEvent) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
     };
+
     sensor.emitter.on('onMouseDown', onMouseDown);
     this.eventHandler.push(() => {
       sensor.emitter.off('onMouseDown', onMouseDown);
     });
 
     // mousemove
-    const onMouseMove = ({
-      sensor,
-      pointer,
-      event,
-    }: SensorEventType['onMouseMove']) => {
+    const onMouseMove = (mouseMoveEventObj: SensorEventType['onMouseMove']) => {
+      const { sensor, pointer, event } = mouseMoveEventObj;
       if (this.currentState !== 'DRAGGING') {
         if (this.dragStartObj === null) {
           return;
@@ -109,13 +137,21 @@ export class DragAndDrop {
         };
         this.emitter.emit(eventName, eventObj);
         this.batchSensorEmit(eventName, eventObj);
+        return;
       }
 
+      const canDrop = sensor.canDrop(mouseMoveEventObj);
+      if (!canDrop) {
+        return;
+      }
       const draggingEventIbj = {
         from: this.dragStartObj!.event,
         fromSensor: this.dragStartObj!.sensor,
         fromPointer: this.dragStartObj!.pointer,
-        extraData: this.dragStartObj!.extraData || {},
+        extraData: {
+          ...this.dragStartObj!.extraData,
+          ...canDrop.extraData,
+        },
         current: event,
         currentSensor: sensor,
         pointer: pointer,
@@ -164,7 +200,10 @@ export class DragAndDrop {
             from: this.dragStartObj!.event,
             fromSensor: this.dragStartObj!.sensor,
             fromPointer: this.dragStartObj!.pointer,
-            extraData: this.dragStartObj!.extraData || {},
+            extraData: {
+              ...this.dragStartObj!.extraData,
+              ...canDrop.extraData,
+            },
             current: event,
             currentSensor: sensor,
             pointer: pointer,
