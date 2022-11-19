@@ -39,6 +39,7 @@ const App = () => {
           },
         };
       });
+
       layoutRef.current?.dnd.registerSensor(boxSensor);
 
       boxSensor.setCanDrop((eventObj) => {
@@ -88,7 +89,13 @@ const App = () => {
         display: 'flex',
       }}
     >
-      <div ref={leftBoxRef} style={{ border: '1px solid red', width: '300px' }}>
+      <div
+        ref={leftBoxRef}
+        style={{ border: '1px solid red', width: '300px' }}
+        onClick={() => {
+          layoutRef.current?.selectNode('32');
+        }}
+      >
         left
       </div>
       <div

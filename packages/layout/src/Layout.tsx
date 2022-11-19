@@ -449,6 +449,19 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
   }
 
+  selectNode(nodeId: string) {
+    const instanceList =
+      this.designRenderRef.current?.getInstancesById(nodeId) || [];
+    if (!instanceList.length) {
+      return;
+    }
+    const instance = instanceList[0];
+    this.setState({
+      currentSelectInstance: instance,
+      selectComponentInstances: [...instanceList],
+    });
+  }
+
   componentWillUnmount(): void {
     this.eventExposeHandler.forEach((el) => el());
     this.iframeContainer.iframe?.parentNode?.removeChild(
