@@ -7,6 +7,7 @@ import * as antD from 'antd';
 import '@chameleon/material/dist/style.css';
 import './index.css';
 import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
+import { CNode } from '@chameleon/model';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOMAll;
@@ -54,19 +55,26 @@ const App = () => {
           dropInstance?._NODE_ID,
           dropInstance?._UNIQUE_ID
         );
+
+        const newNode = new CNode({
+          id: 'newAdd',
+          componentName: 'Button',
+          children: ['new add'],
+        });
         return {
           ...eventObj,
           extraData: {
             dropInfo: {
-              pos: 'before',
+              // pos: 'before',
             },
-            dropNode: dropInstance?._NODE_MODEL,
-            dropNodeUid: dropInstance?._UNIQUE_ID,
+            dropNode: newNode,
           } as LayoutDragAndDropExtraDataType,
         };
       });
 
       boxSensor.emitter.on('dragStart', (eventObj) => {
+        layoutRef.current?.clearSelectNode();
+
         // console.log('box drag start', eventObj);
       });
       boxSensor.emitter.on('dragging', (eventObj) => {
@@ -103,6 +111,8 @@ const App = () => {
           width: '800px',
           height: '100%',
           margin: '0 auto',
+          overflow: 'hidden',
+          padding: '10px',
         }}
       >
         <Layout ref={layoutRef} page={page} components={components} />

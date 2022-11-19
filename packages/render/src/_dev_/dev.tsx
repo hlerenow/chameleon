@@ -47,7 +47,7 @@ function App() {
           '🚀 ~ file: dev.tsx ~ line 50 ~ useEffect ~ instance',
           instance
         );
-        const targetDom = renderHandle.getDomById(instance?._NODE_ID || '');
+        const targetDom = renderHandle.getDomsById(instance?._NODE_ID || '');
         const targetDomRectList = renderHandle.getDomRectById(
           instance?._NODE_ID || ''
         );

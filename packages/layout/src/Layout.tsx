@@ -27,6 +27,10 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   renderScriptPath?: string;
   assets?: Asset;
   onSelectNode?: (node: CNode | CSchema | null) => void;
+  selectToolBar?: React.ReactNode;
+  selectBoxStyle?: React.CSSProperties;
+  hoverBoxStyle?: React.CSSProperties;
+  hoverToolBar?: React.ReactNode;
 };
 
 export type LayoutStateType = {
@@ -462,6 +466,13 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
   }
 
+  clearSelectNode() {
+    this.setState({
+      currentSelectInstance: null,
+      selectComponentInstances: [],
+    });
+  }
+
   componentWillUnmount(): void {
     this.eventExposeHandler.forEach((el) => el());
     this.iframeContainer.iframe?.parentNode?.removeChild(
@@ -488,14 +499,24 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       mousePointer,
     } = this.state;
 
+    const {
+      selectToolBar,
+      hoverToolBar,
+      selectBoxStyle = {},
+      hoverBoxStyle = {},
+    } = this.props;
+
     return (
       <div className={styles.layoutContainer} id="iframeBox">
         {/* TODO:  选中框， 添加锁定功能 */}
         <HighlightCanvas
           ref={this.highlightCanvasRef}
           instances={selectComponentInstances}
-          style={selectLockStyle}
-          toolRender={<div>toolbar1</div>}
+          style={{
+            ...selectBoxStyle,
+            ...selectLockStyle,
+          }}
+          toolRender={selectToolBar}
         />
         {/* 左上角添加显示元素名功能 */}
         <HighlightCanvas
@@ -508,7 +529,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             left: 0,
             top: 0,
             border: '1px dashed rgba(0,0,255, .8)',
+            ...hoverBoxStyle,
           }}
+          toolRender={hoverToolBar}
         />
         <DropAnchorCanvas
           ref={this.highlightDropAnchorCanvasRef}

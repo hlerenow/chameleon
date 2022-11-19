@@ -224,12 +224,6 @@ export const DropAnchor = ({
       classNameMap[dropInfo.direction],
       classNameMap[dropInfo.pos],
     ];
-    console.log(
-      '🚀 ~ file: index.tsx ~ line 215 ~ updatePos ~ dropInfo',
-      dropInfo,
-      rect,
-      posClassName
-    );
     setPosClassName(classList);
   }, [instance, mouseEvent]);
 
