@@ -170,10 +170,6 @@ class DefineReactAdapter {
           // TODO: 需要做额外的处理
           return (...args: any[]) => {
             return renderList.map((renderItem) => {
-              console.log(
-                '🚀 ~ file: adapterReact.ts ~ line 172 ~ DefineReactAdapter ~ returnrenderList.map ~ renderItem',
-                renderItem
-              );
               const isClassComponent = shouldConstruct(renderItem.component);
 
               if (isClassComponent) {

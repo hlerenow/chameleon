@@ -92,7 +92,10 @@ describe('test page model methods', () => {
   it('test move a node', () => {
     const page = new CPage(mockPageData);
     page.moveNodeById('999', '5', 'AFTER');
+    page.export();
     page.moveNodeById('5', '2', 'AFTER');
+    page.export();
+
     const targetNode = page.getNode('5');
     const anchorNode = page.getNode('2');
     expect(page.getNode('5')).not.toBeNull();

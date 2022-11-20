@@ -105,7 +105,7 @@ export type DropAnchorPropsType = {
   style?: React.CSSProperties;
   getRef?: (ref: React.RefObject<HighlightCanvasRefType>) => void;
   onRefDestroy?: (ref: React.RefObject<HighlightCanvasRefType>) => void;
-  onDropInfoChange?: (dropInfo: DropPosType) => void;
+  onDropInfoChange?: (dropInfo: DropPosType | null) => void;
 };
 
 export const DropAnchor = ({
@@ -198,6 +198,7 @@ export const DropAnchor = ({
     setStyleObj(tempObj);
 
     if (!mouseEvent) {
+      onDropInfoChange?.(null);
       return null;
     }
     const { current: originalEvent } = mouseEvent;
@@ -217,6 +218,10 @@ export const DropAnchor = ({
       };
     }
     onDropInfoChange?.(dropInfo);
+    console.log(
+      '🚀 ~ file: index.tsx ~ line 220 ~ updatePos ~ dropInfo',
+      dropInfo
+    );
 
     const classNameMap = {
       horizontal: styles.horizontal,

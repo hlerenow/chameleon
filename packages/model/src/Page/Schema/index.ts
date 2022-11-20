@@ -69,9 +69,14 @@ export const parseSchema = (
 
   if (propsKeys.length) {
     propsKeys.forEach((propKey) => {
-      res.props[propKey] = new CProp(propKey, data.props?.[propKey] || '', {
-        parent: parent,
-      });
+      const targetProps = data.props?.[propKey];
+      if (targetProps instanceof CProp) {
+        res.props[propKey] = targetProps;
+      } else {
+        res.props[propKey] = new CProp(propKey, targetProps || '', {
+          parent: parent,
+        });
+      }
     });
   }
   res.children = child;

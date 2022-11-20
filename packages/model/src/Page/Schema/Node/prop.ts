@@ -168,6 +168,14 @@ export class CProp {
       if (propVal instanceof CNode) {
         return propVal.export(mode);
       }
+
+      if (isArray(propVal)) {
+        const newList: any[] = propVal.map((el) => {
+          return handleSingleProps(el);
+        });
+        return newList;
+      }
+
       if (isPlainObject(propVal)) {
         const newObj: Record<string, any> = {};
 
@@ -177,16 +185,6 @@ export class CProp {
         return newObj;
       }
 
-      if (isArray(propVal)) {
-        const newList: any[] = propVal.map((el) => {
-          return handleSingleProps(el);
-        });
-        return newList;
-      }
-
-      if (mode === 'design') {
-        delete propVal.id;
-      }
       return propVal;
     };
     return handleSingleProps(data);

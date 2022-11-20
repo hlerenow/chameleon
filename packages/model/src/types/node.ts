@@ -19,7 +19,7 @@ import { isPlainObject } from '../util/lodash';
 
 export type NormalPropType = string | boolean | number | Record<string, any>;
 
-// get enum value listr
+// get enum value list
 type IValue = `${SlotRenderType}`;
 
 export type RenderPropType = {

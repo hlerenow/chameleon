@@ -314,6 +314,12 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       const dropInstance = this.designRenderRef.current?.getInstanceByDom(
         eventObj.event.target as HTMLElement
       );
+      if (!dropInstance) {
+        this.setState({
+          dropComponentInstances: [],
+        });
+        return;
+      }
       // TODO: 如果落点元素是拖动元素的子元素则不允许放置
       const isContainDragStartEl =
         this.state.currentSelectInstance?._NODE_MODEL?.contains(
@@ -394,7 +400,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       }
     });
 
-    sensor.emitter.on('onMouseMove', (e) => {
+    const onMouseMove = (e: { pointer: any }) => {
       if (this.state.isDragging) {
         this.setState({
           mousePointer: e.pointer,
@@ -406,7 +412,11 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           selectLockStyle: {},
         });
       }
-    });
+    };
+
+    sensor.emitter.on('onMouseMove', onMouseMove);
+
+    this.dnd.emitter.on('onMouseMove', onMouseMove);
 
     sensor.emitter.on('dragging', (e) => {
       if (!this.designRenderRef.current) {

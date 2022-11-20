@@ -1,11 +1,12 @@
 import { Pointer } from './common';
-import { SensorEventType, Sensor } from './sensor';
+import { SensorEventType, Sensor, SensorEventObjType } from './sensor';
 import mitt from 'mitt';
 import { BaseDragAndDropEventType } from '../../types/dragAndDrop';
 
 type EmptyFunc = () => void;
 export type DragAndDropEventType = {
   click: Omit<SensorEventType, 'pointer'>;
+  onMouseMove: SensorEventObjType;
 } & BaseDragAndDropEventType;
 export class DragAndDrop {
   senors: Sensor[] = [];
@@ -98,6 +99,7 @@ export class DragAndDrop {
 
     // mousemove
     const onMouseMove = (mouseMoveEventObj: SensorEventType['onMouseMove']) => {
+      this.emitter.emit('onMouseMove', mouseMoveEventObj);
       const { sensor, pointer, event } = mouseMoveEventObj;
       if (this.currentState !== 'DRAGGING') {
         if (this.dragStartObj === null) {
