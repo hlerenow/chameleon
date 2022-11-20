@@ -46,6 +46,7 @@ type DesignWrapType = {
   _NODE_MODEL: CNode | CSchema;
   _NODE_ID: string;
   _UNIQUE_ID: string;
+  _STATUS?: 'DESTROY';
 };
 
 export class DesignRender extends React.Component<DesignRenderProp> {
@@ -68,6 +69,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
       _NODE_MODEL = node;
       _NODE_ID = node.id;
       _UNIQUE_ID = `${node.id}_${getRandomStr()}`;
+      _STATUS?: 'DESTROY';
 
       componentDidMount(): void {
         self.instanceManager.add(node.id, this);
@@ -75,6 +77,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
 
       componentWillUnmount(): void {
         self.instanceManager.remove(node.id, this);
+        this._STATUS = 'DESTROY';
       }
 
       render() {
@@ -126,8 +129,10 @@ export class DesignRender extends React.Component<DesignRenderProp> {
     const instances = this.getInstancesById(id);
     const doms: HTMLElement[] = [];
     instances?.forEach((el) => {
+      if (el?._STATUS === 'DESTROY') {
+        return;
+      }
       const dom = ReactDOM.findDOMNode(el);
-
       if (dom && !(dom instanceof Text)) {
         if (selector) {
           // 判断是不是数组

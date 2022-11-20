@@ -129,6 +129,9 @@ export const DropAnchor = ({
   const [targetDom, setTargetDom] = useState<HTMLElement>();
   useEffect(() => {
     getRef?.(ref);
+    if (instance?._STATUS === 'DESTROY') {
+      return;
+    }
     // eslint-disable-next-line react/no-find-dom-node
     const dom = ReactDOM.findDOMNode(instance);
     if (isDOM(dom)) {
@@ -162,8 +165,10 @@ export const DropAnchor = ({
 
   // 绘制落点
   const updatePos = useCallback(() => {
-    console.log(1111, mouseEvent?.extraData);
     let instanceDom: HTMLElement | null = null;
+    if (instance?._STATUS === 'DESTROY') {
+      return;
+    }
     // eslint-disable-next-line react/no-find-dom-node
     const dom = ReactDOM.findDOMNode(instance);
     if (isDOM(dom)) {

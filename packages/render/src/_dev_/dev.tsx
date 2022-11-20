@@ -5,7 +5,7 @@ import * as antD from 'antd';
 import { Button } from 'antd';
 import { parsePageModel } from '@chameleon/model';
 import { BasePage, SamplePage } from '@chameleon/demo-page';
-import { ReactAdapter } from '../index';
+import { ReactAdapter, Render } from '../index';
 import '@chameleon/material/dist/style.css';
 import './index.css';
 import { DesignRender, useDesignRender } from '../core/designRender';
@@ -81,14 +81,14 @@ function App() {
       console.log(tableNode);
       tableNode.props.columns.updateValue();
     }, 500);
-  }, []);
 
-  // const collectionRef = (
-  //   ref: React.RefObject<React.ReactInstance>,
-  //   nodeMode: any
-  // ) => {
-  //   console.log('ref', ref, nodeMode);
-  // };
+    console.log(page.export());
+    console.log(page);
+    page?.moveNodeById('999', '5', 'BEFORE');
+    console.log(page);
+
+    page.export();
+  }, []);
 
   return (
     <div className="App">
@@ -99,14 +99,14 @@ function App() {
         render={renderHandle}
         adapter={ReactAdapter}
       />
-      {/* <Render
+      <Render
         pageModel={page}
         components={components}
-        render={renderHandle}
+        render={renderHandle as any}
         adapter={ReactAdapter}
-        onGetComponent={onGetComponent}
+        // onGetComponent={onGetComponent}
         // onGetRef={collectionRef}
-      /> */}
+      />
     </div>
   );
 }

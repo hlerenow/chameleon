@@ -16,6 +16,12 @@ export const isClass = function (val: any) {
   return true;
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function shouldConstruct(Component: Function) {
+  const prototype = Component.prototype;
+  return !!(prototype && prototype.isReactComponent);
+}
+
 export function canAcceptsRef(Comp: any) {
   const hasSymbol = typeof Symbol === 'function' && Symbol.for;
   const REACT_FORWARD_REF_TYPE = hasSymbol

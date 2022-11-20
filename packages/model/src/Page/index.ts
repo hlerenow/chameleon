@@ -278,7 +278,6 @@ export class CPage {
       ...this.data,
       componentsTree: this.data.componentsTree.export(mode),
     };
-
     res = omit(res, ['id']) as any;
     res = clearSchema(res);
 

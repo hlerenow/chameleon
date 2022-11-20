@@ -2,8 +2,9 @@ import { CPage } from '../../src/Page/index';
 import { BasePage } from '@chameleon/demo-page';
 import { CNode } from '../../src/Page/Schema/Node';
 import { CSlot } from '../../src/Page/Schema/Node/slot';
+import { CPageDataType } from '../../src/types/page';
 
-const mockPageData = BasePage;
+const mockPageData = BasePage as CPageDataType;
 describe('test page model methods', () => {
   it('test getNode', () => {
     const page = new CPage(mockPageData);
@@ -90,7 +91,7 @@ describe('test page model methods', () => {
   });
   it('test move a node', () => {
     const page = new CPage(mockPageData);
-
+    page.moveNodeById('999', '5', 'AFTER');
     page.moveNodeById('5', '2', 'AFTER');
     const targetNode = page.getNode('5');
     const anchorNode = page.getNode('2');

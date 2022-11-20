@@ -31,42 +31,49 @@ const columns = [
       type: 'SLOT',
       renderType: 'FUNC',
       params: ['val', 'record', 'index'],
-      value: {
-        id: '5',
-        componentName: 'Row',
-        children: [
-          {
-            id: '6',
-            componentName: 'Button',
-            props: {
-              mark: 'nameRender',
-              children: {
-                type: 'EXPRESSION',
-                value: '$$context.params.val',
+      value: [
+        {
+          id: '5',
+          componentName: 'Row',
+          children: [
+            {
+              id: '6',
+              componentName: 'Button',
+              props: {
+                mark: 'nameRender',
+                children: {
+                  type: 'EXPRESSION',
+                  value: '$$context.params.val',
+                },
               },
             },
-          },
-          {
-            id: '7',
-            componentName: 'Col',
-            children: [
-              {
-                componentName: 'Button',
-                props: {
-                  mark: 'nameRender',
-                },
-                children: [
-                  {
-                    id: '8',
-                    componentName: 'div',
-                    children: ['I am div'],
+            {
+              id: '7',
+              componentName: 'Col',
+              children: [
+                {
+                  componentName: 'Button',
+                  props: {
+                    mark: 'nameRender',
                   },
-                ],
-              },
-            ],
-          },
-        ],
-      },
+                  children: [
+                    {
+                      id: '8',
+                      componentName: 'div',
+                      children: ['I am div'],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: '99898999',
+          componentName: 'Button',
+          children: ['123'],
+        },
+      ],
     },
   },
   {
@@ -304,66 +311,6 @@ export const BasePage = {
             ],
           },
         ],
-      },
-      {
-        id: '34',
-        componentName: 'Table',
-        state: {
-          a: 3,
-          data: data,
-        },
-        props: {
-          columns,
-          dataSource: {
-            type: 'EXPRESSION',
-            value: '$$context.state.data',
-          },
-        },
-      },
-      {
-        id: '33',
-        componentName: 'Table',
-        state: {
-          a: 3,
-          data: data,
-        },
-        props: {
-          columns,
-          dataSource: {
-            type: 'EXPRESSION',
-            value: '$$context.state.data',
-          },
-        },
-      },
-      {
-        id: '32',
-        componentName: 'Table',
-        state: {
-          a: 3,
-          data: data,
-        },
-        props: {
-          columns,
-          dataSource: {
-            type: 'EXPRESSION',
-            value: '$$context.state.data',
-          },
-        },
-      },
-      {
-        id: '31',
-        componentName: 'Table',
-        state: {
-          a: 3,
-          data: data,
-        },
-        props: {
-          columns,
-          dataSource: {
-            type: 'EXPRESSION',
-            value: '$$context.state.data',
-          },
-        },
       },
     ],
   },

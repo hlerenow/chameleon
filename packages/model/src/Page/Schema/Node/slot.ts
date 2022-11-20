@@ -22,7 +22,7 @@ const parseData = (data: any, parent?: ParentType) => {
   const nodeValue = data.value;
   if (nodeValue) {
     if (isArray(nodeValue)) {
-      newData.value = nodeValue.map((el) => new CNode(el));
+      newData.value = nodeValue.map((el) => new CNode(el, { parent }));
     } else if (isPlainObject(nodeValue)) {
       newData.value.push(new CNode(nodeValue, { parent: parent }));
     }

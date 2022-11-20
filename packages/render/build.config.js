@@ -12,5 +12,9 @@ module.exports = {
     'react-dom': 'ReactDOM',
   },
   // 额外的 vite 配置
-  vite: {},
+  vite: {
+    define: {
+      // 'process.env.NODE_ENV': JSON.stringify('production'),
+    },
+  },
 };

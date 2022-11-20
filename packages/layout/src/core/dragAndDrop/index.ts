@@ -47,9 +47,6 @@ export class DragAndDrop {
       banEvent: false,
     });
 
-    // sensor.emitter.on('onMouseMove', (e) => {
-    //   console.log(Math.random(), e);
-    // });
     sensor.emitter.on('onMouseUp', (e) => {
       console.log('onMouseUp global', Math.random(), e);
       this.currentState = 'NORMAL';

@@ -96,7 +96,7 @@ const mockPageData: CPageDataType = {
 
 describe('test page model', () => {
   it('new a page instance with jsslot', () => {
-    const node = new CPage(BasePage);
+    const node = new CPage(BasePage as any);
     expect(node).not.toBeNull();
   });
 

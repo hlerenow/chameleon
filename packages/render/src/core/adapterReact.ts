@@ -13,7 +13,6 @@ import {
   isFunction,
   isPropModel,
   JSExpressionPropType,
-  SlotRenderType,
 } from '@chameleon/model';
 import { AdapterOptionType, ContextType, getAdapter } from './adapter';
 import { isPlainObject } from 'lodash-es';
@@ -23,6 +22,7 @@ import {
   convertCodeStringToFunction,
   getObjFromArrayMap,
   runExpression,
+  shouldConstruct,
 } from '../util';
 import { DYNAMIC_COMPONENT_TYPE, InnerPropList } from '../const';
 
@@ -127,38 +127,41 @@ class DefineReactAdapter {
           return () => {};
         }
         const handleSingleSlot = (it: CNode) => {
+          const key = `${it.id}-${DYNAMIC_COMPONENT_TYPE}`;
+
           // 复用
           if (runtimeComponentCache.get(it.id)) {
-            return runtimeComponentCache.get(it.id);
+            return {
+              key: key,
+              component: runtimeComponentCache.get(it.id),
+            };
           }
           const component = this.getComponent(it);
           const PropNodeRender = this.convertModelToComponent(component, it);
-          if (slotProp.renderType === SlotRenderType.FUNC) {
-            const parmaList = slotProp.params || [];
-            // 运行时组件函数
-            const PropNodeFuncWrap = (...args: any) => {
-              const params: Record<any, any> = getObjFromArrayMap(
-                args,
-                parmaList
-              );
-              const $$context = this.getContext(
-                {
-                  params,
-                },
-                parentContext
-              );
-              const key = `${it.id}-${DYNAMIC_COMPONENT_TYPE}`;
-              return this.render(PropNodeRender, {
-                $$context,
-                key,
-              });
-            };
-            runtimeComponentCache.set(it.id, PropNodeFuncWrap);
-            return PropNodeFuncWrap;
-          } else {
-            runtimeComponentCache.set(it.id, PropNodeRender);
-            return PropNodeRender;
-          }
+          const parmaList = slotProp.params || [];
+          // 运行时组件函数
+          const PropNodeFuncWrap = (...args: any) => {
+            const params: Record<any, any> = getObjFromArrayMap(
+              args,
+              parmaList
+            );
+            const $$context = this.getContext(
+              {
+                params,
+              },
+              parentContext
+            );
+            return this.render(PropNodeRender, {
+              $$context,
+              key,
+            });
+          };
+          runtimeComponentCache.set(it.id, PropNodeFuncWrap);
+          const res = {
+            component: PropNodeFuncWrap,
+            key,
+          };
+          return res;
         };
         if (Array.isArray(tempVal)) {
           const renderList = tempVal?.map((it: any) => {
@@ -166,12 +169,25 @@ class DefineReactAdapter {
           });
           // TODO: 需要做额外的处理
           return (...args: any[]) => {
-            return renderList.map((func) => {
-              return func(...args);
+            return renderList.map((renderItem) => {
+              console.log(
+                '🚀 ~ file: adapterReact.ts ~ line 172 ~ DefineReactAdapter ~ returnrenderList.map ~ renderItem',
+                renderItem
+              );
+              const isClassComponent = shouldConstruct(renderItem.component);
+
+              if (isClassComponent) {
+                return React.createElement(renderItem.component, {
+                  $$context: parentContext,
+                  key: renderItem.key,
+                });
+              } else {
+                return renderItem.component(...args);
+              }
             });
           };
         } else {
-          return handleSingleSlot(tempVal);
+          return handleSingleSlot(tempVal).component;
         }
       } else if (isExpression(propVal)) {
         const expProp = propVal as JSExpressionPropType;

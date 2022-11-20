@@ -28,6 +28,10 @@ export class Render extends React.Component<
     this.refManager = new RefManager();
   }
 
+  getPageModel() {
+    return this.state.pageModel;
+  }
+
   componentDidMount(): void {
     const { render } = this.props;
     if (render) {

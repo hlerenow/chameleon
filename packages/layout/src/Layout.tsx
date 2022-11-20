@@ -20,10 +20,13 @@ export type LayoutDragAndDropExtraDataType = {
   startNodeUid?: string;
   dropNode?: CNode | CSchema;
   dropNodeUid?: string;
-  dropInfo: Partial<DropPosType>;
+  dropPosInfo?: Partial<DropPosType>;
 };
 
-export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
+export type LayoutPropsType = Omit<
+  DesignRenderProp,
+  'adapter' | 'ref' | 'pageModel'
+> & {
   renderScriptPath?: string;
   assets?: Asset;
   onSelectNode?: (node: CNode | CSchema | null) => void;
@@ -36,7 +39,7 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
 export type LayoutStateType = {
   ready: boolean;
   isDragging: boolean;
-  mousePointer: Pointer;
+  mousePointer: Pointer | null;
   currentSelectInstance: DesignRenderInstance;
   selectComponentInstances: DesignRenderInstance[];
   selectLockStyle: React.CSSProperties;
@@ -68,10 +71,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     this.state = {
       isDragging: false,
       ready: false,
-      mousePointer: {
-        x: 0,
-        y: 0,
-      },
+      mousePointer: null,
       currentSelectInstance: null,
       selectComponentInstances: [],
       selectLockStyle: {},
@@ -88,7 +88,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
   componentDidMount(): void {
     const { renderScriptPath } = this.props;
-    console.log(this.designRenderRef);
     (window as any).DesignRender = this.designRenderRef;
     const iframeContainer = this.iframeContainer;
     iframeContainer.load(document.getElementById('iframeBox')!);
@@ -130,7 +129,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         const App = IframeReact?.createElement(CRender.DesignRender, {
           adapter: CRender?.ReactAdapter,
           page: this.props.page,
-          pageModel: this.props.pageModel,
           components,
           ref: this.designRenderRef,
         });
@@ -142,6 +140,10 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         this.readyOk();
       })
       .load();
+  }
+
+  getPageModel() {
+    return this.designRenderRef?.current?.getPageModel();
   }
 
   readyOk() {
@@ -285,7 +287,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
 
     this.dnd = dnd;
-
     const sensor = new Sensor({
       name: 'layout',
       container: iframeDoc.body,
@@ -296,6 +297,10 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       const startInstance = this.designRenderRef.current?.getInstanceByDom(
         eventObj.event.target as HTMLElement
       );
+      // 木有可选中元素结束
+      if (!startInstance) {
+        return null;
+      }
       return {
         ...eventObj,
         extraData: {
@@ -309,10 +314,20 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       const dropInstance = this.designRenderRef.current?.getInstanceByDom(
         eventObj.event.target as HTMLElement
       );
-      console.log(dropInstance?._NODE_ID, dropInstance?._UNIQUE_ID);
+      // TODO: 如果落点元素是拖动元素的子元素则不允许放置
+      const isContainDragStartEl =
+        this.state.currentSelectInstance?._NODE_MODEL?.contains(
+          dropInstance?._NODE_ID || ''
+        );
+
+      if (isContainDragStartEl) {
+        return;
+      }
+
       return {
         ...eventObj,
         extraData: {
+          dropPosInfo: this.state.dropInfo,
           dropNode: dropInstance?._NODE_MODEL,
           dropNodeUid: dropInstance?._UNIQUE_ID,
         } as LayoutDragAndDropExtraDataType,
@@ -337,7 +352,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       const dragStartDom = this.designRenderRef.current?.getDomsById(
         dragStartNode.id
       );
-
+      // 新增节点
       if (extraData?.type === 'NEW_ADD') {
         this.setState({
           currentSelectInstance: null,
@@ -349,6 +364,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       }
 
       if (currentSelectDom?.length && dragStartDom?.length) {
+        // 如果当前选中的dom 不包含 拖动开始的元素
         if (!currentSelectDom[0].contains(dragStartDom[0])) {
           onSelectNode?.(startInstance?._NODE_MODEL || null);
           this.setState({
@@ -361,6 +377,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           });
         }
       } else if (!currentSelectDom?.length) {
+        // 没有选中元素时，当前拖动的元素为选中元素
         onSelectNode?.(startInstance?._NODE_MODEL || null);
         this.setState({
           currentSelectInstance: startInstance,
@@ -374,27 +391,29 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         this.setState({
           hoverComponentInstances: [],
         });
-        console.log('包含选中元素');
       }
+    });
 
-      // console.log('dragStart', e);
+    sensor.emitter.on('onMouseMove', (e) => {
+      if (this.state.isDragging) {
+        this.setState({
+          mousePointer: e.pointer,
+          selectLockStyle: SELECT_LOCK_STYLE,
+        });
+      } else {
+        this.setState({
+          mousePointer: null,
+          selectLockStyle: {},
+        });
+      }
     });
 
     sensor.emitter.on('dragging', (e) => {
-      console.log('dragging', e);
-      this.setState({
-        mousePointer: e.pointer,
-      });
-      this.setState({
-        selectLockStyle: SELECT_LOCK_STYLE,
-      });
-
       if (!this.designRenderRef.current) {
         return;
       }
 
       const extraData = e.extraData as LayoutDragAndDropExtraDataType;
-      console.log('drop', extraData.dropNode?.id, extraData?.dropNodeUid);
 
       const componentInstance = (
         this.designRenderRef.current.getInstancesById(
@@ -402,36 +421,11 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           extraData.dropNodeUid
         ) || []
       ).shift();
-      console.log(
-        'res',
-        componentInstance?._NODE_ID,
-        componentInstance?._UNIQUE_ID,
-        this.designRenderRef.current.getInstancesById(
-          extraData.dropNode?.id || '',
-          extraData.dropNodeUid
-        )
-      );
+
       if (!componentInstance) {
         return;
       }
 
-      // TODO: 如果落点元素是拖动元素的子元素则不允许放置
-      const isContainDragStartEl =
-        this.state.currentSelectInstance?._NODE_MODEL?.contains(
-          componentInstance._NODE_ID
-        );
-
-      if (isContainDragStartEl) {
-        this.setState({
-          dropEvent: null,
-          dropComponentInstances: [],
-        });
-        return;
-      }
-
-      // const instanceList = this.designRenderRef.current.getInstancesById(
-      //   componentInstance._NODE_ID || ''
-      // );
       this.setState({
         dropComponentInstances: [componentInstance],
         dropEvent: e,
@@ -439,31 +433,30 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
 
     sensor.emitter.on('dragEnd', (e) => {
-      // console.log('dragEnd', e);
       this.setState({
         isDragging: false,
-        mousePointer: { x: 0, y: 0 },
+        mousePointer: null,
         dropEvent: null,
         dropComponentInstances: [],
         selectLockStyle: {},
       });
     });
-    sensor.emitter.on('drop', (e) => {
-      console.log('drop', e, this.state.dropInfo);
-    });
   }
 
   selectNode(nodeId: string) {
-    const instanceList =
-      this.designRenderRef.current?.getInstancesById(nodeId) || [];
-    if (!instanceList.length) {
-      return;
-    }
-    const instance = instanceList[0];
-    this.setState({
-      currentSelectInstance: instance,
-      selectComponentInstances: [...instanceList],
-    });
+    setTimeout(() => {
+      let instanceList =
+        this.designRenderRef.current?.getInstancesById(nodeId) || [];
+      instanceList = instanceList.filter((el) => el?._STATUS !== 'DESTROY');
+      if (!instanceList.length) {
+        return;
+      }
+      const instance = instanceList[0];
+      this.setState({
+        currentSelectInstance: instance,
+        selectComponentInstances: [...instanceList],
+      });
+    }, 100);
   }
 
   clearSelectNode() {
@@ -543,12 +536,12 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             });
           }}
         />
-        {isDragging && (
+        {isDragging && mousePointer && (
           <div
             style={{
               position: 'fixed',
-              left: mousePointer?.x - 5 + 'px',
-              top: mousePointer?.y - 8 + 'px',
+              left: mousePointer.x - 5 + 'px',
+              top: mousePointer.y - 8 + 'px',
               backgroundColor: 'rgba(0, 0, 0,0.5)',
               padding: '2px 20px',
               borderRadius: '2px',

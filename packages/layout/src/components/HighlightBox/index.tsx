@@ -38,8 +38,13 @@ export const HighlightBox = ({
   });
   const toolBoxRef = useRef<HTMLDivElement>(null);
   const [targetDom, setTargetDom] = useState<HTMLElement>();
+  const instanceRef = useRef<DesignRenderInstance>();
+  instanceRef.current = instance;
   useEffect(() => {
     getRef?.(ref);
+    if (instance?._STATUS === 'DESTROY') {
+      return;
+    }
     // eslint-disable-next-line react/no-find-dom-node
     const dom = ReactDOM.findDOMNode(instance);
     if (isDOM(dom)) {
@@ -72,9 +77,14 @@ export const HighlightBox = ({
   }, []);
 
   const updatePos = useCallback(() => {
+    const tempInstance = instanceRef.current;
     let instanceDom: HTMLElement | null = null;
+    if (tempInstance?._STATUS === 'DESTROY') {
+      return;
+    }
+
     // eslint-disable-next-line react/no-find-dom-node
-    const dom = ReactDOM.findDOMNode(instance);
+    const dom = ReactDOM.findDOMNode(tempInstance);
     if (isDOM(dom)) {
       instanceDom = dom as unknown as HTMLElement;
       setTargetDom(instanceDom);
@@ -90,14 +100,14 @@ export const HighlightBox = ({
       height: tempRect?.height + 'px',
       transform: transformStr,
     };
-    const toolBoxDom = document.getElementById(instance?._UNIQUE_ID || '');
+    const toolBoxDom = document.getElementById(tempInstance?._UNIQUE_ID || '');
     if (toolBoxDom) {
       toolBoxDom.style.transform = transformStr;
       toolBoxDom.style.width = tempRect?.width + 'px';
       toolBoxDom.style.height = tempRect?.height + 'px';
     }
     setStyleObj(tempObj);
-  }, [instance]);
+  }, []);
 
   useEffect(() => {
     updatePos();
@@ -175,7 +185,7 @@ export const HighlightCanvasCore = (
   return (
     <div className={styles.borderDrawBox}>
       {instances.map((el) => {
-        if (!el) {
+        if (!el || el._STATUS === 'DESTROY') {
           return null;
         }
         return (
