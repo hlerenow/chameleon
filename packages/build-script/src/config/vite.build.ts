@@ -12,9 +12,6 @@ export const buildConfig = function () {
     },
   });
 
-  const finalConfig = mergeConfig(config, CUSTOM_CONFIG.vite || {}, false);
-  if (CUSTOM_CONFIG.libMode === false) {
-    delete finalConfig.build.lib;
-  }
+  const finalConfig = mergeConfig(config, CUSTOM_CONFIG.vite || {});
   return finalConfig;
 };

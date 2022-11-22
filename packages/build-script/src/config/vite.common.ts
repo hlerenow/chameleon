@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, UserConfig } from 'vite';
 import path from 'path';
 import react from '@vitejs/plugin-react';
 import eslint from 'vite-plugin-eslint';
@@ -10,7 +10,7 @@ export const commonConfig = () => {
   if (!CUSTOM_CONFIG.entry) {
     throw new Error('entry not find');
   }
-  return defineConfig({
+  const commonConfigJson = defineConfig({
     root: PROJECT_ROOT,
     build: {
       sourcemap: true,
@@ -37,5 +37,11 @@ export const commonConfig = () => {
         logDiagnostics: true,
       }),
     ],
-  });
+  }) as UserConfig;
+  if (CUSTOM_CONFIG.libMode === false) {
+    delete commonConfigJson?.build?.lib;
+    delete commonConfigJson?.build?.rollupOptions;
+  }
+
+  return commonConfigJson;
 };
