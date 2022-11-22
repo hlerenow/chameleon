@@ -10,5 +10,9 @@ module.exports = {
     'react-dom': 'ReactDOM',
   },
   // 额外的 vite 配置
-  vite: {},
+  vite: {
+    build: {
+      outDir: './engine-demo',
+    },
+  },
 };
