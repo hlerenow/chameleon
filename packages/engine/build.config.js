@@ -11,6 +11,7 @@ module.exports = {
     'react-dom': 'ReactDOM',
   },
   vite: {
+    base: process.env.BUILD_TYPE === 'APP' ? '/chameleon/' : '',
     build: {
       outDir: process.env.BUILD_TYPE === 'APP' ? './example' : './dist',
     },
