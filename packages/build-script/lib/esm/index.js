@@ -98,7 +98,11 @@ var buildConfig = function() {
       watch: (_a = CLI_ARGS_OBJ.watch) != null ? _a : false
     }
   });
-  return mergeConfig2(config, CUSTOM_CONFIG.vite || {});
+  const finalConfig = mergeConfig2(config, CUSTOM_CONFIG.vite || {}, false);
+  if (CUSTOM_CONFIG.libMode === false) {
+    delete finalConfig.build.lib;
+  }
+  return finalConfig;
 };
 
 // src/core/doBuild.ts

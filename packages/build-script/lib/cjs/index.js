@@ -110,7 +110,11 @@ var buildConfig = function() {
       watch: (_a = CLI_ARGS_OBJ.watch) != null ? _a : false
     }
   });
-  return (0, import_vite6.mergeConfig)(config, CUSTOM_CONFIG.vite || {});
+  const finalConfig = (0, import_vite6.mergeConfig)(config, CUSTOM_CONFIG.vite || {}, false);
+  if (CUSTOM_CONFIG.libMode === false) {
+    delete finalConfig.build.lib;
+  }
+  return finalConfig;
 };
 
 // src/core/doBuild.ts

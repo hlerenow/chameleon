@@ -22,6 +22,7 @@ if (fs.pathExistsSync(customConfigPath)) {
 }
 
 export type BuildScriptConfig = {
+  libMode?: boolean;
   entry: string;
   libName?: string;
   fileName?: string;

@@ -4,6 +4,7 @@
   "scripts": {
     "start": "build-script",
     "build": "build-script --build",
+    "build:app": "cross-env BUILD_TYPE=APP build-script --build",
     "lint": "eslint --ext .tsx,.ts src/",
     "prettier": "prettier --write ./src",
     "test": "jest"
@@ -17,7 +18,8 @@
   "devDependencies": {
     "@chameleon/build-script": "*",
     "@types/react": "^18.0.15",
-    "@types/react-dom": "^18.0.6"
+    "@types/react-dom": "^18.0.6",
+    "cross-env": "^7.0.3"
   },
   "config": {
     "commitizen": {

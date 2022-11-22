@@ -11,5 +11,10 @@ export const buildConfig = function () {
       watch: CLI_ARGS_OBJ.watch ?? false,
     },
   });
-  return mergeConfig(config, CUSTOM_CONFIG.vite || {});
+
+  const finalConfig = mergeConfig(config, CUSTOM_CONFIG.vite || {}, false);
+  if (CUSTOM_CONFIG.libMode === false) {
+    delete finalConfig.build.lib;
+  }
+  return finalConfig;
 };
