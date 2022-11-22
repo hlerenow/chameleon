@@ -221,3 +221,7 @@ export class DragAndDrop {
     });
   }
 }
+
+export * from './sensor';
+export * from './emitter';
+export * from './common';

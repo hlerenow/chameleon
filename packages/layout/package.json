@@ -1,6 +1,9 @@
 {
   "name": "@chameleon/layout",
   "version": "0.0.1",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "start": "build-script",
     "build": "build-script --build",
@@ -8,8 +11,7 @@
     "prettier": "prettier --write ./src",
     "test": "jest",
     "copyAssets": "sh ./scripts/copyAssets.sh",
-    "prestart": "yarn copyAssets",
-    "prebuild": "yarn copyAssets"
+    "prestart": "yarn copyAssets"
   },
   "dependencies": {
     "@chameleon/render": "*",
@@ -23,7 +25,8 @@
     "@chameleon/demo-page": "*",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
-    "antd": "^4.23.6"
+    "antd": "^4.23.6",
+    "vite-plugin-static-copy": "^0.12.0"
   },
   "config": {
     "commitizen": {

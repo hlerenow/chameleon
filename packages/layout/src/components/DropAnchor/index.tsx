@@ -218,10 +218,6 @@ export const DropAnchor = ({
       };
     }
     onDropInfoChange?.(dropInfo);
-    console.log(
-      '🚀 ~ file: index.tsx ~ line 220 ~ updatePos ~ dropInfo',
-      dropInfo
-    );
 
     const classNameMap = {
       horizontal: styles.horizontal,
@@ -288,7 +284,7 @@ export const DropAnchorCanvasCore = (
     mouseEvent: DragAndDropEventType['dragging'] | null;
     toolRender?: React.ReactNode;
     style?: React.CSSProperties;
-    onDropInfoChange?: (dropInfo: DropPosType) => void;
+    onDropInfoChange?: (dropInfo: DropPosType | null) => void;
   },
   ref: React.Ref<HighlightCanvasRefType>
 ) => {

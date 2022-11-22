@@ -5,6 +5,8 @@
     "start": "build-script",
     "build": "build-script --build",
     "build:app": "cross-env BUILD_TYPE=APP build-script --build",
+    "copyAssets": "sh ./scripts/copyAssets.sh",
+    "prestart": "yarn copyAssets",
     "lint": "eslint --ext .tsx,.ts src/",
     "prettier": "prettier --write ./src",
     "test": "jest"
@@ -13,7 +15,10 @@
     "antd": "^5.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "sass": "^1.54.0"
+    "sass": "^1.54.0",
+    "@chameleon/model": "*",
+    "@chameleon/layout": "*",
+    "@chameleon/demo-page": "*"
   },
   "devDependencies": {
     "@chameleon/build-script": "*",

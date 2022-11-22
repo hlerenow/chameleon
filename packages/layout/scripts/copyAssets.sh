@@ -1,7 +1,7 @@
 #!/bin/sh
 
-cp -rf ../render/dist/index.umd.js ./public/index.umd.js
-cp -rf ../render/dist/index.umd.js.map ./public/index.umd.js.map
+cp -rf ../render/dist/index.umd.js ./public/render.umd.js
+cp -rf ../render/dist/index.umd.js.map ./public/render.umd.js.map
 
 
 
