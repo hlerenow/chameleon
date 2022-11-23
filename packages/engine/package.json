@@ -5,6 +5,7 @@
     "start": "build-script",
     "build": "build-script --build",
     "build:app": "cross-env BUILD_TYPE=APP build-script --build",
+    "build:app:analyze": "cross-env BUILD_TYPE=APP ANALYZE=1 build-script --build",
     "copyAssets": "sh ./scripts/copyAssets.sh",
     "prestart": "yarn copyAssets",
     "lint": "eslint --ext .tsx,.ts src/",
@@ -12,19 +13,20 @@
     "test": "jest"
   },
   "dependencies": {
+    "@chameleon/demo-page": "*",
+    "@chameleon/layout": "*",
+    "@chameleon/model": "*",
     "antd": "^5.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "sass": "^1.54.0",
-    "@chameleon/model": "*",
-    "@chameleon/layout": "*",
-    "@chameleon/demo-page": "*"
+    "sass": "^1.54.0"
   },
   "devDependencies": {
     "@chameleon/build-script": "*",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "rollup-plugin-visualizer": "^5.8.3"
   },
   "config": {
     "commitizen": {

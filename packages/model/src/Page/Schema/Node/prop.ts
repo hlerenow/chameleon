@@ -14,7 +14,6 @@ import {
   JSExpressionPropType,
   NormalPropType,
   CPropDataType,
-  RenderPropType,
   CPropObjDataType,
 } from '../../../types/node';
 import { isArray, isPlainObject } from '../../../util/lodash';
@@ -158,9 +157,12 @@ export class CProp {
     }
   }
 
-  export(mode: ExportType) {
+  export(mode: ExportType): any {
     const data = this.data;
     const handleSingleProps = (propVal: any) => {
+      if (propVal instanceof CProp) {
+        return propVal.export(mode);
+      }
       if (propVal instanceof CSlot) {
         return propVal.export(mode);
       }

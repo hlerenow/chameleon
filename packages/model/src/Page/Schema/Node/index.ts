@@ -48,10 +48,13 @@ export const parseNode = (
   const propsKeys = Object.keys(data.props || {});
   if (propsKeys.length) {
     propsKeys.forEach((propKey) => {
-      if (res.props[propKey] instanceof CProp) {
+      const targetProps = data.props?.[propKey];
+
+      if (targetProps instanceof CProp) {
+        res.props[propKey] = targetProps;
         return;
       }
-      res.props[propKey] = new CProp(propKey, data.props?.[propKey] || '', {
+      res.props[propKey] = new CProp(propKey, targetProps || '', {
         parent: self,
         materials,
       });

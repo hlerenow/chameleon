@@ -10,7 +10,6 @@ import {
 } from '@chameleon/layout';
 // import { Button, ConfigProvider } from 'antd';
 
-import * as antD from 'antd';
 import '@chameleon/material/dist/style.css';
 import styles from './Engine.module.scss';
 import { CNode, parsePageModel } from '@chameleon/model';
@@ -20,10 +19,6 @@ import '@chameleon/layout/dist/style.css';
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOMAll;
 (window as any).ReactDOMClient = ReactDOM;
-
-const components = {
-  ...antD,
-};
 
 const Engine = (props: any) => {
   const [page] = useState<any>(BasePage);
@@ -156,9 +151,24 @@ const Engine = (props: any) => {
         <Layout
           ref={layoutRef}
           page={page}
-          components={components}
           renderScriptPath={'./render.umd.js'}
           {...props}
+          assets={[
+            {
+              name: 'antd',
+              assets: [
+                {
+                  src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/reset.css',
+                },
+                {
+                  src: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.6/dayjs.min.js',
+                },
+                {
+                  src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/antd.min.js',
+                },
+              ],
+            },
+          ]}
         />
       </div>
     </div>

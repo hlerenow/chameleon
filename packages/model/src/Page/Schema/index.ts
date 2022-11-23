@@ -75,6 +75,7 @@ export const parseSchema = (
       } else {
         res.props[propKey] = new CProp(propKey, targetProps || '', {
           parent: parent,
+          materials,
         });
       }
     });

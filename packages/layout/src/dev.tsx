@@ -77,6 +77,7 @@ const App = () => {
         // console.log('box dragEnd', eventObj);
       });
       boxSensor.emitter.on('drop', (eventObj) => {
+        debugger;
         const pageModel = layoutRef.current?.getPageModel();
         console.log('box drop', eventObj, pageModel);
         const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
@@ -145,7 +146,27 @@ const App = () => {
           padding: '10px',
         }}
       >
-        <Layout ref={layoutRef} page={page} components={components} />
+        <Layout
+          ref={layoutRef}
+          page={page}
+          components={components}
+          assets={[
+            {
+              name: 'antd',
+              assets: [
+                {
+                  src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/reset.css',
+                },
+                {
+                  src: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.6/dayjs.min.js',
+                },
+                {
+                  src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/antd.min.js',
+                },
+              ],
+            },
+          ]}
+        />
       </div>
     </div>
   );

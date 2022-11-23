@@ -91,6 +91,9 @@ describe('test page model methods', () => {
   });
   it('test move a node', () => {
     const page = new CPage(mockPageData);
+
+    page.moveNodeById('8', '99898999', 'AFTER');
+    page.export();
     page.moveNodeById('999', '5', 'AFTER');
     page.export();
     page.moveNodeById('5', '2', 'AFTER');

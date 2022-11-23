@@ -28,7 +28,7 @@ export type LayoutPropsType = Omit<
   'adapter' | 'ref' | 'pageModel'
 > & {
   renderScriptPath?: string;
-  assets?: Asset;
+  assets?: Asset[];
   onSelectNode?: (node: CNode | CSchema | null) => void;
   selectToolBar?: React.ReactNode;
   selectBoxStyle?: React.CSSProperties;
@@ -63,11 +63,13 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   highlightHoverCanvasRef: React.RefObject<HighlightCanvasRefType>;
   highlightDropAnchorCanvasRef: React.RefObject<HighlightCanvasRefType>;
   readyCbList: ((layoutInstance: Layout) => void)[] = [];
+  assets: Asset[];
   constructor(props: LayoutPropsType) {
     super(props);
     this.designRenderRef = React.createRef<DesignRender>();
     this.iframeContainer = new IFrameContainer();
     this.eventExposeHandler = [];
+    this.assets = props.assets || [];
     this.state = {
       isDragging: false,
       ready: false,
@@ -109,19 +111,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     const IframeReact = iframeWindow.React!;
     const IframeReactDOM = iframeWindow.ReactDOMClient!;
     // 注入组件物料资源
-    const assetLoader = new CRender.AssetLoader([
-      {
-        name: 'antd',
-        assets: [
-          {
-            src: './antd/antd.js',
-          },
-          {
-            src: './antd/antd.css',
-          },
-        ],
-      },
-    ]);
+    const assetLoader = new CRender.AssetLoader(this.assets);
     assetLoader
       .onSuccess(() => {
         // 从子窗口获取物料对象
