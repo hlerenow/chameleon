@@ -7,7 +7,7 @@ import * as antD from 'antd';
 import '@chameleon/material/dist/style.css';
 import './dev.css';
 import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
-import { CNode, parsePageModel } from '@chameleon/model';
+import { CNode } from '@chameleon/model';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOMAll;
@@ -77,9 +77,7 @@ const App = () => {
         // console.log('box dragEnd', eventObj);
       });
       boxSensor.emitter.on('drop', (eventObj) => {
-        debugger;
         const pageModel = layoutRef.current?.getPageModel();
-        console.log('box drop', eventObj, pageModel);
         const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
         if (extraData.type === 'NEW_ADD') {
           pageModel?.addNode(

@@ -69,6 +69,7 @@ export const HighlightBox = ({
   useEffect(() => {
     const handle = animationFrame(() => {
       updateRef.current?.();
+      updatePos();
     });
 
     return () => {
@@ -160,14 +161,12 @@ export const HighlightCanvasCore = (
   },
   ref: React.Ref<HighlightCanvasRefType>
 ) => {
-  const [_, updateRender] = useState(0);
   const allBoxRef = useRef<React.RefObject<HighlightCanvasRefType>[]>([]);
   useImperativeHandle(
     ref,
     () => {
       return {
         update() {
-          updateRender(_ + 1);
           // 更新所有的高亮框位置
           allBoxRef.current.forEach((el) => {
             el.current?.update();
@@ -175,7 +174,7 @@ export const HighlightCanvasCore = (
         },
       };
     },
-    [updateRender, _]
+    []
   );
   const onRefDestroy = (ref: React.RefObject<HighlightCanvasRefType>) => {
     const list = allBoxRef.current || [];
