@@ -2,10 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import ReactDOMAll from 'react-dom';
 import { BasePage } from '@chameleon/demo-page';
-import { Layout, LayoutPropsType } from '@chameleon/layout';
+import {
+  Layout,
+  LayoutDragAndDropExtraDataType,
+  LayoutPropsType,
+} from '@chameleon/layout';
 
 import styles from './style.module.scss';
 import '@chameleon/layout/dist/style.css';
+import { CNode } from '@chameleon/model';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOMAll;
@@ -38,6 +43,43 @@ export class Designer extends React.Component<
   init() {
     const { layoutRef } = this;
     const pageModel = layoutRef.current?.getPageModel();
+    layoutRef.current?.ready(() => {
+      layoutRef.current?.dnd?.emitter.on('drop', (eventObj) => {
+        const pageModel = layoutRef.current?.getPageModel();
+        const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
+        if (extraData.type === 'NEW_ADD') {
+          pageModel?.addNode(
+            extraData.startNode as CNode,
+            extraData.dropNode!,
+            'BEFORE'
+          );
+        } else {
+          if (extraData.dropNode?.id === extraData.startNode?.id) {
+            return;
+          }
+          if (extraData.dropPosInfo?.pos === 'before') {
+            pageModel?.moveNodeById(
+              extraData.startNode?.id || '',
+              extraData?.dropNode?.id || '',
+              'BEFORE'
+            );
+          } else {
+            pageModel?.moveNodeById(
+              extraData.startNode?.id || '',
+              extraData?.dropNode?.id || '',
+              'AFTER'
+            );
+          }
+        }
+        console.log(
+          '选中元素',
+          extraData.startNode?.id || '',
+          extraData?.dropNode?.id
+        );
+        layoutRef.current?.selectNode(extraData.startNode?.id || '');
+        console.log(pageModel?.export());
+      });
+    });
     console.log(11111, pageModel?.export());
   }
 

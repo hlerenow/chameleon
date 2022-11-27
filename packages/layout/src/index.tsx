@@ -136,7 +136,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     return this.designRenderRef?.current?.getPageModel();
   }
 
-  readyOk() {
+  private readyOk() {
     this.setState({
       ready: true,
     });

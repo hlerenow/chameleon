@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons';
 import clsx from 'clsx';
 import { DEmitter } from '../../core/emitter';
+import { Designer } from '../../plugins/Designer';
 
 export interface PluginContext {
   openPanel: () => void;
@@ -155,7 +156,7 @@ export class WorkBench extends React.Component<
       currentActivePlugin,
     } = this.state;
     const leftBoContentStyle: React.CSSProperties = {};
-    if (leftBoxFixed) {
+    if (!leftBoxFixed) {
       leftBoContentStyle.position = 'absolute';
       leftBoContentStyle.left = '50px';
       leftBoContentStyle.top = 0;
@@ -228,7 +229,7 @@ export class WorkBench extends React.Component<
                   }}
                 >
                   <PushpinOutlined
-                    className={clsx([!leftBoxFixed && styles.active])}
+                    className={clsx([leftBoxFixed && styles.active])}
                   />
                 </Button>
                 <Button
@@ -249,13 +250,7 @@ export class WorkBench extends React.Component<
             <div className={styles.subTopToolbarBox}></div>
             <div className={styles.canvasBox}>
               <div className={styles.scrollBox}>
-                <div
-                  style={{
-                    width: '100%',
-                    height: '1000px',
-                    backgroundColor: 'pink',
-                  }}
-                ></div>
+                <Designer />
               </div>
             </div>
           </div>
