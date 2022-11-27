@@ -14,7 +14,7 @@
     display: flex;
     width: 100%;
     flex: 1;
-    overflow: auto;
+    overflow: hidden;
 
     .leftBox {
       position: relative;
@@ -22,8 +22,38 @@
       background-color: #fff;
       .pluginIconBar {
         width: 50px;
-        background-color: skyblue;
         height: 100%;
+
+        .pluginIconItem {
+          position: relative;
+          cursor: pointer;
+          width: 50px;
+          height: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.1s;
+
+          &.active ::before,
+          &:hover ::before {
+            transition: all 0.1s;
+            display: block;
+            content: '';
+            width: 2px;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+          }
+
+          &.active ::before {
+            border-left: 4px solid $baseColor !important;
+          }
+
+          &:hover ::before {
+            border-left: 4px solid $hoverColor;
+          }
+        }
       }
 
       .pluginPanelBoxResizeBox {
@@ -31,10 +61,12 @@
         flex-direction: column;
         background-color: #fff;
         z-index: 100;
+        border-right: 1px solid $borderColor;
+
         .pluginHeader {
           display: flex;
           color: $fontColor;
-          height: 50px;
+          height: 30px;
           margin: 10px;
           overflow: hidden;
           align-items: center;
@@ -51,6 +83,9 @@
           }
 
           .fixedBtn {
+            > * {
+              transition: all 0.1s;
+            }
             > .active {
               transform: rotate(-45deg);
             }
@@ -61,6 +96,7 @@
         width: 100%;
         flex: 1;
         background-color: ghostwhite;
+        overflow: hidden;
       }
     }
 
