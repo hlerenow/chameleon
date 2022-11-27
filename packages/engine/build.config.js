@@ -50,7 +50,16 @@ module.exports = {
     build: {
       outDir: process.env.BUILD_TYPE === 'APP' ? './example' : './dist',
     },
-
     plugins: plugins,
+    resolve: {
+      alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: '@import "@/assets/styles/mixin.scss";',
+        },
+      },
+    },
   },
 };

@@ -1,0 +1,117 @@
+.workbenchContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .topToolBarBox {
+    height: 64px;
+    width: 100%;
+    border-bottom: 1px solid $borderColor;
+  }
+
+  .bodyContent {
+    display: flex;
+    width: 100%;
+    flex: 1;
+    overflow: auto;
+
+    .leftBox {
+      position: relative;
+      display: flex;
+      background-color: #fff;
+      .pluginIconBar {
+        width: 50px;
+        background-color: skyblue;
+        height: 100%;
+      }
+
+      .pluginPanelBoxResizeBox {
+        display: flex;
+        flex-direction: column;
+        background-color: #fff;
+        z-index: 100;
+        .pluginHeader {
+          display: flex;
+          color: $fontColor;
+          height: 50px;
+          margin: 10px;
+          overflow: hidden;
+          align-items: center;
+          .pluginNameText {
+            font-size: 14px;
+            font-weight: bold;
+            margin-right: auto;
+            flex-wrap: nowrap;
+            word-break: keep-all;
+          }
+          .closeBtn,
+          .fixedBtn {
+            color: $fontColor;
+          }
+
+          .fixedBtn {
+            > .active {
+              transform: rotate(-45deg);
+            }
+          }
+        }
+      }
+      .pluginPanelBox {
+        width: 100%;
+        flex: 1;
+        background-color: ghostwhite;
+      }
+    }
+
+    .rightResizeBox {
+      position: relative;
+      .arrowCursor {
+        cursor: pointer;
+        position: absolute;
+        left: -20px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+        background-color: #fff;
+        padding: 10px 3px;
+        border-radius: 4px 0 0 4px;
+        font-size: 12px;
+        > .active {
+          transform: rotate(-180deg);
+        }
+      }
+      .rightBox {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background-color: orangered;
+      }
+    }
+
+    .centerBox {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+      .subTopToolbarBox {
+        width: 100%;
+        height: 50px;
+        background-color: blue;
+      }
+      .canvasBox {
+        width: 100%;
+        flex: 1;
+        overflow: auto;
+        padding: 20px;
+        background-color: $baseBackgroundColor;
+        overflow: hidden;
+        .scrollBox {
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+        }
+      }
+    }
+  }
+}
