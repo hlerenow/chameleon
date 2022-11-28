@@ -35,10 +35,12 @@ jobs:
       - name: Delete yarn.lock
         run: rm yarn.lock & yarn cache clean 
       - name: Install Dependencies
-        run:  yarn install --network-concurrency 1 & npx lerna bootstrap
+        run:  yarn install --network-concurrency 1
       - name: Build
-        working-directory: packages/engine
-        run: yarn build:app      
+        run: |
+          npx lerna bootstrap
+          cd packages/engine
+          yarn build:app      
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
