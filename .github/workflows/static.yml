@@ -33,9 +33,9 @@ jobs:
       - name: Setup yarn
         run: npm install yarn -g        
       - name: Install Dependencies
-        run: yarn install      
+        run: npx lerna bootstrap & yarn  
       - name: Build
-        run: cd ./packages/engine/ & yarn build:app     
+        run: cd ./packages/engine & yarn build:app     
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup Pages
