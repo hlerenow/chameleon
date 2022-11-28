@@ -33,9 +33,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3      
       - name: Delete yarn.lock
-        run: rm yarn.lock & yarn cache clean
+        run: rm yarn.lock & yarn cache clean & pwd & ls & cd ./packages/engine & ls 
       - name: Install Dependencies
-        run:  yarn install --immutable & npx lerna bootstrap
+        run:  yarn install --network-concurrency 1 & npx lerna bootstrap
       - name: Build
         run: pwd & ls & cd ./packages/engine & ls & yarn build:app     
       - name: Setup Pages
