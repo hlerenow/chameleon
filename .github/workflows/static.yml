@@ -35,7 +35,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3      
       - name: Delete yarn.lock
-        run: rm yarn.lock
+        run: rm yarn.lock & yarn cache clean
       - name: Install Dependencies
         run: yarn --no-lockfile & npx lerna bootstrap
       - name: Build
