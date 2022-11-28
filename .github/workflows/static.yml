@@ -28,6 +28,14 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.5.1
+      - name: Setup yarn
+        run: npm install yarn -g        
+      - name: Install Dependencies
+        run: yarn install      
+      - name: Build
+        run: cd ./packages/engine/ & yarn build:app     
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup Pages
@@ -36,7 +44,7 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload entire repository
-          path: './packages/engine/example'
+          path: './example'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
