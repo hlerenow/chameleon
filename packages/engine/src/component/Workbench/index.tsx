@@ -1,5 +1,5 @@
 import React from 'react';
-import { Resizable } from 're-resizable';
+import { Resizable, ResizeCallback } from 're-resizable';
 import styles from './style.module.scss';
 import { Button } from 'antd';
 import {
@@ -32,13 +32,11 @@ type WorkBenchStateType = {
     width: number;
     height: number | string;
   };
-  leftMinWidth: number | string;
   leftBoxFixed: boolean;
   rightBoxSize: {
     width: number;
     height: number | string;
   };
-  rightMinWidth: number;
   rightBoxVisible: boolean;
   currentActivePlugin: string;
   plugins: PluginItem[];
@@ -59,14 +57,12 @@ export class WorkBench extends React.Component<
         width: 350,
         height: '100%',
       },
-      leftMinWidth: 350,
       leftBoxFixed: true,
       rightBoxVisible: true,
       rightBoxSize: {
         width: 350,
         height: '100%',
       },
-      rightMinWidth: 400,
       currentActivePlugin: 'ComponentLib',
       plugins: [
         {
@@ -93,7 +89,6 @@ export class WorkBench extends React.Component<
   openLeftPanel = () => {
     this.setState({
       leftBoxVisible: true,
-      leftMinWidth: 350,
       leftBoxSize: {
         width: 350,
         height: '100%',
@@ -104,7 +99,6 @@ export class WorkBench extends React.Component<
   closeLeftPanel = () => {
     this.setState({
       leftBoxVisible: false,
-      leftMinWidth: 0,
       leftBoxSize: {
         width: 0,
         height: '100%',
@@ -135,21 +129,51 @@ export class WorkBench extends React.Component<
   };
 
   openRightPanel = () => {
-    console.log('openLeftPanel');
+    const { rightBoxSize } = this.state;
+    this.setState({
+      rightBoxVisible: true,
+      rightBoxSize: {
+        width: 400,
+        height: rightBoxSize.height,
+      },
+    });
   };
   closeRightPanel = () => {
-    console.log('openLeftPanel');
+    const { rightBoxSize } = this.state;
+    this.setState({
+      rightBoxVisible: false,
+      rightBoxSize: {
+        width: 0,
+        height: rightBoxSize.height,
+      },
+    });
   };
   toggleRightPanel = () => {
-    console.log('openLeftPanel');
+    const { rightBoxVisible, rightBoxSize } = this.state;
+    const newVisible = !rightBoxVisible;
+    this.setState({
+      rightBoxVisible: newVisible,
+      rightBoxSize: {
+        width: newVisible ? 400 : 0,
+        height: rightBoxSize.height,
+      },
+    });
+  };
+  onLeftBoxResizeStop: ResizeCallback = (_e, _direction, _ref, d) => {
+    const newW = this.state.leftBoxSize.width + d.width;
+    this.setState({
+      leftBoxSize: {
+        width: newW,
+        height: this.state.leftBoxSize.height,
+      },
+    });
   };
 
   render() {
     const {
+      leftBoxVisible,
       leftBoxSize,
-      leftMinWidth,
       leftBoxFixed,
-      rightMinWidth,
       rightBoxSize,
       rightBoxVisible,
       plugins,
@@ -170,13 +194,15 @@ export class WorkBench extends React.Component<
     const CurrentPluginRenderView = currentPluginRender({} as any);
     const {
       onPluginIconClick,
-      openLeftPanel,
-      closeLeftPanel,
+      toggleRightPanel,
       toggleLeftPanel,
+      onLeftBoxResizeStop,
     } = this;
     return (
       <div className={styles.workbenchContainer}>
-        <div className={styles.topToolBarBox}></div>
+        <div className={styles.topToolBarBox}>
+          <div className={styles.logo}>Chameleon EG</div>
+        </div>
         <div className={styles.bodyContent}>
           <div className={styles.leftBox}>
             <div className={styles.pluginIconBar}>
@@ -195,56 +221,51 @@ export class WorkBench extends React.Component<
                 );
               })}
             </div>
-            <Resizable
-              className={styles.pluginPanelBoxResizeBox}
-              size={leftBoxSize}
-              style={leftBoContentStyle}
-              minWidth={leftMinWidth}
-              maxWidth={600}
-              enable={{
-                right: true,
-              }}
-              onResizeStop={(_e, _direction, _ref, d) => {
-                this.setState({
-                  leftBoxSize: {
-                    width: this.state.leftBoxSize.width + d.width,
-                    height: this.state.leftBoxSize.height,
-                  },
-                });
-              }}
-            >
-              <div className={styles.pluginHeader}>
-                <span className={styles.pluginNameText}>
-                  {currentActivePluginObj?.title ||
-                    currentActivePluginObj?.name}
-                </span>
-                <Button
-                  className={clsx([styles.fixedBtn])}
-                  type="text"
-                  size="small"
-                  onClick={() => {
-                    this.setState({
-                      leftBoxFixed: !this.state.leftBoxFixed,
-                    });
-                  }}
-                >
-                  <PushpinOutlined
-                    className={clsx([leftBoxFixed && styles.active])}
-                  />
-                </Button>
-                <Button
-                  className={styles.closeBtn}
-                  type="text"
-                  size="small"
-                  onClick={toggleLeftPanel}
-                >
-                  <CloseOutlined />
-                </Button>
-              </div>
-              <div className={styles.pluginPanelBox}>
-                {CurrentPluginRenderView && <CurrentPluginRenderView />}
-              </div>
-            </Resizable>
+            {leftBoxVisible && (
+              <Resizable
+                className={styles.pluginPanelBoxResizeBox}
+                size={leftBoxSize}
+                style={leftBoContentStyle}
+                minWidth={350}
+                maxWidth={600}
+                enable={{
+                  right: leftBoxVisible,
+                }}
+                onResizeStop={onLeftBoxResizeStop}
+              >
+                <div className={styles.pluginHeader}>
+                  <span className={styles.pluginNameText}>
+                    {currentActivePluginObj?.title ||
+                      currentActivePluginObj?.name}
+                  </span>
+                  <Button
+                    className={clsx([styles.fixedBtn])}
+                    type="text"
+                    size="small"
+                    onClick={() => {
+                      this.setState({
+                        leftBoxFixed: !this.state.leftBoxFixed,
+                      });
+                    }}
+                  >
+                    <PushpinOutlined
+                      className={clsx([leftBoxFixed && styles.active])}
+                    />
+                  </Button>
+                  <Button
+                    className={styles.closeBtn}
+                    type="text"
+                    size="small"
+                    onClick={toggleLeftPanel}
+                  >
+                    <CloseOutlined />
+                  </Button>
+                </div>
+                <div className={styles.pluginPanelBox}>
+                  {CurrentPluginRenderView && <CurrentPluginRenderView />}
+                </div>
+              </Resizable>
+            )}
           </div>
           <div className={styles.centerBox}>
             <div className={styles.subTopToolbarBox}></div>
@@ -254,48 +275,33 @@ export class WorkBench extends React.Component<
               </div>
             </div>
           </div>
-          <Resizable
-            className={styles.rightResizeBox}
-            minWidth={rightMinWidth}
-            maxWidth={600}
-            enable={{
-              left: true,
-            }}
-            size={rightBoxSize}
-            onResizeStop={(_e, _direction, _ref, d) => {
-              this.setState({
-                rightBoxSize: {
-                  width: this.state.rightBoxSize.width + d.width,
-                  height: this.state.rightBoxSize.height,
-                },
-              });
-              if (this.state.rightMinWidth === 0) {
-                this.setState({
-                  rightMinWidth: 400,
-                });
-              }
-            }}
-          >
-            <div
-              className={styles.arrowCursor}
-              onClick={() => {
-                const newVisible = !rightBoxVisible;
-                this.setState({
-                  rightBoxVisible: newVisible,
-                  rightBoxSize: {
-                    width: newVisible ? 400 : 0,
-                    height: rightBoxSize.height,
-                  },
-                  rightMinWidth: newVisible ? 400 : 0,
-                });
-              }}
-            >
+          <div className={styles.rightResizeBox}>
+            <div className={styles.arrowCursor} onClick={toggleRightPanel}>
               <DoubleRightOutlined
                 className={clsx([!rightBoxVisible && styles.active])}
               />
             </div>
-            <div className={styles.rightBox}></div>
-          </Resizable>
+            {rightBoxVisible && (
+              <Resizable
+                minWidth={400}
+                maxWidth={600}
+                enable={{
+                  left: rightBoxVisible,
+                }}
+                size={rightBoxSize}
+                onResizeStop={(_e, _direction, _ref, d) => {
+                  this.setState({
+                    rightBoxSize: {
+                      width: this.state.rightBoxSize.width + d.width,
+                      height: this.state.rightBoxSize.height,
+                    },
+                  });
+                }}
+              >
+                <div className={styles.rightBox}></div>
+              </Resizable>
+            )}
+          </div>
         </div>
       </div>
     );
