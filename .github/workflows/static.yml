@@ -31,13 +31,13 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v3.5.1
       - name: Setup yarn
-        run: npm install yarn -g        
+        run: npm install yarn -g     
+      - name: Checkout
+        uses: actions/checkout@v3        
       - name: Install Dependencies
         run: npx lerna bootstrap & yarn  
       - name: Build
         run: pwd & ls & cd ./packages/engine & yarn build:app     
-      - name: Checkout
-        uses: actions/checkout@v3
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
