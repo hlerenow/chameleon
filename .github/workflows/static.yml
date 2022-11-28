@@ -33,7 +33,9 @@ jobs:
       - name: Setup yarn
         run: npm install yarn -g
       - name: Checkout
-        uses: actions/checkout@v3        
+        uses: actions/checkout@v3      
+      - name: Delete yarn.lock
+        run: rm yarn.lock
       - name: Install Dependencies
         run: yarn --no-lockfile & npx lerna bootstrap
       - name: Build
