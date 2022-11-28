@@ -35,7 +35,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3        
       - name: Install Dependencies
-        run: yarn install --no-lockfile & npx lerna bootstrap
+        run: yarn --no-lockfile & npx lerna bootstrap
       - name: Build
         run: pwd & ls & cd ./packages/engine & yarn build:app     
       - name: Setup Pages
