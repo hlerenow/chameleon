@@ -37,7 +37,7 @@ jobs:
       - name: Install Dependencies
         run:  yarn install --network-concurrency 1 & npx lerna bootstrap
       - name: Cd engine root
-        run: cd ./packages/engine  
+        run: cd packages/engine & pwd & ls
       - name: Build
         run: yarn build:app      
       - name: Setup Pages
