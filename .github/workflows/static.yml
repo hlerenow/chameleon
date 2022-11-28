@@ -28,26 +28,15 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3.5.1
       - name: Checkout
-        uses: actions/checkout@v3      
-      - name: Delete yarn.lock
-        run: rm yarn.lock & yarn cache clean 
-      - name: Install Dependencies
-        run:  yarn install --network-concurrency 1
-      - name: Build
-        run: |
-          npx lerna bootstrap
-          cd packages/engine
-          yarn build:app      
+        uses: actions/checkout@v3
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload entire repository
-          path: './example'
+          path: 'package/engine/example'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
