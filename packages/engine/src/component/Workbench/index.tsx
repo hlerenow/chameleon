@@ -2,6 +2,7 @@ import React from 'react';
 import { Resizable, ResizeCallback } from 're-resizable';
 import styles from './style.module.scss';
 import { Button } from 'antd';
+import { Trans } from 'react-i18next';
 import {
   AppstoreAddOutlined,
   CloseOutlined,

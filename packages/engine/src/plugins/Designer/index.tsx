@@ -7,10 +7,11 @@ import {
   LayoutDragAndDropExtraDataType,
   LayoutPropsType,
 } from '@chameleon/layout';
-
+import { Translation } from 'react-i18next';
 import styles from './style.module.scss';
 import '@chameleon/layout/dist/style.css';
 import { CNode } from '@chameleon/model';
+import i18n from '../../i18n';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOMAll;
@@ -38,6 +39,9 @@ export class Designer extends React.Component<
 
   componentDidMount(): void {
     this.init();
+    setTimeout(() => {
+      i18n.changeLanguage('en_US');
+    }, 1000);
   }
 
   init() {
@@ -87,28 +91,31 @@ export class Designer extends React.Component<
     const { layoutRef, props } = this;
     const { page } = this.state;
     return (
-      <Layout
-        ref={layoutRef}
-        page={page}
-        renderScriptPath={'./render.umd.js'}
-        {...props}
-        assets={[
-          {
-            name: 'antd',
-            assets: [
-              {
-                src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/reset.css',
-              },
-              {
-                src: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.6/dayjs.min.js',
-              },
-              {
-                src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/antd.min.js',
-              },
-            ],
-          },
-        ]}
-      />
+      <>
+        <Translation>{(t) => <h3>{t('Welcome to React')}</h3>}</Translation>
+        <Layout
+          ref={layoutRef}
+          page={page}
+          renderScriptPath={'./render.umd.js'}
+          {...props}
+          assets={[
+            {
+              name: 'antd',
+              assets: [
+                {
+                  src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/reset.css',
+                },
+                {
+                  src: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.6/dayjs.min.js',
+                },
+                {
+                  src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/antd.min.js',
+                },
+              ],
+            },
+          ]}
+        />
+      </>
     );
   }
 }
