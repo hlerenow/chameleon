@@ -27,6 +27,7 @@ declare type WorkBenchStateType = {
     rightBoxVisible: boolean;
     currentActivePlugin: string;
     plugins: PluginItem[];
+    bodyView: React.ReactNode | null;
 };
 export declare type WorkBenchPropsType = any;
 export declare class WorkBench extends React.Component<WorkBenchPropsType, WorkBenchStateType> {
@@ -38,6 +39,7 @@ export declare class WorkBench extends React.Component<WorkBenchPropsType, WorkB
     onPluginIconClick: (plugin: PluginItem) => void;
     openRightPanel: () => void;
     closeRightPanel: () => void;
+    replaceBodyView: (newView: React.ReactNode) => void;
     toggleRightPanel: () => void;
     onLeftBoxResizeStop: ResizeCallback;
     render(): JSX.Element;
