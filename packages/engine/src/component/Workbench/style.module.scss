@@ -149,12 +149,12 @@
         width: 100%;
         flex: 1;
         overflow: auto;
-        padding: 20px;
+        padding: 20px 30px;
         background-color: $baseBackgroundColor;
-        overflow: hidden;
         .scrollBox {
           width: 100%;
           height: 100%;
+          box-shadow: 0 1px 4px 0 rgb(31 50 88 / 13%);
           overflow: hidden;
         }
       }

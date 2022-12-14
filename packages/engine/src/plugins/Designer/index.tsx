@@ -6,18 +6,22 @@ import {
   Layout,
   LayoutDragAndDropExtraDataType,
   LayoutPropsType,
+  DragAndDrop,
 } from '@chameleon/layout';
 import { Translation } from 'react-i18next';
 import styles from './style.module.scss';
 import '@chameleon/layout/dist/style.css';
 import { CNode } from '@chameleon/model';
 import i18n from '../../i18n';
+import { CPlugin, PluginCtx } from '../../core/pluginManager';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOMAll;
 (window as any).ReactDOMClient = ReactDOM;
 
-export type DesignerPropsType = any;
+export type DesignerPropsType = {
+  pluginCtx: PluginCtx;
+};
 
 type DesignerStateType = {
   page: LayoutPropsType['page'];
@@ -83,6 +87,10 @@ export class Designer extends React.Component<
         layoutRef.current?.selectNode(extraData.startNode?.id || '');
         console.log(pageModel?.export());
       });
+      // notice other plugin, current is ready ok
+      this.props.pluginCtx.emitter.emit('ready', {
+        uiInstance: this,
+      });
     });
     console.log(11111, pageModel?.export());
   }
@@ -119,3 +127,21 @@ export class Designer extends React.Component<
     );
   }
 }
+
+export const DesignerPlugin: CPlugin = {
+  name: 'Designer',
+  async init(ctx) {
+    console.log('init', ctx);
+    ctx.workbench.replaceBodyView(<Designer pluginCtx={ctx} />);
+  },
+  async destroy(ctx) {
+    console.log('destroy', ctx);
+  },
+  exports: (ctx) => {
+    return {};
+  },
+  meta: {
+    engine: '1.0.0',
+    version: '1.0.0',
+  },
+};

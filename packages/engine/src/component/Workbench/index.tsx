@@ -41,6 +41,7 @@ type WorkBenchStateType = {
   rightBoxVisible: boolean;
   currentActivePlugin: string;
   plugins: PluginItem[];
+  bodyView: React.ReactNode | null;
 };
 
 export type WorkBenchPropsType = any;
@@ -83,6 +84,7 @@ export class WorkBench extends React.Component<
           },
         },
       ],
+      bodyView: null,
     };
     this.emitter = new DEmitter();
   }
@@ -149,6 +151,13 @@ export class WorkBench extends React.Component<
       },
     });
   };
+
+  replaceBodyView = (newView: React.ReactNode) => {
+    this.setState({
+      bodyView: newView,
+    });
+  };
+
   toggleRightPanel = () => {
     const { rightBoxVisible, rightBoxSize } = this.state;
     const newVisible = !rightBoxVisible;
@@ -179,6 +188,7 @@ export class WorkBench extends React.Component<
       rightBoxVisible,
       plugins,
       currentActivePlugin,
+      bodyView,
     } = this.state;
     const leftBoContentStyle: React.CSSProperties = {};
     if (!leftBoxFixed) {
@@ -271,9 +281,7 @@ export class WorkBench extends React.Component<
           <div className={styles.centerBox}>
             <div className={styles.subTopToolbarBox}></div>
             <div className={styles.canvasBox}>
-              <div className={styles.scrollBox}>
-                <Designer />
-              </div>
+              <div className={styles.scrollBox}>{bodyView}</div>
             </div>
           </div>
           <div className={styles.rightResizeBox}>
