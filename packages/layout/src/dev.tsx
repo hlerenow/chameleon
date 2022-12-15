@@ -7,7 +7,7 @@ import * as antD from 'antd';
 import '@chameleon/material/dist/style.css';
 import './dev.css';
 import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
-import { CNode } from '@chameleon/model';
+import { CNode, CPage } from '@chameleon/model';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOMAll;
@@ -19,6 +19,7 @@ const components = {
 
 const App = () => {
   const [page] = useState<any>(BasePage);
+  const [pageModel] = useState<any>(new CPage(BasePage as any));
 
   const leftBoxRef = useRef<HTMLDivElement>(null);
   const layoutRef = useRef<Layout>(null);
@@ -147,6 +148,7 @@ const App = () => {
         <Layout
           ref={layoutRef}
           page={page}
+          pageModel={pageModel}
           components={components}
           assets={[
             {

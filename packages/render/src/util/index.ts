@@ -8,11 +8,9 @@ export const isClass = function (val: any) {
   if (typeof val !== 'function') {
     return false;
   }
-
   if (!val.prototype) {
     return false;
   }
-
   return true;
 };
 

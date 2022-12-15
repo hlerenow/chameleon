@@ -43,7 +43,7 @@ export const isSchemaModel = (val: any): val is CSchema => {
 };
 
 export const isPageModel = (val: any): val is CPage => {
-  if (val?.nodeType === 'PAGE' && val instanceof CPage) {
+  if (val?.nodeType === 'PAGE') {
     return true;
   }
 
@@ -51,7 +51,7 @@ export const isPageModel = (val: any): val is CPage => {
 };
 
 export const isNodeModel = (val: any): val is CNode => {
-  if (val?.nodeType === 'NODE' && val instanceof CNode) {
+  if (val?.nodeType === 'NODE') {
     return true;
   }
 
@@ -59,7 +59,14 @@ export const isNodeModel = (val: any): val is CNode => {
 };
 
 export const isPropModel = (val: any): val is CProp => {
-  if (val?.nodeType === 'PROP' && val instanceof CProp) {
+  if (val?.nodeType === 'PROP') {
+    return true;
+  }
+  return false;
+};
+
+export const isSlotModel = (val: any): val is CSlot => {
+  if (val?.nodeType === 'SLOT') {
     return true;
   }
   return false;

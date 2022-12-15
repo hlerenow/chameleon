@@ -23,10 +23,7 @@ export type LayoutDragAndDropExtraDataType = {
   dropPosInfo?: Partial<DropPosType>;
 };
 
-export type LayoutPropsType = Omit<
-  DesignRenderProp,
-  'adapter' | 'ref' | 'pageModel'
-> & {
+export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   renderScriptPath?: string;
   assets?: Asset[];
   onSelectNode?: (node: CNode | CSchema | null) => void;
@@ -119,6 +116,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         const App = IframeReact?.createElement(CRender.DesignRender, {
           adapter: CRender?.ReactAdapter,
           page: this.props.page,
+          pageModel: this.props.pageModel,
           components,
           ref: this.designRenderRef,
         });

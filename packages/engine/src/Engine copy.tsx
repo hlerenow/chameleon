@@ -119,7 +119,6 @@ const Engine = (props: any) => {
       });
     });
     const pageModel = layoutRef.current?.getPageModel();
-
     console.log(11111, pageModel?.export());
   }, []);
   return (

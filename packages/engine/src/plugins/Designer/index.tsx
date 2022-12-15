@@ -11,7 +11,7 @@ import {
 import { Translation } from 'react-i18next';
 import styles from './style.module.scss';
 import '@chameleon/layout/dist/style.css';
-import { CNode } from '@chameleon/model';
+import { CNode, CPage } from '@chameleon/model';
 import i18n from '../../i18n';
 import { CPlugin, PluginCtx } from '../../core/pluginManager';
 
@@ -25,6 +25,7 @@ export type DesignerPropsType = {
 
 type DesignerStateType = {
   page: LayoutPropsType['page'];
+  pageModel: CPage;
 };
 
 export class Designer extends React.Component<
@@ -37,6 +38,7 @@ export class Designer extends React.Component<
     super(props);
     this.state = {
       page: BasePage as any,
+      pageModel: props.pluginCtx.pageModel,
     };
     this.layoutRef = React.createRef<Layout>();
   }
@@ -97,13 +99,14 @@ export class Designer extends React.Component<
 
   render() {
     const { layoutRef, props } = this;
-    const { page } = this.state;
+    const { pageModel } = this.state;
+    console.log('🚀 ~ file: index.tsx:102 ~ render ~ pageModel', pageModel);
     return (
       <>
         <Translation>{(t) => <h3>{t('Welcome to React')}</h3>}</Translation>
         <Layout
           ref={layoutRef}
-          page={page}
+          pageModel={pageModel}
           renderScriptPath={'./render.umd.js'}
           {...props}
           assets={[

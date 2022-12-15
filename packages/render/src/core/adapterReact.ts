@@ -5,13 +5,13 @@ import {
   CProp,
   CPropDataType,
   CSchema,
-  CSlot,
   FunctionPropType,
   getRandomStr,
   InnerComponentNameEnum,
   isExpression,
   isFunction,
   isPropModel,
+  isSlotModel,
   JSExpressionPropType,
 } from '@chameleon/model';
 import { AdapterOptionType, ContextType, getAdapter } from './adapter';
@@ -115,7 +115,7 @@ class DefineReactAdapter {
         return propVal.map((it) => handlePropVal(it));
       } else if (isPropModel(propVal)) {
         return handlePropVal(propVal.value);
-      } else if (propVal instanceof CSlot) {
+      } else if (isSlotModel(propVal)) {
         const slotProp = propVal.value;
         const tempVal = slotProp.value;
         if (!tempVal) {
