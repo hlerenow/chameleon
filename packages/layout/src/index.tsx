@@ -57,7 +57,7 @@ const SELECT_LOCK_STYLE: React.CSSProperties = {
 };
 
 export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
-  designRenderRef: React.RefObject<DesignRender>;
+  designRenderRef: React.MutableRefObject<DesignRender | null>;
   iframeContainer: IFrameContainer;
   eventExposeHandler: (() => void)[];
   state: LayoutStateType;
@@ -69,7 +69,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   assets: CAssetPackage[];
   constructor(props: LayoutPropsType) {
     super(props);
-    this.designRenderRef = React.createRef<DesignRender>();
+    this.designRenderRef = React.createRef<DesignRender | null>();
     this.iframeContainer = new IFrameContainer();
     this.eventExposeHandler = [];
     this.assets = props.assets || [];
@@ -124,13 +124,14 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           iframeWindow
         );
         const components = flatObject(componentCollection);
+
         const App = IframeReact?.createElement(CRender.DesignRender, {
           adapter: CRender?.ReactAdapter,
           page: this.props.page,
           pageModel: this.props.pageModel,
           components,
-          ref: this.designRenderRef,
-          onMount: () => {
+          onMount: (designRenderInstance) => {
+            this.designRenderRef.current = designRenderInstance;
             this.registerDragAndDropEvent();
             this.registerSelectEvent();
             this.registerHoverEvent();

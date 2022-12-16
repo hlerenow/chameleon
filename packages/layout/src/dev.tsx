@@ -114,7 +114,7 @@ const App = () => {
         console.log(pageModel?.export());
       });
       const pageModel = layoutRef.current?.getPageModel();
-      console.log(11111, pageModel?.export());
+      console.log('pageModel?.export()', pageModel?.export());
     });
   }, []);
   return (

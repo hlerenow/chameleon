@@ -39,7 +39,7 @@ export class ComponentInstanceManager {
 export type DesignRenderProp = Omit<RenderPropsType, 'ref' | 'render'> & {
   ref?: React.MutableRefObject<DesignRender | null>;
   render?: UseDesignRenderReturnType;
-  onMount?: () => void;
+  onMount?: (instance: DesignRender) => void;
 };
 
 type DesignWrapType = {
@@ -60,7 +60,8 @@ export class DesignRender extends React.Component<DesignRenderProp> {
   }
 
   componentDidMount(): void {
-    this.props.onMount?.();
+    console.log('this.renderRef', this.renderRef);
+    this.props.onMount?.(this);
   }
   getPageModel() {
     return this.renderRef.current?.state.pageModel;
@@ -122,6 +123,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
     }
     return res;
   }
+
   getInstanceByDom(el: HTMLHtmlElement | Element): DesignRenderInstance | null {
     const fiberNode = findClosetFiberNode(el);
     if (!fiberNode) {

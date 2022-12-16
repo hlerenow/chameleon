@@ -96,16 +96,14 @@ export class Designer extends React.Component<
       this.props.pluginCtx.emitter.emit('ready', {
         uiInstance: this,
       });
-      debugger;
       const pageModel = layoutRef.current?.getPageModel();
-      console.log(11111, pageModel);
+      console.log(11111, pageModel, layoutRef);
     });
   }
 
   render() {
     const { layoutRef, props } = this;
     const { pageModel, hoverToolBar, selectToolBar } = this.state;
-    console.log('🚀 ~ file: index.tsx:102 ~ render ~ pageModel', pageModel);
     return (
       <>
         <Translation>{(t) => <h3>{t('Welcome to React')}</h3>}</Translation>
