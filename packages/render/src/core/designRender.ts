@@ -39,6 +39,7 @@ export class ComponentInstanceManager {
 export type DesignRenderProp = Omit<RenderPropsType, 'ref' | 'render'> & {
   ref?: React.MutableRefObject<DesignRender | null>;
   render?: UseDesignRenderReturnType;
+  onMount?: () => void;
 };
 
 type DesignWrapType = {
@@ -56,6 +57,10 @@ export class DesignRender extends React.Component<DesignRenderProp> {
   constructor(props: DesignRenderProp) {
     super(props);
     this.renderRef = React.createRef<Render>();
+  }
+
+  componentDidMount(): void {
+    this.props.onMount?.();
   }
   getPageModel() {
     return this.renderRef.current?.state.pageModel;

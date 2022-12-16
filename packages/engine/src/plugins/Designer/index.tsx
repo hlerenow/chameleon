@@ -26,6 +26,8 @@ export type DesignerPropsType = {
 type DesignerStateType = {
   page: LayoutPropsType['page'];
   pageModel: CPage;
+  hoverToolBar: React.ReactNode;
+  selectToolBar: React.ReactNode;
 };
 
 export class Designer extends React.Component<
@@ -39,6 +41,8 @@ export class Designer extends React.Component<
     this.state = {
       page: BasePage as any,
       pageModel: props.pluginCtx.pageModel,
+      hoverToolBar: <>123</>,
+      selectToolBar: <>123</>,
     };
     this.layoutRef = React.createRef<Layout>();
   }
@@ -52,7 +56,6 @@ export class Designer extends React.Component<
 
   init() {
     const { layoutRef } = this;
-    const pageModel = layoutRef.current?.getPageModel();
     layoutRef.current?.ready(() => {
       layoutRef.current?.dnd?.emitter.on('drop', (eventObj) => {
         const pageModel = layoutRef.current?.getPageModel();
@@ -93,13 +96,15 @@ export class Designer extends React.Component<
       this.props.pluginCtx.emitter.emit('ready', {
         uiInstance: this,
       });
+      debugger;
+      const pageModel = layoutRef.current?.getPageModel();
+      console.log(11111, pageModel);
     });
-    console.log(11111, pageModel?.export());
   }
 
   render() {
     const { layoutRef, props } = this;
-    const { pageModel } = this.state;
+    const { pageModel, hoverToolBar, selectToolBar } = this.state;
     console.log('🚀 ~ file: index.tsx:102 ~ render ~ pageModel', pageModel);
     return (
       <>
@@ -109,9 +114,14 @@ export class Designer extends React.Component<
           pageModel={pageModel}
           renderScriptPath={'./render.umd.js'}
           {...props}
+          hoverToolBar={hoverToolBar}
+          selectToolBar={selectToolBar}
+          selectBoxStyle={{}}
+          hoverBoxStyle={{}}
           assets={[
             {
               name: 'antd',
+              resourceType: 'Component',
               assets: [
                 {
                   src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/reset.css',

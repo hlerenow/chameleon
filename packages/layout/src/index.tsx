@@ -1,9 +1,14 @@
 import React from 'react';
 import styles from './index.module.scss';
-import { Asset, DesignRenderInstance } from '@chameleon/render';
+import { Asset, AssetPackage, DesignRenderInstance } from '@chameleon/render';
 import { DesignRender, DesignRenderProp } from '@chameleon/render';
 import { IFrameContainer } from './core/iframeContainer';
-import { addEventListenerReturnCancel, animationFrame } from './utils';
+import {
+  addEventListenerReturnCancel,
+  animationFrame,
+  collectVariable,
+  flatObject,
+} from './utils';
 import {
   HighlightCanvas,
   HighlightCanvasRefType,
@@ -13,6 +18,7 @@ import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
 import { DropAnchorCanvas, DropPosType } from './components/DropAnchor';
 import { CNode, CSchema } from '@chameleon/model';
 import { Pointer } from './core/dragAndDrop/common';
+import { CAssetPackage } from './types/common';
 
 export type LayoutDragAndDropExtraDataType = {
   type: 'NEW_ADD';
@@ -25,7 +31,7 @@ export type LayoutDragAndDropExtraDataType = {
 
 export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   renderScriptPath?: string;
-  assets?: Asset[];
+  assets?: CAssetPackage[];
   onSelectNode?: (node: CNode | CSchema | null) => void;
   selectToolBar?: React.ReactNode;
   selectBoxStyle?: React.CSSProperties;
@@ -60,7 +66,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   highlightHoverCanvasRef: React.RefObject<HighlightCanvasRefType>;
   highlightDropAnchorCanvasRef: React.RefObject<HighlightCanvasRefType>;
   readyCbList: ((layoutInstance: Layout) => void)[] = [];
-  assets: Asset[];
+  assets: CAssetPackage[];
   constructor(props: LayoutPropsType) {
     super(props);
     this.designRenderRef = React.createRef<DesignRender>();
@@ -112,20 +118,27 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     assetLoader
       .onSuccess(() => {
         // 从子窗口获取物料对象
-        const components = (iframeWindow as any).antd;
+        const componentCollection = collectVariable(
+          this.assets,
+          'Component',
+          iframeWindow
+        );
+        const components = flatObject(componentCollection);
         const App = IframeReact?.createElement(CRender.DesignRender, {
           adapter: CRender?.ReactAdapter,
           page: this.props.page,
           pageModel: this.props.pageModel,
           components,
           ref: this.designRenderRef,
+          onMount: () => {
+            this.registerDragAndDropEvent();
+            this.registerSelectEvent();
+            this.registerHoverEvent();
+            this.readyOk();
+          },
         });
 
         IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
-        this.registerDragAndDropEvent();
-        this.registerSelectEvent();
-        this.registerHoverEvent();
-        this.readyOk();
       })
       .load();
   }

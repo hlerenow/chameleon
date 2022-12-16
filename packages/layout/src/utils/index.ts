@@ -1,3 +1,5 @@
+import { CAssetPackage } from '../types/common';
+
 export function addEventListenerReturnCancel<
   K extends keyof HTMLElementEventMap
 >(
@@ -43,4 +45,42 @@ export const animationFrame = (stepCb: () => void) => {
   return () => {
     handle = false;
   };
+};
+
+export const collectVariable = (
+  assetPackages: CAssetPackage[],
+  resourceType: CAssetPackage['resourceType'],
+  win: Window
+) => {
+  const res: Record<string, any> = {};
+  assetPackages.forEach((el) => {
+    if (el.resourceType === resourceType) {
+      const target = (win as any)[el.name];
+      if (target) {
+        res[el.name] = target;
+      }
+    }
+  });
+  return res;
+};
+
+export const flatObject = (obj: Record<string, any>, level = 1) => {
+  let count = 0;
+  let currentObj = obj;
+  let newObj: Record<string, any> = {};
+  let res = {};
+  while (count < level) {
+    Object.keys(currentObj).forEach((key) => {
+      newObj = {
+        ...newObj,
+        ...currentObj[key],
+      };
+    });
+    res = newObj;
+    currentObj = newObj;
+    newObj = {};
+    count += 1;
+  }
+
+  return res;
 };

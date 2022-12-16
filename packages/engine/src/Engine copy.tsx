@@ -28,7 +28,6 @@ const Engine = (props: any) => {
   const layoutRef = useRef<Layout>(null);
   useEffect(() => {
     layoutRef.current?.ready(() => {
-      console.log('layoutRef', layoutRef);
       const boxSensor = new Sensor({
         name: 'widgetListBox',
         container: leftBoxRef.current!,
@@ -82,7 +81,6 @@ const Engine = (props: any) => {
       });
       boxSensor.emitter.on('drop', (eventObj) => {
         const pageModel = layoutRef.current?.getPageModel();
-        console.log('box drop', eventObj, pageModel);
         const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
         if (extraData.type === 'NEW_ADD') {
           pageModel?.addNode(
@@ -118,8 +116,6 @@ const Engine = (props: any) => {
         console.log(pageModel?.export());
       });
     });
-    const pageModel = layoutRef.current?.getPageModel();
-    console.log(11111, pageModel?.export());
   }, []);
   return (
     <div

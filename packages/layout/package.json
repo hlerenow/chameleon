@@ -7,6 +7,7 @@
   "scripts": {
     "start": "build-script",
     "build": "build-script --build",
+    "build:w": "build-script --build --watch",
     "lint": "eslint --ext .tsx,.ts src/",
     "prettier": "prettier --write ./src",
     "test": "jest",
