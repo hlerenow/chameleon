@@ -2,7 +2,6 @@ import React from 'react';
 import { Resizable, ResizeCallback } from 're-resizable';
 import styles from './style.module.scss';
 import { Button } from 'antd';
-import { Trans } from 'react-i18next';
 import {
   AppstoreAddOutlined,
   CloseOutlined,
@@ -11,7 +10,6 @@ import {
 } from '@ant-design/icons';
 import clsx from 'clsx';
 import { DEmitter } from '../../core/emitter';
-import { Designer } from '../../plugins/Designer';
 
 export interface PluginContext {
   openPanel: () => void;
@@ -20,11 +18,11 @@ export interface PluginContext {
   emitter: DEmitter;
 }
 
-type PluginItem = {
+type PanelItem = {
   name: string;
   title: string;
   icon: React.ReactNode;
-  render: (ctx: PluginContext) => React.FC | typeof React.Component;
+  render: React.ReactNode;
 };
 
 type WorkBenchStateType = {
@@ -39,8 +37,8 @@ type WorkBenchStateType = {
     height: number | string;
   };
   rightBoxVisible: boolean;
-  currentActivePlugin: string;
-  plugins: PluginItem[];
+  currentActiveLeftPanel: string;
+  leftPanels: PanelItem[];
   bodyView: React.ReactNode | null;
 };
 
@@ -65,29 +63,18 @@ export class WorkBench extends React.Component<
         width: 350,
         height: '100%',
       },
-      currentActivePlugin: 'ComponentLib',
-      plugins: [
-        {
-          title: '组件库',
-          name: 'ComponentLib',
-          icon: <AppstoreAddOutlined />,
-          render: () => {
-            return () => <div>123</div>;
-          },
-        },
-        {
-          title: '组件库2',
-          name: 'ComponentLib2',
-          icon: <AppstoreAddOutlined />,
-          render: () => {
-            return () => <div>22222</div>;
-          },
-        },
-      ],
+      currentActiveLeftPanel: 'ComponentLib',
+      leftPanels: [],
       bodyView: null,
     };
     this.emitter = new DEmitter();
   }
+
+  addLeftPanel = (panel: PanelItem) => {
+    this.setState({
+      leftPanels: [...this.state.leftPanels, panel],
+    });
+  };
 
   openLeftPanel = () => {
     this.setState({
@@ -119,13 +106,13 @@ export class WorkBench extends React.Component<
     }
   };
 
-  onPluginIconClick = (plugin: PluginItem) => {
-    const { currentActivePlugin } = this.state;
-    if (currentActivePlugin === plugin.name) {
+  onPluginIconClick = (panel: PanelItem) => {
+    const { currentActiveLeftPanel } = this.state;
+    if (currentActiveLeftPanel === panel.name) {
       this.toggleLeftPanel();
     } else {
       this.setState({
-        currentActivePlugin: plugin.name,
+        currentActiveLeftPanel: panel.name,
       });
       this.openLeftPanel();
     }
@@ -141,6 +128,7 @@ export class WorkBench extends React.Component<
       },
     });
   };
+
   closeRightPanel = () => {
     const { rightBoxSize } = this.state;
     this.setState({
@@ -169,6 +157,7 @@ export class WorkBench extends React.Component<
       },
     });
   };
+
   onLeftBoxResizeStop: ResizeCallback = (_e, _direction, _ref, d) => {
     const newW = this.state.leftBoxSize.width + d.width;
     this.setState({
@@ -186,8 +175,8 @@ export class WorkBench extends React.Component<
       leftBoxFixed,
       rightBoxSize,
       rightBoxVisible,
-      plugins,
-      currentActivePlugin,
+      leftPanels,
+      currentActiveLeftPanel,
       bodyView,
     } = this.state;
     const leftBoContentStyle: React.CSSProperties = {};
@@ -197,12 +186,11 @@ export class WorkBench extends React.Component<
       leftBoContentStyle.top = 0;
     }
 
-    const currentActivePluginObj = plugins.find(
-      (el) => el.name === currentActivePlugin
+    const currentActivePluginObj = leftPanels.find(
+      (el) => el.name === currentActiveLeftPanel
     );
 
-    const currentPluginRender = currentActivePluginObj?.render || (() => null);
-    const CurrentPluginRenderView = currentPluginRender({} as any);
+    const CurrentPluginRenderView = currentActivePluginObj?.render || null;
     const {
       onPluginIconClick,
       toggleRightPanel,
@@ -217,7 +205,7 @@ export class WorkBench extends React.Component<
         <div className={styles.bodyContent}>
           <div className={styles.leftBox}>
             <div className={styles.pluginIconBar}>
-              {plugins.map((pl) => {
+              {leftPanels.map((pl) => {
                 return (
                   <div
                     key={pl.name}
@@ -273,7 +261,7 @@ export class WorkBench extends React.Component<
                   </Button>
                 </div>
                 <div className={styles.pluginPanelBox}>
-                  {CurrentPluginRenderView && <CurrentPluginRenderView />}
+                  {CurrentPluginRenderView}
                 </div>
               </Resizable>
             )}

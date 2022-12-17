@@ -197,6 +197,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           this.setState({
             currentSelectInstance: componentInstance,
             selectComponentInstances: [...instanceList],
+            hoverComponentInstances: [],
           });
         },
         true

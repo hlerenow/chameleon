@@ -107,14 +107,14 @@ export class Designer extends React.Component<
 
   onSelectNode = (node: CNode | CSchema | null) => {
     this.setState({
-      selectToolBar: <>{Math.random()}</>,
+      selectToolBar: <>{Math.random().toString(32).slice(3, 9)}</>,
     });
     console.log(node);
   };
 
   onHoverNode = (node: CNode | CSchema | null) => {
     this.setState({
-      hoverToolBar: <>{Math.random()}</>,
+      hoverToolBar: <>{Math.random().toString(32).slice(3, 9)}</>,
     });
     console.log('onHoverNode', node);
   };
