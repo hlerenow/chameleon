@@ -12,7 +12,7 @@ import {
 
 import '@chameleon/material/dist/style.css';
 import styles from './Engine.module.scss';
-import { CNode, parsePageModel } from '@chameleon/model';
+import { CNode } from '@chameleon/model';
 
 import '@chameleon/layout/dist/style.css';
 import { WorkBench } from './component/Workbench';

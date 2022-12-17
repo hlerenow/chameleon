@@ -11,7 +11,7 @@ import {
 import { Translation } from 'react-i18next';
 import styles from './style.module.scss';
 import '@chameleon/layout/dist/style.css';
-import { CNode, CPage } from '@chameleon/model';
+import { CNode, CPage, CSchema } from '@chameleon/model';
 import i18n from '../../i18n';
 import { CPlugin, PluginCtx } from '../../core/pluginManager';
 
@@ -54,55 +54,73 @@ export class Designer extends React.Component<
     }, 1000);
   }
 
-  init() {
+  async init() {
     const { layoutRef } = this;
-    layoutRef.current?.ready(() => {
-      layoutRef.current?.dnd?.emitter.on('drop', (eventObj) => {
-        const pageModel = layoutRef.current?.getPageModel();
-        const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
-        if (extraData.type === 'NEW_ADD') {
-          pageModel?.addNode(
-            extraData.startNode as CNode,
-            extraData.dropNode!,
+    if (!layoutRef.current) {
+      console.warn('layout not ready ok');
+      return;
+    }
+
+    await layoutRef.current.ready();
+    const layoutInstance = layoutRef.current;
+    layoutInstance.dnd?.emitter.on('drop', (eventObj) => {
+      const pageModel = layoutRef.current?.getPageModel();
+      const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
+      if (extraData.type === 'NEW_ADD') {
+        pageModel?.addNode(
+          extraData.startNode as CNode,
+          extraData.dropNode!,
+          'BEFORE'
+        );
+      } else {
+        if (extraData.dropNode?.id === extraData.startNode?.id) {
+          return;
+        }
+        if (extraData.dropPosInfo?.pos === 'before') {
+          pageModel?.moveNodeById(
+            extraData.startNode?.id || '',
+            extraData?.dropNode?.id || '',
             'BEFORE'
           );
         } else {
-          if (extraData.dropNode?.id === extraData.startNode?.id) {
-            return;
-          }
-          if (extraData.dropPosInfo?.pos === 'before') {
-            pageModel?.moveNodeById(
-              extraData.startNode?.id || '',
-              extraData?.dropNode?.id || '',
-              'BEFORE'
-            );
-          } else {
-            pageModel?.moveNodeById(
-              extraData.startNode?.id || '',
-              extraData?.dropNode?.id || '',
-              'AFTER'
-            );
-          }
+          pageModel?.moveNodeById(
+            extraData.startNode?.id || '',
+            extraData?.dropNode?.id || '',
+            'AFTER'
+          );
         }
-        console.log(
-          '选中元素',
-          extraData.startNode?.id || '',
-          extraData?.dropNode?.id
-        );
-        layoutRef.current?.selectNode(extraData.startNode?.id || '');
-        console.log(pageModel?.export());
-      });
-      // notice other plugin, current is ready ok
-      this.props.pluginCtx.emitter.emit('ready', {
-        uiInstance: this,
-      });
-      const pageModel = layoutRef.current?.getPageModel();
-      console.log(11111, pageModel, layoutRef);
+      }
+      console.log(
+        '选中元素',
+        extraData.startNode?.id || '',
+        extraData?.dropNode?.id
+      );
+      layoutRef.current?.selectNode(extraData.startNode?.id || '');
+      console.log(pageModel?.export());
     });
+    // notice other plugin, current is ready ok
+    this.props.pluginCtx.emitter.emit('ready', {
+      UIInstance: this,
+    });
+    // const pageModel = layoutRef.current?.getPageModel();
   }
 
+  onSelectNode = (node: CNode | CSchema | null) => {
+    this.setState({
+      selectToolBar: <>{Math.random()}</>,
+    });
+    console.log(node);
+  };
+
+  onHoverNode = (node: CNode | CSchema | null) => {
+    this.setState({
+      hoverToolBar: <>{Math.random()}</>,
+    });
+    console.log('onHoverNode', node);
+  };
+
   render() {
-    const { layoutRef, props } = this;
+    const { layoutRef, props, onSelectNode, onHoverNode } = this;
     const { pageModel, hoverToolBar, selectToolBar } = this.state;
     return (
       <>
@@ -116,6 +134,8 @@ export class Designer extends React.Component<
           selectToolBar={selectToolBar}
           selectBoxStyle={{}}
           hoverBoxStyle={{}}
+          onSelectNode={onSelectNode}
+          onHoverNode={onHoverNode}
           assets={[
             {
               name: 'antd',

@@ -33,6 +33,7 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   renderScriptPath?: string;
   assets?: CAssetPackage[];
   onSelectNode?: (node: CNode | CSchema | null) => void;
+  onHoverNode?: (node: CNode | CSchema | null) => void;
   selectToolBar?: React.ReactNode;
   selectBoxStyle?: React.CSSProperties;
   hoverBoxStyle?: React.CSSProperties;
@@ -247,6 +248,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           instance?._NODE_ID || ''
         ) || [];
 
+      this.props.onHoverNode?.(instance?._NODE_MODEL || null);
       this.setState({
         hoverComponentInstances: instanceList,
       });
@@ -485,11 +487,17 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     );
   }
 
-  ready(cb: (layoutInstance: Layout) => void) {
+  async ready(cb?: (layoutInstance: Layout) => void) {
     if (this.state.ready) {
-      cb(this);
+      cb?.(this);
+      return this;
     } else {
-      this.readyCbList.push(cb);
+      return new Promise((resolve) => {
+        this.readyCbList.push((layoutInstance) => {
+          cb?.(layoutInstance);
+          resolve(layoutInstance);
+        });
+      });
     }
   }
 

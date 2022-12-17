@@ -7,9 +7,15 @@ import { CPlugin, PluginManager } from './core/pluginManager';
 import mitt from 'mitt';
 import { CPage, CPageDataType } from '@chameleon/model';
 
+export type EnginContext = {
+  pluginManager: PluginManager;
+  engine: Engine;
+};
+
 export type EngineProps = {
   plugins: CPlugin[];
   schema: CPageDataType;
+  onReady?: (ctx: EnginContext) => void;
 };
 
 class Engine extends React.Component<EngineProps> {
@@ -23,7 +29,7 @@ class Engine extends React.Component<EngineProps> {
     this.pageModel = new CPage(this.pageSchema);
   }
 
-  componentDidMount(): void {
+  async componentDidMount() {
     const plugins = this.props.plugins;
     this.pluginManager = new PluginManager({
       workbench: () => this.workbenchRef.current!,
@@ -31,8 +37,15 @@ class Engine extends React.Component<EngineProps> {
       pageModel: this.pageModel,
     });
 
-    plugins.forEach((p) => {
-      this.pluginManager.add(p);
+    const pList = plugins.map((p) => {
+      return this.pluginManager.add(p);
+    });
+
+    await Promise.all(pList);
+
+    this.props.onReady?.({
+      pluginManager: this.pluginManager,
+      engine: this,
     });
   }
 

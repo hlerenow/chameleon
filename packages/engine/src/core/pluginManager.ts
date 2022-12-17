@@ -63,16 +63,16 @@ export class PluginManager {
     } else {
       innerPlugin = plugin;
     }
-    await innerPlugin.init(ctx);
     this.plugins.set(innerPlugin.name, {
       source: innerPlugin,
       ctx: ctx,
       exports: innerPlugin.exports?.(ctx) || {},
     });
+    await innerPlugin.init(ctx);
   }
 
-  get(name: string) {
-    return this.plugins.get(name)?.exports;
+  get(pluginName: string) {
+    return this.plugins.get(pluginName);
   }
 
   async remove(name: string) {
