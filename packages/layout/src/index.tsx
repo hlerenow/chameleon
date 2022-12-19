@@ -448,6 +448,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
 
     sensor.emitter.on('dragEnd', (e) => {
+      console.log(e, 'dragEnd', this);
       this.setState({
         isDragging: false,
         mousePointer: null,

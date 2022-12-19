@@ -6,7 +6,7 @@ export type PluginObj = {
   name: string;
   init: (ctx: PluginCtx) => Promise<void>;
   destroy: (ctx: PluginCtx) => Promise<void>;
-  exports: (ctx: PluginCtx) => Record<string, any>;
+  exports: (ctx: PluginCtx) => any;
   meta: {
     version: string;
     engine: string;
@@ -25,10 +25,8 @@ export type PluginCtx<C = any> = {
 };
 
 export class PluginManager {
-  plugins: Map<
-    string,
-    { ctx: PluginCtx; exports: Record<any, any>; source: PluginObj }
-  > = new Map();
+  plugins: Map<string, { ctx: PluginCtx; exports: any; source: PluginObj }> =
+    new Map();
   emitter: Emitter<any> = mitt();
   workbench!: () => WorkBench;
   pageModel!: CPage;

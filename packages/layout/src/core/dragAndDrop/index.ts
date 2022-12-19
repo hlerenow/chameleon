@@ -53,7 +53,7 @@ export class DragAndDrop {
       this.currentState = 'NORMAL';
       this.dragStartObj = null;
 
-      this.batchSensorEmit('dragEnd', {} as any);
+      this.batchSensorEmit('dragEnd', null as any);
     });
   }
 

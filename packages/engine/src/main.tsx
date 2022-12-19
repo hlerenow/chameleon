@@ -4,12 +4,13 @@ import ReactDOM from 'react-dom/client';
 import Engine, { EnginContext } from './Engine';
 import './index.css';
 import { DEFAULT_PLUGIN_LIST } from './plugins';
-import { DesignerPlugin } from './plugins/Designer';
 
 const App = () => {
   const onReady = useCallback((ctx: EnginContext) => {
     console.log(ctx);
-    const designer = ctx.pluginManager.get(DesignerPlugin.name);
+    const designer = ctx.pluginManager.get('Designer');
+    console.log(1111222, designer?.ctx.emitter);
+
     designer?.ctx.emitter.on('ready', (uiInstance) => {
       console.log('out ready', uiInstance);
     });

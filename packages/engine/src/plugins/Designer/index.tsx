@@ -8,11 +8,9 @@ import {
   LayoutPropsType,
   DragAndDrop,
 } from '@chameleon/layout';
-import { Translation } from 'react-i18next';
 import styles from './style.module.scss';
 import '@chameleon/layout/dist/style.css';
 import { CNode, CPage, CSchema } from '@chameleon/model';
-import i18n from '../../i18n';
 import { CPlugin, PluginCtx } from '../../core/pluginManager';
 
 (window as any).React = React;
@@ -41,17 +39,15 @@ export class Designer extends React.Component<
     this.state = {
       page: BasePage as any,
       pageModel: props.pluginCtx.pageModel,
-      hoverToolBar: <>123</>,
-      selectToolBar: <>123</>,
+      hoverToolBar: null,
+      selectToolBar: null,
     };
     this.layoutRef = React.createRef<Layout>();
   }
 
   componentDidMount(): void {
+    console.log('mount desigher');
     this.init();
-    setTimeout(() => {
-      i18n.changeLanguage('en_US');
-    }, 1000);
   }
 
   async init() {
@@ -64,7 +60,8 @@ export class Designer extends React.Component<
     await layoutRef.current.ready();
     const layoutInstance = layoutRef.current;
     layoutInstance.dnd?.emitter.on('drop', (eventObj) => {
-      const pageModel = layoutRef.current?.getPageModel();
+      console.log('onDrop', eventObj);
+      const pageModel = this.props.pluginCtx.pageModel;
       const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
       if (extraData.type === 'NEW_ADD') {
         pageModel?.addNode(
@@ -74,105 +71,115 @@ export class Designer extends React.Component<
         );
       } else {
         if (extraData.dropNode?.id === extraData.startNode?.id) {
+          console.warn(' id is the same');
           return;
         }
+        let res: any = false;
         if (extraData.dropPosInfo?.pos === 'before') {
-          pageModel?.moveNodeById(
+          res = pageModel?.moveNodeById(
             extraData.startNode?.id || '',
             extraData?.dropNode?.id || '',
             'BEFORE'
           );
         } else {
-          pageModel?.moveNodeById(
+          res = pageModel?.moveNodeById(
             extraData.startNode?.id || '',
             extraData?.dropNode?.id || '',
             'AFTER'
           );
         }
+        console.log('res move node', res);
       }
-      console.log(
-        '选中元素',
-        extraData.startNode?.id || '',
-        extraData?.dropNode?.id
-      );
       layoutRef.current?.selectNode(extraData.startNode?.id || '');
-      console.log(pageModel?.export());
     });
     // notice other plugin, current is ready ok
+    console.log(1111, this.props.pluginCtx.emitter);
     this.props.pluginCtx.emitter.emit('ready', {
       UIInstance: this,
     });
-    // const pageModel = layoutRef.current?.getPageModel();
   }
 
   onSelectNode = (node: CNode | CSchema | null) => {
-    this.setState({
-      selectToolBar: <>{Math.random().toString(32).slice(3, 9)}</>,
-    });
+    // this.setState({
+    //   selectToolBar: <>{Math.random().toString(32).slice(3, 9)}</>,
+    // });
     console.log(node);
   };
 
   onHoverNode = (node: CNode | CSchema | null) => {
-    this.setState({
-      hoverToolBar: <>{Math.random().toString(32).slice(3, 9)}</>,
-    });
-    console.log('onHoverNode', node);
+    // this.setState({
+    //   hoverToolBar: <>{Math.random().toString(32).slice(3, 9)}</>,
+    // });
+    // console.log('onHoverNode', node);
   };
 
   render() {
     const { layoutRef, props, onSelectNode, onHoverNode } = this;
     const { pageModel, hoverToolBar, selectToolBar } = this.state;
     return (
-      <>
-        <Translation>{(t) => <h3>{t('Welcome to React')}</h3>}</Translation>
-        <Layout
-          ref={layoutRef}
-          pageModel={pageModel}
-          renderScriptPath={'./render.umd.js'}
-          {...props}
-          hoverToolBar={hoverToolBar}
-          selectToolBar={selectToolBar}
-          selectBoxStyle={{}}
-          hoverBoxStyle={{}}
-          onSelectNode={onSelectNode}
-          onHoverNode={onHoverNode}
-          assets={[
-            {
-              name: 'antd',
-              resourceType: 'Component',
-              assets: [
-                {
-                  src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/reset.css',
-                },
-                {
-                  src: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.6/dayjs.min.js',
-                },
-                {
-                  src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/antd.min.js',
-                },
-              ],
-            },
-          ]}
-        />
-      </>
+      <Layout
+        ref={layoutRef}
+        pageModel={pageModel}
+        renderScriptPath={'./render.umd.js'}
+        {...props}
+        hoverToolBar={hoverToolBar}
+        selectToolBar={selectToolBar}
+        // selectBoxStyle={{}}
+        // hoverBoxStyle={{}}
+        onSelectNode={onSelectNode}
+        onHoverNode={onHoverNode}
+        assets={[
+          {
+            name: 'antd',
+            resourceType: 'Component',
+            assets: [
+              {
+                src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/reset.css',
+              },
+              {
+                src: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.6/dayjs.min.js',
+              },
+              {
+                src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/antd.min.js',
+              },
+            ],
+          },
+        ]}
+      />
     );
   }
 }
 
-export const DesignerPlugin: CPlugin = {
-  name: 'Designer',
-  async init(ctx) {
-    console.log('init', ctx);
-    ctx.workbench.replaceBodyView(<Designer pluginCtx={ctx} />);
-  },
-  async destroy(ctx) {
-    console.log('destroy', ctx);
-  },
-  exports: (ctx) => {
-    return {};
-  },
-  meta: {
-    engine: '1.0.0',
-    version: '1.0.0',
-  },
+export const DesignerPlugin: CPlugin = () => {
+  const designerRef = React.createRef<Designer>();
+  return {
+    name: 'Designer',
+    async init(ctx) {
+      ctx.workbench.replaceBodyView(
+        <Designer ref={designerRef} pluginCtx={ctx} />
+      );
+    },
+    async destroy(ctx) {
+      console.log('destroy', ctx);
+    },
+    exports: () => {
+      return {
+        getDnd: () => {
+          return designerRef.current?.layoutRef.current?.dnd;
+        },
+        selectNode: (nodeId) => {
+          designerRef.current?.layoutRef.current?.selectNode(nodeId);
+        },
+      } as DesignerExports;
+    },
+    meta: {
+      engine: '1.0.0',
+      version: '1.0.0',
+    },
+  };
+};
+
+export type DesignerExports = {
+  getDnd: () => DragAndDrop;
+  selectNode: (nodeId: string) => void;
 };

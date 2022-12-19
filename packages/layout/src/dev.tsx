@@ -146,12 +146,13 @@ const App = () => {
       >
         <Layout
           ref={layoutRef}
-          page={page}
+          // page={page}
           pageModel={pageModel}
           components={components}
           assets={[
             {
               name: 'antd',
+              resourceType: 'Component',
               assets: [
                 {
                   src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/reset.css',
