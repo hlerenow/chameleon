@@ -22,7 +22,6 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, any> {
   }
 
   componentDidMount(): void {
-    console.log('props', this.props);
     const designerHandle = this.props.pluginCtx.pluginManager.get('Designer');
     designerHandle?.ctx.emitter.on('ready', () => {
       this.registerDragEvent();
@@ -38,8 +37,7 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, any> {
     const pageModel = this.props.pluginCtx.pageModel;
     const designerExports: DesignerExports = designerHandle.exports;
     const dnd = designerExports.getDnd();
-    const { props, containerRef } = this;
-    console.log(this.props.pluginCtx);
+    const { containerRef } = this;
     const boxSensor = new Sensor({
       name: 'ComponentListBox',
       container: containerRef.current!,

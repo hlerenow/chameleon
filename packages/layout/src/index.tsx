@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './index.module.scss';
-import { Asset, AssetPackage, DesignRenderInstance } from '@chameleon/render';
+import { DesignRenderInstance } from '@chameleon/render';
 import { DesignRender, DesignRenderProp } from '@chameleon/render';
 import { IFrameContainer } from './core/iframeContainer';
 import {
@@ -97,6 +97,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     (window as any).DesignRender = this.designRenderRef;
     const iframeContainer = this.iframeContainer;
     iframeContainer.load(document.getElementById('iframeBox')!);
+    iframeContainer.onLoadFailed((e) => {
+      console.error(e);
+    });
     iframeContainer.ready(async () => {
       iframeContainer.injectJsText(`
         window.React = window.parent.React;
@@ -448,7 +451,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
 
     sensor.emitter.on('dragEnd', (e) => {
-      console.log(e, 'dragEnd', this);
       this.setState({
         isDragging: false,
         mousePointer: null,

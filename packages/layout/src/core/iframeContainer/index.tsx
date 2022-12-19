@@ -7,7 +7,7 @@ export class IFrameContainer {
   iframe: HTMLIFrameElement | null;
   iframeStatus: 'INIT' | 'LOADED' | 'LOADED_FAILED';
   readyQueue: (() => void)[] = [];
-  errorQueue: (() => void)[] = [];
+  errorQueue: ((e: { msg: string }) => void)[] = [];
   loadError: any;
   constructor() {
     this.iframe = this.createIframe();
@@ -58,26 +58,20 @@ export class IFrameContainer {
     if (!(iframeDoc && iframeWin)) {
       return;
     }
+    console.log(111, iframeDoc.readyState);
 
-    iframeDoc.open();
     const tpl = this.getHTMLTemplate();
     iframeDoc.write(tpl);
     iframeDoc.close();
 
-    iframeWin.addEventListener('load', () => {
+    const loaded = () => {
       this.iframeStatus = 'LOADED';
       const queue = this.readyQueue;
       this.readyQueue = [];
       queue.forEach((cb) => cb());
-    });
-
-    setTimeout(() => {
-      this.iframeStatus = 'LOADED_FAILED';
-      this.loadError = '加载超时';
-      const queue = this.errorQueue;
-      this.readyQueue = [];
-      queue.forEach((cb) => cb());
-    }, 5 * 1000);
+      iframeDoc.removeEventListener('load', loaded);
+    };
+    loaded();
   }
 
   ready(cb: () => void) {
@@ -91,9 +85,9 @@ export class IFrameContainer {
     }
   }
 
-  onLoadFailed(cb: () => void) {
+  onLoadFailed(cb: (e: { msg: string }) => void) {
     if (this.iframeStatus === 'LOADED_FAILED') {
-      cb();
+      cb({ msg: this.loadError });
       return;
     }
     if (this.iframeStatus === 'INIT') {

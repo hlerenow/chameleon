@@ -90,12 +90,13 @@ export class CPage {
       const parentNode = targetNode.parent;
       // 说明是容器节点, 只能插入 child
       if (parentNode === null && targetNode instanceof CSchema) {
-        throw new Error('Not found parent node');
+        console.warn('Not found parent node');
+        return false;
       }
 
       if (parentNode instanceof CProp) {
-        console.log('CProp can not add node');
-        return;
+        console.warn('CProp can not add node');
+        return false;
       }
       // TODO:
       if (parentNode instanceof CSlot) {
@@ -113,11 +114,11 @@ export class CPage {
           parentNode.parent?.updateValue();
           return true;
         }
-        return;
+        return false;
       }
       // TODO:
       if (parentNode instanceof CPage) {
-        return;
+        return false;
       }
       // find it on children;
       const targetIndex =
@@ -132,16 +133,14 @@ export class CPage {
         parentNode?.updateValue();
         return true;
       }
-
       console.warn('Not found target node');
-      return;
+      return false;
     }
 
     if (pos === 'CHILD_START') {
       targetNode.value.children.unshift(newNode);
       newNode.parent = targetNode;
       targetNode.updateValue();
-
       return true;
     }
 
@@ -222,7 +221,7 @@ export class CPage {
     }
     from.parent = parent;
 
-    this.addNode(from, to, pos);
+    return this.addNode(from, to, pos);
   }
 
   moveNodeById(fromId: string, toId: string, pos: InsertNodePosType) {

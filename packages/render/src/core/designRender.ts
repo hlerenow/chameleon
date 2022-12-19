@@ -60,7 +60,6 @@ export class DesignRender extends React.Component<DesignRenderProp> {
   }
 
   componentDidMount(): void {
-    console.log('this.renderRef', this.renderRef);
     this.props.onMount?.(this);
   }
   getPageModel() {

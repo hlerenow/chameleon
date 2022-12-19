@@ -46,11 +46,11 @@ export class Designer extends React.Component<
   }
 
   componentDidMount(): void {
-    console.log('mount desigher');
     this.init();
   }
 
   async init() {
+    console.log('ready ok designer');
     const { layoutRef } = this;
     if (!layoutRef.current) {
       console.warn('layout not ready ok');
@@ -60,7 +60,6 @@ export class Designer extends React.Component<
     await layoutRef.current.ready();
     const layoutInstance = layoutRef.current;
     layoutInstance.dnd?.emitter.on('drop', (eventObj) => {
-      console.log('onDrop', eventObj);
       const pageModel = this.props.pluginCtx.pageModel;
       const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
       if (extraData.type === 'NEW_ADD') {
@@ -88,12 +87,13 @@ export class Designer extends React.Component<
             'AFTER'
           );
         }
-        console.log('res move node', res);
+        if (!res) {
+          console.warn('drop failed');
+        }
       }
       layoutRef.current?.selectNode(extraData.startNode?.id || '');
     });
     // notice other plugin, current is ready ok
-    console.log(1111, this.props.pluginCtx.emitter);
     this.props.pluginCtx.emitter.emit('ready', {
       UIInstance: this,
     });
@@ -110,7 +110,7 @@ export class Designer extends React.Component<
     // this.setState({
     //   hoverToolBar: <>{Math.random().toString(32).slice(3, 9)}</>,
     // });
-    // console.log('onHoverNode', node);
+    console.log('onHoverNode', node);
   };
 
   render() {
@@ -124,8 +124,8 @@ export class Designer extends React.Component<
         {...props}
         hoverToolBar={hoverToolBar}
         selectToolBar={selectToolBar}
-        // selectBoxStyle={{}}
-        // hoverBoxStyle={{}}
+        selectBoxStyle={{}}
+        hoverBoxStyle={{}}
         onSelectNode={onSelectNode}
         onHoverNode={onHoverNode}
         assets={[

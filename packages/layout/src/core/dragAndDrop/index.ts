@@ -49,11 +49,9 @@ export class DragAndDrop {
     });
 
     sensor.emitter.on('onMouseUp', (e) => {
-      console.log('onMouseUp global', Math.random(), e);
       this.currentState = 'NORMAL';
       this.dragStartObj = null;
-
-      this.batchSensorEmit('dragEnd', null as any);
+      this.batchSensorEmit('dragEnd', {} as any);
     });
   }
 
