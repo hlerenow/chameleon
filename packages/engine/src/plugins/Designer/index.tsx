@@ -26,6 +26,7 @@ type DesignerStateType = {
   pageModel: CPage;
   hoverToolBar: React.ReactNode;
   selectToolBar: React.ReactNode;
+  ghostView: React.ReactNode;
 };
 
 export class Designer extends React.Component<
@@ -41,6 +42,7 @@ export class Designer extends React.Component<
       pageModel: props.pluginCtx.pageModel,
       hoverToolBar: null,
       selectToolBar: null,
+      ghostView: null,
     };
     this.layoutRef = React.createRef<Layout>();
   }
@@ -61,7 +63,12 @@ export class Designer extends React.Component<
     const layoutInstance = layoutRef.current;
     layoutInstance.dnd?.emitter.on('drop', (eventObj) => {
       const pageModel = this.props.pluginCtx.pageModel;
+
       const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
+      if (!extraData.dropNode) {
+        console.warn('cancel drop, because drop node is null');
+        return;
+      }
       if (extraData.type === 'NEW_ADD') {
         pageModel?.addNode(
           extraData.startNode as CNode,
@@ -107,15 +114,16 @@ export class Designer extends React.Component<
   };
 
   onHoverNode = (node: CNode | CSchema | null) => {
-    // this.setState({
-    //   hoverToolBar: <>{Math.random().toString(32).slice(3, 9)}</>,
-    // });
-    console.log('onHoverNode', node);
+    this.setState({
+      hoverToolBar: <>{Math.random().toString(32).slice(3, 9)}</>,
+      ghostView: <>Component Placeholder</>,
+    });
+    // console.log('onHoverNode', node);
   };
 
   render() {
     const { layoutRef, props, onSelectNode, onHoverNode } = this;
-    const { pageModel, hoverToolBar, selectToolBar } = this.state;
+    const { pageModel, hoverToolBar, selectToolBar, ghostView } = this.state;
     return (
       <Layout
         ref={layoutRef}
@@ -128,6 +136,7 @@ export class Designer extends React.Component<
         hoverBoxStyle={{}}
         onSelectNode={onSelectNode}
         onHoverNode={onHoverNode}
+        ghostView={ghostView}
         assets={[
           {
             name: 'antd',

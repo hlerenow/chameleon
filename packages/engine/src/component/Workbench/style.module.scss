@@ -33,6 +33,7 @@
       .pluginIconBar {
         width: 50px;
         height: 100%;
+        border-right: 1px solid $borderColor;
 
         .pluginIconItem {
           position: relative;

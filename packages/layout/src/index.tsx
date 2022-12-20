@@ -38,6 +38,7 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   selectBoxStyle?: React.CSSProperties;
   hoverBoxStyle?: React.CSSProperties;
   hoverToolBar?: React.ReactNode;
+  ghostView?: React.ReactNode;
 };
 
 export type LayoutStateType = {
@@ -521,6 +522,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       hoverToolBar,
       selectBoxStyle = {},
       hoverBoxStyle = {},
+      ghostView = <>ghost</>,
     } = this.props;
 
     return (
@@ -566,17 +568,13 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
               position: 'fixed',
               left: mousePointer.x - 5 + 'px',
               top: mousePointer.y - 8 + 'px',
-              backgroundColor: 'rgba(0, 0, 0,0.5)',
-              padding: '2px 20px',
-              borderRadius: '2px',
               cursor: 'move',
-              fontSize: '14px',
-              width: '100px',
-              textAlign: 'center',
+              padding: '2px 20px',
               pointerEvents: 'none',
+              zIndex: 99999,
             }}
           >
-            ghost
+            {ghostView}
           </div>
         )}
       </div>

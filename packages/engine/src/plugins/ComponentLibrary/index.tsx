@@ -4,7 +4,7 @@ import {
   Sensor,
   SensorEventObjType,
 } from '@chameleon/layout';
-import { CNode } from '@chameleon/model';
+import { Tabs } from 'antd';
 import React from 'react';
 import { CPlugin, PluginCtx } from '../../core/pluginManager';
 import { DesignerExports } from '../Designer';
@@ -64,6 +64,26 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, any> {
   render(): React.ReactNode {
     return (
       <div ref={this.containerRef} className={styles.container}>
+        <Tabs
+          defaultActiveKey="1"
+          items={[
+            {
+              label: 'Tab 1',
+              key: '1',
+              children: 'Content of Tab Pane 1',
+            },
+            {
+              label: 'Tab 2',
+              key: '2',
+              children: 'Content of Tab Pane 2',
+            },
+            {
+              label: 'Tab 3',
+              key: '3',
+              children: 'Content of Tab Pane 3',
+            },
+          ]}
+        />
         <div data-id="111" className={styles.componentItem}>
           123
         </div>

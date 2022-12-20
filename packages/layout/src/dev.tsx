@@ -80,10 +80,14 @@ const App = () => {
       boxSensor.emitter.on('drop', (eventObj) => {
         const pageModel = layoutRef.current?.getPageModel();
         const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
+        if (!extraData.dropNode) {
+          console.warn('cancel drop, because drop node is null');
+          return;
+        }
         if (extraData.type === 'NEW_ADD') {
           pageModel?.addNode(
             extraData.startNode as CNode,
-            extraData.dropNode!,
+            extraData.dropNode,
             'BEFORE'
           );
         } else {
