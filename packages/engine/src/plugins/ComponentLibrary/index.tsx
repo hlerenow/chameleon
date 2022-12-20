@@ -8,11 +8,16 @@ import { Tabs } from 'antd';
 import React from 'react';
 import { CPlugin, PluginCtx } from '../../core/pluginManager';
 import { DesignerExports } from '../Designer';
+import localize from './localize';
 import styles from './style.module.scss';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
-export type ComponentLibViewProps = {
+interface ComponentLibViewProps extends WithTranslation {
   pluginCtx: PluginCtx;
-};
+}
+
+export const PLUGIN_NAME = 'ComponentLib';
+const i18nNamespace = `plugin:${PLUGIN_NAME}`;
 
 class ComponentLibView extends React.Component<ComponentLibViewProps, any> {
   containerRef: React.RefObject<HTMLDivElement>;
@@ -25,6 +30,11 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, any> {
     const designerHandle = this.props.pluginCtx.pluginManager.get('Designer');
     designerHandle?.ctx.emitter.on('ready', () => {
       this.registerDragEvent();
+    });
+    const { i18n } = this.props.pluginCtx;
+
+    Object.keys(localize).forEach((lng) => {
+      i18n.addResourceBundle(lng, i18nNamespace, localize[lng], true, true);
     });
   }
 
@@ -57,8 +67,8 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, any> {
         } as LayoutDragAndDropExtraDataType,
       };
     });
-
     dnd.registerSensor(boxSensor);
+    this.props.i18n.changeLanguage('en_US');
   };
 
   render(): React.ReactNode {
@@ -86,6 +96,7 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, any> {
         />
         <div data-id="111" className={styles.componentItem}>
           123
+          {this.props.t('pluginName')}
         </div>
       </div>
     );
@@ -93,14 +104,19 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, any> {
 }
 
 export const ComponentLibPlugin: CPlugin = {
-  name: 'ComponentLib',
+  name: PLUGIN_NAME,
   async init(ctx) {
     console.log('init ComponentLib', ctx);
+    const ComponentLibViewWithLocalize =
+      withTranslation(i18nNamespace)(ComponentLibView);
+    const Title = withTranslation(i18nNamespace)(({ t }) => (
+      <>{t('pluginName')}</>
+    ));
     ctx.workbench.addLeftPanel({
-      title: '组件库',
+      title: <Title />,
       name: 'ComponentLib',
       icon: <AppstoreAddOutlined />,
-      render: <ComponentLibView pluginCtx={ctx} />,
+      render: <ComponentLibViewWithLocalize pluginCtx={ctx} />,
     });
   },
   async destroy(ctx) {

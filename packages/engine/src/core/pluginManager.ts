@@ -1,4 +1,5 @@
 import { CPage } from '@chameleon/model';
+import { i18n } from 'i18next';
 import mitt, { Emitter } from 'mitt';
 import { WorkBench } from '../component/Workbench';
 
@@ -22,6 +23,7 @@ export type PluginCtx<C = any> = {
   workbench: WorkBench;
   pluginManager: PluginManager;
   pageModel: CPage;
+  i18n: i18n;
 };
 
 export class PluginManager {
@@ -30,19 +32,23 @@ export class PluginManager {
   emitter: Emitter<any> = mitt();
   workbench!: () => WorkBench;
   pageModel!: CPage;
+  i18n: i18n;
 
   constructor({
     workbench,
     emitter,
     pageModel,
+    i18n,
   }: {
     workbench: () => WorkBench;
     emitter: Emitter<any>;
     pageModel: CPage;
+    i18n: i18n;
   }) {
     this.workbench = workbench;
     this.emitter = emitter;
     this.pageModel = pageModel;
+    this.i18n = i18n;
   }
 
   async add(plugin: CPlugin) {
@@ -53,6 +59,7 @@ export class PluginManager {
       workbench: this.workbench(),
       pluginManager: this,
       pageModel: this.pageModel,
+      i18n: this.i18n,
     };
 
     let innerPlugin: PluginObj;

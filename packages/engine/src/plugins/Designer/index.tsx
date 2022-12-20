@@ -12,6 +12,7 @@ import styles from './style.module.scss';
 import '@chameleon/layout/dist/style.css';
 import { CNode, CPage, CSchema } from '@chameleon/model';
 import { CPlugin, PluginCtx } from '../../core/pluginManager';
+import localize from './localize';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOMAll;
@@ -48,7 +49,21 @@ export class Designer extends React.Component<
   }
 
   componentDidMount(): void {
+    const { i18n } = this.props.pluginCtx;
+    i18n.on('languageChanged', (lng) => {
+      console.log('language change', lng);
+    });
     this.init();
+
+    Object.keys(localize).forEach((lng) => {
+      i18n.addResourceBundle(
+        lng,
+        `plugin:${PLUGIN_NAME}`,
+        localize[lng],
+        true,
+        true
+      );
+    });
   }
 
   async init() {
@@ -159,10 +174,12 @@ export class Designer extends React.Component<
   }
 }
 
+export const PLUGIN_NAME = 'Designer';
+
 export const DesignerPlugin: CPlugin = () => {
   const designerRef = React.createRef<Designer>();
   return {
-    name: 'Designer',
+    name: PLUGIN_NAME,
     async init(ctx) {
       ctx.workbench.replaceBodyView(
         <Designer ref={designerRef} pluginCtx={ctx} />

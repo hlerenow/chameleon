@@ -2,7 +2,7 @@ import React from 'react';
 import '@chameleon/material/dist/style.css';
 import { WorkBench } from './component/Workbench';
 import styles from './Engine.module.scss';
-import './i18n/index';
+import i18n from './i18n/index';
 import { CPlugin, PluginManager } from './core/pluginManager';
 import mitt from 'mitt';
 import { CPage, CPageDataType } from '@chameleon/model';
@@ -35,6 +35,7 @@ class Engine extends React.Component<EngineProps> {
       workbench: () => this.workbenchRef.current!,
       emitter: mitt(),
       pageModel: this.pageModel,
+      i18n,
     });
 
     const pList = plugins.map((p) => {

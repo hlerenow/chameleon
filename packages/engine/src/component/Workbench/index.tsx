@@ -20,7 +20,7 @@ export interface PluginContext {
 
 type PanelItem = {
   name: string;
-  title: string;
+  title: string | React.ReactNode;
   icon: React.ReactNode;
   render: React.ReactNode;
 };
