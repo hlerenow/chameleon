@@ -58,8 +58,6 @@ export class IFrameContainer {
     if (!(iframeDoc && iframeWin)) {
       return;
     }
-    console.log(111, iframeDoc.readyState);
-
     const tpl = this.getHTMLTemplate();
     iframeDoc.write(tpl);
     iframeDoc.close();

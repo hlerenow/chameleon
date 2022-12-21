@@ -11,6 +11,7 @@ import { DesignerExports } from '../Designer';
 import localize from './localize';
 import styles from './style.module.scss';
 import { withTranslation, WithTranslation } from 'react-i18next';
+import { ListView } from './components/ListView';
 
 interface ComponentLibViewProps extends WithTranslation {
   pluginCtx: PluginCtx;
@@ -18,6 +19,10 @@ interface ComponentLibViewProps extends WithTranslation {
 
 export const PLUGIN_NAME = 'ComponentLib';
 const i18nNamespace = `plugin:${PLUGIN_NAME}`;
+
+const TabTitle = ({ children }: { children: any }) => {
+  return <div className={styles.tabTitle}>{children}</div>;
+};
 
 class ComponentLibView extends React.Component<ComponentLibViewProps, any> {
   containerRef: React.RefObject<HTMLDivElement>;
@@ -54,6 +59,10 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, any> {
     });
 
     boxSensor.setCanDrag((eventObj: SensorEventObjType) => {
+      console.log(
+        '🚀 ~ file: index.tsx:62 ~ ComponentLibView ~ boxSensor.setCanDrag ~ eventObj',
+        eventObj.event.target
+      );
       const newNode = pageModel?.createNode({
         id: '111',
         componentName: 'Button',
@@ -75,29 +84,20 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, any> {
     return (
       <div ref={this.containerRef} className={styles.container}>
         <Tabs
-          defaultActiveKey="1"
+          defaultActiveKey="BaseComponent"
           items={[
             {
-              label: 'Tab 1',
-              key: '1',
-              children: 'Content of Tab Pane 1',
+              label: <TabTitle>基础组件</TabTitle>,
+              key: 'BaseComponent',
+              children: <ListView />,
             },
             {
-              label: 'Tab 2',
-              key: '2',
-              children: 'Content of Tab Pane 2',
-            },
-            {
-              label: 'Tab 3',
-              key: '3',
-              children: 'Content of Tab Pane 3',
+              label: <TabTitle>高级组件</TabTitle>,
+              key: 'AdvanceComponent',
+              children: <ListView />,
             },
           ]}
         />
-        <div data-id="111" className={styles.componentItem}>
-          123
-          {this.props.t('pluginName')}
-        </div>
       </div>
     );
   }
