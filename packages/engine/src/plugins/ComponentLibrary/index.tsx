@@ -12,6 +12,8 @@ import localize from './localize';
 import styles from './style.module.scss';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { ListView } from './components/ListView';
+import { getTargetMNodeKeyVal } from './util';
+import { DRAG_ITEM_KEY } from './components/DragItem';
 
 interface ComponentLibViewProps extends WithTranslation {
   pluginCtx: PluginCtx;
@@ -59,10 +61,22 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, any> {
     });
 
     boxSensor.setCanDrag((eventObj: SensorEventObjType) => {
-      console.log(
-        '🚀 ~ file: index.tsx:62 ~ ComponentLibView ~ boxSensor.setCanDrag ~ eventObj',
-        eventObj.event.target
+      const targetDom = eventObj.event.target;
+      if (!targetDom) {
+        return;
+      }
+      const targetNodeId = getTargetMNodeKeyVal(
+        targetDom as HTMLElement,
+        DRAG_ITEM_KEY
       );
+      console.log(
+        '🚀 ~ file: index.tsx:72 ~ ComponentLibView ~ boxSensor.setCanDrag ~ targetNodeId',
+        targetNodeId
+      );
+      if (!targetNodeId) {
+        return;
+      }
+
       const newNode = pageModel?.createNode({
         id: '111',
         componentName: 'Button',

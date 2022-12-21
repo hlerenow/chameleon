@@ -1,0 +1,27 @@
+.ListBox {
+  display: flex;
+  flex-wrap: wrap;
+  :global {
+    .ant-collapse .ant-collapse-content > .ant-collapse-content-box {
+      padding: 0;
+    }
+    .ant-collapse {
+      border: none;
+      background-color: white;
+    }
+    .ant-collapse-header {
+      padding: 10px 16px !important;
+    }
+    .ant-collapse-expand-icon {
+      padding-inline-end: 0 !important;
+    }
+    .ant-collapse-item {
+      border-color: $borderColor;
+    }
+  }
+}
+
+.collapsePanel {
+  display: flex;
+  flex-wrap: wrap;
+}

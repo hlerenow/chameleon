@@ -3,10 +3,22 @@
   height: 100%;
   overflow: auto;
   background-color: white;
+
+  :global {
+    .ant-tabs .ant-tabs-tab + .ant-tabs-tab {
+      margin-left: 12px;
+    }
+    .ant-tabs-tab {
+      padding: 6px 0;
+    }
+    .ant-tabs-nav {
+      margin-bottom: 0;
+    }
+  }
 }
 
 .tabTitle {
-  padding: 0 10px;
+  padding: 0 5px;
   font-size: 12px;
   font-weight: 400;
   text-rendering: optimizeLegibility;
