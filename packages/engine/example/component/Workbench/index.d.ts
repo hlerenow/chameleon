@@ -7,11 +7,11 @@ export interface PluginContext {
     getPlugin: (pluginName: string) => any;
     emitter: DEmitter;
 }
-declare type PluginItem = {
+declare type PanelItem = {
     name: string;
-    title: string;
+    title: string | React.ReactNode;
     icon: React.ReactNode;
-    render: (ctx: PluginContext) => React.FC | typeof React.Component;
+    render: React.ReactNode;
 };
 declare type WorkBenchStateType = {
     leftBoxVisible: boolean;
@@ -25,18 +25,19 @@ declare type WorkBenchStateType = {
         height: number | string;
     };
     rightBoxVisible: boolean;
-    currentActivePlugin: string;
-    plugins: PluginItem[];
+    currentActiveLeftPanel: string;
+    leftPanels: PanelItem[];
     bodyView: React.ReactNode | null;
 };
 export declare type WorkBenchPropsType = any;
 export declare class WorkBench extends React.Component<WorkBenchPropsType, WorkBenchStateType> {
     emitter: DEmitter<any>;
     constructor(props: WorkBenchPropsType);
+    addLeftPanel: (panel: PanelItem) => void;
     openLeftPanel: () => void;
     closeLeftPanel: () => void;
     toggleLeftPanel: () => void;
-    onPluginIconClick: (plugin: PluginItem) => void;
+    onPluginIconClick: (panel: PanelItem) => void;
     openRightPanel: () => void;
     closeRightPanel: () => void;
     replaceBodyView: (newView: React.ReactNode) => void;
