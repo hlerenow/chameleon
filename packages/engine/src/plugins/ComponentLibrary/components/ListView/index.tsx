@@ -1,56 +1,49 @@
+import { SnippetsType } from '@chameleon/model';
 import { Collapse } from 'antd';
+import { capitalize } from 'lodash-es';
 import React from 'react';
 import { DragComponentItem } from '../DragItem';
 import styles from './style.module.scss';
 const { Panel } = Collapse;
-export const ListView = () => {
+
+export type ListViewProps = {
+  dataSource: {
+    name: string;
+    list: SnippetsType[];
+  }[];
+};
+export const ListView = (props: ListViewProps) => {
+  const { dataSource } = props;
+  const defaultActiveKey = dataSource.map((el) => el.name || '');
+  if (!dataSource.length) {
+    return null;
+  }
   return (
     <div className={styles.ListBox}>
-      <Collapse style={{ width: '100%' }}>
-        <Panel header="基础元素" key="base">
-          <div className={styles.collapsePanel}>
-            <DragComponentItem
-              id="Button"
-              name="按钮"
-              icon="https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png"
-            />
-            <DragComponentItem
-              id="Button"
-              name="按钮"
-              icon="https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png"
-            />
-            <DragComponentItem
-              id="Button"
-              name="按钮"
-              icon="https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png"
-            />
-            <DragComponentItem
-              id="Button"
-              name="按钮"
-              icon="https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png"
-            />
-            <DragComponentItem
-              id="Button"
-              name="按钮"
-              icon="https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png"
-            />
-            <DragComponentItem
-              id="Button"
-              name="按钮"
-              icon="https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png"
-            />
-            <DragComponentItem
-              id="Button"
-              name="按钮"
-              icon="https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png"
-            />
-            <DragComponentItem
-              id="Button"
-              name="按钮"
-              icon="https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png"
-            />
-          </div>
-        </Panel>
+      <Collapse style={{ width: '100%' }} defaultActiveKey={defaultActiveKey}>
+        {dataSource.map((el) => {
+          const category = el.name || '';
+          const contentView = (
+            <div className={styles.collapsePanel}>
+              {el.list.map((it) => {
+                return (
+                  <DragComponentItem
+                    id={it.id!}
+                    key={it.id!}
+                    name={it.title}
+                    icon={it.snapshot}
+                    description={it.description || ''}
+                  />
+                );
+              })}
+            </div>
+          );
+          return (
+            <Panel header={capitalize(category)} key={category}>
+              {contentView}
+            </Panel>
+          );
+        })}
       </Collapse>
     </div>
   );

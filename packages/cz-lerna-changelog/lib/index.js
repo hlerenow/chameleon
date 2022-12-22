@@ -22,57 +22,41 @@
  * SOFTWARE.
  */
 
-const commitAnalyzer = require("@semantic-release/commit-analyzer");
-const chalk = require("chalk");
-const buildCommit = require("cz-customizable/buildCommit");
-const autocomplete = require("inquirer-autocomplete-prompt");
-const { getPackages, getChangedPackages } = require("@instructure/pkg-utils");
-const makeDefaultQuestions = require("./make-default-questions");
-const autocompleteQuestions = require("./autocomplete-questions");
+const commitAnalyzer = require('@semantic-release/commit-analyzer');
+const chalk = require('chalk');
+const buildCommit = require('cz-customizable/lib/build-commit');
+const autocomplete = require('inquirer-autocomplete-prompt');
+const { getPackages, getChangedPackages } = require('@instructure/pkg-utils');
+const makeDefaultQuestions = require('./make-default-questions');
+const autocompleteQuestions = require('./autocomplete-questions');
 
 function makePrompter() {
   return function (cz, commit) {
-    const scope = "@instructure";
+    const scope = '@instructure';
     const allPackages = getPackages();
-    const changedPackages = getChangedPackages("--cached", allPackages).map(
-      (pkg) => pkg.name.replace(`${scope}/`, "")
-    );
-    const packageNames = allPackages.map((pkg) =>
-      pkg.name.replace(`${scope}/`, "")
-    );
+    const changedPackages = getChangedPackages('--cached', allPackages).map((pkg) => pkg.name.replace(`${scope}/`, ''));
+    const packageNames = allPackages.map((pkg) => pkg.name.replace(`${scope}/`, ''));
     const questions = makeDefaultQuestions(packageNames, changedPackages);
 
     // eslint-disable-next-line no-console
-    console.info(
-      "\nLine 1 will be cropped at 100 characters. All other lines will be wrapped after 100 characters.\n"
-    );
+    console.info('\nLine 1 will be cropped at 100 characters. All other lines will be wrapped after 100 characters.\n');
 
-    cz.registerPrompt("autocomplete", autocomplete);
+    cz.registerPrompt('autocomplete', autocomplete);
 
     cz.prompt(autocompleteQuestions(questions))
       .then((answers) => {
-        const {
-          body,
-          testplan,
-          visualChange,
-          footer,
-          breaking,
-          scope,
-          ...rest
-        } = answers;
+        const { body, testplan, visualChange, footer, breaking, scope, ...rest } = answers;
 
-        const testplanTxt = testplan ? `\nTEST PLAN:\n${testplan}\n\n` : "";
+        const testplanTxt = testplan ? `\nTEST PLAN:\n${testplan}\n\n` : '';
 
-        const issues = footer ? `\n\nCloses: ${footer}\n\n` : "";
+        const issues = footer ? `\n\nCloses: ${footer}\n\n` : '';
 
-        const visualChangeTxt = visualChange
-          ? `\n\nVISUAL CHANGE: ${visualChange}\n\n`
-          : "";
+        const visualChangeTxt = visualChange ? `\n\nVISUAL CHANGE: ${visualChange}\n\n` : '';
 
-        let scopeStr = "*";
+        let scopeStr = '*';
 
         if (Array.isArray(scope)) {
-          scopeStr = scope.join(",");
+          scopeStr = scope.join(',');
         }
         // To have part of a commit body appear in the changelog it needs to be after the "BREAKING CHANGE:" text.
         // see https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular
@@ -83,17 +67,14 @@ function makePrompter() {
             breaking: breaking + visualChangeTxt,
             scope: scopeStr,
           },
-          { breaklineChar: "|" }
+          { breaklineChar: '|' }
         );
         const cwd = process.cwd();
 
         commitAnalyzer
-          .analyzeCommits(
-            {},
-            { cwd, commits: [{ hash: "", message }], logger: console }
-          )
+          .analyzeCommits({}, { cwd, commits: [{ hash: '', message }], logger: console })
           .then((type) => {
-            console.info("\n\nCommit message:");
+            console.info('\n\nCommit message:');
             console.info(chalk.blue(`\n\n${message}\n`));
             commit(message);
           })

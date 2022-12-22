@@ -175,6 +175,7 @@ export class CPage {
     delete nodeData.id;
     const newNode = new CNode(nodeData, {
       parent: null,
+      materials: this.materialsModel,
     });
     return newNode;
   }

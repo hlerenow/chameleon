@@ -14,6 +14,7 @@ import {
   omit,
   record,
   dynamic,
+  assign,
 } from 'superstruct';
 import { LibMetaType, LibMetaTypeDescribe } from './base';
 import { CNodeDataStructDescribe, CNodeDataType } from './node';
@@ -140,7 +141,7 @@ export const PropsValueTypeDescribe: any = union([
 export enum SetterTypeEnum {
   STRING_SETTER = 'StringSetter',
   BOOLEAN_SETTER = 'BooleanSetter',
-  JSON_SETTER = 'JsonSetter',
+  JSON_SETTER = 'JSONSetter',
   SElECT_SETTER = 'SelectSetter',
   NUMBER_SETTER = 'NumberSetter',
   SHAPE_SETTER = 'ShapeSSetter',
@@ -168,8 +169,8 @@ export const SetterTypeDescribe = union([
 ]);
 
 export type MaterialPropType = {
-  name: string;
-  title: MTitle;
+  name: MTitle;
+  title: string;
   valueType: PropsValueType;
   description?: string;
   defaultValue?: any;
@@ -200,10 +201,12 @@ export enum PropsUIType {
 
 export type SpecialMaterialPropType =
   | {
+      title: MTitle;
       type: PropsUIType.SINGLE | `${PropsUIType.SINGLE}`;
       content: MaterialPropType;
     }
   | {
+      title: MTitle;
       type: PropsUIType.GROUP | `${PropsUIType.GROUP}`;
       content: MaterialPropType[];
     };
@@ -238,25 +241,58 @@ export const CMaterialEventTypeDescribe = union([
   }),
 ]);
 
-export type SnippetsType = Omit<CNodeDataType, 'id'>[];
+export type SnippetsType = {
+  id?: string;
+  title: string;
+  snapshot?: string | React.ReactNode;
+  description?: string | React.ReactNode;
+  // 组件标签用于搜索
+  tags?: string[];
+  // 分 tab 面板
+  groupName?: string;
+  // 分类
+  category?: string;
+  schema: Omit<CNodeDataType, 'id' | 'componentName'> & {
+    componentName?: string;
+  };
+};
+
+export type SnippetsStanderType = Omit<SnippetsType, 'schema'> & {
+  schema: Omit<CNodeDataType, 'id'>;
+};
+
+export const SnippetsTypeDescribe = object({
+  id: optional(string()),
+  title: string(),
+  snapshot: union([string(), any()]),
+  description: optional(string()),
+  // 组件分类,用于搜索
+  tags: optional(array(string())),
+  // 分 tab 面板
+  groupName: optional(string()),
+  // 分类
+  category: optional(string()),
+  schema: assign(
+    omit(CNodeDataStructDescribe, ['id']),
+    object({ componentName: optional(string()) })
+  ),
+});
 
 export type CMaterialType = {
   componentName: string;
-  title: MTitle;
-  description?: string;
+  title: string;
   screenshot?: string;
   icon?: string;
-  // 组件分类
+  // 组件标签用于搜索
   tags?: string[];
   // 分 tab 面板
-  groupTag?: string;
+  groupName?: string;
   // 分类
   category?: string;
   // 排序
   priority?: number;
-  version: string;
   npm: LibMetaType;
-  snippets: SnippetsType;
+  snippets: SnippetsType[];
   props: CMaterialPropsType;
   // 可以拖入组件
   isContainer?: boolean;
@@ -302,31 +338,35 @@ export type CMaterialType = {
   extra?: Record<any, any>;
 };
 
+export type CMaterialStanderType = Omit<CMaterialType, 'snippets'> & {
+  snippets: SnippetsStanderType[];
+};
+
 export const CMaterialTypeDescribe = object({
   componentName: string(),
-  title: MTitleDescribe,
-  description: optional(string()),
+  title: string(),
   screenshot: optional(string()),
   icon: optional(string()),
-  // 组件分类
+  // 组件分类,用于搜索
   tags: optional(array(string())),
   // 分 tab 面板
-  groupTag: optional(string()),
+  groupName: optional(string()),
   // 分类
   category: optional(string()),
   // 排序
   priority: optional(number()),
-  version: string(),
   npm: LibMetaTypeDescribe,
-  snippets: array(omit(CNodeDataStructDescribe, ['id'])),
+  snippets: array(SnippetsTypeDescribe),
   props: array(
     union([
       MaterialPropDescribe,
       object({
+        title: optional(MTitleDescribe),
         type: literal(PropsUIType.SINGLE),
         content: MaterialPropDescribe,
       }),
       object({
+        title: optional(MTitleDescribe),
         type: literal(PropsUIType.GROUP),
         content: array(MaterialPropDescribe),
       }),

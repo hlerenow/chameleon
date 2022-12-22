@@ -1,6 +1,4 @@
-import { CPageDataType } from '@chameleon/model';
-
-export const SamplePage: CPageDataType = {
+export const SamplePage = {
   version: '1.0.0',
   pageName: 'BaseDemoPage',
   componentsMeta: [],

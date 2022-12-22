@@ -1,14 +1,36 @@
-import { CMaterialType, CMaterialTypeDescribe } from '../types/material';
-import { isArray } from '../util/lodash';
+import {
+  CMaterialStanderType,
+  CMaterialType,
+  CMaterialTypeDescribe,
+  SnippetsType,
+} from '../types/material';
+import { cloneDeep, isArray } from '../util/lodash';
 import { checkComplexData } from '../util/dataCheck';
+import { getRandomStr } from '../util';
 
-const parseMaterial = (data: CMaterialType) => {
-  return data;
+const parseMaterial = (data: CMaterialType): CMaterialStanderType => {
+  const newData = cloneDeep(data);
+  newData.snippets = newData.snippets.map((el) => {
+    return {
+      ...el,
+      id: el.id || `${data.componentName}-${getRandomStr()}`,
+      title: el.title || data.title,
+      category: el.category || data.category,
+      tags: [...(el.tags || []), ...(data.tags || [])],
+      groupName: el.groupName || data.groupName,
+      snapshot: el.snapshot || data.icon,
+      schema: {
+        ...el.schema,
+        componentName: el.schema.componentName || data.componentName,
+      },
+    };
+  });
+  return newData as CMaterialStanderType;
 };
 
 export class CMaterial {
   private rawData: CMaterialType;
-  private data: CMaterialType;
+  private data: CMaterialStanderType;
   constructor(data: CMaterialType) {
     this.rawData = data;
     this.data = parseMaterial(data);
@@ -20,6 +42,14 @@ export class CMaterial {
 
   get componentName() {
     return this.data.componentName;
+  }
+
+  get snippets() {
+    return this.data.snippets;
+  }
+
+  getSnippetById(id: string) {
+    return this.data.snippets.find((el) => el.id === id);
   }
 }
 
@@ -42,6 +72,11 @@ export const checkMaterials = (data: CMaterialType[]) => {
     });
   });
 };
+
+export type SnippetsCollection = {
+  name: string;
+  list: { name: string; list: SnippetsType[] }[];
+}[];
 export class CMaterials {
   private rowData: CMaterialType[];
   private data: CMaterial[];
@@ -54,6 +89,77 @@ export class CMaterials {
   findByComponentName(componentName: string) {
     const target = this.data.find((el) => el.componentName === componentName);
     return target;
+  }
+
+  findSnippetById(id: string) {
+    const list = [...this.data];
+    let res = null;
+    while (!res && list.length) {
+      const target = list.pop();
+      res = target?.getSnippetById(id);
+    }
+    return res;
+  }
+
+  getAllSnippets() {
+    const allSnippets = this.data.reduce((res, el) => {
+      res.push(...el.snippets);
+      return res;
+    }, [] as SnippetsType[]);
+    const groups: string[] = ['default'];
+    const groupRes: Record<string, SnippetsType[]> = {
+      default: [],
+    };
+
+    // split group
+    allSnippets.forEach((el) => {
+      const groupName = el.groupName || 'default';
+      if (!groups.includes(groupName)) {
+        groups.push(groupName);
+        groupRes[groupName] = [];
+      }
+      groupRes[groupName].push(el);
+    });
+    const res: SnippetsCollection = [];
+    groups.forEach((groupName) => {
+      const categories: string[] = ['default'];
+      const categoryRes: Record<string, SnippetsType[]> = {
+        default: [],
+      };
+      const list = groupRes[groupName];
+      if (list.length !== 0) {
+        list.forEach((el) => {
+          const categoryName = el.category || 'default';
+          if (!categories.includes(categoryName)) {
+            categories.push(categoryName);
+            categoryRes[categoryName] = [];
+          }
+          categoryRes[categoryName].push(el);
+        });
+
+        const categoryList: {
+          name: string;
+          list: SnippetsType[];
+        }[] = [];
+        categories.forEach((category) => {
+          if (categoryRes[category].length) {
+            categoryList.push({
+              name: category,
+              list: categoryRes[category],
+            });
+          }
+        });
+
+        const val = {
+          name: groupName,
+          list: categoryList,
+        };
+
+        res.push(val);
+      }
+    });
+
+    return res;
   }
 
   get value() {

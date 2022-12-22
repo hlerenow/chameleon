@@ -30,7 +30,7 @@
     "@types/loadjs": "^4.0.1",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
-    "antd": "^4.23.2"
+    "antd": "^5.0.0"
   },
   "config": {
     "commitizen": {

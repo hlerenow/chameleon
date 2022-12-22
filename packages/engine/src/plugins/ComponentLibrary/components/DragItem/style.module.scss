@@ -37,10 +37,13 @@
 }
 
 .iconImg {
-  width: 80%;
-  height: 80%;
+  width: 100%;
 }
+
 .iconBox {
+  width: 60%;
+  height: 60%;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;

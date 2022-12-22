@@ -22,7 +22,6 @@
     "superstruct": "^0.16.0"
   },
   "devDependencies": {
-    "@chameleon/demo-page": "*",
     "@chameleon/build-script": "*",
     "@types/lodash-es": "^4.17.6",
     "@types/react": "^18.0.15",

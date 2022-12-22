@@ -34,7 +34,6 @@ export const commonConfig = () => {
       react(),
       dts({
         skipDiagnostics: false,
-        logDiagnostics: true,
       }),
     ],
   }) as UserConfig;

@@ -1,9 +1,3 @@
-import { CPage } from './Page/index';
-
-export const parsePageModel = (data: any) => {
-  return new CPage(data);
-};
-
 export * from './Material';
 export * from './Page';
 export * from './Page/Schema';

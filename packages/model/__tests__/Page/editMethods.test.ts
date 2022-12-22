@@ -1,5 +1,5 @@
+import { BasePage } from '../../mockPage/basePage';
 import { CPage } from '../../src/Page/index';
-import { BasePage } from '@chameleon/demo-page';
 import { CNode } from '../../src/Page/Schema/Node';
 import { CSlot } from '../../src/Page/Schema/Node/slot';
 import { CPageDataType } from '../../src/types/page';

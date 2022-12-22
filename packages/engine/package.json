@@ -19,6 +19,7 @@
     "@chameleon/model": "*",
     "antd": "^5.0.0",
     "i18next": "^22.1.5",
+    "lodash-es": "^4.17.21",
     "re-resizable": "^6.9.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

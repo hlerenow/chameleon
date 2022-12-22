@@ -6,7 +6,6 @@ import { Button } from 'antd';
 import { parsePageModel } from '@chameleon/model';
 import { BasePage, SamplePage } from '@chameleon/demo-page';
 import { ReactAdapter, Render } from '../index';
-import '@chameleon/material/dist/style.css';
 import './index.css';
 import { DesignRender, useDesignRender } from '../core/designRender';
 

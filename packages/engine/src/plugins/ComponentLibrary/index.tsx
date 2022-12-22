@@ -14,6 +14,8 @@ import { withTranslation, WithTranslation } from 'react-i18next';
 import { ListView } from './components/ListView';
 import { getTargetMNodeKeyVal } from './util';
 import { DRAG_ITEM_KEY } from './components/DragItem';
+import { SnippetsCollection } from '@chameleon/model';
+import { capitalize } from 'lodash-es';
 
 interface ComponentLibViewProps extends WithTranslation {
   pluginCtx: PluginCtx;
@@ -26,14 +28,26 @@ const TabTitle = ({ children }: { children: any }) => {
   return <div className={styles.tabTitle}>{children}</div>;
 };
 
-class ComponentLibView extends React.Component<ComponentLibViewProps, any> {
+type ComponentLibViewState = {
+  componentsList: SnippetsCollection;
+};
+class ComponentLibView extends React.Component<
+  ComponentLibViewProps,
+  ComponentLibViewState
+> {
   containerRef: React.RefObject<HTMLDivElement>;
   constructor(props: ComponentLibViewProps) {
     super(props);
     this.containerRef = React.createRef<HTMLDivElement>();
+    this.state = {
+      componentsList: [],
+    };
   }
 
   componentDidMount(): void {
+    const { pluginCtx } = this.props;
+    const { pageModel } = pluginCtx;
+    const { materialsModel } = pageModel;
     const designerHandle = this.props.pluginCtx.pluginManager.get('Designer');
     designerHandle?.ctx.emitter.on('ready', () => {
       this.registerDragEvent();
@@ -43,6 +57,14 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, any> {
     Object.keys(localize).forEach((lng) => {
       i18n.addResourceBundle(lng, i18nNamespace, localize[lng], true, true);
     });
+    const allSnippets = materialsModel.getAllSnippets();
+    this.setState({
+      componentsList: allSnippets,
+    });
+    console.log(
+      '🚀 ~ file: index.tsx:50 ~ ComponentLibView ~ componentDidMount ~ allSnippets',
+      allSnippets
+    );
   }
 
   registerDragEvent = () => {
@@ -69,19 +91,17 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, any> {
         targetDom as HTMLElement,
         DRAG_ITEM_KEY
       );
-      console.log(
-        '🚀 ~ file: index.tsx:72 ~ ComponentLibView ~ boxSensor.setCanDrag ~ targetNodeId',
-        targetNodeId
-      );
+
       if (!targetNodeId) {
         return;
       }
 
-      const newNode = pageModel?.createNode({
-        id: '111',
-        componentName: 'Button',
-        children: ['insertData'],
-      });
+      const meta = pageModel.materialsModel.findSnippetById(targetNodeId);
+      if (!meta) {
+        return;
+      }
+
+      const newNode = pageModel?.createNode(meta.schema);
       return {
         ...eventObj,
         extraData: {
@@ -95,22 +115,22 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, any> {
   };
 
   render(): React.ReactNode {
+    const { componentsList } = this.state;
+    const items = componentsList.map((el) => {
+      return {
+        label: <TabTitle>{capitalize(el.name)}</TabTitle>,
+        key: el.name,
+        children: <ListView dataSource={el.list} />,
+      };
+    });
     return (
       <div ref={this.containerRef} className={styles.container}>
         <Tabs
           defaultActiveKey="BaseComponent"
-          items={[
-            {
-              label: <TabTitle>基础组件</TabTitle>,
-              key: 'BaseComponent',
-              children: <ListView />,
-            },
-            {
-              label: <TabTitle>高级组件</TabTitle>,
-              key: 'AdvanceComponent',
-              children: <ListView />,
-            },
-          ]}
+          items={items}
+          style={{
+            flex: 1,
+          }}
         />
       </div>
     );

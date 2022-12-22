@@ -1,9 +1,11 @@
+import { Popover } from 'antd';
 import React, { useMemo } from 'react';
 import styles from './style.module.scss';
 
 export type DragComponentItemProps = {
   id: string;
   name: string;
+  description?: any;
   icon: React.ReactNode | string;
   style?: React.CSSProperties;
 };
@@ -21,7 +23,7 @@ export const DragComponentItem = (props: DragComponentItemProps) => {
     }
   }, [props.icon]);
 
-  return (
+  const contentView = (
     <div className={styles.square}>
       <div {...dragInfo} className={styles.componentItem} style={props.style}>
         <div className={styles.iconBox}>{icon}</div>
@@ -29,6 +31,25 @@ export const DragComponentItem = (props: DragComponentItemProps) => {
       </div>
     </div>
   );
+
+  if (props.description) {
+    return (
+      <Popover
+        overlayInnerStyle={{
+          maxWidth: '300px',
+          maxHeight: '200px',
+          overflow: 'auto',
+        }}
+        content={props.description || ''}
+        zIndex={1000}
+        placement="right"
+      >
+        {contentView}
+      </Popover>
+    );
+  } else {
+    return contentView;
+  }
 };
 
 export const DRAG_ITEM_KEY = 'data-drag-key';

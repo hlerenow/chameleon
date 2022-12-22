@@ -6,7 +6,6 @@ import { BasePage } from '@chameleon/demo-page';
 
 const mockMaterial: CMaterialType[] = [
   {
-    version: '1.0.0',
     title: '按钮',
     componentName: 'Button',
     props: [
@@ -23,12 +22,14 @@ const mockMaterial: CMaterialType[] = [
     },
     snippets: [
       {
-        componentName: 'Button',
+        title: '测试按钮',
+        schema: {
+          componentName: 'Button',
+        },
       },
     ],
   },
   {
-    version: '1.0.0',
     title: '页首',
     componentName: 'Header',
     props: [
@@ -130,5 +131,16 @@ describe('test page model', () => {
       page.value.componentsTree.value.children[0].material
     ).not.toBeUndefined();
     expect(page.export()).toMatchSnapshot();
+  });
+
+  it('test page init with material', () => {
+    const page = new CPage(mockPageData, {
+      materials: mockMaterial,
+    });
+    expect(page).not.toBeNull();
+    expect(page.emitter).not.toBeUndefined();
+    expect(
+      page.value.componentsTree.value.children[0].material
+    ).not.toBeUndefined();
   });
 });

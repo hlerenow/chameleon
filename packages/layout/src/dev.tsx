@@ -4,7 +4,6 @@ import ReactDOMAll from 'react-dom';
 import { BasePage } from '@chameleon/demo-page';
 import { Layout, LayoutDragAndDropExtraDataType } from '.';
 import * as antD from 'antd';
-import '@chameleon/material/dist/style.css';
 import './dev.css';
 import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
 import { CNode, CPage } from '@chameleon/model';

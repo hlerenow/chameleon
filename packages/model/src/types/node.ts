@@ -106,6 +106,7 @@ export const DevKey = ['configure'];
 
 export type CNodeDataType = {
   id?: string;
+  title?: string;
   componentName: string;
   // 所有的 props 的 value 需要支持表达式 $$context
   props?: CPropObjDataType;
@@ -160,6 +161,7 @@ const JSExpressionDescribe = object({
 
 export const CNodeDataStructDescribe: any = object({
   id: optional(string()),
+  title: optional(string()),
   componentName: string(),
   props: optional(record(string(), PropsDataStructDescribe)),
   stateName: optional(string()),

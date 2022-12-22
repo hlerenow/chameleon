@@ -1,4 +1,3 @@
-import { CPageDataType } from '@chameleon/model';
 const data = [
   {
     key: '1',
@@ -98,7 +97,7 @@ const columns = [
   },
 ];
 
-export const BasePage: CPageDataType = {
+export const BasePage = {
   version: '1.0.0',
   pageName: 'BaseDemoPage',
   componentsMeta: [],

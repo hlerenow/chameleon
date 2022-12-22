@@ -1,13 +1,6 @@
-import { CMaterials } from '../../src/Material/index';
-import {
-  AdvanceDataType,
-  BaseDataType,
-  CMaterialType,
-  ShapeDataType,
-  SpecialDataType,
-} from '../../src/types/material';
+import { AdvanceDataType, CMaterialType } from '../src/types/material';
 
-const mockMaterialData: CMaterialType[] = [
+export const mockMaterialData: CMaterialType[] = [
   {
     title: '测试物料组件',
     componentName: 'Header',
@@ -163,16 +156,3 @@ const mockMaterialData: CMaterialType[] = [
     ],
   },
 ];
-
-describe('test page model', () => {
-  it('new a page instance', () => {
-    const node = new CMaterials(mockMaterialData);
-    expect(node).not.toBeNull();
-  });
-
-  it('get all snippets', () => {
-    const node = new CMaterials(mockMaterialData);
-    expect(node).not.toBeNull();
-    expect(node.getAllSnippets().length).not.toEqual(0);
-  });
-});

@@ -1,11 +1,11 @@
 import React from 'react';
-import '@chameleon/material/dist/style.css';
 import { WorkBench } from './component/Workbench';
 import styles from './Engine.module.scss';
 import i18n from './i18n/index';
 import { CPlugin, PluginManager } from './core/pluginManager';
 import mitt from 'mitt';
 import { CPage, CPageDataType } from '@chameleon/model';
+import { Material } from '@chameleon/demo-page';
 
 export type EnginContext = {
   pluginManager: PluginManager;
@@ -26,7 +26,14 @@ class Engine extends React.Component<EngineProps> {
   constructor(props: EngineProps) {
     super(props);
     this.pageSchema = props.schema;
-    this.pageModel = new CPage(this.pageSchema);
+    console.log(
+      '🚀 ~ file: Engine.tsx:33 ~ Engine ~ constructor ~ Material',
+      Material
+    );
+    this.pageModel = new CPage(this.pageSchema, {
+      materials: Material,
+    });
+    console.log(this.pageModel);
   }
 
   async componentDidMount() {

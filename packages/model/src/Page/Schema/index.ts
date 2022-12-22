@@ -58,7 +58,7 @@ export const parseSchema = (
       child.push(data.children);
     } else {
       if (data.children && isPlainObject(data.children)) {
-        child.push(new CNode(data.children, { parent: parent }));
+        child.push(new CNode(data.children, { parent: parent, materials }));
       } else {
         child.push(data.children, { parent: parent });
       }
