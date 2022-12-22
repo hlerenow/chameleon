@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom/client';
 import Engine, { EnginContext } from './Engine';
 import './index.css';
 import { DEFAULT_PLUGIN_LIST } from './plugins';
-import { Tooltip } from 'antd';
 
 const App = () => {
   const onReady = useCallback((ctx: EnginContext) => {

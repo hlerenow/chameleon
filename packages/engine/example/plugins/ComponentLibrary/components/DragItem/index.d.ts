@@ -2,6 +2,7 @@ import React from 'react';
 export declare type DragComponentItemProps = {
     id: string;
     name: string;
+    description?: any;
     icon: React.ReactNode | string;
     style?: React.CSSProperties;
 };

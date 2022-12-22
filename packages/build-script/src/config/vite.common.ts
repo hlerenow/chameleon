@@ -31,10 +31,10 @@ export const commonConfig = () => {
     },
     plugins: [
       eslint(),
-      react(),
       dts({
         skipDiagnostics: false,
       }),
+      react(),
     ],
   }) as UserConfig;
   if (CUSTOM_CONFIG.libMode === false) {
