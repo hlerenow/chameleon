@@ -10,7 +10,7 @@ import {
 } from '@chameleon/layout';
 import styles from './style.module.scss';
 import '@chameleon/layout/dist/style.css';
-import { CNode, CPage, CSchema } from '@chameleon/model';
+import { CNode, CPage, CSchema, InsertNodePosType } from '@chameleon/model';
 import { CPlugin, PluginCtx } from '../../core/pluginManager';
 import localize from './localize';
 
@@ -85,10 +85,17 @@ export class Designer extends React.Component<
         return;
       }
       if (extraData.type === 'NEW_ADD') {
+        let posFlag: InsertNodePosType;
+        if (extraData.dropPosInfo?.pos === 'before') {
+          posFlag = 'BEFORE';
+        } else {
+          posFlag = 'AFTER';
+        }
+
         pageModel?.addNode(
           extraData.startNode as CNode,
           extraData.dropNode!,
-          'BEFORE'
+          posFlag
         );
       } else {
         if (extraData.dropNode?.id === extraData.startNode?.id) {

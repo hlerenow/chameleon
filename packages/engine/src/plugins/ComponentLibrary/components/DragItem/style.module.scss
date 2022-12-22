@@ -1,4 +1,5 @@
 .square {
+  user-select: none;
   position: relative;
   flex: 33.3% 0;
   &::before {
