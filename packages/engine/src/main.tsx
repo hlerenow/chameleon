@@ -1,26 +1,55 @@
-import { BasePage } from '@chameleon/demo-page';
+import { BasePage, Material } from '@chameleon/demo-page';
+import { CAssetPackage } from '@chameleon/layout/dist/types/common';
 import React, { useCallback } from 'react';
-import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom';
+import ReactDOMClient from 'react-dom/client';
 import Engine, { EnginContext } from './Engine';
 import './index.css';
 import { DEFAULT_PLUGIN_LIST } from './plugins';
 
+(window as any).React = React;
+(window as any).ReactDOM = ReactDOM;
+(window as any).ReactDOMClient = ReactDOMClient;
+
+const assets: CAssetPackage[] = [
+  {
+    name: 'antd',
+    resourceType: 'Component',
+    assets: [
+      {
+        src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/reset.css',
+      },
+      {
+        src: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.6/dayjs.min.js',
+      },
+      {
+        src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/antd.min.js',
+      },
+    ],
+  },
+];
+
 const App = () => {
   const onReady = useCallback((ctx: EnginContext) => {
     const designer = ctx.pluginManager.get('Designer');
-
     designer?.ctx.emitter.on('ready', (uiInstance) => {
       console.log('out ready', uiInstance);
+    });
+
+    designer?.ctx.emitter.on('onDrop', (e) => {
+      console.log('out onDrop', e);
     });
   }, []);
   return (
     <Engine
       plugins={DEFAULT_PLUGIN_LIST}
       schema={BasePage as any}
+      material={Material}
+      assets={assets}
       onReady={onReady}
     />
   );
 };
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <App />
-);
+ReactDOMClient.createRoot(
+  document.getElementById('root') as HTMLElement
+).render(<App />);

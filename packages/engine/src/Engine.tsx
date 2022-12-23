@@ -3,9 +3,9 @@ import { WorkBench } from './component/Workbench';
 import styles from './Engine.module.scss';
 import i18n from './i18n/index';
 import { CPlugin, PluginManager } from './core/pluginManager';
-import mitt from 'mitt';
-import { CPage, CPageDataType } from '@chameleon/model';
-import { Material } from '@chameleon/demo-page';
+import mitt, { Emitter } from 'mitt';
+import { CMaterialType, CPage, CPageDataType } from '@chameleon/model';
+import { CAssetPackage } from '@chameleon/layout/dist/types/common';
 
 export type EnginContext = {
   pluginManager: PluginManager;
@@ -15,6 +15,8 @@ export type EnginContext = {
 export type EngineProps = {
   plugins: CPlugin[];
   schema: CPageDataType;
+  material?: CMaterialType[];
+  assets?: CAssetPackage[];
   onReady?: (ctx: EnginContext) => void;
 };
 
@@ -23,25 +25,25 @@ class Engine extends React.Component<EngineProps> {
   workbenchRef = React.createRef<WorkBench>();
   pageSchema: CPageDataType | undefined;
   pageModel: CPage;
+  material: CMaterialType[] | undefined;
+  emitter: Emitter<any>;
   constructor(props: EngineProps) {
     super(props);
     this.pageSchema = props.schema;
-    console.log(
-      '🚀 ~ file: Engine.tsx:33 ~ Engine ~ constructor ~ Material',
-      Material
-    );
+    this.material = props.material;
     this.pageModel = new CPage(this.pageSchema, {
-      materials: Material,
+      materials: this.material || [],
     });
-    console.log(this.pageModel);
+    this.emitter = mitt();
   }
 
   async componentDidMount() {
     const plugins = this.props.plugins;
     this.pluginManager = new PluginManager({
       workbench: () => this.workbenchRef.current!,
-      emitter: mitt(),
+      emitter: this.emitter,
       pageModel: this.pageModel,
+      assets: this.props.assets || [],
       i18n,
     });
 
@@ -56,6 +58,21 @@ class Engine extends React.Component<EngineProps> {
       engine: this,
     });
   }
+
+  updatePage = (page: CPageDataType) => {
+    this.emitter.emit('updatePage');
+    console.log(page);
+  };
+
+  updateMaterial = (material: CMaterialType[]) => {
+    this.emitter.emit('updateMaterial');
+    console.log(material);
+  };
+
+  refresh = () => {
+    this.emitter.emit('refresh');
+    console.log('refresh engine');
+  };
 
   render() {
     return (
