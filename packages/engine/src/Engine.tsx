@@ -35,6 +35,7 @@ class Engine extends React.Component<EngineProps> {
       materials: this.material || [],
     });
     this.emitter = mitt();
+    console.log('this.pageModel', this.pageModel);
   }
 
   async componentDidMount() {

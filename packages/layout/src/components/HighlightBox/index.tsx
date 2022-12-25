@@ -32,10 +32,7 @@ export const HighlightBox = ({
   const [styleObj, setStyleObj] = useState<Record<string, string>>({});
   const [rect, setRect] = useState<DOMRect>();
   const ref = useRef<HighlightCanvasRefType>(null);
-  const [toolBoxSize, setToolBoxSize] = useState({
-    width: 0,
-    height: 0,
-  });
+
   const toolBoxRef = useRef<HTMLDivElement>(null);
   const [targetDom, setTargetDom] = useState<HTMLElement>();
   const instanceRef = useRef<DesignRenderInstance>();
@@ -55,20 +52,8 @@ export const HighlightBox = ({
     };
   }, []);
 
-  const updateRef = useRef<() => void>();
-  updateRef.current = () => {
-    const toolBoxDom = toolBoxRef.current;
-    const toolRect = toolBoxDom?.getBoundingClientRect();
-    if (toolRect) {
-      setToolBoxSize({
-        width: toolRect.width,
-        height: toolRect.height,
-      });
-    }
-  };
   useEffect(() => {
     const handle = animationFrame(() => {
-      updateRef.current?.();
       updatePos();
     });
 
@@ -134,14 +119,7 @@ export const HighlightBox = ({
       }}
     >
       {toolRender && (
-        <div
-          ref={toolBoxRef}
-          className={styles.toolBox}
-          style={{
-            top: `-${toolBoxSize.height + 5}px`,
-            opacity: toolBoxSize.width ? 1 : 0,
-          }}
-        >
+        <div ref={toolBoxRef} className={styles.toolBox}>
           {toolRender}
         </div>
       )}

@@ -1,0 +1,53 @@
+.toolBarBox {
+  display: flex;
+  margin-bottom: 3px;
+  margin-right: -2px;
+  pointer-events: all;
+}
+
+.item {
+  background-color: $baseColor;
+  color: white;
+  padding: 2px 3px;
+  font-size: 12px;
+  overflow: hidden;
+  margin-left: 1px;
+  cursor: pointer;
+}
+
+.layoutSelectBox {
+  position: relative;
+  margin-right: 1px;
+  height: 21px;
+
+  .hoverBox {
+    transition: all 0.3s;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    transform: translateY(-100%);
+    pointer-events: none;
+
+    &:hover,
+    &.hoverBoxActive {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .hoverItem {
+      background-color: $baseColor;
+      padding: 2px 3px;
+      color: white;
+      font-size: 12px;
+      margin-bottom: 1px;
+      cursor: pointer;
+    }
+  }
+  .placeholder {
+    background-color: $baseColor;
+    color: white;
+    padding: 2px 5px;
+    font-size: 12px;
+  }
+}

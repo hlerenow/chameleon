@@ -152,6 +152,7 @@ const App = () => {
           // page={page}
           pageModel={pageModel}
           components={components}
+          selectToolBar={<div>123</div>}
           assets={[
             {
               name: 'antd',

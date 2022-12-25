@@ -20,11 +20,26 @@ const parseData = (data: any, parent?: ParentType) => {
     value: [],
   };
   const nodeValue = data.value;
+  let material = new CMaterials([]);
+  if (parent) {
+    material = parent.materialsMode || new CMaterials([]);
+  }
   if (nodeValue) {
     if (isArray(nodeValue)) {
-      newData.value = nodeValue.map((el) => new CNode(el, { parent }));
+      newData.value = nodeValue.map(
+        (el) =>
+          new CNode(el, {
+            parent,
+            materials: material,
+          })
+      );
     } else if (isPlainObject(nodeValue)) {
-      newData.value.push(new CNode(nodeValue, { parent: parent }));
+      newData.value.push(
+        new CNode(nodeValue, {
+          parent: parent,
+          materials: material,
+        })
+      );
     }
   }
   return newData;
@@ -37,14 +52,17 @@ export class CSlot {
   emitter = DataModelEmitter;
   private data: CJSSlotPropDataType;
   id: string;
+  materialsMode: CMaterials;
   constructor(
     data: RenderPropType,
-    { parent }: { parent: CProp | null; materials?: CMaterials | null }
+    options?: { parent: CProp | null; materials: CMaterials }
   ) {
-    this.parent = parent;
+    this.parent = options?.parent || null;
     this.rawData = data;
-    this.data = parseData(data, this);
+    const materials = options?.materials || new CMaterials([]);
+    this.materialsMode = materials;
     this.id = getRandomStr();
+    this.data = parseData(data, this);
   }
 
   get value() {

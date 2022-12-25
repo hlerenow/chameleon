@@ -33,7 +33,7 @@ export type CNodeModelDataType = Omit<CNodeDataType, 'children'> & {
 export const parseNode = (
   data: CNodeDataType | CNodeModelDataType,
   self: CNode | CSchema,
-  materials?: CMaterials | null
+  materials: CMaterials = new CMaterials([])
 ) => {
   if (typeof data === 'string') {
     return data;
@@ -84,7 +84,7 @@ export const parseNode = (
       res.children = [
         new CNode(data.children, {
           parent: self,
-          materials,
+          materials: materials,
         }),
       ];
     }
@@ -101,19 +101,20 @@ export class CNode {
   private data: CNodeModelDataType;
   emitter = DataModelEmitter;
   parent: ParentType;
-  materialsModel: CMaterials | null;
+  materialsModel: CMaterials;
   listenerHandle: (() => void)[];
   onChangeCbQueue: OnNodeChangeType[];
 
   constructor(
     data: CNodeDataType,
-    options?: { parent?: ParentType; materials?: CMaterials | null }
+    options?: { parent?: ParentType; materials: CMaterials | null }
   ) {
     this.rawData = JSON.parse(JSON.stringify(data));
     checkNode(data);
+    const materials = options?.materials || new CMaterials([]);
     this.parent = options?.parent || null;
-    this.materialsModel = options?.materials || null;
-    this.data = parseNode(data, this, options?.materials);
+    this.materialsModel = materials;
+    this.data = parseNode(data, this, materials);
     this.listenerHandle = [];
     this.onChangeCbQueue = [];
     this.registerListener();

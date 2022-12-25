@@ -199,6 +199,7 @@ export class CPage {
     newNodeData.id = getRandomStr();
     const newNode = new CNode(newNodeData, {
       parent: node.parent,
+      materials: this.materialsModel,
     });
     this.addNode(newNode, node, 'AFTER');
     return newNode;

@@ -197,12 +197,12 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           const instanceList = this.designRenderRef.current.getInstancesById(
             componentInstance._NODE_ID || ''
           );
-          onSelectNode?.(componentInstance._NODE_MODEL);
           this.setState({
             currentSelectInstance: componentInstance,
             selectComponentInstances: [...instanceList],
             hoverComponentInstances: [],
           });
+          onSelectNode?.(componentInstance._NODE_MODEL);
         },
         true
       )
@@ -381,7 +381,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       if (currentSelectDom?.length && dragStartDom?.length) {
         // 如果当前选中的dom 不包含 拖动开始的元素
         if (!currentSelectDom[0].contains(dragStartDom[0])) {
-          onSelectNode?.(startInstance?._NODE_MODEL || null);
           this.setState({
             currentSelectInstance: startInstance,
             selectComponentInstances:
@@ -390,10 +389,10 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
               ) || [],
             hoverComponentInstances: [],
           });
+          onSelectNode?.(startInstance?._NODE_MODEL || null);
         }
       } else if (!currentSelectDom?.length) {
         // 没有选中元素时，当前拖动的元素为选中元素
-        onSelectNode?.(startInstance?._NODE_MODEL || null);
         this.setState({
           currentSelectInstance: startInstance,
           selectComponentInstances:
@@ -402,6 +401,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             ) || [],
           hoverComponentInstances: [],
         });
+        onSelectNode?.(startInstance?._NODE_MODEL || null);
       } else {
         this.setState({
           hoverComponentInstances: [],
@@ -468,12 +468,18 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         this.designRenderRef.current?.getInstancesById(nodeId) || [];
       instanceList = instanceList.filter((el) => el?._STATUS !== 'DESTROY');
       if (!instanceList.length) {
+        this.setState({
+          currentSelectInstance: null,
+          selectComponentInstances: [],
+          hoverComponentInstances: [],
+        });
         return;
       }
       const instance = instanceList[0];
       this.setState({
         currentSelectInstance: instance,
         selectComponentInstances: [...instanceList],
+        hoverComponentInstances: [],
       });
     }, 100);
   }

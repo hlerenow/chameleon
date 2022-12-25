@@ -7,6 +7,8 @@ import { PluginCtx } from '../../core/pluginManager';
 import localize from './localize';
 import { CAssetPackage } from '@chameleon/layout/dist/types/common';
 import { PLUGIN_NAME } from './config';
+import { DefaultSelectToolBar } from './components/DefaultSelectToolBar';
+import { getCloseNodeList } from './util';
 
 export type DesignerPropsType = {
   pluginCtx: PluginCtx;
@@ -114,11 +116,43 @@ export class Designer extends React.Component<
   }
 
   onSelectNode = (node: CNode | CSchema | null) => {
+    console.log(222, node);
+    if (!node) {
+      return;
+    }
+
     this.props.pluginCtx.emitter.emit('onSelect', node);
-    // this.setState({
-    //   selectToolBar: <>{Math.random().toString(32).slice(3, 9)}</>,
-    // });
-    console.log(node);
+    const pageModel = this.props.pluginCtx.pageModel;
+    const list = getCloseNodeList(node, 5);
+    console.log('node', node);
+    const { layoutRef } = this;
+    this.setState({
+      selectToolBar: (
+        <DefaultSelectToolBar
+          nodeList={list}
+          toSelectNode={(id) => {
+            layoutRef.current?.selectNode(id);
+            this.onSelectNode(pageModel.getNode(id));
+          }}
+          toCopy={(id) => {
+            const newNode = this.props.pluginCtx.pageModel.copyNodeById(id);
+            if (newNode) {
+              layoutRef.current?.selectNode(newNode.id);
+              this.onSelectNode(newNode);
+            } else {
+              layoutRef.current?.selectNode('');
+              this.onSelectNode(null);
+            }
+          }}
+          toDelete={(id) => {
+            this.props.pluginCtx.pageModel.deleteNodeById(id);
+            layoutRef.current?.selectNode('');
+            this.onSelectNode(null);
+          }}
+        />
+      ),
+    });
+    console.log(node, node.material, list);
   };
 
   onHoverNode = (node: CNode | CSchema | null) => {
@@ -134,7 +168,6 @@ export class Designer extends React.Component<
     const { layoutRef, props, onSelectNode, onHoverNode } = this;
     const { pageModel, hoverToolBar, selectToolBar, ghostView, assets } =
       this.state;
-    console.log('🚀 ~ file: index.tsx:145 ~ render ~ assets', assets);
 
     return (
       <Layout

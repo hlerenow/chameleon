@@ -52,7 +52,7 @@ const flatProps = (props: CMaterialPropsType): MaterialPropType[] => {
 const handleObjProp = (
   data: any,
   parent: ParentType,
-  materials?: CMaterials | null
+  materials: CMaterials
 ): any => {
   if (data.type) {
     if (data.type === CNodePropsTypeEnum.SLOT) {
@@ -66,7 +66,7 @@ const handleObjProp = (
   } else if (isPlainObject(data)) {
     const newData: CPropDataType = {};
     Object.keys(data).forEach((key) => {
-      newData[key] = parseData(data[key], parent);
+      newData[key] = parseData(data[key], parent, materials);
     });
     return newData;
   } else if (Array.isArray(data)) {
@@ -78,11 +78,7 @@ const handleObjProp = (
 type ParentType = CProp | null;
 
 // 递归处理所有的节点
-const parseData = (
-  data: any,
-  parent: ParentType,
-  materials?: CMaterials | null
-) => {
+const parseData = (data: any, parent: ParentType, materials: CMaterials) => {
   if (isPlainObject(data)) {
     return handleObjProp(data, parent, materials);
   }
@@ -99,17 +95,15 @@ export class CProp {
   emitter = DataModelEmitter;
   private data: CPropModelDataType;
   name: string;
-  materialsMode: CMaterials | undefined | null;
+  materialsMode: CMaterials;
   constructor(
     name: string,
     data: CPropDataType,
-    {
-      parent,
-      materials,
-    }: { parent: CNode | CSchema | null; materials?: CMaterials | null }
+    options: { parent: CNode | CSchema | null; materials?: CMaterials }
   ) {
+    const materials = options?.materials || new CMaterials([]);
     this.materialsMode = materials;
-    this.parent = parent;
+    this.parent = options?.parent;
     this.rawData = data;
     this.name = name;
     this.data = parseData(data, this, materials);
@@ -129,7 +123,7 @@ export class CProp {
 
   updateValue(val?: CPropDataType | CPropModelDataType) {
     const oldData = this.data;
-    this.data = parseData(val ?? oldData, this);
+    this.data = parseData(val ?? oldData, this, this.materialsMode);
     this.emitter.emit('onPropChange', {
       value: this.data,
       preValue: oldData,

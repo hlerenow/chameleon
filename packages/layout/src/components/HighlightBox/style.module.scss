@@ -7,7 +7,6 @@
 .borderDrawBox {
   position: absolute;
   left: 0;
-  top: 0;
   height: 100%;
   width: 100%;
   z-index: 999;
@@ -17,7 +16,7 @@
 .toolBox {
   position: absolute;
   right: 0;
-  top: -20px;
-  border: 1px solid black;
+  top: 0;
   box-sizing: border-box;
+  transform: translateY(-100%);
 }
