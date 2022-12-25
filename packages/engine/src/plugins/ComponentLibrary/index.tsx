@@ -160,7 +160,8 @@ export const ComponentLibPlugin: CPlugin = {
     return {};
   },
   meta: {
-    engine: '1.0.0',
-    version: '1.0.0',
+    engine: {
+      version: '1.0.0',
+    },
   },
 };

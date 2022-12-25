@@ -1,3 +1,4 @@
+import { CAssetPackage } from '@chameleon/layout/dist/types/common';
 import { CPage } from '@chameleon/model';
 import { i18n } from 'i18next';
 import { Emitter } from 'mitt';
@@ -8,20 +9,25 @@ export declare type PluginObj = {
     destroy: (ctx: PluginCtx) => Promise<void>;
     exports: (ctx: PluginCtx) => any;
     meta: {
-        version: string;
-        engine: string;
+        engine: {
+            version: string;
+        };
     };
 };
 export declare type CPlugin = PluginObj | ((ctx: PluginCtx) => PluginObj);
+declare type PluginManagerOptions = {
+    workbench: () => WorkBench;
+    emitter: Emitter<any>;
+    pageModel: CPage;
+    i18n: i18n;
+    assets?: CAssetPackage[];
+};
 export declare type PluginCtx<C = any> = {
     globalEmitter: Emitter<any>;
-    emitter: Emitter<any>;
     config: C;
     workbench: WorkBench;
     pluginManager: PluginManager;
-    pageModel: CPage;
-    i18n: i18n;
-};
+} & Omit<PluginManagerOptions, 'workbench'>;
 export declare class PluginManager {
     plugins: Map<string, {
         ctx: PluginCtx;
@@ -32,12 +38,8 @@ export declare class PluginManager {
     workbench: () => WorkBench;
     pageModel: CPage;
     i18n: i18n;
-    constructor({ workbench, emitter, pageModel, i18n, }: {
-        workbench: () => WorkBench;
-        emitter: Emitter<any>;
-        pageModel: CPage;
-        i18n: i18n;
-    });
+    assets: CAssetPackage[] | undefined;
+    constructor({ workbench, emitter, pageModel, i18n, assets, }: PluginManagerOptions);
     add(plugin: CPlugin): Promise<void>;
     get(pluginName: string): {
         ctx: PluginCtx<any>;
@@ -46,3 +48,4 @@ export declare class PluginManager {
     } | undefined;
     remove(name: string): Promise<void>;
 }
+export {};
