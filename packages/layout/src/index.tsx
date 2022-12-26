@@ -533,16 +533,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
     return (
       <div className={styles.layoutContainer} id="iframeBox">
-        {/* TODO:  选中框， 添加锁定功能 */}
-        <HighlightCanvas
-          ref={this.highlightCanvasRef}
-          instances={selectComponentInstances}
-          style={{
-            ...selectBoxStyle,
-            ...selectLockStyle,
-          }}
-          toolRender={selectToolBar}
-        />
         {/* 左上角添加显示元素名功能 */}
         <HighlightCanvas
           key={'highlightHoverCanvasRef'}
@@ -557,6 +547,16 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             ...hoverBoxStyle,
           }}
           toolRender={hoverToolBar}
+        />
+        {/* TODO:  选中框， 添加锁定功能 */}
+        <HighlightCanvas
+          ref={this.highlightCanvasRef}
+          instances={selectComponentInstances}
+          style={{
+            ...selectBoxStyle,
+            ...selectLockStyle,
+          }}
+          toolRender={selectToolBar}
         />
         <DropAnchorCanvas
           ref={this.highlightDropAnchorCanvasRef}

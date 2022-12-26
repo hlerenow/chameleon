@@ -151,13 +151,20 @@ export class Designer extends React.Component<
         />
       ),
     });
-    console.log(node, node.material, list);
   };
 
   onHoverNode = (node: CNode | CSchema | null) => {
     this.props.pluginCtx.emitter.emit('onHover', node);
+    const material = node?.material;
+    if (!material) {
+      console.warn('material not found', node);
+    }
     this.setState({
-      hoverToolBar: <>{Math.random().toString(32).slice(3, 9)}</>,
+      hoverToolBar: (
+        <div className={styles.hoverTips}>
+          {material?.value.title || material?.componentName}
+        </div>
+      ),
       ghostView: <>Component Placeholder</>,
     });
     // console.log('onHoverNode', node);

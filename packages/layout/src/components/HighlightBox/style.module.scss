@@ -9,13 +9,14 @@
   left: 0;
   height: 100%;
   width: 100%;
-  z-index: 999;
+  z-index: 99;
   pointer-events: none;
 }
 
 .toolBox {
   position: absolute;
-  right: 0;
+  width: 100%;
+  left: 0;
   top: 0;
   box-sizing: border-box;
   transform: translateY(-100%);
