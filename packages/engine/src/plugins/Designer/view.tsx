@@ -124,7 +124,6 @@ export class Designer extends React.Component<
     this.props.pluginCtx.emitter.emit('onSelect', node);
     const pageModel = this.props.pluginCtx.pageModel;
     const list = getCloseNodeList(node, 5);
-    console.log('node', node);
     const { layoutRef } = this;
     this.setState({
       selectToolBar: (

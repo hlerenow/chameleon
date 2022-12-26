@@ -55,10 +55,10 @@ export const DefaultSelectToolBar = ({
 }: DefaultSelectToolBarProps) => {
   const tempList = [...nodeList];
   const currentNode = tempList.shift();
-  const parentNodeItems = tempList.map((el, index) => {
+  const parentNodeItems = tempList.map((el) => {
     return {
       key: el.id,
-      label: String(el.material?.value.title || index),
+      label: String(el.material?.value.title || 'Empty'),
     };
   });
 

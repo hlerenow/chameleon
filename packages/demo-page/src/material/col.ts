@@ -1,11 +1,11 @@
 import { CMaterialType } from '@chameleon/model';
 
-export const ModalMeta: CMaterialType = {
-  title: 'Modal',
-  componentName: 'Modal',
+export const ColMeta: CMaterialType = {
+  title: 'Col',
+  componentName: 'Col',
   npm: {
     package: '@chameleon/mock-material',
-    exportName: 'Modal',
+    exportName: 'Table',
     version: '1.0.0',
   },
   icon: 'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
@@ -19,13 +19,12 @@ export const ModalMeta: CMaterialType = {
   ],
   snippets: [
     {
-      title: '基础元素',
+      title: '列',
       snapshot:
         'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
       category: 'HTML 元素',
       schema: {
         props: {},
-        children: ['I am a Div tag'],
       },
     },
   ],
