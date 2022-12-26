@@ -291,7 +291,7 @@ export type CMaterialType = {
   category?: string;
   // 排序
   priority?: number;
-  npm: LibMetaType;
+  npm: LibMetaType | false;
   snippets: SnippetsType[];
   props: CMaterialPropsType;
   // 可以拖入组件
@@ -355,7 +355,7 @@ export const CMaterialTypeDescribe = object({
   category: optional(string()),
   // 排序
   priority: optional(number()),
-  npm: LibMetaTypeDescribe,
+  npm: union([LibMetaTypeDescribe, literal(false)]),
   snippets: array(SnippetsTypeDescribe),
   props: array(
     union([
