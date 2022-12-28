@@ -66,18 +66,18 @@ export class Designer extends React.Component<
     layoutInstance.dnd?.emitter.on('drop', (eventObj) => {
       const pageModel = this.props.pluginCtx.pageModel;
       const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
+      const dropPosInfo = extraData.dropPosInfo;
+      const posFlag = {
+        before: 'BEFORE',
+        after: 'AFTER',
+        current: 'CHILD_START',
+      }[dropPosInfo?.pos || 'after'] as InsertNodePosType;
+
       if (!extraData.dropNode) {
         console.warn('cancel drop, because drop node is null');
         return;
       }
       if (extraData.type === 'NEW_ADD') {
-        let posFlag: InsertNodePosType;
-        if (extraData.dropPosInfo?.pos === 'before') {
-          posFlag = 'BEFORE';
-        } else {
-          posFlag = 'AFTER';
-        }
-
         pageModel?.addNode(
           extraData.startNode as CNode,
           extraData.dropNode!,
@@ -88,27 +88,11 @@ export class Designer extends React.Component<
           console.warn(' id is the same');
           return;
         }
-        const dropPosInfo = extraData.dropPosInfo;
-        let res = false;
-        if (dropPosInfo?.pos === 'before') {
-          res = pageModel?.moveNodeById(
-            extraData.startNode?.id || '',
-            extraData?.dropNode?.id || '',
-            'BEFORE'
-          );
-        } else if (dropPosInfo?.pos === 'after') {
-          res = pageModel?.moveNodeById(
-            extraData.startNode?.id || '',
-            extraData?.dropNode?.id || '',
-            'AFTER'
-          );
-        } else {
-          pageModel.moveNodeById(
-            extraData.startNode?.id || '',
-            extraData?.dropNode?.id || '',
-            'CHILD_START'
-          );
-        }
+        const res = pageModel.moveNodeById(
+          extraData.startNode?.id || '',
+          extraData?.dropNode?.id || '',
+          posFlag
+        );
         if (!res) {
           console.warn('drop failed');
         }
