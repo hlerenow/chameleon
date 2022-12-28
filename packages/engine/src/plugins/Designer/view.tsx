@@ -88,18 +88,25 @@ export class Designer extends React.Component<
           console.warn(' id is the same');
           return;
         }
+        const dropPosInfo = extraData.dropPosInfo;
         let res = false;
-        if (extraData.dropPosInfo?.pos === 'before') {
+        if (dropPosInfo?.pos === 'before') {
           res = pageModel?.moveNodeById(
             extraData.startNode?.id || '',
             extraData?.dropNode?.id || '',
             'BEFORE'
           );
-        } else {
+        } else if (dropPosInfo?.pos === 'after') {
           res = pageModel?.moveNodeById(
             extraData.startNode?.id || '',
             extraData?.dropNode?.id || '',
             'AFTER'
+          );
+        } else {
+          pageModel.moveNodeById(
+            extraData.startNode?.id || '',
+            extraData?.dropNode?.id || '',
+            'CHILD_START'
           );
         }
         if (!res) {
