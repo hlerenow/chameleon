@@ -39,3 +39,8 @@ $anchorColor: #1890ff;
     border-bottom: 2px solid $anchorColor;
   }
 }
+
+.current {
+  border: none !important;
+  background-color: rgba($color: #0084ff, $alpha: 0.42);
+}

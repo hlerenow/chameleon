@@ -47,6 +47,7 @@ function calculateDropPosInfo(params: {
   dom: HTMLElement;
   originalDom?: HTMLElement;
   innerClass?: string;
+  isContainer?: boolean;
 }): DropPosType {
   const { point, dom, originalDom, innerClass } = params;
   let pos: DropPosType['pos'];
@@ -65,7 +66,7 @@ function calculateDropPosInfo(params: {
   const yCenter = targetRect.y + Math.round(targetDomH / 2);
 
   const hotAreaSpace = 10;
-  if (innerClass && originalDom?.classList.contains(innerClass)) {
+  if (params.isContainer) {
     if (
       mousePos.y > targetRect.y + hotAreaSpace &&
       mousePos.y < targetRect.y + targetRect.height - hotAreaSpace &&
@@ -169,6 +170,7 @@ export const DropAnchor = ({
     if (instance?._STATUS === 'DESTROY') {
       return;
     }
+
     // eslint-disable-next-line react/no-find-dom-node
     const dom = ReactDOM.findDOMNode(instance);
     if (isDOM(dom)) {
@@ -178,29 +180,19 @@ export const DropAnchor = ({
       return;
     }
 
-    const tempRect = instanceDom.getBoundingClientRect();
-    setRect(tempRect);
-    const space = 3;
-    const transformStr = `translate3d(${tempRect?.left - space}px, ${
-      tempRect.top - space
-    }px, 0)`;
-    const tempObj = {
-      width: tempRect?.width + space * 2 + 'px',
-      height: tempRect?.height + space * 2 + 'px',
-      transform: transformStr,
-    };
-    const toolBoxDom = document.getElementById(instance?._UNIQUE_ID || '');
-    if (toolBoxDom) {
-      toolBoxDom.style.transform = transformStr;
-      toolBoxDom.style.width = tempRect?.width + 'px';
-      toolBoxDom.style.height = tempRect?.height + 'px';
-    }
-    setStyleObj(tempObj);
-
     if (!mouseEvent) {
       onDropInfoChange?.(null);
       return null;
     }
+
+    const node = instance?._NODE_MODEL;
+    if (!node) {
+      console.warn('node not exits');
+      return;
+    }
+
+    const isContainer =
+      node.material?.value.isContainer && node.value.children.length === 0;
     const { current: originalEvent } = mouseEvent;
     let dropInfo = calculateDropPosInfo({
       point: {
@@ -209,15 +201,36 @@ export const DropAnchor = ({
       },
       dom: instanceDom,
       originalDom: originalEvent.target as HTMLElement,
-      innerClass: 'drop-inner-placeholder',
+      isContainer: isContainer,
     });
-    if (mouseEvent?.extraData.dropInfo) {
-      dropInfo = {
-        ...dropInfo,
-        ...mouseEvent?.extraData.dropInfo,
+    // target node dom rect
+    const tempRect = instanceDom.getBoundingClientRect();
+    setRect(tempRect);
+    if (dropInfo.pos === 'current') {
+      const transformStr = `translate3d(${tempRect?.left}px, ${tempRect.top}px, 0)`;
+      setStyleObj({
+        width: `${tempRect.width}px`,
+        height: `${tempRect.height}px`,
+        transform: transformStr,
+      });
+    } else {
+      const space = 2;
+      const transformStr = `translate3d(${tempRect?.left - space}px, ${
+        tempRect.top - space
+      }px, 0)`;
+      const tempObj = {
+        width: tempRect?.width + space * 2 + 'px',
+        height: tempRect?.height + space * 2 + 'px',
+        transform: transformStr,
       };
+      const toolBoxDom = document.getElementById(instance?._UNIQUE_ID || '');
+      if (toolBoxDom) {
+        toolBoxDom.style.transform = transformStr;
+        toolBoxDom.style.width = tempRect?.width + 'px';
+        toolBoxDom.style.height = tempRect?.height + 'px';
+      }
+      setStyleObj(tempObj);
     }
-    onDropInfoChange?.(dropInfo);
 
     const classNameMap = {
       horizontal: styles.horizontal,
@@ -231,6 +244,14 @@ export const DropAnchor = ({
       classNameMap[dropInfo.pos],
     ];
     setPosClassName(classList);
+
+    if (mouseEvent?.extraData.dropInfo) {
+      dropInfo = {
+        ...dropInfo,
+        ...mouseEvent?.extraData.dropInfo,
+      };
+    }
+    onDropInfoChange?.(dropInfo);
   }, [instance, mouseEvent]);
 
   useEffect(() => {

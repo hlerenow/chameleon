@@ -1,8 +1,13 @@
 /* eslint-disable react/no-find-dom-node */
-import { CNode, CPageDataType, CSchema, getRandomStr } from '@chameleon/model';
-import { isArray } from 'lodash-es';
-import React, { useRef } from 'react';
-import { AdapterOptionType } from './adapter';
+import {
+  CNode,
+  ContainerConfig,
+  CPageDataType,
+  CSchema,
+  getRandomStr,
+} from '@chameleon/model';
+import { isArray, isPlainObject } from 'lodash-es';
+import React, { useMemo, useRef } from 'react';
 import { RenderPropsType, Render, UseRenderReturnType } from './render';
 import * as ReactDOM from 'react-dom';
 
@@ -40,6 +45,10 @@ export type DesignRenderProp = Omit<RenderPropsType, 'ref' | 'render'> & {
   ref?: React.MutableRefObject<DesignRender | null>;
   render?: UseDesignRenderReturnType;
   onMount?: (instance: DesignRender) => void;
+  dropPlaceholder?:
+    | React.ComponentClass<{ node: CNode | CSchema }>
+    | React.FunctionComponent<{ node: CNode | CSchema }>
+    | string;
 };
 
 type DesignWrapType = {
@@ -50,13 +59,62 @@ type DesignWrapType = {
   _STATUS?: 'DESTROY';
 };
 
+export const DefaultDropPlaceholder: React.FC<{ node: CNode | CSchema }> = (
+  props
+) => {
+  const { node } = props;
+  const configInfo = useMemo(() => {
+    const isContainer = node.material?.value.isContainer;
+    if (isContainer && isPlainObject(isContainer)) {
+      return isContainer as ContainerConfig;
+    } else {
+      return {
+        placeholder: 'Drag the component to place it',
+        width: '100%',
+        height: '100%',
+        style: {},
+      };
+    }
+  }, [props.node]);
+
+  const { placeholder, height, width, style } = configInfo;
+
+  return React.createElement(
+    'div',
+    {
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(200,200,200,0.1)',
+        border: '1px solid rgba(0,0,0,0.1)',
+        borderRadius: '2px',
+        fontSize: '14px',
+        color: 'gray',
+        cursor: 'default',
+        minWidth: '300px',
+        minHeight: '50px',
+        width: width,
+        height: height,
+        ...style,
+      },
+    },
+    placeholder
+  );
+};
+
 export class DesignRender extends React.Component<DesignRenderProp> {
   instanceManager = new ComponentInstanceManager();
   renderRef: React.MutableRefObject<Render | null>;
+  dropPlaceholder: Required<DesignRenderProp>['dropPlaceholder'] =
+    DefaultDropPlaceholder;
 
   constructor(props: DesignRenderProp) {
     super(props);
     this.renderRef = React.createRef<Render>();
+    if (props.dropPlaceholder) {
+      this.dropPlaceholder = props.dropPlaceholder;
+    }
   }
 
   componentDidMount(): void {
@@ -91,23 +149,23 @@ export class DesignRender extends React.Component<DesignRenderProp> {
         if (!isArray(children)) {
           newChildren = [children];
         }
+
+        const hasChildren = Boolean(newChildren.filter(Boolean).length);
+
+        if (!hasChildren && node.material?.value.isContainer) {
+          newChildren.push(
+            React.createElement(self.dropPlaceholder, {
+              node: node,
+            })
+          );
+        }
+
         return React.createElement(comp, restProps, ...newChildren);
       }
     }
     // ts error, if type is not any: Public property 'onGetComponent' of exported class has or is using private name 'DesignWrap'.
     return DesignWrap as any;
   };
-
-  // onComponentMount: AdapterOptionType['onComponentMount'] = (
-  //   instance,
-  //   node
-  // ) => {
-  //   this.instanceManager.add(node.id, instance);
-  // };
-
-  // onComponentDestroy: AdapterOptionType['onComponentDestroy'] = (_, node) => {
-  //   this.instanceManager.remove(node.id, node);
-  // };
 
   rerender(newPage: CPageDataType) {
     return this.renderRef.current?.rerender(newPage);

@@ -95,7 +95,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
   componentDidMount(): void {
     const { renderScriptPath } = this.props;
-    (window as any).DesignRender = this.designRenderRef;
+    (window as any).___CHAMELEON_DESIGNER_RENDER___ = this.designRenderRef;
     const iframeContainer = this.iframeContainer;
     iframeContainer.load(document.getElementById('iframeBox')!);
     iframeContainer.onLoadFailed((e) => {
@@ -528,7 +528,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       hoverToolBar,
       selectBoxStyle = {},
       hoverBoxStyle = {},
-      ghostView = <>ghost</>,
+      ghostView = <>Ghost</>,
     } = this.props;
 
     return (
@@ -577,7 +577,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
               cursor: 'move',
               padding: '2px 20px',
               pointerEvents: 'none',
-              zIndex: 99999,
+              zIndex: 999,
             }}
           >
             {ghostView}

@@ -28,4 +28,5 @@ export const RowMeta: CMaterialType = {
       },
     },
   ],
+  isContainer: true,
 };

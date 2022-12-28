@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import ReactDOMAll from 'react-dom';
-import { BasePage } from '@chameleon/demo-page';
+import { BasePage, Material } from '@chameleon/demo-page';
 import { Layout, LayoutDragAndDropExtraDataType } from '.';
 import * as antD from 'antd';
 import './dev.css';
@@ -18,7 +18,11 @@ const components = {
 
 const App = () => {
   const [page] = useState<any>(BasePage);
-  const [pageModel] = useState<any>(new CPage(BasePage as any));
+  const [pageModel] = useState<any>(
+    new CPage(BasePage, {
+      materials: Material,
+    })
+  );
 
   const leftBoxRef = useRef<HTMLDivElement>(null);
   const layoutRef = useRef<Layout>(null);

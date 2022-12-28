@@ -3,11 +3,11 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import * as antD from 'antd';
 import { Button } from 'antd';
-import { parsePageModel } from '@chameleon/model';
-import { BasePage, SamplePage } from '@chameleon/demo-page';
+import { BasePage, SamplePage, Material } from '@chameleon/demo-page';
 import { ReactAdapter, Render } from '../index';
 import './index.css';
 import { DesignRender, useDesignRender } from '../core/designRender';
+import { CPage } from '@chameleon/model';
 
 window.React = React;
 export type AppProp = {
@@ -28,7 +28,11 @@ const components = {
 
 function App() {
   SamplePage;
-  const [page] = useState(parsePageModel(BasePage));
+  const [page] = useState(
+    new CPage(BasePage, {
+      materials: Material,
+    })
+  );
   const renderHandle = useDesignRender();
   (window as any).renderHandle = renderHandle;
   useEffect(() => {
@@ -76,9 +80,9 @@ function App() {
       boxNode.value.children.push(node, newNode);
 
       boxNode.updateValue();
-      const tableNode = page.value.componentsTree.value.children[4];
+      const tableNode = page.getNode('3');
       console.log(tableNode);
-      tableNode.props.columns.updateValue();
+      tableNode?.props.columns.updateValue();
     }, 500);
 
     console.log(page.export());
@@ -101,7 +105,7 @@ function App() {
       <Render
         pageModel={page}
         components={components}
-        render={renderHandle as any}
+        // render={renderHandle as any}
         adapter={ReactAdapter}
         // onGetComponent={onGetComponent}
         // onGetRef={collectionRef}

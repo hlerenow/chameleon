@@ -115,6 +115,10 @@ export const BasePage: CPageDataType = {
     },
     children: [
       {
+        id: 'row11111',
+        componentName: 'Row',
+      },
+      {
         id: 'div1',
         componentName: 'div',
         children: [
@@ -165,6 +169,7 @@ export const BasePage: CPageDataType = {
             `,
           },
         },
+        children: ['I am a modal'],
       },
       {
         id: '999',

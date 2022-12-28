@@ -28,4 +28,5 @@ export const ColMeta: CMaterialType = {
       },
     },
   ],
+  isContainer: true,
 };

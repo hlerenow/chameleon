@@ -278,6 +278,13 @@ export const SnippetsTypeDescribe = object({
   ),
 });
 
+export type ContainerConfig = {
+  placeholder: string;
+  width: string;
+  height: string;
+  style?: React.CSSProperties;
+};
+
 export type CMaterialType = {
   componentName: string;
   title: string;
@@ -295,7 +302,7 @@ export type CMaterialType = {
   snippets: SnippetsType[];
   props: CMaterialPropsType;
   // 可以拖入组件
-  isContainer?: boolean;
+  isContainer?: boolean | ContainerConfig;
   isModal?:
     | boolean
     | {
@@ -373,7 +380,16 @@ export const CMaterialTypeDescribe = object({
     ])
   ),
   // 可以拖入组件
-  isContainer: optional(boolean()),
+  isContainer: optional(
+    union([
+      boolean(),
+      object({
+        placeholder: string(),
+        width: string(),
+        height: string(),
+      }),
+    ])
+  ),
   isModal: optional(
     union([
       boolean(),
