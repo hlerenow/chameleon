@@ -61,10 +61,6 @@ class ComponentLibView extends React.Component<
     this.setState({
       componentsList: allSnippets,
     });
-    console.log(
-      '🚀 ~ file: index.tsx:50 ~ ComponentLibView ~ componentDidMount ~ allSnippets',
-      allSnippets
-    );
   }
 
   registerDragEvent = () => {

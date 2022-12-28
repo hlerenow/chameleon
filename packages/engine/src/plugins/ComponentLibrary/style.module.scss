@@ -3,10 +3,16 @@
   height: 100%;
   overflow: hidden;
   background-color: white;
+  display: flex;
 
   :global {
     .ant-tabs .ant-tabs-tab + .ant-tabs-tab {
       margin-left: 12px;
+    }
+
+    .ant-tabs-content.ant-tabs-content-top {
+      height: 100%;
+      overflow: auto;
     }
     .ant-tabs-tab {
       padding: 6px 0;
