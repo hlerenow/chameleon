@@ -2,7 +2,6 @@ import { CPage, CPageDataType } from '@chameleon/model';
 import React, { useRef } from 'react';
 import { InnerComponent } from '../commonComponent';
 import { AdapterOptionType, AdapterType } from './adapter';
-import { runtimeComponentCache } from './adapterReact';
 import { RefManager } from './refManager';
 
 export type RenderPropsType = {
@@ -44,7 +43,7 @@ export class Render extends React.Component<
   }
 
   rerender = (newPage: CPageDataType) => {
-    runtimeComponentCache.clear();
+    this.props.adapter.clear();
     this.setState({
       pageModel: new CPage(newPage),
     });

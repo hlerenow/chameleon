@@ -1,6 +1,7 @@
 import { CPage, CNode, CSchema } from '@chameleon/model';
 import { ReactInstance } from 'react';
 import { RefManager } from './refManager';
+import { StoreManager } from './storeManager';
 
 export type ContextType = {
   params?: Record<any, any>;
@@ -80,6 +81,8 @@ export interface AdapterType {
   transformData: () => void;
   transformGlobalData: () => void;
   errorCatch: () => void;
+  // clear memory
+  clear: () => void;
 }
 
 const notImplements = (msg: string) => {
@@ -107,6 +110,7 @@ const AdapterMethodList = [
   'transformData',
   'transformGlobalData',
   'errorCatch',
+  'clear',
 ] as const;
 
 type CustomAdvanceAdapterMethodListType = typeof CustomAdvanceAdapter[number];

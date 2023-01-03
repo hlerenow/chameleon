@@ -10,12 +10,13 @@ import {
   InnerComponentNameEnum,
   isExpression,
   isFunction,
+  isNodeModel,
   isPropModel,
   isSlotModel,
   JSExpressionPropType,
 } from '@chameleon/model';
 import { AdapterOptionType, ContextType, getAdapter } from './adapter';
-import { isPlainObject } from 'lodash-es';
+import { capitalize, isArray, isPlainObject } from 'lodash-es';
 import {
   canAcceptsRef,
   compWrapper,
@@ -25,11 +26,13 @@ import {
   shouldConstruct,
 } from '../util';
 import { DYNAMIC_COMPONENT_TYPE, InnerPropList } from '../const';
-
-export const runtimeComponentCache = new Map();
+import { StoreApi } from 'zustand/vanilla';
+import { StoreManager } from './storeManager';
 
 class DefineReactAdapter {
   components: AdapterOptionType['components'] = {};
+  storeManager = new StoreManager();
+  runtimeComponentCache = new Map();
   onGetRef?: (
     ref: React.RefObject<ReactInstance>,
     nodeMode: CNode | CSchema,
@@ -96,7 +99,7 @@ class DefineReactAdapter {
       pageModel.value.componentsTree
     );
 
-    const props: any = {};
+    const props: Record<string, any> = {};
     const propsModel = rootNode.props;
     Object.keys(propsModel).forEach((key) => {
       props[key] = propsModel[key].value;
@@ -106,11 +109,17 @@ class DefineReactAdapter {
   }
 
   transformProps(
-    originalProps: Record<any, any> = {},
-    { $$context: parentContext }: any
+    originalProps: Record<string, any> = {},
+    {
+      $$context: parentContext,
+    }: {
+      $$context: Record<string, any>;
+    }
   ) {
     const propsModel = originalProps;
-    const handlePropVal: any = (propVal: CPropDataType) => {
+    const handlePropVal: (propVal: CPropDataType) => Record<string, any> = (
+      propVal: CPropDataType
+    ) => {
       if (Array.isArray(propVal)) {
         return propVal.map((it) => handlePropVal(it));
       } else if (isPropModel(propVal)) {
@@ -130,10 +139,10 @@ class DefineReactAdapter {
           const key = `${it.id}-${DYNAMIC_COMPONENT_TYPE}`;
 
           // 复用
-          if (runtimeComponentCache.get(it.id)) {
+          if (this.runtimeComponentCache.get(it.id)) {
             return {
               key: key,
-              component: runtimeComponentCache.get(it.id),
+              component: this.runtimeComponentCache.get(it.id),
             };
           }
           const component = this.getComponent(it);
@@ -156,7 +165,7 @@ class DefineReactAdapter {
               key,
             });
           };
-          runtimeComponentCache.set(it.id, PropNodeFuncWrap);
+          this.runtimeComponentCache.set(it.id, PropNodeFuncWrap);
           const res = {
             component: PropNodeFuncWrap,
             key,
@@ -191,15 +200,19 @@ class DefineReactAdapter {
         return newVal;
       } else if (isFunction(propVal)) {
         const funcProp = propVal as FunctionPropType;
-        return convertCodeStringToFunction(funcProp.value, parentContext);
+        return convertCodeStringToFunction(
+          funcProp.value,
+          parentContext,
+          this.storeManager
+        );
       } else if (isPlainObject(propVal)) {
         // 可能是 普通的 props 模型
         let specialPropVal = propVal;
         if (isPropModel(propVal)) {
           specialPropVal = (propVal as CProp).value;
         }
-        const objPropVal = specialPropVal as Record<any, any>;
-        const newVal: Record<any, any> = {};
+        const objPropVal = specialPropVal as Record<string, any>;
+        const newVal: Record<string, any> = {};
         Object.keys(specialPropVal).forEach((k) => {
           newVal[k] = handlePropVal(objPropVal[k]);
         });
@@ -208,7 +221,7 @@ class DefineReactAdapter {
         return propVal;
       }
     };
-    const newProps: Record<any, any> = {};
+    const newProps: Record<string, any> = {};
     Object.keys(propsModel).forEach((propKey) => {
       const propVal = propsModel[propKey];
       newProps[propKey] = handlePropVal(propVal);
@@ -217,8 +230,37 @@ class DefineReactAdapter {
     return newProps;
   }
 
+  collectSpecialProps(
+    originalProps: Record<string, unknown> = {},
+    isValidate: (val: unknown) => boolean
+  ) {
+    const res: { keyPath: string[]; val: any }[] = [];
+    const cb = (keyPath: string[], val: Record<string, any>) => {
+      let tempVal: any = val;
+      if (isPropModel(val)) {
+        tempVal = val.value;
+      }
+      if (isValidate(tempVal)) {
+        res.push({
+          keyPath,
+          val: tempVal,
+        });
+      } else if (isArray(tempVal)) {
+        tempVal.forEach((it, index) => {
+          cb([...keyPath, String(index)], it);
+        });
+      } else if (isPlainObject(tempVal)) {
+        Object.keys(tempVal).forEach((key) => {
+          cb([...keyPath, key], tempVal[key]);
+        });
+      }
+    };
+
+    cb(['$root'], originalProps);
+    return res;
+  }
+
   convertModelToComponent(originalComponent: any, nodeModel: CNode | CSchema) {
-    // runtime 函数
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const that = this;
     type PropsType = { $$context: ContextType; $$nodeModel: CNode | CSchema };
@@ -229,15 +271,84 @@ class DefineReactAdapter {
       UNIQUE_ID = `${nodeModel.id}_${getRandomStr()}`;
       targetComponentRef: React.MutableRefObject<any>;
       listenerHandle: (() => void)[] = [];
+      storeState: StoreApi<any>;
+
       constructor(props: PropsType) {
         super(props);
         this.targetComponentRef = React.createRef();
         this.state = nodeModel.value.state || {};
+        const storeName = nodeModel.value.stateName || nodeModel.id;
+
+        const nodeStore = that.storeManager.getStore(storeName);
+        if (!nodeStore) {
+          // add to global store manager
+          this.storeState = that.storeManager.addStore(storeName, () => {
+            return {
+              ...(nodeModel.value.state || {}),
+            };
+          });
+        } else {
+          this.storeState = nodeStore;
+          nodeStore.setState({
+            ...(nodeModel.value.state || {}),
+          });
+        }
+
+        // sync storeState to component state;
+        this.storeState.subscribe((newState) => {
+          this.setState({
+            ...newState,
+          });
+        });
+        this.connectStore();
       }
 
       updateState = (newState: any) => {
-        this.setState(newState);
+        this.storeState.setState(newState);
+        this.forceUpdate();
       };
+
+      connectStore() {
+        const expressionList = that.collectSpecialProps(
+          nodeModel.props,
+          (val) => {
+            if (isExpression(val)) {
+              return true;
+            } else {
+              return false;
+            }
+          }
+        );
+
+        // get all stateManager nameList
+        const list = expressionList
+          .map((el) => {
+            const targetVal: JSExpressionPropType = el.val;
+            const reg = /\$\$context.stateManager\.(.+?)\./gim;
+            const res = reg.exec(targetVal.value);
+            if (res?.length) {
+              return res[1];
+            } else {
+              return '';
+            }
+          })
+          .filter(Boolean);
+
+        // TODO: list need now repeat
+        if (list.length) {
+          list.forEach((storeName) => {
+            const store = that.storeManager.getStore(storeName);
+            if (!store) {
+              that.storeManager.addStore(storeName, () => {
+                return {};
+              });
+            }
+            that.storeManager.connect(storeName, () => {
+              this.forceUpdate();
+            });
+          });
+        }
+      }
 
       componentDidMount(): void {
         if (that.onGetRef) {
@@ -245,6 +356,11 @@ class DefineReactAdapter {
         }
         that.onComponentMount?.(this, nodeModel);
         const forceUpdate = () => {
+          // stateName maybe changed
+          that.storeManager.setStore(
+            nodeModel.value.stateName || nodeModel.id,
+            this.storeState
+          );
           this.forceUpdate();
         };
         nodeModel.onChange(forceUpdate);
@@ -265,28 +381,14 @@ class DefineReactAdapter {
           state: this.state || {},
           updateState: this.updateState,
         };
+
         if (nodeModel.value.componentName === InnerComponentNameEnum.PAGE) {
           tempContext.globalState = this.state;
           tempContext.updateGlobalState = this.updateState;
-          // 不能不修改，只能修改属性
-          tempContext.stateManager = {};
         }
 
+        tempContext.stateManager = that.storeManager.getStateSnapshot();
         const newContext = that.getContext(tempContext, $$context);
-
-        // 判断是否有全局的 stateName
-        const stateName = nodeModel.value.stateName;
-        if (
-          nodeModel.value.stateName &&
-          typeof stateName === 'string' &&
-          newContext.stateManager
-        ) {
-          // stateName 可能会重复
-          newContext.stateManager[stateName] = {
-            state: this.state || {},
-            updateState: this.updateState,
-          };
-        }
 
         let condition = nodeModel.value.condition ?? true;
         if (typeof condition !== 'boolean') {
@@ -311,15 +413,19 @@ class DefineReactAdapter {
             const innerIndex = args[1];
             const argsName = loopObj.args || ['item', 'index'];
             const loopData = getObjFromArrayMap(args, argsName);
+            let loopDataName = 'loopData';
+            // loopDataName: loopData or loopData${xxx}, xxx is capitalize
+            if (loopObj.name) {
+              loopDataName = `${loopDataName}${capitalize(loopObj.name)}`;
+            }
             const loopContext = that.getContext(
               {
-                loopData,
+                [loopDataName]: loopData,
               },
               newContext
             );
-            // 可能能复用
             // handle props
-            const newProps: Record<any, any> = that.transformProps(
+            const newProps: Record<string, any> = that.transformProps(
               newOriginalProps,
               {
                 $$context: loopContext,
@@ -327,12 +433,12 @@ class DefineReactAdapter {
             );
 
             const { children } = newProps;
-            let newChildren: any[] = [];
+            let newChildren: React.ReactNode[] = [];
             if (children !== undefined) {
               delete newProps.children;
               newChildren = Array.isArray(children) ? children : [children];
             } else {
-              const children: any[] = [];
+              const children: React.ReactNode[] = [];
               const childModel = nodeModel.value.children;
               childModel.forEach((node, index) => {
                 const child = that.buildComponent(node, {
@@ -359,7 +465,7 @@ class DefineReactAdapter {
         }
 
         // handle props
-        const newProps: Record<any, any> = that.transformProps(
+        const newProps: Record<string, any> = that.transformProps(
           newOriginalProps,
           {
             $$context: newContext,
@@ -367,12 +473,12 @@ class DefineReactAdapter {
         );
 
         const { children } = newProps;
-        let newChildren: any[] = [];
+        let newChildren: React.ReactNode[] = [];
         if (children !== undefined) {
           delete newProps.children;
           newChildren = Array.isArray(children) ? children : [children];
         } else {
-          const children: any[] = [];
+          const children: React.ReactNode[] = [];
           const childModel = nodeModel.value.children;
           childModel.forEach((node, index) => {
             const child = that.buildComponent(node, {
@@ -392,6 +498,10 @@ class DefineReactAdapter {
       }
     }
 
+    (
+      DynamicComponent as any
+    ).displayName = `${nodeModel.value.componentName}Dynamic`;
+
     return DynamicComponent;
   }
   // 递归建页面组件结构
@@ -404,8 +514,13 @@ class DefineReactAdapter {
       idx?: number;
     }
   ) {
+    const runtimeComponentCache = this.runtimeComponentCache;
     if (typeof node === 'string') {
       return this.render(node);
+    }
+
+    if (!isNodeModel(node)) {
+      return;
     }
     const handleNode = ({ currentNode }: { currentNode: CSchema | CNode }) => {
       const nodeId = currentNode.value.id;
@@ -426,7 +541,7 @@ class DefineReactAdapter {
         runtimeComponentCache.set(nodeId, component);
       }
       const key = `${nodeId}-${DYNAMIC_COMPONENT_TYPE}`;
-      const props: any = {
+      const props: Record<string, any> = {
         $$context,
         $$nodeModel: node,
         key: key,
@@ -442,7 +557,10 @@ class DefineReactAdapter {
 
   // 真实渲染
   render(
-    originalComponent: any,
+    originalComponent:
+      | React.ComponentClass<any>
+      | React.FunctionComponent
+      | string,
     props: Record<any, any> = {},
     ...children: React.ReactNode[]
   ) {
@@ -455,13 +573,18 @@ class DefineReactAdapter {
     InnerPropList.forEach((key) => {
       if (
         key in props &&
-        originalComponent.__CP_TYPE__ !== DYNAMIC_COMPONENT_TYPE
+        (originalComponent as any).__CP_TYPE__ !== DYNAMIC_COMPONENT_TYPE
       ) {
         delete props[key];
       }
     });
     const res = React.createElement(originalComponent, props, ...children);
     return res;
+  }
+
+  clear() {
+    this.runtimeComponentCache.clear();
+    this.storeManager.destroy();
   }
 }
 

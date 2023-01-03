@@ -119,6 +119,17 @@ export const BasePage: CPageDataType = {
         componentName: 'Row',
       },
       {
+        id: 'globalStateText',
+        componentName: 'div',
+        props: {
+          children: {
+            type: 'EXPRESSION',
+            value:
+              '"rowState to reshow: " + $$context.stateManager.RowState.state.rowMark',
+          },
+        },
+      },
+      {
         id: 'div1',
         componentName: 'div',
         children: [
@@ -161,8 +172,8 @@ export const BasePage: CPageDataType = {
           onCancel: {
             type: 'FUNCTION',
             value: `
-            function (a, b) {
-                b.updateGlobalState({
+            function (a) {
+                $$context.updateGlobalState({
                  modalVisible: false
                 });
             }
@@ -181,12 +192,12 @@ export const BasePage: CPageDataType = {
           type: 'primary',
           onClick: {
             type: 'FUNCTION',
-            value: `function onClick(a,b) {
-              console.log(a, b);
-              b.updateState({a: b.state.a + 1})
-              b.updateGlobalState({
-                buttonVisible: !b.globalState.buttonVisible,
-                modalVisible: !b.globalState.modalVisible
+            value: `function onClick(a) {
+              console.log(a);
+              $$context.updateState({a: $$context.state.a + 1})
+              $$context.updateGlobalState({
+                buttonVisible: !$$context.globalState.buttonVisible,
+                modalVisible: !$$context.globalState.modalVisible
               })
             }`,
           },
@@ -203,10 +214,10 @@ export const BasePage: CPageDataType = {
           type: 'primary',
           onClick: {
             type: 'FUNCTION',
-            value: `function onClick(a,b) {
-              console.log(a, b);
-              b.updateState({a: b.state.a + 1})
-              b.updateGlobalState({ b: b.globalState.b + 1})
+            value: `function onClick(a) {
+              console.log(a);
+              $$context.updateState({a: $$context.state.a + 1})
+              $$context.updateGlobalState({ b: $$context.globalState.b + 1})
             }`,
           },
           children: {
@@ -275,7 +286,7 @@ export const BasePage: CPageDataType = {
               onChange: {
                 type: 'FUNCTION',
                 value: `
-                  function(value, $$context) {
+                  function(value) {
                     console.log(value, $$context);
                     $$context.updateGlobalState({
                       b: value.target.value
@@ -299,9 +310,9 @@ export const BasePage: CPageDataType = {
                       onClick: {
                         type: 'FUNCTION',
                         value: `
-                          function (a, ctx) {
-                            console.log(a, ctx);
-                            const stateManager = ctx.stateManager;
+                          function (a) {
+                            console.log(a);
+                            const stateManager = $$context.stateManager;
                             const state = stateManager.RowState.state;
                             stateManager.RowState.updateState({
                               rowMark: state.rowMark  +1

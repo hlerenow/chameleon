@@ -1,5 +1,6 @@
 import { Component, createElement } from 'react';
 import { ContextType } from '../core/adapter';
+import { StoreManager } from '../core/storeManager';
 
 export const isClass = function (val: any) {
   if (!val) {
@@ -66,16 +67,21 @@ export const runExpression = (expStr: string, context: any) => {
 
 export const convertCodeStringToFunction = (
   functionStr: string,
-  $$context: ContextType
+  $$context: ContextType,
+  storeManager: StoreManager
 ) => {
   const newFunc = function (...args: any[]) {
     try {
       const codeBody = `
         var f = ${functionStr};
-        return f.apply(f, arguments)
+        var args = Array.from(arguments);
+        var __$$storeManager__ = args.pop();
+        var $$context = args.pop();
+        $$context.stateManager = __$$storeManager__.getStateSnapshot();
+        return f.apply(f, args)
       `;
       const f = new Function(codeBody);
-      f(...args, $$context);
+      f(...args, $$context, storeManager);
     } catch (e) {
       console.warn(e);
     }

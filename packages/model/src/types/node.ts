@@ -148,6 +148,7 @@ export type CNodeDataType = {
     open: boolean;
     data: any[] | JSExpressionPropType;
     args?: ['item', 'index'];
+    name?: string;
   };
   // 是否渲染
   condition?: boolean | JSExpressionPropType;
@@ -180,6 +181,7 @@ export const CNodeDataStructDescribe: any = object({
       open: boolean(),
       data: union([array(any()), JSExpressionDescribe]),
       args: optional(array(string())),
+      name: optional(string()),
     })
   ),
 });

@@ -12,19 +12,54 @@ export const SamplePage: CPageDataType = {
     },
     children: [
       {
-        id: 'Modal',
-        componentName: 'Modal',
+        id: 'globalStateText',
+        componentName: 'div',
         props: {
-          open: false,
+          children: {
+            type: 'EXPRESSION',
+            value:
+              '"rowState to reshow: " + $$context.stateManager.RowState.state.rowMark',
+          },
         },
       },
       {
-        id: '2',
         componentName: 'Button',
         props: {
-          type: 'primary',
+          onClick: {
+            type: 'FUNCTION',
+            value: `
+              function (a) {
+                console.log(a, $$context);
+                const stateManager = $$context.stateManager;
+                const state = stateManager.RowState.state;
+                stateManager.RowState.updateState({
+                  rowMark: state.rowMark  +1
+                })
+              }
+            `,
+          },
         },
-        children: ['123'],
+        children: ['change row state value'],
+      },
+      {
+        id: '4',
+        componentName: 'Row',
+        state: {
+          rowMark: 1,
+        },
+        stateName: 'RowState',
+        children: [
+          {
+            componentName: 'div',
+            props: {
+              children: {
+                type: 'EXPRESSION',
+                value:
+                  '"rowState to reshow: " + $$context.stateManager.RowState.state.rowMark',
+              },
+            },
+          },
+        ],
       },
     ],
   },
