@@ -5,8 +5,10 @@ export const GhostView = ({ node }: { node: CNode | CSchema }) => {
   return (
     <div
       style={{
-        backgroundColor: 'rgba(0,0,0,0.3)',
-        padding: '5px 10px',
+        backgroundColor: 'rgba(100,100,100)',
+        padding: '3px 10px',
+        borderRadius: '2px',
+        opacity: 0.9,
       }}
     >
       {node.value.componentName}

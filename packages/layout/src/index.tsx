@@ -585,7 +585,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
               left: mousePointer.x - 5 + 'px',
               top: mousePointer.y - 8 + 'px',
               cursor: 'move',
-              padding: '2px 20px',
               pointerEvents: 'none',
               zIndex: 999,
             }}
