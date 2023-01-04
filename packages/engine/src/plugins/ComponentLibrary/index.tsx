@@ -44,14 +44,37 @@ class ComponentLibView extends React.Component<
     };
   }
 
+  leftPanelVisibleCb = ({
+    visible,
+    panelName,
+  }: {
+    visible: boolean;
+    panelName: string;
+  }) => {
+    console.log(111, visible, panelName);
+    const designerHandle = this.props.pluginCtx.pluginManager.get('Designer');
+    const designerReady = designerHandle?.exports?.getReadyStatus?.();
+    if (panelName === PLUGIN_NAME && visible && designerReady) {
+      this.registerDragEvent();
+    }
+  };
+
   componentDidMount(): void {
+    console.log('init libs');
     const { pluginCtx } = this.props;
     const { pageModel } = pluginCtx;
     const { materialsModel } = pageModel;
     const designerHandle = this.props.pluginCtx.pluginManager.get('Designer');
-    designerHandle?.ctx.emitter.on('ready', () => {
+    const designerReady = designerHandle?.exports?.getReadyStatus?.();
+    if (designerReady) {
       this.registerDragEvent();
-    });
+    } else {
+      designerHandle?.ctx.emitter.on('ready', () => {
+        console.log('init libs register drag event');
+        this.registerDragEvent();
+      });
+    }
+
     const { i18n } = this.props.pluginCtx;
 
     Object.keys(localize).forEach((lng) => {
@@ -107,7 +130,6 @@ class ComponentLibView extends React.Component<
       };
     });
     dnd.registerSensor(boxSensor);
-    this.props.i18n.changeLanguage('en_US');
   };
 
   render(): React.ReactNode {
@@ -136,7 +158,6 @@ class ComponentLibView extends React.Component<
 export const ComponentLibPlugin: CPlugin = {
   name: PLUGIN_NAME,
   async init(ctx) {
-    console.log('init ComponentLib', ctx);
     const ComponentLibViewWithLocalize =
       withTranslation(i18nNamespace)(ComponentLibView);
     const Title = withTranslation(i18nNamespace)(({ t }) => (

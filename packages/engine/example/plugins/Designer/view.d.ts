@@ -15,11 +15,12 @@ declare type DesignerStateType = {
 };
 export declare class Designer extends React.Component<DesignerPropsType, DesignerStateType> {
     layoutRef: React.RefObject<Layout>;
+    ready: boolean;
     constructor(props: DesignerPropsType);
     componentDidMount(): void;
     init(): Promise<void>;
     onSelectNode: (node: CNode | CSchema | null) => void;
-    onHoverNode: (node: CNode | CSchema | null) => void;
+    onHoverNode: (node: CNode | CSchema | null, startNode: any) => void;
     render(): JSX.Element;
 }
 export {};

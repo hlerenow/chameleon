@@ -9,6 +9,7 @@ import { CAssetPackage } from '@chameleon/layout/dist/types/common';
 import { PLUGIN_NAME } from './config';
 import { DefaultSelectToolBar } from './components/DefaultSelectToolBar';
 import { getCloseNodeList } from './util';
+import { GhostView } from './components/GhostView';
 
 export type DesignerPropsType = {
   pluginCtx: PluginCtx;
@@ -28,8 +29,10 @@ export class Designer extends React.Component<
 > {
   layoutRef: React.RefObject<Layout>;
 
+  ready = false;
   constructor(props: DesignerPropsType) {
     super(props);
+
     this.state = {
       pageModel: props.pluginCtx.pageModel,
       hoverToolBar: null,
@@ -101,13 +104,14 @@ export class Designer extends React.Component<
       this.props.pluginCtx.emitter.emit('onDrop', eventObj);
     });
     // notice other plugin, current is ready ok
+    this.ready = true;
+
     this.props.pluginCtx.emitter.emit('ready', {
       UIInstance: this,
     });
   }
 
   onSelectNode = (node: CNode | CSchema | null) => {
-    console.log(222, node);
     if (!node) {
       return;
     }
@@ -144,11 +148,14 @@ export class Designer extends React.Component<
     });
   };
 
-  onHoverNode = (node: CNode | CSchema | null) => {
+  onHoverNode = (node: CNode | CSchema | null, startNode: any) => {
     this.props.pluginCtx.emitter.emit('onHover', node);
     const material = node?.material;
     if (!material) {
       console.warn('material not found', node);
+    }
+    if (!startNode) {
+      return;
     }
     this.setState({
       hoverToolBar: (
@@ -156,9 +163,9 @@ export class Designer extends React.Component<
           {material?.value.title || material?.componentName}
         </div>
       ),
-      ghostView: <>Component Placeholder</>,
+      ghostView: <GhostView node={startNode} />,
     });
-    // console.log('onHoverNode', node);
+    // console.log('onHoverNode', node, startNode);
   };
 
   render() {

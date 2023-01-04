@@ -1,11 +1,11 @@
 import React from 'react';
 import { ResizeCallback } from 're-resizable';
-import { DEmitter } from '../../core/emitter';
+import { Emitter } from 'mitt';
 export interface PluginContext {
     openPanel: () => void;
     closePanel: () => void;
     getPlugin: (pluginName: string) => any;
-    emitter: DEmitter;
+    emitter: Emitter<any>;
 }
 declare type PanelItem = {
     name: string;
@@ -29,9 +29,11 @@ declare type WorkBenchStateType = {
     leftPanels: PanelItem[];
     bodyView: React.ReactNode | null;
 };
-export declare type WorkBenchPropsType = any;
+export declare type WorkBenchPropsType = {
+    emitter: Emitter<any>;
+};
 export declare class WorkBench extends React.Component<WorkBenchPropsType, WorkBenchStateType> {
-    emitter: DEmitter<any>;
+    emitter: Emitter<any>;
     constructor(props: WorkBenchPropsType);
     addLeftPanel: (panel: PanelItem) => void;
     openLeftPanel: () => void;

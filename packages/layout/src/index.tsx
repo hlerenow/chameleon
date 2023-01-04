@@ -33,7 +33,10 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   renderScriptPath?: string;
   assets?: CAssetPackage[];
   onSelectNode?: (node: CNode | CSchema | null) => void;
-  onHoverNode?: (node: CNode | CSchema | null) => void;
+  onHoverNode?: (
+    node: CNode | CSchema | null,
+    dragNode: CNode | CSchema
+  ) => void;
   selectToolBar?: React.ReactNode;
   selectBoxStyle?: React.CSSProperties;
   hoverBoxStyle?: React.CSSProperties;
@@ -69,6 +72,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   highlightDropAnchorCanvasRef: React.RefObject<HighlightCanvasRefType>;
   readyCbList: ((layoutInstance: Layout) => void)[] = [];
   assets: CAssetPackage[];
+  dragStartNode: CNode | CSchema | null = null;
   constructor(props: LayoutPropsType) {
     super(props);
     this.designRenderRef = React.createRef<DesignRender | null>();
@@ -253,7 +257,10 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           instance?._NODE_ID || ''
         ) || [];
 
-      this.props.onHoverNode?.(instance?._NODE_MODEL || null);
+      this.props.onHoverNode?.(
+        instance?._NODE_MODEL || null,
+        this.dragStartNode!
+      );
       this.setState({
         hoverComponentInstances: instanceList,
       });
@@ -375,6 +382,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           hoverComponentInstances: [],
         });
         onSelectNode?.(null);
+        this.dragStartNode = dragStartNode;
         return;
       }
 
@@ -452,6 +460,8 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
 
     sensor.emitter.on('dragEnd', (e) => {
+      this.dragStartNode = null;
+
       this.setState({
         isDragging: false,
         mousePointer: null,

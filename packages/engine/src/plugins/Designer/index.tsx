@@ -19,6 +19,9 @@ export const DesignerPlugin: CPlugin = () => {
     },
     exports: () => {
       return {
+        getReadyStatus: () => {
+          return designerRef.current?.ready;
+        },
         getDnd: () => {
           return designerRef.current?.layoutRef.current?.dnd;
         },

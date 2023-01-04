@@ -3,19 +3,18 @@ import { Resizable, ResizeCallback } from 're-resizable';
 import styles from './style.module.scss';
 import { Button } from 'antd';
 import {
-  AppstoreAddOutlined,
   CloseOutlined,
   DoubleRightOutlined,
   PushpinOutlined,
 } from '@ant-design/icons';
 import clsx from 'clsx';
-import { DEmitter } from '../../core/emitter';
+import mitt, { Emitter } from 'mitt';
 
 export interface PluginContext {
   openPanel: () => void;
   closePanel: () => void;
   getPlugin: (pluginName: string) => any;
-  emitter: DEmitter;
+  emitter: Emitter<any>;
 }
 
 type PanelItem = {
@@ -42,13 +41,15 @@ type WorkBenchStateType = {
   bodyView: React.ReactNode | null;
 };
 
-export type WorkBenchPropsType = any;
+export type WorkBenchPropsType = {
+  emitter: Emitter<any>;
+};
 
 export class WorkBench extends React.Component<
   WorkBenchPropsType,
   WorkBenchStateType
 > {
-  emitter: DEmitter<any>;
+  emitter: Emitter<any>;
   constructor(props: WorkBenchPropsType) {
     super(props);
     this.state = {
@@ -67,7 +68,7 @@ export class WorkBench extends React.Component<
       leftPanels: [],
       bodyView: null,
     };
-    this.emitter = new DEmitter();
+    this.emitter = props.emitter || mitt();
   }
 
   addLeftPanel = (panel: PanelItem) => {
@@ -84,6 +85,10 @@ export class WorkBench extends React.Component<
         height: '100%',
       },
     });
+    this.emitter.emit('leftPanelVisible', {
+      visible: true,
+      panelName: this.state.currentActiveLeftPanel,
+    });
   };
 
   closeLeftPanel = () => {
@@ -93,6 +98,10 @@ export class WorkBench extends React.Component<
         width: 0,
         height: '100%',
       },
+    });
+    this.emitter.emit('leftPanelVisible', {
+      visible: false,
+      panelName: this.state.currentActiveLeftPanel,
     });
   };
 

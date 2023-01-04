@@ -78,7 +78,7 @@ class Engine extends React.Component<EngineProps> {
   render() {
     return (
       <div className={styles.engineContainer}>
-        <WorkBench ref={this.workbenchRef} />
+        <WorkBench ref={this.workbenchRef} emitter={this.emitter} />
       </div>
     );
   }
