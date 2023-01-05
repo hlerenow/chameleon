@@ -11,19 +11,28 @@ import { DEFAULT_PLUGIN_LIST } from './plugins';
 (window as any).ReactDOM = ReactDOM;
 (window as any).ReactDOMClient = ReactDOMClient;
 
+// {
+//   src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/reset.css',
+// },
+// {
+//   src: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.6/dayjs.min.js',
+// },
+// {
+//   src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/antd.min.js',
+// },
 const assets: CAssetPackage[] = [
   {
     name: 'antd',
     resourceType: 'Component',
     assets: [
       {
-        src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/reset.css',
+        src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/reset.css',
       },
       {
-        src: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.6/dayjs.min.js',
+        src: 'https://cdn.bootcdn.net/ajax/libs/dayjs/1.11.7/dayjs.min.js',
       },
       {
-        src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/antd.min.js',
+        src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/antd.js',
       },
     ],
   },

@@ -1,14 +1,14 @@
 import { CAssetPackage } from '@chameleon/layout/dist/types/common';
-import { CPage } from '@chameleon/model';
+import { CNode, CPage } from '@chameleon/model';
 import { i18n } from 'i18next';
 import mitt, { Emitter } from 'mitt';
 import { WorkBench } from '../component/Workbench';
 
 export type PluginObj = {
   name: string;
-  init: (ctx: PluginCtx) => Promise<void>;
-  destroy: (ctx: PluginCtx) => Promise<void>;
-  exports: (ctx: PluginCtx) => any;
+  init: (ctx: CPluginCtx) => Promise<void>;
+  destroy: (ctx: CPluginCtx) => Promise<void>;
+  exports: (ctx: CPluginCtx) => any;
   meta: {
     engine: {
       version: string;
@@ -16,7 +16,7 @@ export type PluginObj = {
   };
 };
 
-export type CPlugin = PluginObj | ((ctx: PluginCtx) => PluginObj);
+export type CPlugin = PluginObj | ((ctx: CPluginCtx) => PluginObj);
 
 type PluginManagerOptions = {
   workbench: () => WorkBench;
@@ -26,15 +26,16 @@ type PluginManagerOptions = {
   assets?: CAssetPackage[];
 };
 
-export type PluginCtx<C = any> = {
+export type CPluginCtx<C = any> = {
   globalEmitter: Emitter<any>;
   config: C;
   workbench: WorkBench;
   pluginManager: PluginManager;
+  getActiveNode: () => CNode | null;
 } & Omit<PluginManagerOptions, 'workbench'>;
 
 export class PluginManager {
-  plugins: Map<string, { ctx: PluginCtx; exports: any; source: PluginObj }> =
+  plugins: Map<string, { ctx: CPluginCtx; exports: any; source: PluginObj }> =
     new Map();
   emitter: Emitter<any> = mitt();
   workbench!: () => WorkBench;
@@ -57,7 +58,8 @@ export class PluginManager {
   }
 
   async add(plugin: CPlugin) {
-    const ctx: PluginCtx = {
+    const workbench = this.workbench();
+    const ctx: CPluginCtx = {
       globalEmitter: this.emitter,
       emitter: mitt(),
       config: {},
@@ -66,6 +68,9 @@ export class PluginManager {
       pageModel: this.pageModel,
       i18n: this.i18n,
       assets: this.assets,
+      getActiveNode: () => {
+        return workbench.currentSelectNode;
+      },
     };
 
     let innerPlugin: PluginObj;

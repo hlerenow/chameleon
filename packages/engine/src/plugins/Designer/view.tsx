@@ -3,7 +3,7 @@ import { Layout, LayoutDragAndDropExtraDataType } from '@chameleon/layout';
 import styles from './style.module.scss';
 import '@chameleon/layout/dist/style.css';
 import { CNode, CPage, CSchema, InsertNodePosType } from '@chameleon/model';
-import { PluginCtx } from '../../core/pluginManager';
+import { CPluginCtx } from '../../core/pluginManager';
 import localize from './localize';
 import { CAssetPackage } from '@chameleon/layout/dist/types/common';
 import { PLUGIN_NAME } from './config';
@@ -12,7 +12,7 @@ import { getCloseNodeList } from './util';
 import { GhostView } from './components/GhostView';
 
 export type DesignerPropsType = {
-  pluginCtx: PluginCtx;
+  pluginCtx: CPluginCtx;
 };
 
 type DesignerStateType = {
@@ -115,8 +115,7 @@ export class Designer extends React.Component<
     if (!node) {
       return;
     }
-
-    this.props.pluginCtx.emitter.emit('onSelect', node);
+    this.props.pluginCtx.workbench.updateCurrentSelectNode(node as CNode);
     const pageModel = this.props.pluginCtx.pageModel;
     const list = getCloseNodeList(node, 5);
     const { layoutRef } = this;

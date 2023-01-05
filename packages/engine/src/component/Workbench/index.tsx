@@ -9,6 +9,7 @@ import {
 } from '@ant-design/icons';
 import clsx from 'clsx';
 import mitt, { Emitter } from 'mitt';
+import { CNode } from '@chameleon/model';
 
 export interface PluginContext {
   openPanel: () => void;
@@ -39,6 +40,7 @@ type WorkBenchStateType = {
   currentActiveLeftPanel: string;
   leftPanels: PanelItem[];
   bodyView: React.ReactNode | null;
+  rightView: React.ReactNode | null;
 };
 
 export type WorkBenchPropsType = {
@@ -50,8 +52,10 @@ export class WorkBench extends React.Component<
   WorkBenchStateType
 > {
   emitter: Emitter<any>;
+  currentSelectNode: CNode | null;
   constructor(props: WorkBenchPropsType) {
     super(props);
+    this.currentSelectNode = null;
     this.state = {
       leftBoxVisible: true,
       leftBoxSize: {
@@ -67,6 +71,7 @@ export class WorkBench extends React.Component<
       currentActiveLeftPanel: 'ComponentLib',
       leftPanels: [],
       bodyView: null,
+      rightView: null,
     };
     this.emitter = props.emitter || mitt();
   }
@@ -76,6 +81,13 @@ export class WorkBench extends React.Component<
       leftPanels: [...this.state.leftPanels, panel],
     });
   };
+
+  updateCurrentSelectNode(node: CNode) {
+    this.currentSelectNode = node;
+    this.emitter.emit('onSelectNodeChange', {
+      node,
+    });
+  }
 
   openLeftPanel = () => {
     this.setState({
@@ -155,6 +167,12 @@ export class WorkBench extends React.Component<
     });
   };
 
+  replaceRightView = (newView: React.ReactNode) => {
+    this.setState({
+      rightView: newView,
+    });
+  };
+
   toggleRightPanel = () => {
     const { rightBoxVisible, rightBoxSize } = this.state;
     const newVisible = !rightBoxVisible;
@@ -187,6 +205,7 @@ export class WorkBench extends React.Component<
       leftPanels,
       currentActiveLeftPanel,
       bodyView,
+      rightView,
     } = this.state;
     const leftBoContentStyle: React.CSSProperties = {};
     if (!leftBoxFixed) {
@@ -304,7 +323,7 @@ export class WorkBench extends React.Component<
                   });
                 }}
               >
-                <div className={styles.rightBox}></div>
+                <div className={styles.rightBox}>{rightView}</div>
               </Resizable>
             )}
           </div>

@@ -6,7 +6,7 @@ import {
 } from '@chameleon/layout';
 import { Tabs } from 'antd';
 import React from 'react';
-import { CPlugin, PluginCtx } from '../../core/pluginManager';
+import { CPlugin, CPluginCtx } from '../../core/pluginManager';
 import { DesignerExports } from '../Designer';
 import localize from './localize';
 import styles from './style.module.scss';
@@ -18,7 +18,7 @@ import { SnippetsCollection } from '@chameleon/model';
 import { capitalize } from 'lodash-es';
 
 interface ComponentLibViewProps extends WithTranslation {
-  pluginCtx: PluginCtx;
+  pluginCtx: CPluginCtx;
 }
 
 export const PLUGIN_NAME = 'ComponentLib';

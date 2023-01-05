@@ -1,6 +1,7 @@
 import React from 'react';
 import { ResizeCallback } from 're-resizable';
 import { Emitter } from 'mitt';
+import { CNode } from '@chameleon/model';
 export interface PluginContext {
     openPanel: () => void;
     closePanel: () => void;
@@ -28,14 +29,17 @@ declare type WorkBenchStateType = {
     currentActiveLeftPanel: string;
     leftPanels: PanelItem[];
     bodyView: React.ReactNode | null;
+    rightView: React.ReactNode | null;
 };
 export declare type WorkBenchPropsType = {
     emitter: Emitter<any>;
 };
 export declare class WorkBench extends React.Component<WorkBenchPropsType, WorkBenchStateType> {
     emitter: Emitter<any>;
+    currentSelectNode: CNode | null;
     constructor(props: WorkBenchPropsType);
     addLeftPanel: (panel: PanelItem) => void;
+    updateCurrentSelectNode(node: CNode): void;
     openLeftPanel: () => void;
     closeLeftPanel: () => void;
     toggleLeftPanel: () => void;
@@ -43,6 +47,7 @@ export declare class WorkBench extends React.Component<WorkBenchPropsType, WorkB
     openRightPanel: () => void;
     closeRightPanel: () => void;
     replaceBodyView: (newView: React.ReactNode) => void;
+    replaceRightView: (newView: React.ReactNode) => void;
     toggleRightPanel: () => void;
     onLeftBoxResizeStop: ResizeCallback;
     render(): JSX.Element;
