@@ -1,7 +1,16 @@
 .rightPanelContainer {
+  height: 100%;
+  width: 100%;
   :global {
     .ant-tabs .ant-tabs-tab + .ant-tabs-tab {
       margin-left: 0;
+    }
+    .ant-tabs-content.ant-tabs-content-top {
+      height: 100%;
+      overflow: auto;
+    }
+    .ant-tabs .ant-tabs-tabpane {
+      height: 100%;
     }
   }
 }

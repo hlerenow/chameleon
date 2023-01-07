@@ -1,0 +1,25 @@
+.fieldBox {
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+  flex-grow: 1;
+  min-width: 200px;
+  align-items: center;
+  .label {
+    font-size: 12px;
+    color: $textColor;
+    padding-right: 10px;
+    user-select: none;
+  }
+  .tipsLabel {
+    text-decoration-line: underline;
+    text-decoration-style: dashed;
+    text-underline-offset: 2px;
+    cursor: help;
+    word-break: break-all;
+  }
+  .content {
+    flex: 1;
+  }
+}

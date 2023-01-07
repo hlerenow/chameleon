@@ -1,5 +1,5 @@
 import { CNode } from '@chameleon/model';
-import { Tabs } from 'antd';
+import { Empty, Tabs } from 'antd';
 import React from 'react';
 import { CPluginCtx } from '../../core/pluginManager';
 import { PropertyPanelConfig } from '../PropertyPanel';
@@ -129,7 +129,14 @@ export class RightPanel extends React.Component<
     const { displayPanels, node, activeKey } = this.state;
     const { pluginCtx } = this.props;
     if (!node) {
-      return <>Empty</>;
+      return (
+        <div style={{ overflow: 'hidden' }}>
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description={'Please select a node from left view'}
+          />
+        </div>
+      );
     }
     const panelParams = { node: node, pluginCtx };
 
@@ -138,7 +145,10 @@ export class RightPanel extends React.Component<
         <Tabs
           activeKey={activeKey}
           tabPosition="top"
-          style={{ height: '100%' }}
+          style={{
+            flex: 1,
+            height: '100%',
+          }}
           onChange={(activeKey) => {
             this.setState({
               activeKey,

@@ -60,7 +60,6 @@ class ComponentLibView extends React.Component<
   };
 
   componentDidMount(): void {
-    console.log('init libs');
     const { pluginCtx } = this.props;
     const { pageModel } = pluginCtx;
     const { materialsModel } = pageModel;

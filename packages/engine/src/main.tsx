@@ -43,6 +43,7 @@ const App = () => {
     const designer = ctx.pluginManager.get('Designer');
     designer?.ctx.emitter.on('ready', (uiInstance) => {
       console.log('out ready', uiInstance);
+      designer?.exports.selectNode('3');
     });
 
     designer?.ctx.emitter.on('onDrop', (e) => {

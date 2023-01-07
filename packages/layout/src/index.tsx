@@ -206,7 +206,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             selectComponentInstances: [...instanceList],
             hoverComponentInstances: [],
           });
-          onSelectNode?.(componentInstance._NODE_MODEL);
+          this.props.onSelectNode?.(componentInstance._NODE_MODEL);
         },
         true
       )
@@ -491,6 +491,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         selectComponentInstances: [...instanceList],
         hoverComponentInstances: [],
       });
+      this.props.onSelectNode?.(instance?._NODE_MODEL as CNode);
     }, 100);
   }
 

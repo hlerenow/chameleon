@@ -1,7 +1,6 @@
+import React from 'react';
 import { SnippetsType } from '@chameleon/model';
 import { Collapse } from 'antd';
-import { capitalize } from 'lodash-es';
-import React from 'react';
 import { DragComponentItem } from '../DragItem';
 import styles from './style.module.scss';
 const { Panel } = Collapse;
@@ -39,7 +38,7 @@ export const ListView = (props: ListViewProps) => {
             </div>
           );
           return (
-            <Panel header={capitalize(category)} key={category}>
+            <Panel header={category} key={category}>
               {contentView}
             </Panel>
           );
