@@ -20,7 +20,9 @@ interface RightPanelProps {
 
 interface RightPanelState {
   node: CNode | null;
+  activeKey: string;
   panels: CRightPanelItem[];
+  displayPanels: CRightPanelItem[];
 }
 
 export class RightPanel extends React.Component<
@@ -31,6 +33,7 @@ export class RightPanel extends React.Component<
     super(props);
     this.state = {
       node: null,
+      activeKey: '',
       panels: [
         PropertyPanelConfig,
         {
@@ -42,6 +45,9 @@ export class RightPanel extends React.Component<
           key: 'state',
           name: 'State',
           view: () => <>State</>,
+          show: ({ node }) => {
+            return node.value.componentName !== 'div';
+          },
         },
         {
           key: 'advance',
@@ -49,22 +55,70 @@ export class RightPanel extends React.Component<
           view: () => <>Advance</>,
         },
       ],
+      displayPanels: [],
     };
   }
 
   addPanel = (panel: CRightPanelItem) => {
+    const newPanels = [...this.state.panels, panel];
     this.setState({
-      panels: [...this.state.panels, panel],
+      panels: newPanels,
     });
+    this.updatePanels();
+  };
+
+  updatePanels = () => {
+    const { pluginCtx } = this.props;
+    const { node, panels } = this.state;
+    const newPanels = panels;
+    if (node) {
+      const panelParams = { node: node, pluginCtx };
+      const displayPanels = newPanels.filter((panel) => {
+        if (panel.show === undefined) {
+          return true;
+        } else {
+          return panel.show(panelParams);
+        }
+      });
+      this.setState({
+        panels: newPanels,
+        displayPanels,
+      });
+    } else {
+      this.setState({
+        panels: newPanels,
+        displayPanels: [],
+      });
+    }
   };
 
   componentDidMount(): void {
     const { pluginCtx } = this.props;
     pluginCtx.globalEmitter.on('onSelectNodeChange', ({ node }: any) => {
       console.log('right panel onSelect node', node);
-      this.setState({
-        node,
+      const { panels, activeKey } = this.state;
+      const firstPanelKey = panels.find((_, index) => index === 0)?.key || '';
+      const panelParams = { node: node, pluginCtx };
+      const displayPanels = panels.filter((panel) => {
+        if (panel.show === undefined) {
+          return true;
+        } else {
+          return panel.show(panelParams);
+        }
       });
+      const isExitsCurrent = displayPanels.find((el) => el.key === activeKey);
+      if (!isExitsCurrent) {
+        this.setState({
+          activeKey: firstPanelKey,
+          node,
+          displayPanels,
+        });
+      } else {
+        this.setState({
+          node,
+          displayPanels,
+        });
+      }
     });
 
     this.setState({
@@ -72,32 +126,28 @@ export class RightPanel extends React.Component<
     });
   }
   render() {
-    const { panels, node } = this.state;
+    const { displayPanels, node, activeKey } = this.state;
     const { pluginCtx } = this.props;
     if (!node) {
       return <>Empty</>;
     }
     const panelParams = { node: node, pluginCtx };
-    const displayPanels = panels.filter((panel) => {
-      if (panel.show === undefined) {
-        return true;
-      } else {
-        return panel.show(panelParams);
-      }
-    });
+
     return (
       <div className={styles.rightPanelContainer}>
         <Tabs
-          defaultActiveKey="1"
+          activeKey={activeKey}
           tabPosition="top"
           style={{ height: '100%' }}
-          tabBarStyle={{
-            paddingLeft: '15px',
+          onChange={(activeKey) => {
+            this.setState({
+              activeKey,
+            });
           }}
           items={displayPanels.map((p) => {
             return {
               label: (
-                <div style={{}}>
+                <div style={{ padding: '0 10px' }}>
                   {typeof p.name === 'string' ? p.name : p.name?.(panelParams)}
                 </div>
               ),

@@ -7,10 +7,11 @@ export const PropertyPanel = (props: {
   node: CNode;
   pluginCtx: CPluginCtx;
 }) => {
+  const { node } = props;
   useEffect(() => {
     console.log('PropertyPanel', props);
   }, []);
-  return <div>Property Setter View</div>;
+  return <div>{node.value.componentName}</div>;
 };
 
 export const PropertyPanelConfig: CRightPanelItem = {
