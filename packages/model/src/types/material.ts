@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import React from 'react';
 import {
   object,
@@ -144,17 +145,45 @@ export enum SetterTypeEnum {
   JSON_SETTER = 'JSONSetter',
   SElECT_SETTER = 'SelectSetter',
   NUMBER_SETTER = 'NumberSetter',
-  SHAPE_SETTER = 'ShapeSSetter',
+  EXPRESSION_SETTER = 'ExpressionSetter',
+  FUNCTION_SETTER = 'FunctionSetter',
+  COMPONENT_SETTER = 'ComponentSetter',
+}
+
+export enum ComplexSetterTypeEnum {
+  SHAPE_SETTER = 'ShapeSetter',
   ARRAY_SETTER = 'ArraySetter',
 }
 
 export type SetterType =
   | SetterTypeEnum
   | `${SetterTypeEnum}`
+  | ComplexSetterTypeEnum
+  | `${ComplexSetterTypeEnum}`
   | {
       componentName: SetterTypeEnum | `${SetterTypeEnum}`;
-      props: Record<any, any>;
+      prop?: Record<any, any>;
       // 被设置属性的初始值
+      initialValue: any;
+    }
+  | {
+      componentName:
+        | ComplexSetterTypeEnum.SHAPE_SETTER
+        | `${ComplexSetterTypeEnum.SHAPE_SETTER}`;
+      props?: {
+        elements: MaterialPropType[];
+      };
+      initialValue: any;
+    }
+  | {
+      componentName:
+        | ComplexSetterTypeEnum.ARRAY_SETTER
+        | `${ComplexSetterTypeEnum.ARRAY_SETTER}`;
+      props?: {
+        item: {
+          setters: SetterType[];
+        };
+      };
       initialValue: any;
     };
 
@@ -162,7 +191,7 @@ export const SetterTypeDescribe = union([
   string(),
   object({
     componentName: string(),
-    props: any(),
+    props: optional(any()),
     // 用于标记当前数据的初始值，如添加一个数组元素可以使用该值填充
     initialValue: any(),
   }),
