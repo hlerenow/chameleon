@@ -91,12 +91,6 @@ export const TableMeta: CMaterialType = {
       setters: ['FunctionSetter', 'ExpressionSetter'],
     },
     {
-      name: 'sorter',
-      title: '排序',
-      valueType: 'function',
-      setters: ['FunctionSetter', 'ExpressionSetter'],
-    },
-    {
       name: 'title',
       title: '表头',
       valueType: 'component',

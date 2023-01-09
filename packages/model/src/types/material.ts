@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import { isPlainObject } from 'lodash-es';
 import React from 'react';
 import {
   object,
@@ -46,6 +47,22 @@ export type MTitle =
       label: string;
       tip?: string;
     };
+
+export const getMTitle = (title: MTitle) => {
+  if (isPlainObject(title)) {
+    return (title as any).label;
+  } else {
+    return title;
+  }
+};
+
+export const getMTitleTip = (title: MTitle) => {
+  if (isPlainObject(title)) {
+    return (title as any).tip;
+  } else {
+    return '';
+  }
+};
 
 export const MTitleDescribe = union([
   string(),
@@ -198,8 +215,8 @@ export const SetterTypeDescribe = union([
 ]);
 
 export type MaterialPropType = {
-  name: MTitle;
-  title: string;
+  name: string;
+  title: MTitle;
   valueType: PropsValueType;
   description?: string;
   defaultValue?: any;
@@ -241,6 +258,16 @@ export type SpecialMaterialPropType =
     };
 
 export type CMaterialPropsType = (MaterialPropType | SpecialMaterialPropType)[];
+
+export const isSpecialMaterialPropType = (
+  val: any
+): val is SpecialMaterialPropType => {
+  if (val.type && [PropsUIType.GROUP, PropsUIType.SINGLE].includes(val.type)) {
+    return true;
+  } else {
+    return false;
+  }
+};
 
 export type CMaterialEventType =
   | string

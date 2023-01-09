@@ -4,7 +4,7 @@ import { CFormContext, CFormContextData, ContextState } from './context';
 
 export type CFormProps = {
   name: string;
-  children?: ReactNode;
+  children?: ReactNode | ReactNode[];
   onValueChange?: (formData: Record<string, any>) => void;
 };
 export class CForm extends React.Component<CFormProps, CFormContextData> {

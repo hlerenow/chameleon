@@ -1,19 +1,28 @@
 import React, { useEffect } from 'react';
-import { CNode } from '@chameleon/model';
+import { CNode, getMTitleTip } from '@chameleon/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';
 import { CField } from './components/Form/Field';
 import { StringSetter } from './components/Setters';
 import { CForm } from './components/Form';
+import { isSpecialMaterialPropType } from '@chameleon/model';
+import { getMTitle } from '@chameleon/model/src/types/material';
 
 export const PropertyPanel = (props: {
   node: CNode;
   pluginCtx: CPluginCtx;
 }) => {
   const { node } = props;
+  const properties = node.material?.value.props || [];
   useEffect(() => {
     console.log('PropertyPanel', props, node);
   }, []);
+
+  console.log(
+    'PropertyPanel material',
+    node.material?.value.props,
+    Math.random()
+  );
   return (
     <div
       style={{
@@ -28,28 +37,24 @@ export const PropertyPanel = (props: {
           console.log('9999', val);
         }}
       >
-        <CField label="一二三四五六七" name="demo" tips="123123aswowed">
-          <StringSetter />
-        </CField>
-        <CField
-          label="111一二三四五六七"
-          name="demo2"
-          tips="123123aswowed"
-          condition={(state) => {
-            if (state.demo === '1') {
-              return true;
-            } else {
-              return false;
-            }
-          }}
-        >
-          <StringSetter />
-        </CField>
-        <CForm name="2">
-          <CField label="Form2 一二三四五六七" name="demo" tips="123123aswowed">
-            <StringSetter />
-          </CField>
-        </CForm>
+        {properties.map((property) => {
+          if (isSpecialMaterialPropType(property)) {
+            property.content;
+          } else {
+            const title = getMTitle(property.title);
+            const tip = getMTitleTip(property.title);
+            return (
+              <CField
+                key={property.name}
+                label={title}
+                name={property.name}
+                tips={tip}
+              >
+                <StringSetter />
+              </CField>
+            );
+          }
+        })}
       </CForm>
     </div>
   );
