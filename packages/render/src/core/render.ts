@@ -68,6 +68,7 @@ export class Render extends React.Component<
     // todo: 加载 page 资源
     // todo: 收集所有的 第三方库
     if (!pageModel) {
+      console.warn('pageModel is null');
       return null;
     }
     const finalComponents = {

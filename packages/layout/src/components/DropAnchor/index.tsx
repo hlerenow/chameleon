@@ -192,7 +192,9 @@ export const DropAnchor = ({
     }
 
     const isContainer =
-      node.material?.value.isContainer && node.value.children.length === 0;
+      (node.material?.value.isContainer ||
+        node.value?.componentName === 'CPage') &&
+      node.value.children.length === 0;
     const { current: originalEvent } = mouseEvent;
     let dropInfo = calculateDropPosInfo({
       point: {

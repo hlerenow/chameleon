@@ -1,4 +1,4 @@
-import { BasePage, Material } from '@chameleon/demo-page';
+import { BasePage, EmptyPage, Material } from '@chameleon/demo-page';
 import { CAssetPackage } from '@chameleon/layout/dist/types/common';
 import React, { useCallback } from 'react';
 import ReactDOM from 'react-dom';
@@ -53,7 +53,7 @@ const App = () => {
   return (
     <Engine
       plugins={DEFAULT_PLUGIN_LIST}
-      schema={BasePage as any}
+      schema={EmptyPage as any}
       material={Material}
       assets={assets}
       onReady={onReady}

@@ -1,16 +1,35 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import ReactDOMAll from 'react-dom';
-import { BasePage, Material } from '@chameleon/demo-page';
+import { BasePage, EmptyPage, Material } from '@chameleon/demo-page';
 import { Layout, LayoutDragAndDropExtraDataType } from '.';
 import * as antD from 'antd';
 import './dev.css';
 import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
 import { CNode, CPage } from '@chameleon/model';
+import { CAssetPackage } from './types/common';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOMAll;
 (window as any).ReactDOMClient = ReactDOM;
+
+const assets: CAssetPackage[] = [
+  {
+    name: 'antd',
+    resourceType: 'Component',
+    assets: [
+      {
+        src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/reset.css',
+      },
+      {
+        src: 'https://cdn.bootcdn.net/ajax/libs/dayjs/1.11.7/dayjs.min.js',
+      },
+      {
+        src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/antd.js',
+      },
+    ],
+  },
+];
 
 const components = {
   ...antD,
@@ -19,7 +38,7 @@ const components = {
 const App = () => {
   const [page] = useState<any>(BasePage);
   const [pageModel] = useState<any>(
-    new CPage(BasePage, {
+    new CPage(EmptyPage, {
       materials: Material,
     })
   );
@@ -114,7 +133,8 @@ const App = () => {
         console.log(
           '选中元素',
           extraData.startNode?.id || '',
-          extraData?.dropNode?.id
+          extraData?.dropNode?.id,
+          extraData
         );
         layoutRef.current?.selectNode(extraData.startNode?.id || '');
 
@@ -157,23 +177,7 @@ const App = () => {
           pageModel={pageModel}
           components={components}
           selectToolBar={<div>123</div>}
-          assets={[
-            {
-              name: 'antd',
-              resourceType: 'Component',
-              assets: [
-                {
-                  src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/reset.css',
-                },
-                {
-                  src: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.6/dayjs.min.js',
-                },
-                {
-                  src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/antd.min.js',
-                },
-              ],
-            },
-          ]}
+          assets={assets}
         />
       </div>
     </div>

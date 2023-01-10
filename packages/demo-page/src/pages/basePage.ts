@@ -104,7 +104,7 @@ export const BasePage: CPageDataType = {
   componentsMeta: [],
   componentsTree: {
     id: '1',
-    componentName: 'Page',
+    componentName: 'CPage',
     props: {
       a: 1,
     },

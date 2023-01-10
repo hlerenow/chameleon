@@ -64,8 +64,8 @@ export const DefaultDropPlaceholder: React.FC<{ node: CNode | CSchema }> = (
 ) => {
   const { node } = props;
   const configInfo = useMemo(() => {
-    const isContainer = node.material?.value.isContainer;
-    if (isContainer && isPlainObject(isContainer)) {
+    const isContainer = node.material?.value?.isContainer;
+    if (isPlainObject(isContainer)) {
       return isContainer as ContainerConfig;
     } else {
       return {
@@ -151,8 +151,11 @@ export class DesignRender extends React.Component<DesignRenderProp> {
         }
 
         const hasChildren = Boolean(newChildren.filter(Boolean).length);
-
-        if (!hasChildren && node.material?.value.isContainer) {
+        if (
+          !hasChildren &&
+          (node.material?.value.isContainer ||
+            node.value.componentName === 'CPage')
+        ) {
           newChildren.push(
             React.createElement(self.dropPlaceholder, {
               node: node,

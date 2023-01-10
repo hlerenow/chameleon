@@ -6,7 +6,7 @@ export const SamplePage: CPageDataType = {
   componentsMeta: [],
   componentsTree: {
     id: '1',
-    componentName: 'Page',
+    componentName: 'CPage',
     props: {
       a: 1,
     },

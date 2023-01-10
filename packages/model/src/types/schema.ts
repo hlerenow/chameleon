@@ -2,7 +2,7 @@ import { assign, literal, object, omit } from 'superstruct';
 import { CNodeDataStructDescribe, CNodeDataType } from './node';
 
 export enum InnerComponentNameEnum {
-  PAGE = 'Page',
+  PAGE = 'CPage',
 }
 
 export type CSchemaDataType = CNodeDataType & {

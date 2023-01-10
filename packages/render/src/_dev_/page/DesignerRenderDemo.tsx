@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { BasePage, SamplePage, Material } from '@chameleon/demo-page';
+import {
+  BasePage,
+  SamplePage,
+  Material,
+  EmptyPage,
+} from '@chameleon/demo-page';
 import { ReactAdapter } from '../../index';
 import '../index.css';
 import { DesignRender, useDesignRender } from '../../core/designRender';
@@ -12,8 +17,9 @@ export type AppProp = {
 
 export function DesignerRenderDemo() {
   SamplePage;
+  BasePage;
   const [page] = useState(
-    new CPage(BasePage, {
+    new CPage(EmptyPage, {
       materials: Material,
     })
   );
@@ -46,20 +52,20 @@ export function DesignerRenderDemo() {
       true
     );
 
-    setTimeout(() => {
-      const newNode = page.createNode({
-        componentName: 'Button',
-        children: ['动态添加的按钮'],
-      });
-      const boxNode = page.value.componentsTree.value.children[1];
-      const [node] = page.value.componentsTree.value.children.splice(3, 1);
-      page.value.componentsTree.updateValue();
-      boxNode.value.children.push(node, newNode);
-      boxNode.updateValue();
-      const tableNode = page.getNode('3');
-      console.log(tableNode);
-      tableNode?.props.columns.updateValue();
-    }, 500);
+    // setTimeout(() => {
+    //   const newNode = page.createNode({
+    //     componentName: 'Button',
+    //     children: ['动态添加的按钮'],
+    //   });
+    //   const boxNode = page.value.componentsTree.value.children[1];
+    //   const [node] = page.value.componentsTree.value.children.splice(3, 1);
+    //   page.value.componentsTree.updateValue();
+    //   boxNode.value.children.push(node, newNode);
+    //   boxNode.updateValue();
+    //   const tableNode = page.getNode('3');
+    //   console.log(tableNode);
+    //   tableNode?.props.columns.updateValue();
+    // }, 500);
     page.export();
   }, []);
 

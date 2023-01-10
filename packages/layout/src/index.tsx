@@ -170,7 +170,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   }
 
   registerSelectEvent() {
-    const { onSelectNode } = this.props;
     const iframeDoc = this.iframeContainer.getDocument();
     const subWin = this.iframeContainer.getWindow();
 
@@ -417,24 +416,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       }
     });
 
-    const onMouseMove = (e: { pointer: any }) => {
-      if (this.state.isDragging) {
-        this.setState({
-          mousePointer: e.pointer,
-          selectLockStyle: SELECT_LOCK_STYLE,
-        });
-      } else {
-        this.setState({
-          mousePointer: null,
-          selectLockStyle: {},
-        });
-      }
-    };
-
-    sensor.emitter.on('onMouseMove', onMouseMove);
-
-    this.dnd.emitter.on('onMouseMove', onMouseMove);
-
     sensor.emitter.on('dragging', (e) => {
       if (!this.designRenderRef.current) {
         return;
@@ -470,6 +451,24 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         selectLockStyle: {},
       });
     });
+
+    // 监听所有感应区的鼠标移动事件
+    const onMouseMove = (e: { pointer: any }) => {
+      if (this.state.isDragging) {
+        this.setState({
+          mousePointer: e.pointer,
+          selectLockStyle: SELECT_LOCK_STYLE,
+        });
+      } else {
+        this.setState({
+          mousePointer: null,
+          selectLockStyle: {},
+        });
+      }
+    };
+
+    sensor.emitter.on('onMouseMove', onMouseMove);
+    this.dnd.emitter.on('onMouseMove', onMouseMove);
   }
 
   selectNode(nodeId: string) {

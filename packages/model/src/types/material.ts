@@ -300,6 +300,7 @@ export const CMaterialEventTypeDescribe = union([
 export type SnippetsType = {
   id?: string;
   title: string;
+  snapshotText?: string;
   snapshot?: string | React.ReactNode;
   description?: string | React.ReactNode;
   // 组件标签用于搜索
