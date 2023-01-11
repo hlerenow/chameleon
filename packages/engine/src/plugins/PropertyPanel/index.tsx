@@ -1,12 +1,29 @@
 import React, { useEffect } from 'react';
-import { CNode, getMTitleTip } from '@chameleon/model';
+import {
+  CNode,
+  getMTitleTip,
+  SetterObjType,
+  SetterType,
+} from '@chameleon/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';
 import { CField } from './components/Form/Field';
-import { StringSetter } from './components/Setters';
 import { CForm } from './components/Form';
 import { isSpecialMaterialPropType } from '@chameleon/model';
 import { getMTitle } from '@chameleon/model/src/types/material';
+import { SetterSwitcher } from './components/SetterSwitcher';
+
+const getSetterList = (setters: SetterType[] = []): SetterObjType[] => {
+  return setters.map((setter) => {
+    if (typeof setter === 'string') {
+      return {
+        componentName: setter as any,
+      };
+    } else {
+      return setter;
+    }
+  });
+};
 
 export const PropertyPanel = (props: {
   node: CNode;
@@ -43,15 +60,20 @@ export const PropertyPanel = (props: {
           } else {
             const title = getMTitle(property.title);
             const tip = getMTitleTip(property.title);
+            const setterList = getSetterList(property.setters);
+            console.log(
+              '🚀 ~ file: index.tsx:64 ~ {properties.map ~ setterList',
+              setterList
+            );
             return (
-              <CField
+              <SetterSwitcher
+                keyPath={[property.name]}
+                setters={setterList}
                 key={property.name}
                 label={title}
-                name={property.name}
+                name={property.name || ''}
                 tips={tip}
-              >
-                <StringSetter />
-              </CField>
+              />
             );
           }
         })}

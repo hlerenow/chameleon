@@ -8,6 +8,7 @@ export type CFieldProps = {
   tips?: ReactNode | (() => ReactNode);
   name: string;
   condition?: (formState: Record<string, any>) => boolean;
+  noStyle?: boolean;
 };
 
 export const CField = (props: CFieldProps) => {
@@ -57,6 +58,9 @@ export const CField = (props: CFieldProps) => {
   const canRender = condition(formState);
   if (!canRender) {
     return null;
+  }
+  if (props.noStyle) {
+    return <>{newChildren}</>;
   }
 
   return (

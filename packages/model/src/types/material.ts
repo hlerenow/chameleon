@@ -177,11 +177,14 @@ export type SetterType =
   | `${SetterTypeEnum}`
   | ComplexSetterTypeEnum
   | `${ComplexSetterTypeEnum}`
+  | SetterObjType;
+
+export type SetterObjType =
   | {
       componentName: SetterTypeEnum | `${SetterTypeEnum}`;
-      prop?: Record<any, any>;
+      props?: Record<any, any>;
       // 被设置属性的初始值
-      initialValue: any;
+      initialValue?: any;
     }
   | {
       componentName:
@@ -210,7 +213,7 @@ export const SetterTypeDescribe = union([
     componentName: string(),
     props: optional(any()),
     // 用于标记当前数据的初始值，如添加一个数组元素可以使用该值填充
-    initialValue: any(),
+    initialValue: optional(any()),
   }),
 ]);
 

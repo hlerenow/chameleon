@@ -50,6 +50,11 @@ export class RightPanel extends React.Component<
           },
         },
         {
+          key: 'Actions',
+          name: 'Actions',
+          view: () => <>Actions</>,
+        },
+        {
           key: 'advance',
           name: 'Advance',
           view: () => <>Advance</>,

@@ -53,7 +53,7 @@ const App = () => {
   return (
     <Engine
       plugins={DEFAULT_PLUGIN_LIST}
-      schema={EmptyPage as any}
+      schema={BasePage as any}
       material={Material}
       assets={assets}
       onReady={onReady}

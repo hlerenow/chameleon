@@ -11,6 +11,54 @@ export const TableMeta: CMaterialType = {
   icon: 'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
   props: [
     {
+      name: 'name',
+      title: '样式',
+      valueType: 'string',
+      setters: [
+        'StringSetter',
+        {
+          componentName: 'ArraySetter',
+          props: {
+            item: {
+              setters: [
+                {
+                  componentName: 'ShapeSetter',
+                  props: {
+                    elements: [
+                      {
+                        name: 'name',
+                        title: '列名',
+                        valueType: 'string',
+                        setters: ['StringSetter'],
+                      },
+                      {
+                        name: 'dataIndex',
+                        title: 'dataIndex',
+                        valueType: 'string',
+                        setters: ['StringSetter'],
+                      },
+                      {
+                        name: 'filteredValue',
+                        title: '过滤值',
+                        valueType: 'array',
+                        setters: ['StringSetter'],
+                      },
+                    ],
+                  },
+                  initialValue: {},
+                },
+              ],
+            },
+          },
+          initialValue: [],
+        },
+        {
+          componentName: 'ExpressionSetter',
+          initialValue: [],
+        },
+      ],
+    },
+    {
       name: 'style',
       title: '样式',
       valueType: 'object',
