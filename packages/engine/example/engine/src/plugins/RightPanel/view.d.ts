@@ -16,11 +16,14 @@ interface RightPanelProps {
 }
 interface RightPanelState {
     node: CNode | null;
+    activeKey: string;
     panels: CRightPanelItem[];
+    displayPanels: CRightPanelItem[];
 }
 export declare class RightPanel extends React.Component<RightPanelProps, RightPanelState> {
     constructor(props: RightPanelProps);
     addPanel: (panel: CRightPanelItem) => void;
+    updatePanels: () => void;
     componentDidMount(): void;
     render(): JSX.Element;
 }
