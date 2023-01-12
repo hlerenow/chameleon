@@ -1,29 +1,13 @@
 import React, { useEffect } from 'react';
-import {
-  CNode,
-  getMTitleTip,
-  SetterObjType,
-  SetterType,
-} from '@chameleon/model';
+import { CNode, getMTitleTip } from '@chameleon/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';
-import { CField } from './components/Form/Field';
 import { CForm } from './components/Form';
 import { isSpecialMaterialPropType } from '@chameleon/model';
 import { getMTitle } from '@chameleon/model/src/types/material';
 import { SetterSwitcher } from './components/SetterSwitcher';
-
-const getSetterList = (setters: SetterType[] = []): SetterObjType[] => {
-  return setters.map((setter) => {
-    if (typeof setter === 'string') {
-      return {
-        componentName: setter as any,
-      };
-    } else {
-      return setter;
-    }
-  });
-};
+import { getSetterList } from './utils';
+import styles from './style.module.scss';
 
 export const PropertyPanel = (props: {
   node: CNode;
@@ -42,6 +26,7 @@ export const PropertyPanel = (props: {
   );
   return (
     <div
+      className={styles.CFromRenderBox}
       style={{
         padding: '0 10px',
         overflow: 'auto',
@@ -67,7 +52,7 @@ export const PropertyPanel = (props: {
             );
             return (
               <SetterSwitcher
-                keyPath={[property.name]}
+                keyPaths={[property.name]}
                 setters={setterList}
                 key={property.name}
                 label={title}

@@ -59,6 +59,47 @@ export const TableMeta: CMaterialType = {
       ],
     },
     {
+      name: 'testArrayString',
+      title: '样式',
+      valueType: 'array',
+      setters: [
+        {
+          componentName: 'ArraySetter',
+          props: {
+            item: {
+              setters: ['StringSetter'],
+            },
+          },
+          initialValue: [],
+        },
+        {
+          componentName: 'ExpressionSetter',
+          initialValue: [],
+        },
+      ],
+    },
+    {
+      name: 'pagination',
+      title: '分页',
+      valueType: 'object',
+      setters: [
+        {
+          componentName: 'ShapeSetter',
+          props: {
+            elements: [
+              {
+                name: 'current',
+                title: '当前页',
+                valueType: 'number',
+                setters: ['NumberSetter', 'ExpressionSetter'],
+              },
+            ],
+          },
+          initialValue: {},
+        },
+      ],
+    },
+    {
       name: 'style',
       title: '样式',
       valueType: 'object',
@@ -111,27 +152,7 @@ export const TableMeta: CMaterialType = {
         },
       ],
     },
-    {
-      name: 'pagination',
-      title: '分页',
-      valueType: 'object',
-      setters: [
-        {
-          componentName: 'ShapeSetter',
-          props: {
-            elements: [
-              {
-                name: 'current',
-                title: '当前页',
-                valueType: 'number',
-                setters: ['NumberSetter', 'ExpressionSetter'],
-              },
-            ],
-          },
-          initialValue: {},
-        },
-      ],
-    },
+
     {
       name: 'sorter',
       title: '排序',

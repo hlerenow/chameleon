@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
 import { SetterObjType } from '@chameleon/model';
-import * as Setters from '../Setters/index';
+import Setters from '../Setters/index';
 import { CField, CFieldProps } from '../Form/Field';
 import { Collapse, Dropdown, MenuProps } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
 
 export type SetterSwitcherProps = {
   setters: SetterObjType[];
-  keyPath: string[];
+  keyPaths: string[];
   currentSetterName?: string;
+  prefix?: React.ReactNode;
+  suffix?: React.ReactNode;
 } & Omit<CFieldProps, 'children'>;
 
 export const SetterSwitcher = ({
   setters,
   currentSetterName,
+  keyPaths,
   ...props
 }: SetterSwitcherProps) => {
   const [currentSetter, setCurrentSetter] = useState<SetterObjType | null>(
@@ -24,7 +27,6 @@ export const SetterSwitcher = ({
       );
     }
   );
-
   let CurrentSetterComp = null;
   if (currentSetter?.componentName) {
     CurrentSetterComp = (Setters as any)[currentSetter?.componentName];
@@ -45,9 +47,11 @@ export const SetterSwitcher = ({
   }
 
   const menuItems = setters.map((setter) => {
+    const setterName = setter?.componentName || '';
+    const setterRuntime = Setters[setterName];
     return {
       key: setter.componentName,
-      label: setter.componentName,
+      label: setterRuntime?.setterName || setter.componentName,
     };
   });
 
@@ -65,8 +69,13 @@ export const SetterSwitcher = ({
       style={{
         padding: '5px 5px 0 13px',
       }}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
     >
       <Dropdown
+        trigger={['click']}
         menu={{
           items: menuItems,
           onClick,
@@ -89,7 +98,7 @@ export const SetterSwitcher = ({
                   flex: 1,
                 }}
               >
-                {props.name}
+                {props.label}
               </span>
               {switcher}
             </div>
@@ -97,7 +106,33 @@ export const SetterSwitcher = ({
           key={props.name}
         >
           <CField {...props} noStyle>
-            <CurrentSetterComp {...setterProps} />
+            <CurrentSetterComp {...setterProps} keyPaths={[...keyPaths]} />
+          </CField>
+        </Collapse.Panel>
+      </Collapse>
+    );
+  }
+
+  if (['ObjectSetter'].includes(currentSetter?.componentName || '')) {
+    return (
+      <Collapse bordered={false} defaultActiveKey={[props.name]}>
+        <Collapse.Panel
+          header={
+            <div style={{ display: 'flex' }}>
+              <span
+                style={{
+                  flex: 1,
+                }}
+              >
+                {props.label}
+              </span>
+              {switcher}
+            </div>
+          }
+          key={props.name}
+        >
+          <CField {...props} noStyle>
+            <CurrentSetterComp {...setterProps} keyPaths={[...keyPaths]} />
           </CField>
         </Collapse.Panel>
       </Collapse>
@@ -105,11 +140,13 @@ export const SetterSwitcher = ({
   }
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      {props.prefix ?? null}
       <CField {...props}>
-        <CurrentSetterComp />
+        <CurrentSetterComp keyPaths={[...keyPaths]} {...setterProps} />
       </CField>
       {switcher}
+      {props.suffix ?? null}
     </div>
   );
 };

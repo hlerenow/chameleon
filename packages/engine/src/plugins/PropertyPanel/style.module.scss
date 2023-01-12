@@ -1,0 +1,11 @@
+.CFromRenderBox {
+  :global {
+    .ant-collapse .ant-collapse-content > .ant-collapse-content-box {
+      // padding-right: 0;
+    }
+
+    .ant-collapse > .ant-collapse-item:last-child > .ant-collapse-header {
+      // padding-right: 0;
+    }
+  }
+}

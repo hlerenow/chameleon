@@ -13,7 +13,6 @@ export type CFieldProps = {
 
 export const CField = (props: CFieldProps) => {
   const { children, label, tips, name } = props;
-
   let labelView: ReactNode = label;
   const { formState, updateContext, updateConditionConfig } =
     React.useContext(CFormContext);

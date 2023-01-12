@@ -2,7 +2,7 @@ import React from 'react';
 import { ConfigProvider, Input, InputProps } from 'antd';
 import { CSetter, CSetterProps } from '../type';
 
-export const StringSetter: CSetter<InputProps> = ({
+export const NumberSetter: CSetter<InputProps> = ({
   onValueChange,
   keyPaths,
   ...props
@@ -26,4 +26,4 @@ export const StringSetter: CSetter<InputProps> = ({
   );
 };
 
-StringSetter.setterName = '字符设置器';
+NumberSetter.setterName = '字符设置器';
