@@ -19,11 +19,8 @@ export const PropertyPanel = (props: {
     console.log('PropertyPanel', props, node);
   }, []);
 
-  console.log(
-    'PropertyPanel material',
-    node.material?.value.props,
-    Math.random()
-  );
+  const value = node.getPlainProps();
+
   return (
     <div
       className={styles.CFromRenderBox}
@@ -34,7 +31,8 @@ export const PropertyPanel = (props: {
       }}
     >
       <CForm
-        name="1"
+        name="root-form"
+        initialValue={value}
         onValueChange={(val) => {
           console.log('9999', val);
         }}
@@ -46,19 +44,16 @@ export const PropertyPanel = (props: {
             const title = getMTitle(property.title);
             const tip = getMTitleTip(property.title);
             const setterList = getSetterList(property.setters);
-            console.log(
-              '🚀 ~ file: index.tsx:64 ~ {properties.map ~ setterList',
-              setterList
-            );
             return (
-              <SetterSwitcher
-                keyPaths={[property.name]}
-                setters={setterList}
-                key={property.name}
-                label={title}
-                name={property.name || ''}
-                tips={tip}
-              />
+              <div key={property.name} style={{ marginBottom: '5px' }}>
+                <SetterSwitcher
+                  keyPaths={[property.name]}
+                  setters={setterList}
+                  label={title}
+                  name={property.name || ''}
+                  tips={tip}
+                />
+              </div>
             );
           }
         })}

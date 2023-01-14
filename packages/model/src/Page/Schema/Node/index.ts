@@ -189,6 +189,16 @@ export class CNode {
     return materialModel?.findByComponentName(this.data.componentName);
   }
 
+  getPlainProps() {
+    const data = this.data;
+
+    const props: any = {};
+    Object.keys(data.props || {}).forEach((key) => {
+      props[key] = data.props[key].export('design');
+    });
+    return props;
+  }
+
   export(mode: ExportType): CNodeDataType {
     const data = this.data;
     if (typeof data === 'string') {

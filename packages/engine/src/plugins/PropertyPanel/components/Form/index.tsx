@@ -5,6 +5,7 @@ import { CFormContext, CFormContextData, ContextState } from './context';
 export type CFormProps = {
   name: string;
   children?: ReactNode | ReactNode[];
+  initialValue?: Record<string, any>;
   onValueChange?: (formData: Record<string, any>) => void;
 };
 export class CForm extends React.Component<CFormProps, CFormContextData> {
@@ -20,7 +21,7 @@ export class CForm extends React.Component<CFormProps, CFormContextData> {
     };
     this.state = {
       formName: props.name,
-      formState: {},
+      formState: props.initialValue ?? {},
       conditionConfig: {},
       updateContext: this.updateContext,
       updateConditionConfig: (
@@ -37,6 +38,12 @@ export class CForm extends React.Component<CFormProps, CFormContextData> {
     };
   }
 
+  setFields = (state: Record<string, any>) => {
+    this.setState({
+      formState: state,
+    });
+  };
+
   formatValue = (data: Record<string, any>) => {
     const res: Record<string, any> = {};
     const conditionConfig = this.state.conditionConfig;
@@ -50,7 +57,7 @@ export class CForm extends React.Component<CFormProps, CFormContextData> {
   };
 
   render(): ReactNode {
-    const { state, context } = this;
+    const { state } = this;
     const { children } = this.props;
 
     return (

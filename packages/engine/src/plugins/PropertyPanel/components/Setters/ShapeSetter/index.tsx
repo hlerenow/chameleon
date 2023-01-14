@@ -19,19 +19,9 @@ export type CShapeSetterProps = {
 export const ShapeSetter: CSetter<CShapeSetterProps> = ({
   onValueChange,
   elements,
-  initialValue,
+  value,
   keyPaths,
-  ...props
 }: CSetterProps<CShapeSetterProps>) => {
-  const objValue: any = useMemo(() => {
-    if (Array.isArray(props.value)) {
-      return props.value;
-    } else {
-      return initialValue ?? {};
-    }
-  }, [props.value]);
-
-  console.log('ShapeSetter', keyPaths, props);
   return (
     <ConfigProvider
       theme={{
@@ -40,7 +30,13 @@ export const ShapeSetter: CSetter<CShapeSetterProps> = ({
         },
       }}
     >
-      <CForm name={keyPaths.join('.')}>
+      <CForm
+        name={keyPaths.join('.')}
+        initialValue={value as any}
+        onValueChange={(val) => {
+          onValueChange?.(val);
+        }}
+      >
         {elements.map((el) => {
           const setters = getSetterList(el.setters);
           return (

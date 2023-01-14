@@ -12,7 +12,7 @@ export const TableMeta: CMaterialType = {
   props: [
     {
       name: 'name',
-      title: '样式',
+      title: '表名',
       valueType: 'string',
       setters: [
         'StringSetter',
@@ -47,6 +47,11 @@ export const TableMeta: CMaterialType = {
                   },
                   initialValue: {},
                 },
+                'StringSetter',
+                'SelectSetter',
+                'JSONSetter',
+                'FunctionSetter',
+                'ComponentSetter',
               ],
             },
           },
@@ -60,14 +65,20 @@ export const TableMeta: CMaterialType = {
     },
     {
       name: 'testArrayString',
-      title: '样式',
+      title: '数组字符串',
       valueType: 'array',
       setters: [
         {
           componentName: 'ArraySetter',
           props: {
             item: {
-              setters: ['StringSetter'],
+              setters: [
+                'StringSetter',
+                'SelectSetter',
+                'JSONSetter',
+                'FunctionSetter',
+                'ComponentSetter',
+              ],
             },
           },
           initialValue: [],
@@ -76,6 +87,11 @@ export const TableMeta: CMaterialType = {
           componentName: 'ExpressionSetter',
           initialValue: [],
         },
+        'StringSetter',
+        'SelectSetter',
+        'JSONSetter',
+        'FunctionSetter',
+        'ComponentSetter',
       ],
     },
     {
@@ -120,7 +136,7 @@ export const TableMeta: CMaterialType = {
                   props: {
                     elements: [
                       {
-                        name: 'name',
+                        name: 'title',
                         title: '列名',
                         valueType: 'string',
                         setters: ['StringSetter'],
@@ -141,6 +157,11 @@ export const TableMeta: CMaterialType = {
                   },
                   initialValue: {},
                 },
+                'StringSetter',
+                'SelectSetter',
+                'JSONSetter',
+                'FunctionSetter',
+                'ComponentSetter',
               ],
             },
           },

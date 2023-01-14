@@ -3,7 +3,7 @@ import { SetterObjType } from '@chameleon/model';
 import Setters from '../Setters/index';
 import { CField, CFieldProps } from '../Form/Field';
 import { Collapse, Dropdown, MenuProps } from 'antd';
-import { MenuOutlined } from '@ant-design/icons';
+import { SwapOutlined } from '@ant-design/icons';
 
 export type SetterSwitcherProps = {
   setters: SetterObjType[];
@@ -64,7 +64,7 @@ export const SetterSwitcher = ({
     console.info(`Click on item ${key}`);
   };
 
-  const switcher = (
+  let switcher: any = (
     <div
       style={{
         padding: '5px 5px 0 13px',
@@ -81,10 +81,14 @@ export const SetterSwitcher = ({
           onClick,
         }}
       >
-        <MenuOutlined />
+        <SwapOutlined />
       </Dropdown>
     </div>
   );
+
+  if (menuItems.length === 1) {
+    switcher = null;
+  }
 
   const setterProps = currentSetter?.props || {};
   if (['ArraySetter'].includes(currentSetter?.componentName || '')) {
@@ -113,29 +117,37 @@ export const SetterSwitcher = ({
     );
   }
 
-  if (['ObjectSetter'].includes(currentSetter?.componentName || '')) {
+  if (['ShapeSetter'].includes(currentSetter?.componentName || '')) {
     return (
-      <Collapse bordered={false} defaultActiveKey={[props.name]}>
-        <Collapse.Panel
-          header={
-            <div style={{ display: 'flex' }}>
-              <span
-                style={{
-                  flex: 1,
-                }}
-              >
-                {props.label}
-              </span>
-              {switcher}
-            </div>
-          }
-          key={props.name}
+      <div style={{ display: 'flex' }}>
+        {props.prefix ?? null}
+        <Collapse
+          bordered={false}
+          defaultActiveKey={[props.name]}
+          style={{ flex: 1 }}
         >
-          <CField {...props} noStyle>
-            <CurrentSetterComp {...setterProps} keyPaths={[...keyPaths]} />
-          </CField>
-        </Collapse.Panel>
-      </Collapse>
+          <Collapse.Panel
+            header={
+              <div style={{ display: 'flex' }}>
+                <span
+                  style={{
+                    flex: 1,
+                  }}
+                >
+                  {props.label}
+                </span>
+                {switcher}
+              </div>
+            }
+            key={props.name}
+          >
+            <CField {...props} noStyle>
+              <CurrentSetterComp {...setterProps} keyPaths={[...keyPaths]} />
+            </CField>
+          </Collapse.Panel>
+        </Collapse>
+        {props.suffix ?? null}
+      </div>
     );
   }
 

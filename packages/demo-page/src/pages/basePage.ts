@@ -239,6 +239,8 @@ export const BasePage: CPageDataType = {
           data: data,
         },
         props: {
+          name: 111,
+          testArrayString: [1, 2, 3, 4, 5],
           columns,
           dataSource: {
             type: 'EXPRESSION',

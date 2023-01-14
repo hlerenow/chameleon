@@ -24,7 +24,7 @@ export const ArraySetter = ({
     if (Array.isArray(props.value)) {
       return props.value;
     } else {
-      return [1];
+      return [];
     }
   }, [props.value]);
   const innerSetters = getSetterList(
@@ -35,7 +35,6 @@ export const ArraySetter = ({
     ]
   );
 
-  console.log('ArraySetter', props, innerSetters);
   return (
     <ConfigProvider
       theme={{
@@ -47,7 +46,16 @@ export const ArraySetter = ({
       {listValue.map((val, index) => {
         return (
           <div key={index} style={{ paddingBottom: '10px' }}>
-            <CForm name={index + ''}>
+            <CForm
+              name={index + ''}
+              initialValue={props.value || {}}
+              onValueChange={(val) => {
+                const newVal = [...listValue];
+                newVal[index] = val[index];
+                console.log('arraySetter val change', newVal);
+                onValueChange?.(newVal);
+              }}
+            >
               {/* todo: 如何感知 元素是一个可折叠的 field 替换 */}
               <SetterSwitcher
                 prefix={
@@ -58,6 +66,8 @@ export const ArraySetter = ({
                       marginRight: '10px',
                       backgroundColor: '#e3e3e3',
                       borderRadius: '2px',
+                      width: '20px',
+                      height: '23px',
                     }}
                   >
                     <DragOutlined />
@@ -65,8 +75,16 @@ export const ArraySetter = ({
                 }
                 suffix={
                   <div
+                    onClick={() => {
+                      console.log('delete', index);
+
+                      const newVal = [...((props?.value as any) || [])];
+                      newVal.splice(index);
+                      onValueChange?.(newVal);
+                    }}
                     style={{
                       marginLeft: '8px',
+                      cursor: 'pointer',
                     }}
                   >
                     <DeleteOutlined />
@@ -82,11 +100,12 @@ export const ArraySetter = ({
         );
       })}
       <Button
+        style={{ width: '100%' }}
         onClick={() => {
           onValueChange?.([...listValue, initialValue ?? '']);
         }}
       >
-        Add
+        Add One
       </Button>
     </ConfigProvider>
   );
