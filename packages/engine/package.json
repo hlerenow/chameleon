@@ -17,6 +17,8 @@
     "@chameleon/demo-page": "*",
     "@chameleon/layout": "*",
     "@chameleon/model": "*",
+    "@dnd-kit/core": "^6.0.7",
+    "@dnd-kit/sortable": "^7.0.2",
     "antd": "^5.0.0",
     "i18next": "^22.1.5",
     "lodash-es": "^4.17.21",

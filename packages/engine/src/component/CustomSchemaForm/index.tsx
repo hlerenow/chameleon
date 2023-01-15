@@ -7,7 +7,7 @@ import { SetterSwitcher } from './components/SetterSwitcher';
 import { getSetterList } from './utils';
 import styles from './style.module.scss';
 
-export type CustomSchemaFormInstance = typeof CForm;
+export type CustomSchemaFormInstance = CForm;
 
 export type CustomSchemaFormProps = {
   initialValue: Record<string, any>;

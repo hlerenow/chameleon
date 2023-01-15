@@ -19,7 +19,6 @@ export const SetterSwitcher = ({
   keyPaths,
   ...props
 }: SetterSwitcherProps) => {
-  console.log('🚀 ~ file: index.tsx:22 ~ setters', setters);
   const [currentSetter, setCurrentSetter] = useState<SetterObjType | null>(
     () => {
       return (
@@ -94,7 +93,10 @@ export const SetterSwitcher = ({
   const setterProps = currentSetter?.props || {};
   if (['ArraySetter'].includes(currentSetter?.componentName || '')) {
     return (
-      <Collapse bordered={false} defaultActiveKey={[props.name]}>
+      <Collapse
+        bordered={false}
+        // defaultActiveKey={[props.name]}
+      >
         <Collapse.Panel
           header={
             <div style={{ display: 'flex' }}>
@@ -124,7 +126,7 @@ export const SetterSwitcher = ({
         {props.prefix ?? null}
         <Collapse
           bordered={false}
-          defaultActiveKey={[props.name]}
+          // defaultActiveKey={[props.name]}
           style={{ flex: 1 }}
         >
           <Collapse.Panel

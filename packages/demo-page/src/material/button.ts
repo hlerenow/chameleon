@@ -14,7 +14,17 @@ export const ButtonMeta: CMaterialType = {
       name: 'type',
       title: '按钮类型',
       valueType: 'string',
-      setters: ['SelectSetter'],
+      setters: [
+        {
+          componentName: 'SelectSetter',
+        },
+      ],
+    },
+    {
+      name: 'children',
+      title: '文本',
+      valueType: 'string',
+      setters: ['StringSetter'],
     },
   ],
   snippets: [
