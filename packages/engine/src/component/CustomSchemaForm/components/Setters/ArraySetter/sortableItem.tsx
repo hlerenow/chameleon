@@ -17,8 +17,14 @@ export function SortableItem(props: {
   onDelete: () => void;
 }) {
   const { index, keyPaths, setters } = props;
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: props.id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id: props.id });
 
   const style = {
     ...props.style,
@@ -37,6 +43,7 @@ export function SortableItem(props: {
         <SetterSwitcher
           prefix={
             <div
+              ref={setActivatorNodeRef}
               {...listeners}
               style={{
                 padding: '2px 4px',

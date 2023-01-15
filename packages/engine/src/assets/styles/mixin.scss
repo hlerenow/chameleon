@@ -3,8 +3,13 @@ $baseColor: #1677ff;
 /* base style variables */
 $borderColor: rgb(233 233 233);
 $baseBackgroundColor: #edeff3;
+$fontSizeBigger: 16px;
 $fontSize: 14px;
-$fontColor: rgba(0, 0, 0, 0.75);
+$fontSizeSmall: 12px;
+
+$fontColor: rgb(104, 104, 104);
 
 $hoverColor: rgba(22, 119, 255, 0.3);
-$textColor: rgba(0, 0, 0, 0.6);
+$textColor: $fontColor;
+
+$borderRadius: 2px;

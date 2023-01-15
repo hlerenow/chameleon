@@ -4,6 +4,7 @@ import Setters from '../Setters/index';
 import { CField, CFieldProps } from '../Form/Field';
 import { Collapse, Dropdown, MenuProps } from 'antd';
 import { SwapOutlined } from '@ant-design/icons';
+import styles from './style.module.scss';
 
 export type SetterSwitcherProps = {
   setters: SetterObjType[];
@@ -57,7 +58,6 @@ export const SetterSwitcher = ({
 
   const onClick: MenuProps['onClick'] = ({ key }) => {
     const targetSetter = setters.find((setter) => setter.componentName === key);
-    console.log('🚀 ~ file: index.tsx:53 ~ targetSetter', targetSetter);
     if (targetSetter) {
       setCurrentSetter(targetSetter);
     }
@@ -66,9 +66,7 @@ export const SetterSwitcher = ({
 
   let switcher: any = (
     <div
-      style={{
-        padding: '5px 5px 0 13px',
-      }}
+      className={styles.switchBtn}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -99,7 +97,7 @@ export const SetterSwitcher = ({
       >
         <Collapse.Panel
           header={
-            <div style={{ display: 'flex' }}>
+            <div className={styles.collapseHeader}>
               <span
                 style={{
                   flex: 1,
@@ -122,7 +120,7 @@ export const SetterSwitcher = ({
 
   if (['ShapeSetter'].includes(currentSetter?.componentName || '')) {
     return (
-      <div style={{ display: 'flex' }}>
+      <div className={styles.collapseHeader}>
         {props.prefix ?? null}
         <Collapse
           bordered={false}
@@ -131,7 +129,7 @@ export const SetterSwitcher = ({
         >
           <Collapse.Panel
             header={
-              <div style={{ display: 'flex' }}>
+              <div className={styles.collapseHeader}>
                 <span
                   style={{
                     flex: 1,

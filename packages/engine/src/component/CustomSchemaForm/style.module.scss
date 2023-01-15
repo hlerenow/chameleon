@@ -5,7 +5,12 @@
     }
 
     .ant-collapse > .ant-collapse-item:last-child > .ant-collapse-header {
-      padding-right: 5px;
+      padding: 5px 5px 5px 10px;
+      align-items: center;
+      .ant-collapse-expand-icon {
+        // padding-right: 8px;
+        padding-inline-end: 4px;
+      }
     }
   }
 }

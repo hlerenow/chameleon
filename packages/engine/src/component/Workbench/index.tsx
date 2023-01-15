@@ -295,7 +295,7 @@ export class WorkBench extends React.Component<
             )}
           </div>
           <div className={styles.centerBox}>
-            <div className={styles.subTopToolbarBox}></div>
+            {/* <div className={styles.subTopToolbarBox}></div> */}
             <div className={styles.canvasBox}>
               <div className={styles.scrollBox}>{bodyView}</div>
             </div>
