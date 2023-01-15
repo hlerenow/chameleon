@@ -16,8 +16,7 @@ export const DivMeta: CMaterialType = {
   snippets: [
     {
       title: '基础元素',
-      snapshot:
-        'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
+      snapshotText: 'Div',
       category: 'HTML 元素',
       schema: {
         props: {},

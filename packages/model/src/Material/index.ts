@@ -19,6 +19,7 @@ const parseMaterial = (data: CMaterialType): CMaterialStanderType => {
       tags: [...(el.tags || []), ...(data.tags || [])],
       groupName: el.groupName || data.groupName,
       snapshot: el.snapshot || data.icon,
+      snapshotText: el.snapshotText,
       schema: {
         ...el.schema,
         componentName: el.schema.componentName || data.componentName,

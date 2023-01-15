@@ -142,7 +142,8 @@ export const ArraySetter = ({
       <Button
         style={{ width: '100%' }}
         onClick={() => {
-          onValueChange?.([...listValue, initialValue ?? '']);
+          const newVal = listValue.map((el) => el.val);
+          onValueChange?.([...newVal, initialValue ?? '']);
         }}
       >
         Add One

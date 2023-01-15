@@ -30,7 +30,8 @@ export const ListView = (props: ListViewProps) => {
                     id={it.id!}
                     key={it.id!}
                     name={it.title}
-                    icon={it.snapshot}
+                    icon={it.snapshot || it.snapshotText}
+                    iconText={it.snapshotText}
                     description={it.description || ''}
                   />
                 );

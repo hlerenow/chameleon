@@ -7,6 +7,7 @@ export type DragComponentItemProps = {
   name: string;
   description?: any;
   icon: React.ReactNode | string;
+  iconText?: string;
   style?: React.CSSProperties;
 };
 
@@ -16,6 +17,13 @@ export const DragComponentItem = (props: DragComponentItemProps) => {
   };
 
   const icon = useMemo(() => {
+    if (props.iconText) {
+      return (
+        <div className={styles.iconText}>
+          {String(props.iconText).toUpperCase()}
+        </div>
+      );
+    }
     if (typeof props.icon === 'string') {
       return <img className={styles.iconImg} src={props.icon} />;
     } else {

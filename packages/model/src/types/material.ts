@@ -326,6 +326,7 @@ export const SnippetsTypeDescribe = object({
   id: optional(string()),
   title: string(),
   snapshot: union([string(), any()]),
+  snapshotText: optional(string()),
   description: optional(string()),
   // 组件分类,用于搜索
   tags: optional(array(string())),
