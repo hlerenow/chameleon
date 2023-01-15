@@ -202,6 +202,7 @@ export type SetterObjType =
       props?: {
         item: {
           setters: SetterType[];
+          initialValue: any;
         };
       };
       initialValue: any;

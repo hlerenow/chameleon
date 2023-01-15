@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react';
-import { CNode, getMTitleTip } from '@chameleon/model';
+import React, { useEffect, useRef } from 'react';
+import { CNode } from '@chameleon/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';
-import { CForm } from './components/Form';
-import { isSpecialMaterialPropType } from '@chameleon/model';
-import { getMTitle } from '@chameleon/model/src/types/material';
-import { SetterSwitcher } from './components/SetterSwitcher';
-import { getSetterList } from './utils';
+
 import styles from './style.module.scss';
+import {
+  CustomSchemaForm,
+  CustomSchemaFormInstance,
+  CustomSchemaFormProps,
+} from '../../component/CustomSchemaForm';
 
 export const PropertyPanel = (props: {
   node: CNode;
@@ -15,11 +16,18 @@ export const PropertyPanel = (props: {
 }) => {
   const { node } = props;
   const properties = node.material?.value.props || [];
+  const ref = useRef<CustomSchemaFormInstance>(null);
   useEffect(() => {
-    console.log('PropertyPanel', props, node);
+    console.log('PropertyPanel', props, node, ref);
   }, []);
-
   const value = node.getPlainProps();
+
+  const onValueChange: CustomSchemaFormProps['onValueChange'] = (val) => {
+    console.log('9999', val);
+    node.updateValue({
+      props: val,
+    });
+  };
 
   return (
     <div
@@ -30,34 +38,12 @@ export const PropertyPanel = (props: {
         height: '100%',
       }}
     >
-      <CForm
-        name="root-form"
+      <CustomSchemaForm
+        properties={properties}
         initialValue={value}
-        onValueChange={(val) => {
-          console.log('9999', val);
-        }}
-      >
-        {properties.map((property) => {
-          if (isSpecialMaterialPropType(property)) {
-            property.content;
-          } else {
-            const title = getMTitle(property.title);
-            const tip = getMTitleTip(property.title);
-            const setterList = getSetterList(property.setters);
-            return (
-              <div key={property.name} style={{ marginBottom: '5px' }}>
-                <SetterSwitcher
-                  keyPaths={[property.name]}
-                  setters={setterList}
-                  label={title}
-                  name={property.name || ''}
-                  tips={tip}
-                />
-              </div>
-            );
-          }
-        })}
-      </CForm>
+        ref={ref}
+        onValueChange={onValueChange}
+      />
     </div>
   );
 };

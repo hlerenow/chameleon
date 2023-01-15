@@ -191,7 +191,6 @@ export class CNode {
 
   getPlainProps() {
     const data = this.data;
-
     const props: any = {};
     Object.keys(data.props || {}).forEach((key) => {
       props[key] = data.props[key].export('design');
