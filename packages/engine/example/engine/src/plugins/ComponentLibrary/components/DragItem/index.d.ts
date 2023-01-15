@@ -4,6 +4,7 @@ export declare type DragComponentItemProps = {
     name: string;
     description?: any;
     icon: React.ReactNode | string;
+    iconText?: string;
     style?: React.CSSProperties;
 };
 export declare const DragComponentItem: (props: DragComponentItemProps) => JSX.Element;
