@@ -38,7 +38,7 @@ const components = {
 const App = () => {
   const [page] = useState<any>(BasePage);
   const [pageModel] = useState<any>(
-    new CPage(EmptyPage, {
+    new CPage(BasePage, {
       materials: Material,
     })
   );

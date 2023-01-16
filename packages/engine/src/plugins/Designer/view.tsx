@@ -154,8 +154,16 @@ export class Designer extends React.Component<
       console.warn('material not found', node);
     }
     if (!startNode) {
+      this.setState({
+        hoverToolBar: (
+          <div className={styles.hoverTips}>
+            {material?.value.title || material?.componentName}
+          </div>
+        ),
+      });
       return;
     }
+
     this.setState({
       hoverToolBar: (
         <div className={styles.hoverTips}>
@@ -164,7 +172,6 @@ export class Designer extends React.Component<
       ),
       ghostView: <GhostView node={startNode} />,
     });
-    // console.log('onHoverNode', node, startNode);
   };
 
   render() {

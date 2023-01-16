@@ -242,6 +242,11 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       const targetDom = e.target as HTMLElement;
       const instance =
         this.designRenderRef.current?.getInstanceByDom(targetDom);
+
+      this.props.onHoverNode?.(
+        instance?._NODE_MODEL || null,
+        this.dragStartNode!
+      );
       if (
         instance?._NODE_ID === this.state.selectComponentInstances[0]?._NODE_ID
       ) {
@@ -256,10 +261,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           instance?._NODE_ID || ''
         ) || [];
 
-      this.props.onHoverNode?.(
-        instance?._NODE_MODEL || null,
-        this.dragStartNode!
-      );
       this.setState({
         hoverComponentInstances: instanceList,
       });
