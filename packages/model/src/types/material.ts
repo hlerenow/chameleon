@@ -225,7 +225,7 @@ export type MaterialPropType = {
   description?: string;
   defaultValue?: any;
   setters?: SetterType[];
-  condition?: (state: any) => void;
+  condition?: (state: any) => boolean;
 };
 
 export const MaterialPropDescribe = object({

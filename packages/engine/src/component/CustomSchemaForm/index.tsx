@@ -21,6 +21,7 @@ const CustomSchemaFormCore = (
   ref: Ref<CustomSchemaFormInstance | CForm>
 ) => {
   const { properties, initialValue, onValueChange } = props;
+  console.log('properties', properties);
 
   return (
     <ConfigProvider
@@ -54,15 +55,15 @@ const CustomSchemaFormCore = (
               const tip = getMTitleTip(property.title);
               const setterList = getSetterList(property.setters);
               return (
-                <div key={property.name} style={{ marginBottom: '15px' }}>
-                  <SetterSwitcher
-                    keyPaths={[property.name]}
-                    setters={setterList}
-                    label={title}
-                    name={property.name || ''}
-                    tips={tip}
-                  />
-                </div>
+                <SetterSwitcher
+                  key={property.name}
+                  condition={property.condition}
+                  keyPaths={[property.name]}
+                  setters={setterList}
+                  label={title}
+                  name={property.name || ''}
+                  tips={tip}
+                />
               );
             }
           })}

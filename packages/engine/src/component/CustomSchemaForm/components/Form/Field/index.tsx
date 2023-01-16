@@ -8,6 +8,7 @@ export type CFieldProps = {
   tips?: ReactNode | (() => ReactNode);
   name: string;
   condition?: (formState: Record<string, any>) => boolean;
+  onConditionValueChange?: (val: boolean) => void;
   noStyle?: boolean;
 };
 
@@ -21,6 +22,13 @@ export const CField = (props: CFieldProps) => {
       updateConditionConfig(name, props.condition);
     }
   }, []);
+
+  useEffect(() => {
+    const condition = props.condition ?? (() => true);
+    const canRender = condition(formState);
+    props.onConditionValueChange?.(canRender);
+    console.log('eeeeeee', canRender, props.onConditionValueChange);
+  }, [formState, props]);
 
   if (tips) {
     labelView = (
@@ -52,7 +60,6 @@ export const CField = (props: CFieldProps) => {
     }
     newChildren = React.cloneElement(children, extraProps);
   }
-
   const condition = props.condition ?? (() => true);
   const canRender = condition(formState);
   if (!canRender) {

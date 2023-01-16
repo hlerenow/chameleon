@@ -12,14 +12,19 @@ export type SetterSwitcherProps = {
   currentSetterName?: string;
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
+  style?: React.CSSProperties;
 } & Omit<CFieldProps, 'children'>;
 
 export const SetterSwitcher = ({
   setters,
   currentSetterName,
   keyPaths,
+  condition,
+  style = {},
   ...props
 }: SetterSwitcherProps) => {
+  console.log('🚀 ~ file: index.tsx:24 ~ condition', condition);
+  const [visible, setVisible] = useState(true);
   const [currentSetter, setCurrentSetter] = useState<SetterObjType | null>(
     () => {
       return (
@@ -28,6 +33,12 @@ export const SetterSwitcher = ({
       );
     }
   );
+  console.log('直接 返回 111');
+
+  if (!visible) {
+    console.log('直接 返回');
+    return null;
+  }
   let CurrentSetterComp = null;
   if (currentSetter?.componentName) {
     CurrentSetterComp = (Setters as any)[currentSetter?.componentName];
@@ -90,8 +101,9 @@ export const SetterSwitcher = ({
 
   const setterProps = currentSetter?.props || {};
   const [collapseHeaderExt, setCollapseHeaderExt] = useState<any>([]);
+  let bodyView: any = null;
   if (['ArraySetter'].includes(currentSetter?.componentName || '')) {
-    return (
+    bodyView = (
       <Collapse bordered={false} defaultActiveKey={[props.name]}>
         <Collapse.Panel
           header={
@@ -109,7 +121,7 @@ export const SetterSwitcher = ({
           }
           key={props.name}
         >
-          <CField {...props} noStyle>
+          <CField {...props} noStyle condition={condition}>
             <CurrentSetterComp
               {...setterProps}
               keyPaths={[...keyPaths]}
@@ -119,10 +131,8 @@ export const SetterSwitcher = ({
         </Collapse.Panel>
       </Collapse>
     );
-  }
-
-  if (['ShapeSetter'].includes(currentSetter?.componentName || '')) {
-    return (
+  } else if (['ShapeSetter'].includes(currentSetter?.componentName || '')) {
+    bodyView = (
       <div className={styles.shapeFieldBox}>
         {props.prefix ?? null}
         <Collapse
@@ -145,7 +155,15 @@ export const SetterSwitcher = ({
             }
             key={props.name}
           >
-            <CField {...props} noStyle>
+            <CField
+              {...props}
+              noStyle
+              condition={condition}
+              onConditionValueChange={(val) => {
+                console.log('🚀 ~ file: index.tsx:172 ~ val', val);
+                setVisible(val);
+              }}
+            >
               <CurrentSetterComp {...setterProps} keyPaths={[...keyPaths]} />
             </CField>
           </Collapse.Panel>
@@ -153,16 +171,18 @@ export const SetterSwitcher = ({
         {props.suffix ?? null}
       </div>
     );
+  } else {
+    bodyView = (
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        {props.prefix ?? null}
+        <CField {...props} condition={condition}>
+          <CurrentSetterComp keyPaths={[...keyPaths]} {...setterProps} />
+        </CField>
+        {switcher}
+        {props.suffix ?? null}
+      </div>
+    );
   }
 
-  return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      {props.prefix ?? null}
-      <CField {...props}>
-        <CurrentSetterComp keyPaths={[...keyPaths]} {...setterProps} />
-      </CField>
-      {switcher}
-      {props.suffix ?? null}
-    </div>
-  );
+  return <div style={{ marginBottom: '15px' }}>{bodyView}</div>;
 };

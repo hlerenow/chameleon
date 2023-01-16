@@ -57,7 +57,6 @@ export const SetterSwitcher = ({
 
   const onClick: MenuProps['onClick'] = ({ key }) => {
     const targetSetter = setters.find((setter) => setter.componentName === key);
-    console.log('🚀 ~ file: index.tsx:53 ~ targetSetter', targetSetter);
     if (targetSetter) {
       setCurrentSetter(targetSetter);
     }

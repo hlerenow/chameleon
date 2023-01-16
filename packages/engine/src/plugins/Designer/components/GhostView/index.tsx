@@ -2,12 +2,6 @@ import React from 'react';
 import { CNode, CSchema } from '@chameleon/model';
 
 export const GhostView = ({ node }: { node: CNode | CSchema }) => {
-  console.log(
-    '🚀 ~ file: index.tsx:5 ~ GhostView ~ node',
-    node.value.componentName,
-    node
-  );
-
   return (
     <div
       style={{

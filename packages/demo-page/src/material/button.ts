@@ -16,7 +16,51 @@ export const ButtonMeta: CMaterialType = {
       valueType: 'string',
       setters: [
         {
-          componentName: 'SelectSetter',
+          componentName: 'StringSetter',
+        },
+      ],
+    },
+    {
+      name: 'text1',
+      title: '文本1',
+      valueType: 'string',
+      setters: [
+        {
+          componentName: 'StringSetter',
+        },
+      ],
+      condition: (state) => {
+        console.log(11111, state);
+        if (state.type === 'primary1') {
+          return true;
+        }
+        return false;
+      },
+    },
+    {
+      name: 'text2',
+      title: '文本2',
+      valueType: 'string',
+      setters: [
+        {
+          componentName: 'StringSetter',
+        },
+      ],
+      condition: (state) => {
+        console.log(222, state);
+        if (state.text1 === '1') {
+          return true;
+        }
+        return false;
+      },
+    },
+    {
+      name: 'text3',
+      title: '文本3',
+      valueType: 'string',
+      setters: [
+        {
+          componentName: 'StringSetter',
         },
       ],
     },
