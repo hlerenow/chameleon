@@ -120,12 +120,12 @@ export const SetterSwitcher = ({
 
   if (['ShapeSetter'].includes(currentSetter?.componentName || '')) {
     return (
-      <div className={styles.collapseHeader}>
+      <div className={styles.shapeFieldBox}>
         {props.prefix ?? null}
         <Collapse
           bordered={false}
-          // defaultActiveKey={[props.name]}
-          style={{ flex: 1 }}
+          defaultActiveKey={[props.name]}
+          style={{ flex: 1, marginTop: '-5px' }}
         >
           <Collapse.Panel
             header={

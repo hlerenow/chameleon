@@ -4,9 +4,13 @@
   padding: 0 5px 0 10px;
 }
 
+.shapeFieldBox,
 .collapseHeader {
   color: $fontColor;
   display: flex;
-  align-items: center;
   font-size: 12px;
+}
+
+.collapseHeader {
+  align-items: center;
 }
