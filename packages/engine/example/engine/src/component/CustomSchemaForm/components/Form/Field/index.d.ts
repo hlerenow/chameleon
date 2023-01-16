@@ -5,6 +5,7 @@ export declare type CFieldProps = {
     tips?: ReactNode | (() => ReactNode);
     name: string;
     condition?: (formState: Record<string, any>) => boolean;
+    onConditionValueChange?: (val: boolean) => void;
     noStyle?: boolean;
 };
 export declare const CField: (props: CFieldProps) => JSX.Element | null;

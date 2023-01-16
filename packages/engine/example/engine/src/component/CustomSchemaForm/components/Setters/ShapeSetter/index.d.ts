@@ -7,6 +7,7 @@ export declare type CShapeSetterProps = {
         valueType: string;
         setters: SetterType[];
     }[];
-    initialValue?: any;
+    initialValue?: Record<string, any>;
+    value: Record<string, any>;
 };
 export declare const ShapeSetter: CSetter<CShapeSetterProps>;
