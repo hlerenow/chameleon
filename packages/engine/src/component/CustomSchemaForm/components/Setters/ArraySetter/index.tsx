@@ -1,25 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, ConfigProvider } from 'antd';
 import { CSetterProps } from '../type';
-import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { getSetterList } from '../../../utils';
-import { getRandomStr, SetterType } from '@chameleon/model';
-import {
-  DndContext,
-  DragEndEvent,
-  DragOverlay,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-} from '@dnd-kit/sortable';
-import { SortableItem } from './sortableItem';
-import styles from './style.module.scss';
+import { SetterType } from '@chameleon/model';
+
+import { ArrayItem } from './ArrayItem';
+import { SortItemOrderModal } from './SortItemOrderModal';
 
 export type CArraySetterProps = {
   item: {
@@ -34,30 +20,10 @@ export const ArraySetter = ({
   item: { setters, initialValue },
   ...props
 }: CSetterProps<CArraySetterProps>) => {
-  const listValue: {
-    val: any;
-    id: string;
-  }[] = useMemo(() => {
-    if (Array.isArray(props.value)) {
-      return props.value.map((val) => {
-        return {
-          val,
-          id: getRandomStr(),
-        };
-      });
-    } else {
-      return [];
-    }
-  }, [props.value]);
+  const listValue: any[] = (props.value as any) || [];
+  console.log('🚀 ~ file: index.tsx:24 ~ listValue', listValue);
 
-  const [isDragging, setIsDragging] = useState(false);
-  const [activeId, setActiveId] = useState<string>('');
-  // const currentActiveItem = useMemo(() => {
-  //   return listValue.find((el) => el.id === activeId);
-  // }, [activeId]);
-  const currentActiveItemIndex = useMemo(() => {
-    return listValue.findIndex((el) => el.id === activeId);
-  }, [activeId]);
+  const [sortVisible, setSortVisible] = useState(false);
   const innerSetters = getSetterList(
     setters || [
       {
@@ -65,30 +31,24 @@ export const ArraySetter = ({
       },
     ]
   );
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
 
-  function handleDragStart(event: DragEndEvent) {
-    setActiveId(String(event.active.id));
-    setIsDragging(true);
-  }
-
-  function handleDragEnd(event: DragEndEvent) {
-    setIsDragging(false);
-    const { active, over } = event;
-    if (active.id !== over?.id) {
-      const oldIndex = listValue.findIndex((el) => el.id === active?.id);
-      const newIndex = listValue.findIndex((el) => el.id === over?.id);
-      const newVal = arrayMove(listValue, oldIndex, newIndex).map((el) => {
-        return el.val;
-      });
-      onValueChange?.(newVal);
+  useEffect(() => {
+    if (props.setCollapseHeaderExt) {
+      props.setCollapseHeaderExt?.(
+        <Button
+          type="text"
+          size="small"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setSortVisible(true);
+          }}
+        >
+          sort
+        </Button>
+      );
     }
-  }
+  }, []);
 
   return (
     <ConfigProvider
@@ -98,56 +58,52 @@ export const ArraySetter = ({
         },
       }}
     >
-      <DndContext
-        sensors={sensors}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        modifiers={[restrictToVerticalAxis]}
-      >
-        <SortableContext items={listValue}>
-          {listValue.map(({ id }, index) => {
-            return (
-              <SortableItem
-                key={id}
-                style={{ paddingBottom: '10px' }}
-                index={index}
-                id={id}
-                keyPaths={keyPaths}
-                initialValue={props.value || {}}
-                onValueChange={(val) => {
-                  const newVal = listValue.map((el) => el.val);
-                  newVal[index] = val[index];
-                  onValueChange?.(newVal);
-                }}
-                setters={innerSetters}
-                onDelete={() => {
-                  console.log('delete', index);
-                  const newVal = [...((props?.value as any) || [])];
-                  newVal.splice(index);
-                  onValueChange?.(newVal);
-                }}
-              />
-            );
-          })}
-          <DragOverlay>
-            {isDragging ? (
-              <div className={styles.dragOverlay} style={{}}>
-                元素{currentActiveItemIndex}
-              </div>
-            ) : null}
-          </DragOverlay>
-        </SortableContext>
-      </DndContext>
+      {listValue.map((val, index) => {
+        return (
+          <ArrayItem
+            key={index}
+            style={{ paddingBottom: '10px' }}
+            index={index}
+            keyPaths={keyPaths}
+            value={listValue?.[index]}
+            onValueChange={(val) => {
+              listValue[index] = val[index];
+              onValueChange?.([...listValue]);
+            }}
+            setters={innerSetters}
+            onDelete={() => {
+              const newVal = [...listValue];
+              newVal.splice(index);
+              onValueChange?.(newVal);
+            }}
+          />
+        );
+      })}
 
       <Button
         style={{ width: '100%' }}
         onClick={() => {
-          const newVal = listValue.map((el) => el.val);
+          const newVal = [...listValue];
           onValueChange?.([...newVal, initialValue ?? '']);
         }}
       >
         Add One
       </Button>
+      <SortItemOrderModal
+        onValueChange={(newVal) => {
+          console.log('🚀 ~ file: index.tsx:106 ~ newVal', newVal);
+          onValueChange?.([...newVal]);
+        }}
+        open={sortVisible}
+        list={listValue}
+        keyPaths={keyPaths}
+        onCancel={() => {
+          setSortVisible(false);
+        }}
+        onOk={() => {
+          setSortVisible(false);
+        }}
+      />
     </ConfigProvider>
   );
 };

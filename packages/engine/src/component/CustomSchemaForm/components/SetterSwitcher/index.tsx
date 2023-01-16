@@ -89,12 +89,10 @@ export const SetterSwitcher = ({
   }
 
   const setterProps = currentSetter?.props || {};
+  const [collapseHeaderExt, setCollapseHeaderExt] = useState<any>([]);
   if (['ArraySetter'].includes(currentSetter?.componentName || '')) {
     return (
-      <Collapse
-        bordered={false}
-        // defaultActiveKey={[props.name]}
-      >
+      <Collapse bordered={false} defaultActiveKey={[props.name]}>
         <Collapse.Panel
           header={
             <div className={styles.collapseHeader}>
@@ -105,13 +103,18 @@ export const SetterSwitcher = ({
               >
                 {props.label}
               </span>
+              {collapseHeaderExt}
               {switcher}
             </div>
           }
           key={props.name}
         >
           <CField {...props} noStyle>
-            <CurrentSetterComp {...setterProps} keyPaths={[...keyPaths]} />
+            <CurrentSetterComp
+              {...setterProps}
+              keyPaths={[...keyPaths]}
+              setCollapseHeaderExt={setCollapseHeaderExt}
+            />
           </CField>
         </Collapse.Panel>
       </Collapse>

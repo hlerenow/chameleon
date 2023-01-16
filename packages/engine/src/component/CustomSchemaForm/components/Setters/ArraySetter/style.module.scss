@@ -1,7 +1,16 @@
-.dragOverlay {
-  cursor: grabbing;
-  padding: 3px 24px 3px;
-  background: rgba(100, 100, 100, 0.4);
+.dragItem {
+  cursor: grab;
+  border: 1px solid $borderColor;
+  background-color: white;
+  padding: 10px;
+  text-align: center;
+  margin-bottom: 10px;
   font-size: $fontSizeSmall;
   border-radius: $borderRadius;
+}
+
+.sortModalBox {
+  padding: 20px 10px 10px;
+  overflow: auto;
+  max-height: 500px;
 }

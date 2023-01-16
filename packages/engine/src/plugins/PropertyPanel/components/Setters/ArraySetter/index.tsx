@@ -75,8 +75,6 @@ export const ArraySetter = ({
                 suffix={
                   <div
                     onClick={() => {
-                      console.log('delete', index);
-
                       const newVal = [...((props?.value as any) || [])];
                       newVal.splice(index);
                       onValueChange?.(newVal);
@@ -86,7 +84,11 @@ export const ArraySetter = ({
                       cursor: 'pointer',
                     }}
                   >
-                    <DeleteOutlined />
+                    <DeleteOutlined
+                      style={{
+                        fontSize: '12px',
+                      }}
+                    />
                   </div>
                 }
                 name={String(index)}

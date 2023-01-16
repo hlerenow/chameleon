@@ -6,4 +6,6 @@
 cd ./
 yarn
 lerna bootstrap
+lerna link
+lerna run build
 ```

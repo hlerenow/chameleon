@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Button, ConfigProvider, InputProps } from 'antd';
 import { CSetter, CSetterProps } from '../type';
 import { CForm } from '../../Form';
@@ -13,7 +13,8 @@ export type CShapeSetterProps = {
     valueType: string;
     setters: SetterType[];
   }[];
-  initialValue?: any;
+  initialValue?: Record<string, any>;
+  value: Record<string, any>;
 };
 
 export const ShapeSetter: CSetter<CShapeSetterProps> = ({
@@ -22,6 +23,10 @@ export const ShapeSetter: CSetter<CShapeSetterProps> = ({
   value,
   keyPaths,
 }: CSetterProps<CShapeSetterProps>) => {
+  const formRef = useRef<CForm>(null);
+  useEffect(() => {
+    formRef.current?.setFields(value || {});
+  }, [value]);
   return (
     <ConfigProvider
       theme={{
@@ -31,8 +36,9 @@ export const ShapeSetter: CSetter<CShapeSetterProps> = ({
       }}
     >
       <CForm
+        ref={formRef}
         name={keyPaths.join('.')}
-        initialValue={value as any}
+        initialValue={value || {}}
         onValueChange={(val) => {
           onValueChange?.(val);
         }}

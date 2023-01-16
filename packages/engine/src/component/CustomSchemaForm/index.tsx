@@ -54,7 +54,7 @@ const CustomSchemaFormCore = (
               const tip = getMTitleTip(property.title);
               const setterList = getSetterList(property.setters);
               return (
-                <div key={property.name} style={{ marginBottom: '5px' }}>
+                <div key={property.name} style={{ marginBottom: '15px' }}>
                   <SetterSwitcher
                     keyPaths={[property.name]}
                     setters={setterList}
