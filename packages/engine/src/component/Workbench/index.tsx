@@ -306,7 +306,11 @@ export class WorkBench extends React.Component<
                 className={clsx([!rightBoxVisible && styles.active])}
               />
             </div>
-            {rightBoxVisible && (
+            <div
+              style={{
+                display: rightBoxVisible ? 'block' : 'none',
+              }}
+            >
               <Resizable
                 minWidth={400}
                 maxWidth={600}
@@ -325,7 +329,7 @@ export class WorkBench extends React.Component<
               >
                 <div className={styles.rightBox}>{rightView}</div>
               </Resizable>
-            )}
+            </div>
           </div>
         </div>
       </div>

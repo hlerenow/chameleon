@@ -21,7 +21,6 @@ export const ArraySetter = ({
   ...props
 }: CSetterProps<CArraySetterProps>) => {
   const listValue: any[] = (props.value as any) || [];
-  console.log('🚀 ~ file: index.tsx:24 ~ listValue', listValue);
 
   const [sortVisible, setSortVisible] = useState(false);
   const innerSetters = getSetterList(
