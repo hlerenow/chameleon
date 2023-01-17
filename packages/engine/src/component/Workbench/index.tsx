@@ -309,6 +309,8 @@ export class WorkBench extends React.Component<
             <div
               style={{
                 display: rightBoxVisible ? 'block' : 'none',
+                overflow: 'auto',
+                height: '100%',
               }}
             >
               <Resizable

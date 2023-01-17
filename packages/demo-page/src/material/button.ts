@@ -30,7 +30,6 @@ export const ButtonMeta: CMaterialType = {
         },
       ],
       condition: (state) => {
-        console.log(11111, state);
         if (state.type === 'primary1') {
           return true;
         }
@@ -47,7 +46,6 @@ export const ButtonMeta: CMaterialType = {
         },
       ],
       condition: (state) => {
-        console.log(222, state);
         if (state.text1 === '1') {
           return true;
         }

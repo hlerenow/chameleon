@@ -1,18 +1,13 @@
-import React, { useEffect, useMemo, useRef } from 'react';
-import { Button, ConfigProvider, InputProps } from 'antd';
+import React, { useEffect, useRef } from 'react';
+import { ConfigProvider } from 'antd';
 import { CSetter, CSetterProps } from '../type';
 import { CForm } from '../../Form';
 import { SetterSwitcher } from '../../SetterSwitcher';
 import { getSetterList } from '../../../utils';
-import { SetterType } from '@chameleon/model';
+import { getMTitle, getMTitleTip, MaterialPropType } from '@chameleon/model';
 
 export type CShapeSetterProps = {
-  elements: {
-    name: string;
-    title: string;
-    valueType: string;
-    setters: SetterType[];
-  }[];
+  elements: MaterialPropType[];
   initialValue?: Record<string, any>;
   value: Record<string, any>;
 };
@@ -45,11 +40,15 @@ export const ShapeSetter: CSetter<CShapeSetterProps> = ({
       >
         {elements.map((el) => {
           const setters = getSetterList(el.setters);
+          const title = getMTitle(el.title);
+          const tip = getMTitleTip(el.title);
           return (
             <div key={el.name}>
               <SetterSwitcher
                 name={el.name}
-                label={el.title}
+                label={title}
+                tips={tip}
+                condition={el.condition}
                 keyPaths={[...keyPaths, el.name]}
                 setters={setters}
               />

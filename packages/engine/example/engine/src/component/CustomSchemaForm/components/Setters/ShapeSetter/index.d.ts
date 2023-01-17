@@ -1,12 +1,7 @@
 import { CSetter } from '../type';
-import { SetterType } from '@chameleon/model';
+import { MaterialPropType } from '@chameleon/model';
 export declare type CShapeSetterProps = {
-    elements: {
-        name: string;
-        title: string;
-        valueType: string;
-        setters: SetterType[];
-    }[];
+    elements: MaterialPropType[];
     initialValue?: Record<string, any>;
     value: Record<string, any>;
 };

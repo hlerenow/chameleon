@@ -105,6 +105,9 @@ export const SetterSwitcher = ({
     bodyView = (
       <Collapse
         bordered={false}
+        style={{
+          marginBottom: '15px',
+        }}
         // defaultActiveKey={[props.name]}
       >
         <Collapse.Panel
@@ -167,7 +170,9 @@ export const SetterSwitcher = ({
     );
   } else {
     bodyView = (
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div
+        style={{ display: 'flex', alignItems: 'center', paddingBottom: '10px' }}
+      >
         {props.prefix ?? null}
         <CField
           {...props}
@@ -184,9 +189,5 @@ export const SetterSwitcher = ({
     );
   }
 
-  return (
-    <div style={{ marginBottom: '15px', display: visible ? 'block' : 'none' }}>
-      {bodyView}
-    </div>
-  );
+  return <div style={{ display: visible ? 'block' : 'none' }}>{bodyView}</div>;
 };

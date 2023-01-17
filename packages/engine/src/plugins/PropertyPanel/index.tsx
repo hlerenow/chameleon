@@ -35,14 +35,7 @@ export const PropertyPanel = (props: {
   };
 
   return (
-    <div
-      className={styles.CFromRenderBox}
-      style={{
-        padding: '0 10px',
-        overflow: 'auto',
-        height: '100%',
-      }}
-    >
+    <div className={styles.CFromRenderBox}>
       <CustomSchemaForm
         properties={properties}
         initialValue={value}

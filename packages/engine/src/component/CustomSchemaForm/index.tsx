@@ -21,7 +21,6 @@ const CustomSchemaFormCore = (
   ref: Ref<CustomSchemaFormInstance | CForm>
 ) => {
   const { properties, initialValue, onValueChange } = props;
-  console.log('properties', properties);
 
   return (
     <ConfigProvider

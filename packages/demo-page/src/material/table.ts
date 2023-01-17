@@ -155,7 +155,7 @@ export const TableMeta: CMaterialType = {
                         valueType: 'array',
                         setters: ['StringSetter'],
                         condition: (state) => {
-                          if (state.dataIndex === 1) {
+                          if (state.dataIndex === '1') {
                             return true;
                           }
                           return false;
