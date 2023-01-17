@@ -154,6 +154,12 @@ export const TableMeta: CMaterialType = {
                         title: '过滤值',
                         valueType: 'array',
                         setters: ['StringSetter'],
+                        condition: (state) => {
+                          if (state.dataIndex === 1) {
+                            return true;
+                          }
+                          return false;
+                        },
                       },
                     ],
                   },

@@ -4,15 +4,15 @@ import { CSetter, CSetterProps } from '../type';
 import { CForm } from '../../Form';
 import { SetterSwitcher } from '../../SetterSwitcher';
 import { getSetterList } from '../../../utils';
-import { SetterType } from '@chameleon/model';
+import {
+  getMTitle,
+  getMTitleTip,
+  MaterialPropType,
+  SetterType,
+} from '@chameleon/model';
 
 export type CShapeSetterProps = {
-  elements: {
-    name: string;
-    title: string;
-    valueType: string;
-    setters: SetterType[];
-  }[];
+  elements: MaterialPropType[];
   initialValue?: any;
 };
 
@@ -39,13 +39,18 @@ export const ShapeSetter: CSetter<CShapeSetterProps> = ({
       >
         {elements.map((el) => {
           const setters = getSetterList(el.setters);
+          const title = getMTitle(el.title);
+          const tip = getMTitleTip(el.title);
+          console.log('el.condition', el.condition);
           return (
             <div key={el.name}>
               <SetterSwitcher
                 name={el.name}
-                label={el.title}
+                label={title}
+                tips={tip}
                 keyPaths={[...keyPaths, el.name]}
                 setters={setters}
+                condition={el.condition}
               />
             </div>
           );

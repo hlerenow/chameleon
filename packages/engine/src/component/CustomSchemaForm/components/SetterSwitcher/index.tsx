@@ -22,7 +22,6 @@ export const SetterSwitcher = ({
   condition,
   ...props
 }: SetterSwitcherProps) => {
-  console.log('🚀 ~ file: index.tsx:24 ~ condition', condition);
   const [visible, setVisible] = useState(true);
   const [currentSetter, setCurrentSetter] = useState<SetterObjType | null>(
     () => {

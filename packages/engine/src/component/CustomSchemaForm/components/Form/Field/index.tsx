@@ -27,7 +27,6 @@ export const CField = (props: CFieldProps) => {
     const condition = props.condition ?? (() => true);
     const canRender = condition(formState);
     props.onConditionValueChange?.(canRender);
-    console.log('eeeeeee', canRender, props.onConditionValueChange);
   }, [formState, props]);
 
   if (tips) {
