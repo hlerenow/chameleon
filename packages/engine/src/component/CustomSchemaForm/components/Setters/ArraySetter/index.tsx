@@ -17,6 +17,7 @@ export type CArraySetterProps = {
 export const ArraySetter = ({
   onValueChange,
   keyPaths,
+  label,
   item: { setters, initialValue },
   ...props
 }: CSetterProps<CArraySetterProps>) => {
@@ -89,8 +90,8 @@ export const ArraySetter = ({
         Add One
       </Button>
       <SortItemOrderModal
+        label={label}
         onValueChange={(newVal) => {
-          console.log('🚀 ~ file: index.tsx:106 ~ newVal', newVal);
           onValueChange?.([...newVal]);
         }}
         open={sortVisible}

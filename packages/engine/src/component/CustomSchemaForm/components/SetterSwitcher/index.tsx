@@ -130,6 +130,7 @@ export const SetterSwitcher = ({
             <CurrentSetterComp
               {...setterProps}
               keyPaths={[...keyPaths]}
+              label={props.label}
               setCollapseHeaderExt={setCollapseHeaderExt}
             />
           </CField>
