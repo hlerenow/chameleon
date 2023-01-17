@@ -8,4 +8,5 @@ export declare type CSetterProps<T = any> = {
     value?: unknown;
     setCollapseHeaderExt?: (el: React.ReactNode) => void;
     keyPaths: string[];
+    label: string;
 } & T;

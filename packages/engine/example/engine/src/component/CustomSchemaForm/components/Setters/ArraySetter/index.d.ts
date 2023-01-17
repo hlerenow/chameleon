@@ -8,6 +8,6 @@ export declare type CArraySetterProps = {
     };
 };
 export declare const ArraySetter: {
-    ({ onValueChange, keyPaths, item: { setters, initialValue }, ...props }: CSetterProps<CArraySetterProps>): JSX.Element;
+    ({ onValueChange, keyPaths, label, item: { setters, initialValue }, ...props }: CSetterProps<CArraySetterProps>): JSX.Element;
     setterName: string;
 };
