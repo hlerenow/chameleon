@@ -141,7 +141,7 @@ export const TableMeta: CMaterialType = {
                         name: 'title',
                         title: '列名',
                         valueType: 'string',
-                        setters: ['StringSetter'],
+                        setters: ['StringSetter', 'NumberSetter'],
                       },
                       {
                         name: 'dataIndex',

@@ -5,6 +5,7 @@ import { CSetter, CSetterProps } from '../type';
 export const NumberSetter: CSetter<InputProps> = ({
   onValueChange,
   keyPaths,
+  onSetterChange,
   ...props
 }: CSetterProps<InputProps>) => {
   return (
@@ -26,4 +27,4 @@ export const NumberSetter: CSetter<InputProps> = ({
   );
 };
 
-NumberSetter.setterName = '字符设置器';
+NumberSetter.setterName = '数字设置器';

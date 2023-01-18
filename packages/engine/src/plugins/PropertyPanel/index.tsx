@@ -34,9 +34,24 @@ export const PropertyPanel = (props: {
     });
   };
 
+  const onSetterChange: CustomSchemaFormProps['onSetterChange'] = (
+    keyPath,
+    setterName
+  ) => {
+    node.value.configure = node.value.configure || {};
+    node.value.configure.props = node.value.configure.props || {};
+    node.value.configure.props[keyPath.join('.')] = {
+      name: setterName,
+      setter: setterName,
+    };
+    console.log('node', node);
+  };
+
   return (
     <div className={styles.CFromRenderBox}>
       <CustomSchemaForm
+        defaultSetterConfig={node.value.configure?.props || {}}
+        onSetterChange={onSetterChange}
         properties={properties}
         initialValue={value}
         ref={formRef}

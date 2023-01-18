@@ -3,10 +3,11 @@ export type CSetter<T = any> = {
   setterName: string;
 };
 
-export type CSetterProps<T = any> = {
+export type CSetterProps<T = { _: any }> = {
   onValueChange?: ((val: any) => void) | undefined;
   value?: unknown;
   setCollapseHeaderExt?: (el: React.ReactNode) => void;
+  onSetterChange: (keyPaths: string[], setterName: string) => void;
   keyPaths: string[];
   label: string;
 } & T;

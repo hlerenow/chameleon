@@ -14,14 +14,21 @@ export type CustomSchemaFormProps = {
   initialValue: Record<string, any>;
   properties: CMaterialPropsType;
   onValueChange?: (val: Record<string, any>) => void;
+  onSetterChange: (keyPaths: string[], setterName: string) => void;
+  defaultSetterConfig: Record<string, { name: string; setter: string }>;
 };
 
 const CustomSchemaFormCore = (
   props: CustomSchemaFormProps,
   ref: Ref<CustomSchemaFormInstance | CForm>
 ) => {
-  const { properties, initialValue, onValueChange } = props;
-
+  const {
+    properties,
+    initialValue,
+    onValueChange,
+    onSetterChange,
+    defaultSetterConfig,
+  } = props;
   return (
     <ConfigProvider
       theme={{
@@ -53,11 +60,16 @@ const CustomSchemaFormCore = (
               const title = getMTitle(property.title);
               const tip = getMTitleTip(property.title);
               const setterList = getSetterList(property.setters);
+              const keyPaths = [property.name];
               return (
                 <SetterSwitcher
+                  currentSetterName={
+                    defaultSetterConfig[keyPaths.join('.')]?.setter || ''
+                  }
+                  onSetterChange={onSetterChange}
                   key={property.name}
                   condition={property.condition}
-                  keyPaths={[property.name]}
+                  keyPaths={keyPaths}
                   setters={setterList}
                   label={title}
                   name={property.name || ''}

@@ -5,6 +5,7 @@ import { CSetter, CSetterProps } from '../type';
 export const StringSetter: CSetter<InputProps> = ({
   onValueChange,
   keyPaths,
+  onSetterChange,
   ...props
 }: CSetterProps<InputProps>) => {
   return (

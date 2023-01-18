@@ -3,6 +3,7 @@ import { CForm } from '../../Form';
 import { SetterSwitcher } from '../../SetterSwitcher';
 import { DeleteOutlined } from '@ant-design/icons';
 import { SetterObjType } from '@chameleon/model';
+import { CSetterProps } from '../type';
 
 export function ArrayItem(props: {
   index: number;
@@ -11,9 +12,10 @@ export function ArrayItem(props: {
   setters: SetterObjType[];
   style: React.CSSProperties;
   onValueChange: (val: Record<string, any>) => void;
+  onSetterChange: CSetterProps['onSetterChange'];
   onDelete: () => void;
 }) {
-  const { index, keyPaths, setters } = props;
+  const { index, keyPaths, setters, onSetterChange } = props;
 
   const style = {
     ...props.style,
@@ -49,6 +51,7 @@ export function ArrayItem(props: {
               <DeleteOutlined />
             </div>
           }
+          onSetterChange={onSetterChange}
           name={String(index)}
           label={`元素${index}`}
           keyPaths={[...keyPaths, String(index)]}

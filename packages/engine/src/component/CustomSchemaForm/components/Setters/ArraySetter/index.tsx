@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button, ConfigProvider } from 'antd';
 import { CSetterProps } from '../type';
 import { getSetterList } from '../../../utils';
@@ -14,14 +14,25 @@ export type CArraySetterProps = {
   };
 };
 
+function formatValue(value: unknown) {
+  if (Array.isArray(value)) {
+    return value;
+  } else {
+    return [];
+  }
+}
+
 export const ArraySetter = ({
   onValueChange,
+  onSetterChange,
   keyPaths,
   label,
   item: { setters, initialValue },
   ...props
 }: CSetterProps<CArraySetterProps>) => {
-  const listValue: any[] = (props.value as any) || [];
+  const listValue: any[] = useMemo(() => {
+    return formatValue(props.value);
+  }, [props.value]);
 
   const [sortVisible, setSortVisible] = useState(false);
   const innerSetters = getSetterList(
@@ -70,6 +81,7 @@ export const ArraySetter = ({
               listValue[index] = val[index];
               onValueChange?.([...listValue]);
             }}
+            onSetterChange={onSetterChange}
             setters={innerSetters}
             onDelete={() => {
               const newVal = [...listValue];

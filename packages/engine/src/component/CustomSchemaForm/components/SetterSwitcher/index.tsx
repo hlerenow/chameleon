@@ -9,10 +9,12 @@ import styles from './style.module.scss';
 export type SetterSwitcherProps = {
   setters: SetterObjType[];
   keyPaths: string[];
-  currentSetterName?: string;
+  currentSetterName: string;
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
   style?: React.CSSProperties;
+  onSetterChange: (keyPaths: string[], setterName: string) => void;
+  defaultSetterConfig: Record<string, { name: string; setter: string }>;
 } & Omit<CFieldProps, 'children'>;
 
 export const SetterSwitcher = ({
@@ -20,6 +22,7 @@ export const SetterSwitcher = ({
   currentSetterName,
   keyPaths,
   condition,
+  onSetterChange,
   ...props
 }: SetterSwitcherProps) => {
   const [visible, setVisible] = useState(true);
@@ -60,10 +63,11 @@ export const SetterSwitcher = ({
     };
   });
 
-  const onClick: MenuProps['onClick'] = ({ key }) => {
+  const onChooseSetter: MenuProps['onClick'] = ({ key }) => {
     const targetSetter = setters.find((setter) => setter.componentName === key);
     if (targetSetter) {
       setCurrentSetter(targetSetter);
+      onSetterChange?.(keyPaths, targetSetter.componentName);
     }
     console.info(`Click on item ${key}`);
   };
@@ -80,7 +84,7 @@ export const SetterSwitcher = ({
         trigger={['click']}
         menu={{
           items: menuItems,
-          onClick,
+          onClick: onChooseSetter,
         }}
       >
         <SwapOutlined />
@@ -92,7 +96,11 @@ export const SetterSwitcher = ({
     switcher = null;
   }
 
-  const setterProps = currentSetter?.props || {};
+  const setterProps = {
+    ...(currentSetter?.props || {}),
+    onSetterChange,
+  };
+
   const [collapseHeaderExt, setCollapseHeaderExt] = useState<any>([]);
   const conditionProps = {
     condition,
