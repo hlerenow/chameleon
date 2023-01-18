@@ -1,4 +1,5 @@
-import { isPlainObject } from 'lodash-es';
+import { get, isPlainObject } from 'lodash-es';
+import { object } from 'superstruct';
 import { CSchema } from '..';
 import { ExportType } from '../../../const/schema';
 import { CMaterials } from '../../../Material';
@@ -215,8 +216,22 @@ export class CNode {
       }
     });
 
+    // handle configure props setter config, clear invalidate setter config
+    const configure = data.configure || {};
+    const propsSetter = configure.props || {};
+    const newPropsSetter: typeof configure.props = {};
+    Object.keys(propsSetter).forEach((key) => {
+      const val = get(propsSetter, key, false);
+      if (val) {
+        newPropsSetter[key] = val;
+      }
+    });
+    configure.props = newPropsSetter;
+    // handle configure props setter config, clear invalidate setter config end
+
     let newRes: any = {
       ...data,
+      configure,
       props: props,
       children,
     };
