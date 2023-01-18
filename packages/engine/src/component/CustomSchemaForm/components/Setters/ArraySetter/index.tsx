@@ -24,7 +24,6 @@ function formatValue(value: unknown) {
 
 export const ArraySetter = ({
   onValueChange,
-  onSetterChange,
   keyPaths,
   label,
   item: { setters, initialValue },
@@ -81,7 +80,6 @@ export const ArraySetter = ({
               listValue[index] = val[index];
               onValueChange?.([...listValue]);
             }}
-            onSetterChange={onSetterChange}
             setters={innerSetters}
             onDelete={() => {
               const newVal = [...listValue];

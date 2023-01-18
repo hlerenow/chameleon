@@ -6,5 +6,10 @@ export declare type CustomSchemaFormProps = {
     initialValue: Record<string, any>;
     properties: CMaterialPropsType;
     onValueChange?: (val: Record<string, any>) => void;
+    onSetterChange: (keyPaths: string[], setterName: string) => void;
+    defaultSetterConfig: Record<string, {
+        name: string;
+        setter: string;
+    }>;
 };
 export declare const CustomSchemaForm: React.ForwardRefExoticComponent<CustomSchemaFormProps & React.RefAttributes<CForm>>;

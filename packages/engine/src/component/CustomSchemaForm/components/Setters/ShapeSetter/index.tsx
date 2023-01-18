@@ -17,7 +17,6 @@ export const ShapeSetter: CSetter<CShapeSetterProps> = ({
   elements,
   value,
   keyPaths,
-  onSetterChange,
 }: CSetterProps<CShapeSetterProps>) => {
   const formRef = useRef<CForm>(null);
   useEffect(() => {
@@ -46,7 +45,6 @@ export const ShapeSetter: CSetter<CShapeSetterProps> = ({
           return (
             <div key={el.name}>
               <SetterSwitcher
-                onSetterChange={onSetterChange}
                 name={el.name}
                 label={title}
                 tips={tip}
