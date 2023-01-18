@@ -247,6 +247,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         instance?._NODE_MODEL || null,
         this.dragStartNode!
       );
+
       if (
         instance?._NODE_ID === this.state.selectComponentInstances[0]?._NODE_ID
       ) {
@@ -374,6 +375,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       const dragStartDom = this.designRenderRef.current?.getDomsById(
         dragStartNode.id
       );
+      this.dragStartNode = dragStartNode;
       // 新增节点
       if (extraData?.type === 'NEW_ADD') {
         this.setState({
@@ -382,7 +384,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           hoverComponentInstances: [],
         });
         onSelectNode?.(null);
-        this.dragStartNode = dragStartNode;
         return;
       }
 
