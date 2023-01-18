@@ -1,33 +1,35 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { SetterObjType } from '@chameleon/model';
 import Setters from '../Setters/index';
 import { CField, CFieldProps } from '../Form/Field';
 import { Collapse, Dropdown, MenuProps } from 'antd';
 import { SwapOutlined } from '@ant-design/icons';
 import styles from './style.module.scss';
+import { CCustomSchemaFormContext } from '../../context';
 
 export type SetterSwitcherProps = {
   setters: SetterObjType[];
   keyPaths: string[];
-  currentSetterName: string;
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
   style?: React.CSSProperties;
-  onSetterChange: (keyPaths: string[], setterName: string) => void;
-  defaultSetterConfig: Record<string, { name: string; setter: string }>;
 } & Omit<CFieldProps, 'children'>;
 
 export const SetterSwitcher = ({
   setters,
-  currentSetterName,
   keyPaths,
   condition,
-  onSetterChange,
   ...props
 }: SetterSwitcherProps) => {
   const [visible, setVisible] = useState(true);
+  const { onSetterChange, defaultSetterConfig } = useContext(
+    CCustomSchemaFormContext
+  );
+
   const [currentSetter, setCurrentSetter] = useState<SetterObjType | null>(
     () => {
+      const currentSetterName =
+        defaultSetterConfig[keyPaths.join('.')]?.setter || '';
       return (
         setters.find((el) => el.componentName === currentSetterName) ||
         setters[0]
@@ -69,7 +71,6 @@ export const SetterSwitcher = ({
       setCurrentSetter(targetSetter);
       onSetterChange?.(keyPaths, targetSetter.componentName);
     }
-    console.info(`Click on item ${key}`);
   };
 
   let switcher: any = (
@@ -98,7 +99,6 @@ export const SetterSwitcher = ({
 
   const setterProps = {
     ...(currentSetter?.props || {}),
-    onSetterChange,
   };
 
   const [collapseHeaderExt, setCollapseHeaderExt] = useState<any>([]);

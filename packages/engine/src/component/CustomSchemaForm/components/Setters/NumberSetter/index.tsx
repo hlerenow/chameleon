@@ -1,13 +1,17 @@
 import React from 'react';
-import { ConfigProvider, Input, InputProps } from 'antd';
+import {
+  ConfigProvider,
+  InputNumber,
+  InputNumberProps,
+  InputProps,
+} from 'antd';
 import { CSetter, CSetterProps } from '../type';
 
-export const NumberSetter: CSetter<InputProps> = ({
+export const NumberSetter: CSetter<InputNumberProps> = ({
   onValueChange,
   keyPaths,
-  onSetterChange,
   ...props
-}: CSetterProps<InputProps>) => {
+}: CSetterProps<InputNumberProps>) => {
   return (
     <ConfigProvider
       theme={{
@@ -16,11 +20,14 @@ export const NumberSetter: CSetter<InputProps> = ({
         },
       }}
     >
-      <Input
+      <InputNumber
+        style={{
+          width: '100%',
+        }}
         {...props}
-        onChange={(e) => {
-          props.onChange?.(e);
-          onValueChange?.(e.target.value);
+        onChange={(value) => {
+          props.onChange?.(value);
+          onValueChange?.(value);
         }}
       />
     </ConfigProvider>

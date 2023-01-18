@@ -35,16 +35,15 @@ export const PropertyPanel = (props: {
   };
 
   const onSetterChange: CustomSchemaFormProps['onSetterChange'] = (
-    keyPath,
+    keyPaths,
     setterName
   ) => {
     node.value.configure = node.value.configure || {};
     node.value.configure.props = node.value.configure.props || {};
-    node.value.configure.props[keyPath.join('.')] = {
+    node.value.configure.props[keyPaths.join('.')] = {
       name: setterName,
       setter: setterName,
     };
-    console.log('node', node);
   };
 
   return (

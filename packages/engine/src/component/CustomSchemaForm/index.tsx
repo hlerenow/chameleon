@@ -1,4 +1,4 @@
-import React, { Ref, useEffect } from 'react';
+import React, { Ref, useContext, useEffect, useState } from 'react';
 import { CMaterialPropsType, getMTitleTip } from '@chameleon/model';
 import { CForm } from './components/Form';
 import { isSpecialMaterialPropType } from '@chameleon/model';
@@ -7,6 +7,7 @@ import { SetterSwitcher } from './components/SetterSwitcher';
 import { getSetterList } from './utils';
 import styles from './style.module.scss';
 import { ConfigProvider } from 'antd';
+import { CCustomSchemaFormContext } from './context';
 
 export type CustomSchemaFormInstance = CForm;
 
@@ -29,58 +30,62 @@ const CustomSchemaFormCore = (
     onSetterChange,
     defaultSetterConfig,
   } = props;
+
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          borderRadius: 4,
-        },
+    <CCustomSchemaFormContext.Provider
+      value={{
+        defaultSetterConfig,
+        onSetterChange,
       }}
     >
-      <div
-        className={styles.CFromRenderBox}
-        style={{
-          padding: '0 10px',
-          overflow: 'auto',
-          height: '100%',
+      <ConfigProvider
+        theme={{
+          token: {
+            borderRadius: 4,
+          },
         }}
       >
-        <CForm
-          ref={ref as any}
-          name="root-form"
-          initialValue={initialValue}
-          onValueChange={(val) => {
-            onValueChange?.(val);
+        <div
+          className={styles.CFromRenderBox}
+          style={{
+            padding: '0 10px',
+            overflow: 'auto',
+            height: '100%',
           }}
         >
-          {properties.map((property) => {
-            if (isSpecialMaterialPropType(property)) {
-              property.content;
-            } else {
-              const title = getMTitle(property.title);
-              const tip = getMTitleTip(property.title);
-              const setterList = getSetterList(property.setters);
-              const keyPaths = [property.name];
-              return (
-                <SetterSwitcher
-                  currentSetterName={
-                    defaultSetterConfig[keyPaths.join('.')]?.setter || ''
-                  }
-                  onSetterChange={onSetterChange}
-                  key={property.name}
-                  condition={property.condition}
-                  keyPaths={keyPaths}
-                  setters={setterList}
-                  label={title}
-                  name={property.name || ''}
-                  tips={tip}
-                />
-              );
-            }
-          })}
-        </CForm>
-      </div>
-    </ConfigProvider>
+          <CForm
+            ref={ref as any}
+            name="root-form"
+            initialValue={initialValue}
+            onValueChange={(val) => {
+              onValueChange?.(val);
+            }}
+          >
+            {properties.map((property) => {
+              if (isSpecialMaterialPropType(property)) {
+                property.content;
+              } else {
+                const title = getMTitle(property.title);
+                const tip = getMTitleTip(property.title);
+                const setterList = getSetterList(property.setters);
+                const keyPaths = [property.name];
+                return (
+                  <SetterSwitcher
+                    key={property.name}
+                    condition={property.condition}
+                    keyPaths={keyPaths}
+                    setters={setterList}
+                    label={title}
+                    name={property.name || ''}
+                    tips={tip}
+                  />
+                );
+              }
+            })}
+          </CForm>
+        </div>
+      </ConfigProvider>
+    </CCustomSchemaFormContext.Provider>
   );
 };
 

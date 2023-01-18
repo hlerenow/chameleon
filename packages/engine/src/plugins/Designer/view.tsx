@@ -153,7 +153,6 @@ export class Designer extends React.Component<
     if (!material) {
       console.warn('material not found', node);
     }
-    console.log('startNode', startNode);
 
     if (!startNode) {
       this.setState({

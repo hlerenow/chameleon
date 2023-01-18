@@ -247,6 +247,18 @@ export const BasePage: CPageDataType = {
             value: '$$context.state.data',
           },
         },
+        configure: {
+          props: {
+            name: {
+              name: 'ArraySetter',
+              setter: 'ArraySetter',
+            },
+            'columns.0.title': {
+              name: 'StringSetter',
+              setter: 'NumberSetter',
+            },
+          },
+        },
       },
       {
         id: '4',
