@@ -147,7 +147,14 @@ export class Designer extends React.Component<
     });
   };
 
-  onHoverNode = (node: CNode | CSchema | null, startNode: any) => {
+  onDragStart = (startNode: CNode | CSchema) => {
+    console.log('🚀 ~ file: view.tsx:151 ~ startNode', startNode);
+    this.setState({
+      ghostView: <GhostView node={startNode} />,
+    });
+  };
+
+  onHoverNode = (node: CNode | CSchema | null, startNode: CNode | CSchema) => {
     this.props.pluginCtx.emitter.emit('onHover', node);
     const material = node?.material;
     if (!material) {
@@ -161,6 +168,7 @@ export class Designer extends React.Component<
             {material?.value.title || material?.componentName}
           </div>
         ),
+        ghostView: null,
       });
       return;
     }
@@ -176,7 +184,7 @@ export class Designer extends React.Component<
   };
 
   render() {
-    const { layoutRef, props, onSelectNode, onHoverNode } = this;
+    const { layoutRef, props, onSelectNode, onDragStart, onHoverNode } = this;
     const { pageModel, hoverToolBar, selectToolBar, ghostView, assets } =
       this.state;
 
@@ -191,6 +199,7 @@ export class Designer extends React.Component<
         selectBoxStyle={{}}
         hoverBoxStyle={{}}
         onSelectNode={onSelectNode}
+        onDragStart={onDragStart}
         onHoverNode={onHoverNode}
         ghostView={ghostView}
         assets={assets}

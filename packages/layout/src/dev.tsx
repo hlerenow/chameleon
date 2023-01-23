@@ -37,6 +37,7 @@ const components = {
 
 const App = () => {
   const [page] = useState<any>(BasePage);
+  const [ghostView, setGhostView] = useState(<div>213</div>);
   const [pageModel] = useState<any>(
     new CPage(BasePage, {
       materials: Material,
@@ -89,6 +90,13 @@ const App = () => {
       });
 
       boxSensor.emitter.on('dragStart', (eventObj) => {
+        console.log(
+          '🚀 ~ file: dev.tsx:92 ~ boxSensor.emitter.on ~ eventObj',
+          eventObj.extraData?.startNode.value.componentName
+        );
+        setGhostView(
+          <div>{eventObj.extraData?.startNode.value.componentName}</div>
+        );
         if (eventObj.currentSensor === boxSensor) {
           layoutRef.current?.clearSelectNode();
         }
@@ -178,6 +186,7 @@ const App = () => {
           components={components}
           selectToolBar={<div>123</div>}
           assets={assets}
+          ghostView={ghostView}
         />
       </div>
     </div>

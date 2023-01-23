@@ -37,6 +37,7 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
     node: CNode | CSchema | null,
     dragNode: CNode | CSchema
   ) => void;
+  onDragStart?: (node: CNode | CSchema | null) => void;
   selectToolBar?: React.ReactNode;
   selectBoxStyle?: React.CSSProperties;
   hoverBoxStyle?: React.CSSProperties;
@@ -384,10 +385,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           hoverComponentInstances: [],
         });
         onSelectNode?.(null);
-        return;
-      }
-
-      if (currentSelectDom?.length && dragStartDom?.length) {
+      } else if (currentSelectDom?.length && dragStartDom?.length) {
         // 如果当前选中的dom 不包含 拖动开始的元素
         if (!currentSelectDom[0].contains(dragStartDom[0])) {
           this.setState({
@@ -399,6 +397,11 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             hoverComponentInstances: [],
           });
           onSelectNode?.(startInstance?._NODE_MODEL || null);
+        } else {
+          this.dragStartNode = currentSelectInstance?._NODE_MODEL || null;
+          this.setState({
+            hoverComponentInstances: [],
+          });
         }
       } else if (!currentSelectDom?.length) {
         // 没有选中元素时，当前拖动的元素为选中元素
@@ -416,6 +419,8 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           hoverComponentInstances: [],
         });
       }
+
+      this.props.onDragStart?.(this.dragStartNode);
     });
 
     sensor.emitter.on('dragging', (e) => {
