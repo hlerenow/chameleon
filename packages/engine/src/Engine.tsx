@@ -75,6 +75,10 @@ class Engine extends React.Component<EngineProps> {
     console.log('refresh engine');
   };
 
+  getWorkBench = () => {
+    return this.workbenchRef.current;
+  };
+
   render() {
     return (
       <div className={styles.engineContainer}>

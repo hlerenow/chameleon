@@ -41,6 +41,7 @@ type WorkBenchStateType = {
   leftPanels: PanelItem[];
   bodyView: React.ReactNode | null;
   rightView: React.ReactNode | null;
+  topToolBarView: React.ReactNode | null;
 };
 
 export type WorkBenchPropsType = {
@@ -72,6 +73,7 @@ export class WorkBench extends React.Component<
       leftPanels: [],
       bodyView: null,
       rightView: null,
+      topToolBarView: null,
     };
     this.emitter = props.emitter || mitt();
   }
@@ -173,6 +175,12 @@ export class WorkBench extends React.Component<
     });
   };
 
+  replaceTopBarView = (newView: React.ReactNode) => {
+    this.setState({
+      topToolBarView: newView,
+    });
+  };
+
   toggleRightPanel = () => {
     const { rightBoxVisible, rightBoxSize } = this.state;
     const newVisible = !rightBoxVisible;
@@ -206,6 +214,7 @@ export class WorkBench extends React.Component<
       currentActiveLeftPanel,
       bodyView,
       rightView,
+      topToolBarView,
     } = this.state;
     const leftBoContentStyle: React.CSSProperties = {};
     if (!leftBoxFixed) {
@@ -229,6 +238,7 @@ export class WorkBench extends React.Component<
       <div className={styles.workbenchContainer}>
         <div className={styles.topToolBarBox}>
           <div className={styles.logo}>Chameleon EG</div>
+          <div className={styles.topToolBarView}>{topToolBarView}</div>
         </div>
         <div className={styles.bodyContent}>
           <div className={styles.leftBox}>

@@ -30,6 +30,7 @@ declare type WorkBenchStateType = {
     leftPanels: PanelItem[];
     bodyView: React.ReactNode | null;
     rightView: React.ReactNode | null;
+    topToolBarView: React.ReactNode | null;
 };
 export declare type WorkBenchPropsType = {
     emitter: Emitter<any>;
@@ -48,6 +49,7 @@ export declare class WorkBench extends React.Component<WorkBenchPropsType, WorkB
     closeRightPanel: () => void;
     replaceBodyView: (newView: React.ReactNode) => void;
     replaceRightView: (newView: React.ReactNode) => void;
+    replaceTopBarView: (newView: React.ReactNode) => void;
     toggleRightPanel: () => void;
     onLeftBoxResizeStop: ResizeCallback;
     render(): JSX.Element;

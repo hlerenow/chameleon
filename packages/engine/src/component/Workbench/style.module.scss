@@ -8,6 +8,7 @@
     height: 64px;
     width: 100%;
     border-bottom: 1px solid $borderColor;
+    display: flex;
 
     .logo {
       height: 100%;
@@ -16,6 +17,9 @@
       align-items: center;
       margin-left: 20px;
       font-weight: bolder;
+    }
+    .topToolBarView {
+      flex: 1;
     }
   }
 

@@ -27,6 +27,7 @@ declare class Engine extends React.Component<EngineProps> {
     updatePage: (page: CPageDataType) => void;
     updateMaterial: (material: CMaterialType[]) => void;
     refresh: () => void;
+    getWorkBench: () => WorkBench | null;
     render(): JSX.Element;
 }
 export default Engine;

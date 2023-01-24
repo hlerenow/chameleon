@@ -1,11 +1,13 @@
 import { BasePage, EmptyPage, Material } from '@chameleon/demo-page';
 import { CAssetPackage } from '@chameleon/layout/dist/types/common';
-import React, { useCallback } from 'react';
+import { Button } from 'antd';
+import React, { useCallback, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';
 import Engine, { EnginContext } from './Engine';
 import './index.css';
 import { DEFAULT_PLUGIN_LIST } from './plugins';
+import { DesignerExports } from './plugins/Designer';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOM;
@@ -39,21 +41,70 @@ const assets: CAssetPackage[] = [
 ];
 
 const App = () => {
+  const [ready, setReady] = useState(false);
+  const [page, setPage] = useState(BasePage);
+
+  useEffect(() => {
+    const localPage = localStorage.getItem('pageSchema');
+    if (localPage) {
+      console.log(
+        '🚀 ~ file: main.tsx:48 ~ designer?.ctx.emitter.on ~ localPage',
+        localPage,
+        JSON.parse(localPage!)
+      );
+      setPage(JSON.parse(localPage));
+    }
+    setReady(true);
+  }, []);
   const onReady = useCallback((ctx: EnginContext) => {
     const designer = ctx.pluginManager.get('Designer');
     designer?.ctx.emitter.on('ready', (uiInstance) => {
       console.log('out ready', uiInstance);
-      designer?.exports.selectNode('3');
+
+      const designerExports: DesignerExports = designer.exports;
+      designerExports.selectNode('3');
     });
 
     designer?.ctx.emitter.on('onDrop', (e) => {
       console.log('out onDrop', e);
     });
+    const workbench = ctx.engine.getWorkBench();
+    workbench?.replaceTopBarView(
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          paddingRight: '10px',
+        }}
+      >
+        <Button style={{ marginRight: '10px' }}>Preview</Button>
+        <Button
+          type="primary"
+          onClick={() => {
+            const newPage = ctx.engine.pageModel.export();
+            console.log(
+              '🚀 ~ file: main.tsx:68 ~ onReady ~ newPage',
+              newPage,
+              JSON.stringify(newPage)
+            );
+            localStorage.setItem('pageSchema', JSON.stringify(newPage));
+          }}
+        >
+          Save
+        </Button>
+      </div>
+    );
   }, []);
+  if (!ready) {
+    return <>loading...</>;
+  }
   return (
     <Engine
       plugins={DEFAULT_PLUGIN_LIST}
-      schema={BasePage as any}
+      schema={page as any}
       material={Material}
       assets={assets}
       onReady={onReady}

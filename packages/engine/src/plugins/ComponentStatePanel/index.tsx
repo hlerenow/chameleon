@@ -49,7 +49,7 @@ export const ComponentStatePanel = (props: ComponentStatePanelProps) => {
         language={'json'}
         options={{
           automaticLayout: true,
-          lineDecorationsWidth: 0,
+          // lineDecorationsWidth: 0,
           tabSize: 2,
           minimap: { enabled: false },
           quickSuggestions: false,

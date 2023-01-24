@@ -20,7 +20,8 @@ export declare class Designer extends React.Component<DesignerPropsType, Designe
     componentDidMount(): void;
     init(): Promise<void>;
     onSelectNode: (node: CNode | CSchema | null) => void;
-    onHoverNode: (node: CNode | CSchema | null, startNode: any) => void;
+    onDragStart: (startNode: CNode | CSchema) => void;
+    onHoverNode: (node: CNode | CSchema | null, startNode: CNode | CSchema) => void;
     render(): JSX.Element;
 }
 export {};

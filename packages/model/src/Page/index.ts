@@ -275,12 +275,12 @@ export class CPage {
 
   // TODO
   export(mode: ExportType = ExportTypeEnum.SAVE) {
+    const componentsTree = this.data.componentsTree.export(mode);
     let res = {
       ...this.data,
-      componentsTree: this.data.componentsTree.export(mode),
+      componentsTree: clearSchema(componentsTree),
     };
     res = omit(res, ['id']) as any;
-    res = clearSchema(res);
 
     return JSON.parse(JSON.stringify(res));
   }
