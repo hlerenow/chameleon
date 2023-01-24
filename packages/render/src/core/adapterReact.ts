@@ -361,6 +361,10 @@ class DefineReactAdapter {
             nodeModel.value.stateName || nodeModel.id,
             this.storeState
           );
+          this.storeState.setState({
+            ...this.state,
+            ...(nodeModel.value.state || {}),
+          });
           this.forceUpdate();
         };
         nodeModel.onChange(forceUpdate);

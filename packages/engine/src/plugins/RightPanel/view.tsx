@@ -3,6 +3,7 @@ import { Empty, Tabs } from 'antd';
 import React from 'react';
 import { CPluginCtx } from '../../core/pluginManager';
 import { PropertyPanelConfig } from '../PropertyPanel';
+import { ComponentStatePanelConfig } from '../ComponentStatePanel';
 import styles from './style.module.scss';
 
 export type RightPanelOptions = { node: CNode; pluginCtx: CPluginCtx };
@@ -41,14 +42,7 @@ export class RightPanel extends React.Component<
           name: 'Appearance',
           view: () => <>appearance</>,
         },
-        {
-          key: 'state',
-          name: 'State',
-          view: () => <>State</>,
-          show: ({ node }) => {
-            return node.value.componentName !== 'div';
-          },
-        },
+        ComponentStatePanelConfig,
         {
           key: 'Actions',
           name: 'Actions',
