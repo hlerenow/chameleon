@@ -1,6 +1,6 @@
 import { BasePage, EmptyPage, Material } from '@chameleon/demo-page';
 import { CAssetPackage } from '@chameleon/layout/dist/types/common';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';
@@ -10,6 +10,7 @@ import { DEFAULT_PLUGIN_LIST } from '../../../plugins';
 import { DesignerExports } from '../../../plugins/Designer';
 import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 
+console.log('🚀 ~ file: index.tsx:2 ~ BasePage', BasePage);
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOM;
 (window as any).ReactDOMClient = ReactDOMClient;
@@ -83,7 +84,11 @@ export const App = () => {
         <Button
           style={{ marginRight: '10px' }}
           onClick={() => {
-            window.open('/#/preview');
+            if (location.href.includes('hlerenow')) {
+              window.open('/chameleon/#/preview');
+            } else {
+              window.open('/#/preview');
+            }
           }}
         >
           Preview
@@ -93,6 +98,7 @@ export const App = () => {
           onClick={() => {
             const newPage = ctx.engine.pageModel.export();
             localStorage.setItem('pageSchema', JSON.stringify(newPage));
+            message.success('Save successfully');
           }}
         >
           Save

@@ -4,6 +4,7 @@ import React from 'react';
 import { CPluginCtx } from '../../core/pluginManager';
 import { PropertyPanelConfig } from '../PropertyPanel';
 import { ComponentStatePanelConfig } from '../ComponentStatePanel';
+import { AdvancePanelConfig } from '../AdvancePanel';
 import styles from './style.module.scss';
 
 export type RightPanelOptions = { node: CNode; pluginCtx: CPluginCtx };
@@ -36,6 +37,7 @@ export class RightPanel extends React.Component<
       node: props.pluginCtx.getActiveNode(),
       activeKey: '',
       panels: [
+        // AdvancePanelConfig,
         PropertyPanelConfig,
         {
           key: 'appearance',
@@ -43,16 +45,12 @@ export class RightPanel extends React.Component<
           view: () => <>appearance</>,
         },
         ComponentStatePanelConfig,
-        {
-          key: 'Actions',
-          name: 'Actions',
-          view: () => <>Actions</>,
-        },
-        {
-          key: 'advance',
-          name: 'Advance',
-          view: () => <>Advance</>,
-        },
+        // {
+        //   key: 'Actions',
+        //   name: 'Actions',
+        //   view: () => <>Actions</>,
+        // },
+        AdvancePanelConfig,
       ],
       displayPanels: [],
     };

@@ -1,7 +1,6 @@
 import { CPage, CNode, CSchema } from '@chameleon/model';
 import { ReactInstance } from 'react';
 import { RefManager } from './refManager';
-import { StoreManager } from './storeManager';
 
 export type ContextType = {
   params?: Record<any, any>;

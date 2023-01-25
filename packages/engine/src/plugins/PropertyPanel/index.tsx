@@ -17,9 +17,6 @@ export const PropertyPanel = (props: {
   const { node } = props;
   const properties = node.material?.value.props || [];
   const formRef = useRef<CustomSchemaFormInstance>(null);
-  useEffect(() => {
-    console.log('PropertyPanel', props, node, formRef);
-  }, []);
 
   useEffect(() => {
     formRef.current?.setFields(node.getPlainProps() || {});
@@ -28,7 +25,6 @@ export const PropertyPanel = (props: {
   const value = node.getPlainProps();
 
   const onValueChange: CustomSchemaFormProps['onValueChange'] = (val) => {
-    console.log('9999', val);
     node.updateValue({
       props: val,
     });
@@ -41,7 +37,7 @@ export const PropertyPanel = (props: {
     node.value.configure = node.value.configure || {};
     node.value.configure.props = node.value.configure.props || {};
     node.value.configure.props[keyPaths.join('.')] = {
-      name: setterName,
+      name: keyPaths.join('.'),
       setter: setterName,
     };
   };

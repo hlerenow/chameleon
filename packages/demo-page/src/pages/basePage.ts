@@ -151,6 +151,10 @@ export const BasePage: CPageDataType = {
                 type: 'EXPRESSION',
                 value: '$$context.state.list',
               },
+              key: {
+                type: 'EXPRESSION',
+                value: '$$context.loopData.item',
+              },
             },
           },
         ],

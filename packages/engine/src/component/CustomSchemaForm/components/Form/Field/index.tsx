@@ -30,11 +30,15 @@ export const CField = (props: CFieldProps) => {
   }, [formState, props]);
 
   if (tips) {
+    let newTip: any = tips;
+    if (typeof tips === 'function') {
+      newTip = tips();
+    }
     labelView = (
       <Tooltip
         title={
           <span style={{ color: 'rgba(255,255,255,0.9', fontSize: '12px' }}>
-            tips
+            {newTip}
           </span>
         }
         color="rgba(50,50,50,0.8)"

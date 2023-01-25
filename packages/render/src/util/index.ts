@@ -61,7 +61,9 @@ export const runExpression = (expStr: string, context: any) => {
     return run(expStr);
   } catch (e) {
     console.warn(e);
-    return `[${expStr}] expression run failed`;
+    const msg = `[${expStr}] expression run failed`;
+    console.warn(msg);
+    return null;
   }
 };
 

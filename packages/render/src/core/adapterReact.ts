@@ -16,7 +16,7 @@ import {
   JSExpressionPropType,
 } from '@chameleon/model';
 import { AdapterOptionType, ContextType, getAdapter } from './adapter';
-import { capitalize, isArray, isPlainObject } from 'lodash-es';
+import { isArray, isPlainObject } from 'lodash-es';
 import {
   canAcceptsRef,
   compWrapper,
@@ -415,12 +415,15 @@ class DefineReactAdapter {
           }
           loopRes = loopList.map((...args) => {
             const innerIndex = args[1];
-            const argsName = loopObj.args || ['item', 'index'];
+            const argsName = [
+              loopObj.forName || 'item',
+              loopObj.forIndex || 'index',
+            ];
             const loopData = getObjFromArrayMap(args, argsName);
             let loopDataName = 'loopData';
             // loopDataName: loopData or loopData${xxx}, xxx is capitalize
             if (loopObj.name) {
-              loopDataName = `${loopDataName}${capitalize(loopObj.name)}`;
+              loopDataName = `${loopDataName}${loopObj.name}`;
             }
             const loopContext = that.getContext(
               {
@@ -455,7 +458,11 @@ class DefineReactAdapter {
             }
 
             newProps.key = `${newProps.key}-${innerIndex}`;
-
+            if (isExpression(loopObj.key)) {
+              const keyObj = loopObj.key as JSExpressionPropType;
+              const specialKey = runExpression(keyObj.value, loopContext || {});
+              newProps.key += `-${specialKey}`;
+            }
             newProps.ref = (ref: any) => {
               this.targetComponentRef.current[innerIndex] = ref;
             };

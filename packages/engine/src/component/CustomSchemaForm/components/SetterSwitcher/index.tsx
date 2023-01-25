@@ -52,7 +52,7 @@ export const SetterSwitcher = ({
             padding: '5px',
             borderRadius: '2px',
           }}
-        >{`${currentSetter?.componentName} ins not found.`}</div>
+        >{`${currentSetter?.componentName} is not found.`}</div>
       ) as any;
   }
 

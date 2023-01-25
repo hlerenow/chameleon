@@ -127,6 +127,13 @@ export type CNodeDataType = {
         setter: string;
       }
     >;
+    advance?: Record<
+      string,
+      {
+        name: string;
+        setter: string;
+      }
+    >;
   };
   style?: string;
   className?: string;
@@ -147,7 +154,9 @@ export type CNodeDataType = {
   loop?: {
     open: boolean;
     data: any[] | JSExpressionPropType;
-    args?: ['item', 'index'];
+    forName?: string;
+    forIndex?: string;
+    key?: JSExpressionPropType;
     name?: string;
   };
   // 是否渲染
@@ -181,6 +190,9 @@ export const CNodeDataStructDescribe: any = object({
       open: boolean(),
       data: union([array(any()), JSExpressionDescribe]),
       args: optional(array(string())),
+      forName: optional(string()),
+      forIndex: optional(string()),
+      key: optional(any()),
       name: optional(string()),
     })
   ),
