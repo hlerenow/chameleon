@@ -8,6 +8,7 @@ import Engine, { EnginContext } from './Engine';
 import './index.css';
 import { DEFAULT_PLUGIN_LIST } from './plugins';
 import { DesignerExports } from './plugins/Designer';
+import { DisplaySourceSchema } from './plugins/DisplaySourceSchema';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOM;
@@ -47,11 +48,6 @@ const App = () => {
   useEffect(() => {
     const localPage = localStorage.getItem('pageSchema');
     if (localPage) {
-      console.log(
-        '🚀 ~ file: main.tsx:48 ~ designer?.ctx.emitter.on ~ localPage',
-        localPage,
-        JSON.parse(localPage!)
-      );
       setPage(JSON.parse(localPage));
     }
     setReady(true);
@@ -69,6 +65,7 @@ const App = () => {
       console.log('out onDrop', e);
     });
     const workbench = ctx.engine.getWorkBench();
+
     workbench?.replaceTopBarView(
       <div
         style={{
@@ -80,16 +77,14 @@ const App = () => {
           paddingRight: '10px',
         }}
       >
+        <DisplaySourceSchema pageModel={ctx.engine.pageModel}>
+          <Button style={{ marginRight: '10px' }}>Source Code</Button>
+        </DisplaySourceSchema>
         <Button style={{ marginRight: '10px' }}>Preview</Button>
         <Button
           type="primary"
           onClick={() => {
             const newPage = ctx.engine.pageModel.export();
-            console.log(
-              '🚀 ~ file: main.tsx:68 ~ onReady ~ newPage',
-              newPage,
-              JSON.stringify(newPage)
-            );
             localStorage.setItem('pageSchema', JSON.stringify(newPage));
           }}
         >

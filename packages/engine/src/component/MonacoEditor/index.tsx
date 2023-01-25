@@ -83,7 +83,6 @@ export const MonacoEditor = (props: MonacoEditorProps) => {
     });
 
     () => {
-      console.log('destory');
       editor.dispose();
       subscription.dispose();
     };
