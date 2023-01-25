@@ -4,11 +4,11 @@ import { Button } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';
-import Engine, { EnginContext } from './Engine';
-import './index.css';
-import { DEFAULT_PLUGIN_LIST } from './plugins';
-import { DesignerExports } from './plugins/Designer';
-import { DisplaySourceSchema } from './plugins/DisplaySourceSchema';
+import Engine, { EnginContext } from '../../../Engine';
+import '../../index.css';
+import { DEFAULT_PLUGIN_LIST } from '../../../plugins';
+import { DesignerExports } from '../../../plugins/Designer';
+import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOM;
@@ -41,7 +41,7 @@ const assets: CAssetPackage[] = [
   },
 ];
 
-const App = () => {
+export const App = () => {
   const [ready, setReady] = useState(false);
   const [page, setPage] = useState(BasePage);
 
@@ -80,7 +80,14 @@ const App = () => {
         <DisplaySourceSchema pageModel={ctx.engine.pageModel}>
           <Button style={{ marginRight: '10px' }}>Source Code</Button>
         </DisplaySourceSchema>
-        <Button style={{ marginRight: '10px' }}>Preview</Button>
+        <Button
+          style={{ marginRight: '10px' }}
+          onClick={() => {
+            window.open('/#/preview');
+          }}
+        >
+          Preview
+        </Button>
         <Button
           type="primary"
           onClick={() => {
@@ -106,6 +113,3 @@ const App = () => {
     />
   );
 };
-ReactDOMClient.createRoot(
-  document.getElementById('root') as HTMLElement
-).render(<App />);

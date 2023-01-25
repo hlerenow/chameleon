@@ -17,6 +17,7 @@
     "@chameleon/demo-page": "*",
     "@chameleon/layout": "*",
     "@chameleon/model": "*",
+    "@chameleon/render": "*",
     "@dnd-kit/core": "^6.0.7",
     "@dnd-kit/modifiers": "^6.0.1",
     "@dnd-kit/sortable": "^7.0.2",
@@ -35,6 +36,7 @@
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "cross-env": "^7.0.3",
+    "react-router-dom": "^6.7.0",
     "rollup-plugin-visualizer": "^5.8.3"
   },
   "config": {

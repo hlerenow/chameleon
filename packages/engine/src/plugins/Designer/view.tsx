@@ -148,7 +148,6 @@ export class Designer extends React.Component<
   };
 
   onDragStart = (startNode: CNode | CSchema) => {
-    console.log('🚀 ~ file: view.tsx:151 ~ startNode', startNode);
     this.setState({
       ghostView: <GhostView node={startNode} />,
     });
