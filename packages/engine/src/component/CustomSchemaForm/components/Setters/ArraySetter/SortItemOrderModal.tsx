@@ -5,7 +5,6 @@ import {
   DndContext,
   DragEndEvent,
   KeyboardSensor,
-  MouseSensor,
   PointerSensor,
   useDraggable,
   useSensor,
@@ -174,7 +173,7 @@ const SortableItem = (props: { id: string; index: string | number }) => {
       {...attributes}
       {...listeners}
     >
-      元素 {props.index}
+      Ele {props.index}
     </div>
   );
 };

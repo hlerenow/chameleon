@@ -9,7 +9,6 @@ export type DisplaySourceSchemaProps = {
 };
 
 export const DisplaySourceSchema = (props: DisplaySourceSchemaProps) => {
-  console.log(props.pageModel);
   const initialValue = props.pageModel.export();
   const [open, setOpen] = useState(false);
   return (
@@ -37,6 +36,9 @@ export const DisplaySourceSchema = (props: DisplaySourceSchemaProps) => {
             <MonacoEditor
               initialValue={JSON.stringify(initialValue, null, 2)}
               language={'json'}
+              options={{
+                automaticLayout: true,
+              }}
             />
           )}
         </div>

@@ -1,15 +1,11 @@
 import React from 'react';
-import {
-  ConfigProvider,
-  InputNumber,
-  InputNumberProps,
-  InputProps,
-} from 'antd';
+import { ConfigProvider, InputNumber, InputNumberProps } from 'antd';
 import { CSetter, CSetterProps } from '../type';
 
 export const NumberSetter: CSetter<InputNumberProps> = ({
   onValueChange,
   keyPaths,
+  onSetterChange,
   ...props
 }: CSetterProps<InputNumberProps>) => {
   return (
