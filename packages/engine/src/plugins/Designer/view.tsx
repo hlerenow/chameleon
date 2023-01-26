@@ -147,7 +147,10 @@ export class Designer extends React.Component<
     });
   };
 
-  onDragStart = (startNode: CNode | CSchema) => {
+  onDragStart = (startNode: CNode | CSchema | null) => {
+    if (!startNode) {
+      return;
+    }
     this.setState({
       ghostView: <GhostView node={startNode} />,
     });

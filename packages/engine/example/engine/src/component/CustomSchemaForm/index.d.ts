@@ -5,7 +5,7 @@ export declare type CustomSchemaFormInstance = CForm;
 export declare type CustomSchemaFormProps = {
     initialValue: Record<string, any>;
     properties: CMaterialPropsType;
-    onValueChange?: (val: Record<string, any>) => void;
+    onValueChange?: (val: any) => void;
     onSetterChange: (keyPaths: string[], setterName: string) => void;
     defaultSetterConfig: Record<string, {
         name: string;

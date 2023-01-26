@@ -39,8 +39,8 @@ export class RightPanel extends React.Component<
       activeKey: '',
       panels: [
         // AdvancePanelConfig,
-        VisualPanelConfig,
         PropertyPanelConfig,
+        VisualPanelConfig,
         ComponentStatePanelConfig,
         // {
         //   key: 'Actions',
