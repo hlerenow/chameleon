@@ -5,6 +5,7 @@ import { ArraySetter } from './ArraySetter';
 import { ShapeSetter } from './ShapeSetter';
 import { ExpressionSetter } from './ExpressionSetter';
 import { BooleanSetter } from './BooleanSetter';
+import { SelectSetter } from './SelectSetter';
 
 export default {
   StringSetter,
@@ -13,4 +14,5 @@ export default {
   NumberSetter,
   ExpressionSetter,
   BooleanSetter,
+  SelectSetter,
 } as Record<string, CSetter>;

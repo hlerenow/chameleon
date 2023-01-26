@@ -48,7 +48,17 @@ export const TableMeta: CMaterialType = {
                   initialValue: {},
                 },
                 'StringSetter',
-                'SelectSetter',
+                {
+                  componentName: 'SelectSetter',
+                  props: {
+                    options: [
+                      { value: 'jack', label: 'Jack' },
+                      { value: 'lucy', label: 'Lucy' },
+                      { value: 'Yiminghe', label: 'yiminghe' },
+                      { value: 'disabled', label: 'Disabled', disabled: true },
+                    ],
+                  },
+                },
                 'JSONSetter',
                 'FunctionSetter',
                 'ComponentSetter',
@@ -61,6 +71,24 @@ export const TableMeta: CMaterialType = {
         {
           componentName: 'ExpressionSetter',
           initialValue: [],
+        },
+      ],
+    },
+    {
+      name: 'selectSetter',
+      title: 'select',
+      valueType: 'string',
+      setters: [
+        {
+          componentName: 'SelectSetter',
+          props: {
+            options: [
+              { value: 'jack', label: 'Jack' },
+              { value: 'lucy', label: 'Lucy' },
+              { value: 'Yiminghe', label: 'yiminghe' },
+              { value: 'disabled', label: 'Disabled', disabled: true },
+            ],
+          },
         },
       ],
     },

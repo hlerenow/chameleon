@@ -47,10 +47,11 @@ export const SetterSwitcher = ({
       (
         <div
           style={{
-            backgroundColor: 'pink',
+            backgroundColor: 'whitesmoke',
             margin: '5px 0',
             padding: '5px',
             borderRadius: '2px',
+            color: 'gray',
           }}
         >{`${currentSetter?.componentName} is not found.`}</div>
       ) as any;

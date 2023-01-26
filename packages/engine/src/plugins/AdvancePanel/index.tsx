@@ -127,24 +127,13 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
   };
 
   const loopObj = node.value.loop;
-  const value = {
-    condition: node.value.condition,
-    loop: {
-      open: loopObj?.open || true,
-      data: loopObj?.data || [],
-      forName: loopObj?.forName || 'item',
-      forIndex: loopObj?.forIndex || 'index',
-      key: loopObj?.key || '',
-      name: loopObj?.name || '',
-    },
-  };
   const formRef = useRef<CustomSchemaFormInstance>(null);
 
   useEffect(() => {
     const newValue = {
-      condition: node.value.condition,
+      condition: node.value.condition || true,
       loop: {
-        open: loopObj?.open || true,
+        open: loopObj?.open || false,
         data: loopObj?.data || [],
         forName: loopObj?.forName || 'item',
         forIndex: loopObj?.forIndex || 'index',
@@ -155,7 +144,7 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
     formRef.current?.setFields(newValue);
   }, [node]);
 
-  const onValueChange = (newVal: any) => {
+  const onValueChange = (newVal: { loop: any; condition: any }) => {
     node.value.loop = newVal.loop;
     node.value.condition = newVal.condition;
     node.updateValue();
@@ -166,7 +155,7 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
         defaultSetterConfig={node.value.configure?.advance || {}}
         onSetterChange={onSetterChange}
         properties={properties}
-        initialValue={value}
+        initialValue={{}}
         ref={formRef}
         onValueChange={onValueChange}
       />
