@@ -408,7 +408,7 @@ class DefineReactAdapter {
         let loopRes: any[] = [];
         if (loopObj && loopObj.open) {
           this.targetComponentRef.current = [];
-          let loopList: any[] = [];
+          let loopList: any[] = (loopObj.data as any[]) || [];
           if (isExpression(loopObj.data)) {
             const expProp = loopObj.data as JSExpressionPropType;
             loopList = runExpression(expProp.value, newContext || {});
@@ -464,6 +464,8 @@ class DefineReactAdapter {
               newProps.key += `-${specialKey}`;
             }
             newProps.ref = (ref: any) => {
+              this.targetComponentRef.current =
+                this.targetComponentRef.current || [];
               this.targetComponentRef.current[innerIndex] = ref;
             };
 
