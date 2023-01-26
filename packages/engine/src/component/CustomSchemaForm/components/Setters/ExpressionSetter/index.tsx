@@ -33,7 +33,7 @@ export const ExpressionSetter: CSetter<
     >
       <Input
         {...props}
-        value={props.value.value}
+        value={props.value?.value || ''}
         onChange={(e) => {
           props.onChange?.(e);
           onValueChange?.({

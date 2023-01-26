@@ -60,13 +60,14 @@ export const ButtonMeta: CMaterialType = {
         {
           componentName: 'StringSetter',
         },
+        'ExpressionSetter',
       ],
     },
     {
       name: 'children',
       title: '文本',
       valueType: 'string',
-      setters: ['StringSetter'],
+      setters: ['StringSetter', 'ExpressionSetter'],
     },
   ],
   snippets: [

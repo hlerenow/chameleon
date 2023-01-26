@@ -38,6 +38,7 @@ export const DisplaySourceSchema = (props: DisplaySourceSchemaProps) => {
               language={'json'}
               options={{
                 automaticLayout: true,
+                readOnly: true,
               }}
             />
           )}

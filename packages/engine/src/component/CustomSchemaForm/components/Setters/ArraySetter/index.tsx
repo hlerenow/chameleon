@@ -48,6 +48,9 @@ export const ArraySetter = ({
         <Button
           type="text"
           size="small"
+          style={{
+            color: 'gray',
+          }}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
