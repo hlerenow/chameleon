@@ -16,11 +16,12 @@ import {
   JSExpressionPropType,
 } from '@chameleon/model';
 import { AdapterOptionType, ContextType, getAdapter } from './adapter';
-import { isArray, isPlainObject } from 'lodash-es';
+import { cloneDeep, isArray, isPlainObject } from 'lodash-es';
 import {
   canAcceptsRef,
   compWrapper,
   convertCodeStringToFunction,
+  formatSourceStyle,
   getObjFromArrayMap,
   runExpression,
   shouldConstruct,
@@ -504,6 +505,11 @@ class DefineReactAdapter {
         }
 
         newProps.ref = this.targetComponentRef;
+
+        // font-size to fontSize
+        if (newProps.style) {
+          newProps.style = formatSourceStyle(newProps.style);
+        }
 
         // handle children
         return that.render(originalComponent, newProps, ...newChildren);

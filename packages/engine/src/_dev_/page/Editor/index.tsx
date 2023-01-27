@@ -10,7 +10,6 @@ import { DEFAULT_PLUGIN_LIST } from '../../../plugins';
 import { DesignerExports } from '../../../plugins/Designer';
 import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 
-console.log('🚀 ~ file: index.tsx:2 ~ BasePage', BasePage);
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOM;
 (window as any).ReactDOMClient = ReactDOMClient;

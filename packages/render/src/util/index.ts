@@ -1,3 +1,4 @@
+import { capitalize } from 'lodash-es';
 import { Component, createElement } from 'react';
 import { ContextType } from '../core/adapter';
 import { StoreManager } from '../core/storeManager';
@@ -104,4 +105,23 @@ export const getObjFromArrayMap = (args: any[], argsName: string[]) => {
   });
 
   return params;
+};
+
+export const formatSourceStyle = (style: Record<string, string>) => {
+  const newStyle: Record<string, string> = {};
+  Object.keys(style).forEach((key) => {
+    let newKey = key.split('-');
+    if (newKey.length >= 2) {
+      newKey = newKey.map((val, index) => {
+        if (index !== 0) {
+          return capitalize(val);
+        } else {
+          return val;
+        }
+      });
+    }
+    newStyle[newKey.join('')] = style[key];
+  });
+
+  return newStyle;
 };
