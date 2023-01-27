@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import * as monaco from 'monaco-editor';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api';
 export declare type MonacoEditorInstance = monacoEditor.editor.IStandaloneCodeEditor;
 export declare type MonacoEditorProps = {

@@ -108,6 +108,8 @@ export type CNodeDataType = {
   id?: string;
   title?: string;
   componentName: string;
+  // 组件类型
+  type?: 'html' | 'react' | 'vue' | 'lowcode';
   // 所有的 props 的 value 需要支持表达式 $$context
   props?: CPropObjDataType;
   state?: Record<string, any>;
