@@ -19,7 +19,14 @@ export const PropertyPanel = (props: {
   const formRef = useRef<CustomSchemaFormInstance>(null);
 
   useEffect(() => {
-    formRef.current?.setFields(node.getPlainProps() || {});
+    const handel = () => {
+      formRef.current?.setFields(node.getPlainProps() || {});
+    };
+    handel();
+    node.emitter.on('onNodeChange', handel);
+    () => {
+      node.emitter.off('onNodeChange', handel);
+    };
   }, [node]);
 
   const value = node.getPlainProps();

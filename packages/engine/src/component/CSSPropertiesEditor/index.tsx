@@ -52,7 +52,7 @@ export const SinglePropertyEditor = forwardRef<
 
   useEffect(() => {
     setInnerVal(props.value);
-  }, []);
+  }, [props.value]);
   const [propertyOptions, setPropertyOptions] = useState(
     defaultPropertyOptions
   );

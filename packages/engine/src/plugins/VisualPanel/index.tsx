@@ -14,10 +14,16 @@ export const VisualPanel = (props: { node: CNode; pluginCtx: CPluginCtx }) => {
   const cssEditorRef = useRef<CSSPropertiesEditorRef>(null);
   const [style, setStyle] = useState<Record<string, string>>({});
   useEffect(() => {
-    const newStyle = node.getPlainProps()['style'] || {};
-    cssEditorRef.current?.setValue(newStyle);
-    setStyle(newStyle);
-    console.log('change node', node, newStyle);
+    const handel = () => {
+      const newStyle = node.getPlainProps()['style'] || {};
+      cssEditorRef.current?.setValue(newStyle);
+      setStyle(newStyle);
+    };
+    handel();
+    node.emitter.on('onNodeChange', handel);
+    () => {
+      node.emitter.off('onNodeChange', handel);
+    };
   }, [node]);
 
   const onUpdateStyle = (style: Record<string, string>) => {
