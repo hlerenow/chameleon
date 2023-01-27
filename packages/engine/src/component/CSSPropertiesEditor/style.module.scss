@@ -1,0 +1,33 @@
+.cssFieldBox {
+  display: flex;
+  align-items: center;
+  color: $textColor !important;
+  :global {
+    .ant-select-selector {
+      padding: 0 !important;
+    }
+
+    .ant-select-single .ant-select-selector .ant-select-selection-search {
+      inset-inline-start: 0px;
+      inset-inline-end: 0px;
+    }
+
+    .ant-select-selector input {
+      color: $textColor !important;
+    }
+  }
+
+  .inputAuto {
+    border-bottom: 1px solid rgba(128, 128, 128, 0.23);
+  }
+
+  .active {
+    border-bottom: 1px solid rgb(128, 177, 255);
+  }
+}
+
+.cssBox {
+  background-color: rgba(238, 238, 238, 0.263);
+  border-radius: 2px;
+  padding: 5px 10px 10px;
+}
