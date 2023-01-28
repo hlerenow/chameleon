@@ -88,10 +88,6 @@ class DefineReactAdapter {
       renderMode,
     }: AdapterOptionType
   ) {
-    console.log(
-      '🚀 ~ file: adapterReact.ts:90 ~ DefineReactAdapter ~ renderMode',
-      renderMode
-    );
     this.renderMode = renderMode;
     this.components = components;
     this.onGetRef = onGetRef;

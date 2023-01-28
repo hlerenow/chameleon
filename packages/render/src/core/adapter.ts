@@ -46,7 +46,7 @@ export type AdapterOptionType = {
 
 // TODO: 后续考虑去掉
 export interface AdapterType {
-  renderMode: AdapterOptionType['renderMode'];
+  renderMode?: AdapterOptionType['renderMode'];
   customPageRootRender?: (pageModel: CPage, options: AdapterOptionType) => any;
   // 页面渲染
   pageRender: (pageModel: CPage, options: AdapterOptionType) => any;

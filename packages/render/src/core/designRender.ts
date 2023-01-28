@@ -29,7 +29,7 @@ export class ComponentInstanceManager {
   remove(id: string, val?: any) {
     const valList = this.instanceMap.get(id);
     if (val !== undefined && Array.isArray(valList)) {
-      const newList = valList.filter((el) => el === val);
+      const newList = valList.filter((el) => el !== val);
       this.instanceMap.set(id, newList);
     } else {
       this.instanceMap.delete(id);
@@ -136,11 +136,12 @@ export class DesignRender extends React.Component<DesignRenderProp> {
 
       componentDidMount(): void {
         self.instanceManager.add(node.id, this);
+        console.log('did', node, node.id, this);
       }
 
       componentWillUnmount(): void {
-        self.instanceManager.remove(node.id, this);
         this._STATUS = 'DESTROY';
+        self.instanceManager.remove(node.id, this);
       }
 
       render() {
