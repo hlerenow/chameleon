@@ -36,6 +36,7 @@ class ComponentLibView extends React.Component<
   ComponentLibViewState
 > {
   containerRef: React.RefObject<HTMLDivElement>;
+  disposeList: (() => void)[] = [];
   constructor(props: ComponentLibViewProps) {
     super(props);
     this.containerRef = React.createRef<HTMLDivElement>();
@@ -51,7 +52,6 @@ class ComponentLibView extends React.Component<
     visible: boolean;
     panelName: string;
   }) => {
-    console.log(111, visible, panelName);
     const designerHandle = this.props.pluginCtx.pluginManager.get('Designer');
     const designerReady = designerHandle?.exports?.getReadyStatus?.();
     if (panelName === PLUGIN_NAME && visible && designerReady) {
@@ -83,6 +83,10 @@ class ComponentLibView extends React.Component<
     this.setState({
       componentsList: allSnippets,
     });
+  }
+
+  componentWillUnmount(): void {
+    this.disposeList.map((el) => el());
   }
 
   registerDragEvent = () => {
@@ -129,6 +133,30 @@ class ComponentLibView extends React.Component<
       };
     });
     dnd.registerSensor(boxSensor);
+
+    const dragStart = () => {
+      const { workbench } = this.props.pluginCtx;
+      if (!workbench.state.leftBoxFixed) {
+        workbench.closeLeftPanel();
+      }
+    };
+
+    this.disposeList.push(() => {
+      dnd.emitter.off('dragStart', dragStart);
+    });
+    dnd.emitter.on('dragStart', dragStart);
+
+    // const dragEnd = () => {
+    //   const { workbench } = this.props.pluginCtx;
+    //   if (!workbench.state.leftBoxFixed) {
+    //     workbench.openLeftPanel();
+    //   }
+    // };
+
+    // this.disposeList.push(() => {
+    //   dnd.emitter.off('dragEnd', dragEnd);
+    // });
+    // dnd.emitter.on('dragEnd', dragEnd);
   };
 
   render(): React.ReactNode {
