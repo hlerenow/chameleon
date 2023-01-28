@@ -319,10 +319,20 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       if (!startInstance) {
         return null;
       }
+
+      const isContainDragStartEl =
+        this.state.currentSelectInstance?._NODE_MODEL?.contains(
+          startInstance?._NODE_ID || ''
+        );
+      let startNode = startInstance?._NODE_MODEL;
+      if (isContainDragStartEl && this.state.currentSelectInstance) {
+        startNode = this.state.currentSelectInstance?._NODE_MODEL;
+      }
+
       return {
         ...eventObj,
         extraData: {
-          startNode: startInstance?._NODE_MODEL,
+          startNode: startNode,
           startNodeUid: startInstance?._UNIQUE_ID,
         },
       };
