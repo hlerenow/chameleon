@@ -16,13 +16,53 @@ export const ButtonMeta: CMaterialType = {
       valueType: 'string',
       setters: [
         {
-          componentName: 'StringSetter',
+          componentName: 'SelectSetter',
+          props: {
+            options: [
+              {
+                value: 'primary',
+                label: 'primary',
+              },
+              {
+                value: 'link',
+                label: 'link',
+              },
+              {
+                value: '',
+                label: 'Default',
+              },
+            ],
+          },
         },
       ],
     },
     {
+      name: 'block',
+      title: '块状按钮',
+      valueType: 'boolean',
+      setters: ['BooleanSetter'],
+      condition: (state) => {
+        if (state.type === 'primary') {
+          return true;
+        }
+        return false;
+      },
+    },
+    {
+      name: 'children',
+      title: '文本',
+      valueType: 'string',
+      setters: ['StringSetter', 'ExpressionSetter'],
+    },
+    {
+      name: 'onClick',
+      title: '点击时',
+      valueType: 'function',
+      setters: ['FunctionSetter', 'ExpressionSetter'],
+    },
+    {
       name: 'text1',
-      title: '文本1',
+      title: '联动文本1',
       valueType: 'string',
       setters: [
         {
@@ -38,7 +78,7 @@ export const ButtonMeta: CMaterialType = {
     },
     {
       name: 'text2',
-      title: '文本2',
+      title: '联动文本2',
       valueType: 'string',
       setters: [
         {
@@ -54,7 +94,7 @@ export const ButtonMeta: CMaterialType = {
     },
     {
       name: 'text3',
-      title: '文本3',
+      title: '联动文本3',
       valueType: 'string',
       setters: [
         {
@@ -62,12 +102,6 @@ export const ButtonMeta: CMaterialType = {
         },
         'ExpressionSetter',
       ],
-    },
-    {
-      name: 'children',
-      title: '文本',
-      valueType: 'string',
-      setters: ['StringSetter', 'ExpressionSetter'],
     },
   ],
   snippets: [

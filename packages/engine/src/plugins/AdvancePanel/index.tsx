@@ -110,6 +110,28 @@ const properties: CMaterialPropsType = [
       },
     ],
   },
+  {
+    name: 'refId',
+    title: {
+      label: 'refId',
+      tip: 'unique node flag',
+    },
+    valueType: 'string',
+    setters: ['StringSetter'],
+  },
+  {
+    name: 'stateName',
+    title: {
+      label: (
+        <>
+          state <br></br> name
+        </>
+      ) as any,
+      tip: 'alias for state',
+    },
+    valueType: 'string',
+    setters: ['StringSetter'],
+  },
 ];
 
 export const AdvancePanel = (props: AdvancePanelProps) => {
@@ -140,13 +162,23 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
         key: loopObj?.key || '',
         name: loopObj?.name || '',
       },
+      refId: node.value.refId,
+      stateName: node.value.stateName,
     };
     formRef.current?.setFields(newValue);
   }, [node]);
 
-  const onValueChange = (newVal: { loop: any; condition: any }) => {
+  const onValueChange = (newVal: {
+    refId: string;
+    loop: any;
+    condition: any;
+    stateName: any;
+  }) => {
     node.value.loop = newVal.loop;
     node.value.condition = newVal.condition;
+    node.value.refId = newVal.refId;
+    node.value.stateName = newVal.stateName;
+
     node.updateValue();
   };
   return (

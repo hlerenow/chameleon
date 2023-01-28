@@ -21,60 +21,6 @@ export const PageData: CPageDataType = {
         configure: {
           props: {},
         },
-        children: [
-          {
-            componentName: 'Row',
-            children: [
-              {
-                componentName: 'Button',
-                props: {
-                  mark: 'nameRender',
-                  children: {
-                    type: 'EXPRESSION',
-                    value: '$$context.params.val',
-                  },
-                },
-                configure: {
-                  props: {},
-                },
-                id: 'imns19',
-              },
-              {
-                componentName: 'Col',
-                children: [
-                  {
-                    componentName: 'Button',
-                    props: {
-                      mark: 'nameRender',
-                    },
-                    children: [
-                      {
-                        componentName: 'div',
-                        children: ['I am div'],
-                        configure: {
-                          props: {},
-                        },
-                        id: 'n3r630',
-                      },
-                    ],
-                    configure: {
-                      props: {},
-                    },
-                    id: '2d7cvm',
-                  },
-                ],
-                configure: {
-                  props: {},
-                },
-                id: 'dfiq77',
-              },
-            ],
-            configure: {
-              props: {},
-            },
-            id: '65idsk',
-          },
-        ],
       },
       {
         id: 'globalStateText',
@@ -93,6 +39,35 @@ export const PageData: CPageDataType = {
       {
         id: 'div1',
         componentName: 'div',
+        children: [
+          {
+            id: 'div1btn',
+            componentName: 'Button',
+            state: {
+              list: [11, 22, 33, 44, 55],
+            },
+            props: {
+              children: {
+                type: 'EXPRESSION',
+                value: '$$context.loopData.index',
+              },
+            },
+            loop: {
+              open: true,
+              data: {
+                type: 'EXPRESSION',
+                value: '$$context.state.list',
+              },
+              key: {
+                type: 'EXPRESSION',
+                value: '$$context.loopData.item',
+              },
+            },
+            configure: {
+              props: {},
+            },
+          },
+        ],
         configure: {
           props: {},
         },
@@ -136,13 +111,21 @@ export const PageData: CPageDataType = {
           onClick: {
             type: 'FUNCTION',
             value:
-              'function onClick(a) {\n              console.log(a);\n              $$context.updateState({a: $$context.state.a + 1})\n              $$context.updateGlobalState({\n                buttonVisible: !$$context.globalState.buttonVisible,\n                modalVisible: !$$context.globalState.modalVisible\n              })\n            }',
+              // eslint-disable-next-line quotes
+              "function onClick(a) {\n  console.log(11111, a);\n  $$context.updateState({ a: $$context.state.a + 1 })\n  $$context.updateGlobalState({\n    buttonVisible: !$$context.globalState.buttonVisible,\n    modalVisible: !$$context.globalState.modalVisible\n  })\n\n  const demoBtnState = $$context.stateManager['demoBtn'];\n  console.log($$context.stateManager, demoBtnState);\n}",
           },
           children: ['控制右边按钮的显示隐藏'],
-          style: {
-            color: 'red',
-          },
         },
+        loop: {
+          open: false,
+          data: [],
+          forName: 'item',
+          forIndex: 'index',
+          key: '',
+          name: '',
+        },
+        condition: true,
+        refId: '12323',
         configure: {
           props: {},
         },
@@ -170,8 +153,22 @@ export const PageData: CPageDataType = {
           value: '$$context.globalState.buttonVisible',
         },
         configure: {
-          props: {},
+          props: {
+            children: {
+              name: 'children',
+              setter: 'ExpressionSetter',
+            },
+          },
         },
+        loop: {
+          open: false,
+          data: [],
+          forName: 'item',
+          forIndex: 'index',
+          key: '',
+          name: '',
+        },
+        refId: 'demoBtn',
       },
       {
         id: '3',
@@ -216,12 +213,64 @@ export const PageData: CPageDataType = {
                 params: ['val', 'record', 'index'],
                 value: [
                   {
+                    id: '5',
+                    componentName: 'Row',
+                    children: [
+                      {
+                        id: '6',
+                        componentName: 'Button',
+                        props: {
+                          mark: 'nameRender',
+                          children: {
+                            type: 'EXPRESSION',
+                            value: '$$context.params.val',
+                          },
+                        },
+                        configure: {
+                          props: {},
+                        },
+                      },
+                      {
+                        id: '7',
+                        componentName: 'Col',
+                        children: [
+                          {
+                            componentName: 'Button',
+                            props: {
+                              mark: 'nameRender',
+                            },
+                            children: [
+                              {
+                                id: '8',
+                                componentName: 'div',
+                                children: ['I am div'],
+                                configure: {
+                                  props: {},
+                                },
+                              },
+                            ],
+                            id: 'drv44f',
+                            configure: {
+                              props: {},
+                            },
+                          },
+                        ],
+                        configure: {
+                          props: {},
+                        },
+                      },
+                    ],
+                    configure: {
+                      props: {},
+                    },
+                  },
+                  {
+                    id: '99898999',
                     componentName: 'Button',
                     children: ['123'],
                     configure: {
                       props: {},
                     },
-                    id: '7jhqmb',
                   },
                 ],
               },
@@ -250,9 +299,6 @@ export const PageData: CPageDataType = {
             type: 'EXPRESSION',
             value: '$$context.state.data',
           },
-          style: {
-            'align-content': 'flex-end',
-          },
         },
         configure: {
           props: {
@@ -265,52 +311,6 @@ export const PageData: CPageDataType = {
               setter: 'NumberSetter',
             },
           },
-          advance: {
-            'loop.data': {
-              name: 'loop.data',
-              setter: 'JSONSetter',
-            },
-          },
-        },
-        loop: {
-          open: false,
-          data: [
-            {
-              a: 1,
-            },
-          ],
-          forName: 'item',
-          forIndex: 'index',
-          key: '',
-          name: '',
-        },
-        condition: true,
-      },
-      {
-        id: 'div1btn',
-        componentName: 'Button',
-        state: {
-          list: [11, 22, 33, 44, 55],
-        },
-        props: {
-          children: {
-            type: 'EXPRESSION',
-            value: '$$context.loopData.index',
-          },
-        },
-        loop: {
-          open: true,
-          data: {
-            type: 'EXPRESSION',
-            value: '$$context.state.list',
-          },
-          key: {
-            type: 'EXPRESSION',
-            value: '$$context.loopData.item',
-          },
-        },
-        configure: {
-          props: {},
         },
       },
       {
@@ -330,7 +330,7 @@ export const PageData: CPageDataType = {
                   '"rowState to reshow: " + $$context.stateManager.RowState.state.rowMark',
               },
             },
-            id: '4o7rnf',
+            id: 'spnffg',
             configure: {
               props: {},
             },
@@ -388,19 +388,19 @@ export const PageData: CPageDataType = {
                       },
                     },
                     children: ['change row state value'],
-                    id: 'qsfk3l',
+                    id: 'n926af',
                     configure: {
                       props: {},
                     },
                   },
                 ],
-                id: 'ejqd8d',
+                id: 'lcj371',
                 configure: {
                   props: {},
                 },
               },
             ],
-            id: '90s966',
+            id: 'hq1ng3',
             configure: {
               props: {},
             },

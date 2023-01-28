@@ -7,6 +7,7 @@ import { ExpressionSetter } from './ExpressionSetter';
 import { BooleanSetter } from './BooleanSetter';
 import { SelectSetter } from './SelectSetter';
 import { JSONSetter } from './JSONSetter';
+import { FunctionSetter } from './FunctionSetter';
 
 export default {
   StringSetter,
@@ -17,4 +18,5 @@ export default {
   BooleanSetter,
   SelectSetter,
   JSONSetter,
+  FunctionSetter,
 } as Record<string, CSetter>;
