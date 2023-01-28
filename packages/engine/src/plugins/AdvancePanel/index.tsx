@@ -184,6 +184,7 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
   return (
     <div className={styles.advanceBox}>
       <CustomSchemaForm
+        key={node.id}
         defaultSetterConfig={node.value.configure?.advance || {}}
         onSetterChange={onSetterChange}
         properties={properties}

@@ -10,6 +10,7 @@ import { isArray, isPlainObject } from 'lodash-es';
 import React, { useMemo, useRef } from 'react';
 import { RenderPropsType, Render, UseRenderReturnType } from './render';
 import * as ReactDOM from 'react-dom';
+import ErrorBoundary from './ReactErrorBoundary';
 
 export class ComponentInstanceManager {
   private instanceMap = new Map<string, DesignRenderInstance[]>();
@@ -124,7 +125,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
     return this.renderRef.current?.state.pageModel;
   }
 
-  onGetComponent = (comp: any, node: CSchema | CNode) => {
+  onGetComponent = (comp: any, node: CNode | CSchema) => {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
     class DesignWrap extends React.Component<any> {
@@ -144,7 +145,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
       }
 
       render() {
-        const { children = [], ...restProps } = this.props;
+        const { children = [], onlyRenderChild, ...restProps } = this.props;
         let newChildren = children;
         if (!isArray(children)) {
           newChildren = [children];
@@ -163,11 +164,26 @@ export class DesignRender extends React.Component<DesignRenderProp> {
           );
         }
 
+        if (onlyRenderChild) {
+          return newChildren;
+        }
+
         return React.createElement(comp, restProps, ...newChildren);
       }
     }
-    // ts error, if type is not any: Public property 'onGetComponent' of exported class has or is using private name 'DesignWrap'.
-    return DesignWrap as any;
+    return React.forwardRef(function ErrorWrap(props: any, ref) {
+      return React.createElement(
+        ErrorBoundary,
+        {
+          node,
+          targetComponent: DesignWrap,
+        },
+        React.createElement(DesignWrap, {
+          ref,
+          ...props,
+        })
+      );
+    });
   };
 
   rerender(newPage: CPageDataType) {

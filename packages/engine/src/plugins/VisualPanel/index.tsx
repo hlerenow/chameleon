@@ -15,7 +15,7 @@ export const VisualPanel = (props: { node: CNode; pluginCtx: CPluginCtx }) => {
   const [style, setStyle] = useState<Record<string, string>>({});
   useEffect(() => {
     const handel = () => {
-      const newStyle = node.getPlainProps()['style'] || {};
+      const newStyle = node.getPlainProps?.()['style'] || {};
       cssEditorRef.current?.setValue(newStyle);
       setStyle(newStyle);
     };
@@ -42,6 +42,7 @@ export const VisualPanel = (props: { node: CNode; pluginCtx: CPluginCtx }) => {
   return (
     <div className={styles.visualPanelBox}>
       <CSSPropertiesEditor
+        key={node.id}
         ref={cssEditorRef}
         onValueChange={onUpdateStyle}
         initialValue={style}

@@ -49,7 +49,7 @@ export const PageData: CPageDataType = {
             props: {
               children: {
                 type: 'EXPRESSION',
-                value: '$$context.loopData.index',
+                value: '$$context.loopData',
               },
             },
             loop: {

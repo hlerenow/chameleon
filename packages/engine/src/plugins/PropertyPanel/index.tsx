@@ -20,7 +20,7 @@ export const PropertyPanel = (props: {
 
   useEffect(() => {
     const handel = () => {
-      formRef.current?.setFields(node.getPlainProps() || {});
+      formRef.current?.setFields(node.getPlainProps?.() || {});
     };
     handel();
     node.emitter.on('onNodeChange', handel);
@@ -29,7 +29,7 @@ export const PropertyPanel = (props: {
     };
   }, [node]);
 
-  const value = node.getPlainProps();
+  const value = node.getPlainProps?.() || {};
 
   const onValueChange: CustomSchemaFormProps['onValueChange'] = (val) => {
     node.updateValue({
