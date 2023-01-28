@@ -136,7 +136,6 @@ export class DesignRender extends React.Component<DesignRenderProp> {
 
       componentDidMount(): void {
         self.instanceManager.add(node.id, this);
-        console.log('did', node, node.id, this);
       }
 
       componentWillUnmount(): void {

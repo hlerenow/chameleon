@@ -82,7 +82,11 @@ export const DefaultSelectToolBar = ({
       dataSource={parentNodeItems.reverse()}
       onSelect={toSelectNode}
     >
-      <div>{currentNode?.material?.value.title || 'Empty'}</div>
+      <div>
+        {currentNode?.value.title ||
+          currentNode?.material?.value.title ||
+          'Empty'}
+      </div>
     </LayoutSelect>
   );
 
