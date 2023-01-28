@@ -85,8 +85,10 @@ export const SetterSwitcher = ({
       <Dropdown
         trigger={['click']}
         menu={{
+          selectable: true,
           items: menuItems,
           onClick: onChooseSetter,
+          defaultSelectedKeys: [currentSetter?.componentName || ''],
         }}
       >
         <SwapOutlined />

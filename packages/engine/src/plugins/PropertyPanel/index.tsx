@@ -52,6 +52,7 @@ export const PropertyPanel = (props: {
   return (
     <div className={styles.CFromRenderBox}>
       <CustomSchemaForm
+        key={node.id}
         defaultSetterConfig={node.value.configure?.props || {}}
         onSetterChange={onSetterChange}
         properties={properties}
