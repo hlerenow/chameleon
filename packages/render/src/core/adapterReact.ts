@@ -16,7 +16,7 @@ import {
   JSExpressionPropType,
 } from '@chameleon/model';
 import { AdapterOptionType, ContextType, getAdapter } from './adapter';
-import { cloneDeep, isArray, isPlainObject } from 'lodash-es';
+import { isArray, isPlainObject } from 'lodash-es';
 import {
   canAcceptsRef,
   compWrapper,
@@ -31,12 +31,13 @@ import { StoreApi } from 'zustand/vanilla';
 import { StoreManager } from './storeManager';
 
 class DefineReactAdapter {
+  renderMode: AdapterOptionType['renderMode'] = 'normal';
   components: AdapterOptionType['components'] = {};
   storeManager = new StoreManager();
   runtimeComponentCache = new Map();
   onGetRef?: (
     ref: React.RefObject<ReactInstance>,
-    nodeMode: CNode | CSchema,
+    nodeModel: CNode | CSchema,
     handle: ReactInstance
   ) => void;
   onGetComponent:
@@ -84,8 +85,14 @@ class DefineReactAdapter {
       onGetComponent,
       onComponentMount,
       onComponentDestroy,
+      renderMode,
     }: AdapterOptionType
   ) {
+    console.log(
+      '🚀 ~ file: adapterReact.ts:90 ~ DefineReactAdapter ~ renderMode',
+      renderMode
+    );
+    this.renderMode = renderMode;
     this.components = components;
     this.onGetRef = onGetRef;
     this.onGetComponent = onGetComponent;
@@ -166,7 +173,6 @@ class DefineReactAdapter {
               key,
             });
           };
-          this.runtimeComponentCache.set(it.id, PropNodeFuncWrap);
           const res = {
             component: PropNodeFuncWrap,
             key,
@@ -556,7 +562,7 @@ class DefineReactAdapter {
       }
 
       // cache runtime component
-      if (!runtimeComponentCache.get(nodeId)) {
+      if (!runtimeComponentCache.get(nodeId) && this.renderMode !== 'design') {
         runtimeComponentCache.set(nodeId, component);
       }
       const key = `${nodeId}-${DYNAMIC_COMPONENT_TYPE}`;

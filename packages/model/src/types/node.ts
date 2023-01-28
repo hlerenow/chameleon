@@ -158,7 +158,7 @@ export type CNodeDataType = {
     data: any[] | JSExpressionPropType;
     forName?: string;
     forIndex?: string;
-    key?: JSExpressionPropType;
+    key?: JSExpressionPropType | string;
     name?: string;
   };
   // 是否渲染

@@ -10,6 +10,7 @@ export type RenderPropsType = {
   adapter: AdapterType;
   render?: UseRenderReturnType;
   ref?: React.MutableRefObject<Render | null>;
+  renderMode?: 'design' | 'normal';
 } & Partial<AdapterOptionType>;
 
 export class Render extends React.Component<
@@ -42,19 +43,6 @@ export class Render extends React.Component<
     this.refManager.destroy();
   }
 
-  rerender = (newPage: CPageDataType) => {
-    this.props.adapter.clear();
-    this.setState({
-      pageModel: new CPage(newPage),
-    });
-    // 触发 model 变化
-    this.state.pageModel?.emitter.emit('onNodeChange', {
-      value: newPage as any,
-      preValue: this.state.pageModel as any,
-      node: this.state.pageModel as any,
-    });
-  };
-
   onGetRef: AdapterOptionType['onGetRef'] = (ref, nodeModel, instance) => {
     this.props.onGetRef?.(ref, nodeModel, instance);
     this.refManager.add(nodeModel.value.refId || nodeModel.id, ref);
@@ -64,6 +52,7 @@ export class Render extends React.Component<
     const { props } = this;
     const { adapter, onGetComponent, onComponentDestroy, onComponentMount } =
       props;
+
     const { pageModel } = this.state;
     // todo: 加载 page 资源
     // todo: 收集所有的 第三方库
@@ -85,10 +74,24 @@ export class Render extends React.Component<
       $$context: {
         refs: this.refManager,
       },
+      renderMode: props.renderMode,
     });
 
     return PageRoot;
   }
+
+  rerender = (newPage: CPageDataType) => {
+    this.props.adapter.clear();
+    this.setState({
+      pageModel: new CPage(newPage),
+    });
+    // 触发 model 变化
+    this.state.pageModel?.emitter.emit('onNodeChange', {
+      value: newPage as any,
+      preValue: this.state.pageModel as any,
+      node: this.state.pageModel as any,
+    });
+  };
 }
 
 export type UseRenderReturnType = {

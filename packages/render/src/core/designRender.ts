@@ -235,6 +235,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
     return React.createElement(Render, {
       onGetComponent,
       ...renderProps,
+      renderMode: 'design',
       ref: this.renderRef,
     });
   }

@@ -10,6 +10,7 @@ import '../index.css';
 import { DesignRender, useDesignRender } from '../../core/designRender';
 import { CPage } from '@chameleon/model';
 import { components } from '../components';
+import { PageData } from './demoPageData';
 
 export type AppProp = {
   a: string;
@@ -18,8 +19,11 @@ export type AppProp = {
 export function DesignerRenderDemo() {
   SamplePage;
   BasePage;
+  EmptyPage;
+  PageData;
+
   const [page] = useState(
-    new CPage(EmptyPage, {
+    new CPage(PageData, {
       materials: Material,
     })
   );
