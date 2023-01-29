@@ -13,7 +13,6 @@ import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOM;
 (window as any).ReactDOMClient = ReactDOMClient;
-
 // {
 //   src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/reset.css',
 // },
@@ -55,15 +54,14 @@ export const App = () => {
   const onReady = useCallback((ctx: EnginContext) => {
     const designer = ctx.pluginManager.get('Designer');
     designer?.ctx.emitter.on('ready', (uiInstance) => {
-      console.log('out ready', uiInstance);
-
+      // console.log('out ready', uiInstance);
       const designerExports: DesignerExports = designer.exports;
       designerExports.selectNode('3');
     });
 
-    designer?.ctx.emitter.on('onDrop', (e) => {
-      console.log('out onDrop', e);
-    });
+    // designer?.ctx.emitter.on('onDrop', (e) => {
+    //   console.log('out onDrop', e);
+    // });
     const workbench = ctx.engine.getWorkBench();
 
     workbench?.replaceTopBarView(
@@ -104,6 +102,8 @@ export const App = () => {
         </Button>
       </div>
     );
+
+    workbench?.openLeftPanel('OutlineTree');
   }, []);
   if (!ready) {
     return <>loading...</>;

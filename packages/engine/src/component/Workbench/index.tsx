@@ -81,8 +81,9 @@ export class WorkBench extends React.Component<
   }
 
   addLeftPanel = (panel: PanelItem) => {
+    this.state.leftPanels.push(panel);
     this.setState({
-      leftPanels: [...this.state.leftPanels, panel],
+      leftPanels: [...this.state.leftPanels],
     });
   };
 
@@ -93,17 +94,20 @@ export class WorkBench extends React.Component<
     });
   }
 
-  openLeftPanel = () => {
+  openLeftPanel = (currentActiveLeftPanel?: string) => {
+    const newActive =
+      currentActiveLeftPanel || this.state.currentActiveLeftPanel;
     this.setState({
       leftBoxVisible: true,
       leftBoxSize: {
         width: 350,
         height: '100%',
       },
+      currentActiveLeftPanel: newActive,
     });
     this.emitter.emit('leftPanelVisible', {
       visible: true,
-      panelName: this.state.currentActiveLeftPanel,
+      panelName: newActive,
     });
   };
 
@@ -134,12 +138,9 @@ export class WorkBench extends React.Component<
   onPluginIconClick = (panel: PanelItem) => {
     const { currentActiveLeftPanel } = this.state;
     if (currentActiveLeftPanel === panel.name) {
-      this.toggleLeftPanel();
+      this.closeLeftPanel();
     } else {
-      this.setState({
-        currentActiveLeftPanel: panel.name,
-      });
-      this.openLeftPanel();
+      this.openLeftPanel(panel.name);
     }
   };
 

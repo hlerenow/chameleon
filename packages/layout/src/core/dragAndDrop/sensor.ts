@@ -29,6 +29,7 @@ export type SensorEventType = {
 export type SensorEventNameType = keyof SensorEventType;
 
 export class Sensor extends DEmitter<SensorEventType> {
+  eventPriority = 0;
   private offset: SensorOffsetType = {
     x: 0,
     y: 0,
@@ -51,9 +52,11 @@ export class Sensor extends DEmitter<SensorEventType> {
     container: Sensor['container'];
     offset?: Sensor['offset'];
     offsetDom?: Sensor['offsetDom'];
+    eventPriority?: number;
   }) {
     super();
     this.name = options.name;
+    this.eventPriority = options.eventPriority || this.eventPriority;
     this.container = options.container;
     if (options.offset) {
       this.offset = options.offset || { x: 0, y: 0 };

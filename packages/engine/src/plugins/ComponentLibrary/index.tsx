@@ -1,6 +1,5 @@
 import { AppstoreAddOutlined } from '@ant-design/icons';
 import {
-  DragAndDropEventType,
   LayoutDragAndDropExtraDataType,
   Sensor,
   SensorEventObjType,
@@ -70,7 +69,6 @@ class ComponentLibView extends React.Component<
       this.registerDragEvent();
     } else {
       designerHandle?.ctx.emitter.on('ready', () => {
-        console.log('init libs register drag event');
         this.registerDragEvent();
       });
     }
@@ -91,18 +89,22 @@ class ComponentLibView extends React.Component<
   }
 
   registerDragEvent = () => {
-    const designerHandle = this.props.pluginCtx.pluginManager.get('Designer');
+    const { containerRef } = this;
+    const { pluginCtx } = this.props;
+    const designerHandle = pluginCtx.pluginManager.get('Designer');
 
     if (!designerHandle) {
       return;
     }
-    const pageModel = this.props.pluginCtx.pageModel;
+    if (!containerRef.current) {
+      return;
+    }
+    const pageModel = pluginCtx.pageModel;
     const designerExports: DesignerExports = designerHandle.exports;
     const dnd = designerExports.getDnd();
-    const { containerRef } = this;
     const boxSensor = new Sensor({
       name: 'ComponentListBox',
-      container: containerRef.current!,
+      container: containerRef.current,
     });
 
     boxSensor.setCanDrag((eventObj: SensorEventObjType) => {
@@ -147,7 +149,6 @@ class ComponentLibView extends React.Component<
     });
     dnd.emitter.on('dragStart', dragStart);
 
-    // const globalClick = (e: unknown) => {
     //   let target: any = null;
     //   if ((e as any).sensor) {
     //     const eventObj = e as DragAndDropEventType['click'];

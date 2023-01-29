@@ -2,6 +2,7 @@ import { Pointer } from './common';
 import { SensorEventType, Sensor, SensorEventObjType } from './sensor';
 import mitt from 'mitt';
 import { BaseDragAndDropEventType } from '../../types/dragAndDrop';
+import { debounce } from 'lodash-es';
 
 type EmptyFunc = () => void;
 export type DragAndDropEventType = {
@@ -10,6 +11,13 @@ export type DragAndDropEventType = {
 } & BaseDragAndDropEventType;
 export class DragAndDrop {
   senors: Sensor[] = [];
+  senorEventPriorityQueueMap: Record<
+    string,
+    {
+      priority: number;
+      handle: (...args: any) => void;
+    }[]
+  > = {};
   doc: Document;
   pointer: Pointer = {
     x: 0,
@@ -45,14 +53,15 @@ export class DragAndDrop {
     });
 
     this.registerSensor(sensor, {
+      // 是否阻止所有的drag相关的事件
       banEvent: false,
     });
 
-    sensor.emitter.on('onMouseUp', (e) => {
-      this.currentState = 'NORMAL';
-      this.dragStartObj = null;
-      this.batchSensorEmit('dragEnd', {} as any);
-    });
+    // sensor.emitter.on('onMouseUp', (e) => {
+    //   this.currentState = 'NORMAL';
+    //   this.dragStartObj = null;
+    //   this.batchSensorEmit('dragEnd', {} as any);
+    // });
   }
 
   batchSensorEmit(
@@ -104,6 +113,7 @@ export class DragAndDrop {
     // mousemove
     const onMouseMove = (mouseMoveEventObj: SensorEventType['onMouseMove']) => {
       this.emitter.emit('onMouseMove', mouseMoveEventObj);
+
       const { sensor, pointer, event } = mouseMoveEventObj;
       if (this.currentState !== 'DRAGGING') {
         if (this.dragStartObj === null) {
@@ -143,7 +153,12 @@ export class DragAndDrop {
         return;
       }
 
-      const canDrop = sensor.canDrop(mouseMoveEventObj);
+      const canDrop = sensor.canDrop({
+        ...mouseMoveEventObj,
+        extraData: {
+          ...this.dragStartObj!.extraData,
+        },
+      });
       if (!canDrop) {
         return;
       }
@@ -153,7 +168,7 @@ export class DragAndDrop {
         fromPointer: this.dragStartObj!.pointer,
         extraData: {
           ...this.dragStartObj!.extraData,
-          ...canDrop.extraData,
+          ...(canDrop?.extraData || {}),
         },
         current: event,
         currentSensor: sensor,
@@ -163,6 +178,7 @@ export class DragAndDrop {
       this.emitter.emit(dragEventName, draggingEventIbj);
       this.batchSensorEmit(dragEventName, draggingEventIbj);
     };
+
     sensor.emitter.on('onMouseMove', onMouseMove);
     this.eventHandler.push(() => {
       sensor?.emitter.off('onMouseMove', onMouseMove);
@@ -196,6 +212,9 @@ export class DragAndDrop {
           sensor,
           event,
           pointer,
+          extraData: {
+            ...this.dragStartObj!.extraData,
+          },
         });
         if (canDrop) {
           const dropEventName = 'drop';
@@ -205,7 +224,7 @@ export class DragAndDrop {
             fromPointer: this.dragStartObj!.pointer,
             extraData: {
               ...this.dragStartObj!.extraData,
-              ...canDrop.extraData,
+              ...(canDrop?.extraData || {}),
             },
             current: event,
             currentSensor: sensor,
@@ -219,11 +238,34 @@ export class DragAndDrop {
       this.dragStartObj = null;
     };
 
-    sensor.emitter.on('onMouseUp', onMouseUp);
+    const onMouseUpWrap = (args: any) => {
+      this.senorEventPriorityQueueMap['onMouseUp'] =
+        this.senorEventPriorityQueueMap['onMouseUp'] || [];
+      this.senorEventPriorityQueueMap['onMouseUp'].push({
+        priority: sensor.eventPriority,
+        handle: () => {
+          onMouseUp(args);
+        },
+      });
+      this.flushSenorEventPriorityQueueMap('onMouseUp');
+    };
+
+    sensor.emitter.on('onMouseUp', onMouseUpWrap);
     this.eventHandler.push(() => {
-      sensor.emitter.off('onMouseUp', onMouseDown);
+      sensor.emitter.off('onMouseUp', onMouseUpWrap);
     });
   }
+
+  flushSenorEventPriorityQueueMap = debounce((eventName: string) => {
+    const list = this.senorEventPriorityQueueMap[eventName];
+    this.senorEventPriorityQueueMap[eventName] = [];
+    list.sort((a, b) => {
+      return b.priority - a.priority;
+    });
+    list.forEach((e) => {
+      e.handle();
+    });
+  }, 10);
 }
 
 export * from './sensor';

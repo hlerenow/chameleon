@@ -5,7 +5,7 @@ export const getTargetMNodeKeyVal = (
   if (!dom) {
     return null;
   }
-  const val = dom.getAttribute('data-drag-key');
+  const val = dom.getAttribute(key);
   if (!val) {
     return getTargetMNodeKeyVal(dom.parentElement, key);
   } else {
