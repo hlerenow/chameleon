@@ -5,7 +5,7 @@ import { BaseDragAndDropEventType } from '../../types/dragAndDrop';
 
 type EmptyFunc = () => void;
 export type DragAndDropEventType = {
-  click: Omit<SensorEventType, 'pointer'>;
+  click: Omit<SensorEventObjType, 'pointer'>;
   onMouseMove: SensorEventObjType;
 } & BaseDragAndDropEventType;
 export class DragAndDrop {
@@ -73,12 +73,18 @@ export class DragAndDrop {
   ) {
     const { banEvent = true } = options || {};
     this.senors.push(sensor);
-    sensor.emitter.on('onClick', ({ event }) => {
+    sensor.emitter.on('onClick', (eventObj) => {
+      const { event } = eventObj;
       if (!this.canTriggerClick) {
         event.stopPropagation();
         event.preventDefault();
         event.stopImmediatePropagation();
+        return;
       }
+      this.emitter.emit('click', {
+        sensor: eventObj.sensor,
+        event: eventObj.event,
+      });
     });
 
     const onMouseDown = (eventObj: SensorEventType['onMouseDown']) => {

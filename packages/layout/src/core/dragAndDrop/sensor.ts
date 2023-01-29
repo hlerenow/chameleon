@@ -85,80 +85,94 @@ export class Sensor extends DEmitter<SensorEventType> {
 
   registerEvent() {
     const container = this.container as unknown as HTMLElement;
-    addEventListenerReturnCancel(container, 'mouseenter', (e) => {
-      this.emitter.emit('onEnter', {
-        sensor: this,
-        event: e,
-      });
-    });
-    addEventListenerReturnCancel(container, 'mouseleave', (e) => {
-      this.emitter.emit('onLeave', {
-        sensor: this,
-        event: e,
-      });
-    });
-    addEventListenerReturnCancel(
-      container,
-      'mousedown',
-      (e) => {
-        this.emitter.emit('onMouseChange', {
+    this.eventDisposeQueue.push(
+      addEventListenerReturnCancel(container, 'mouseenter', (e) => {
+        this.emitter.emit('onEnter', {
           sensor: this,
-          pointer: this.getPointer(e),
           event: e,
         });
+      })
+    );
+    this.eventDisposeQueue.push(
+      addEventListenerReturnCancel(container, 'mouseleave', (e) => {
+        this.emitter.emit('onLeave', {
+          sensor: this,
+          event: e,
+        });
+      })
+    );
+    this.eventDisposeQueue.push(
+      addEventListenerReturnCancel(
+        container,
+        'mousedown',
+        (e) => {
+          this.emitter.emit('onMouseChange', {
+            sensor: this,
+            pointer: this.getPointer(e),
+            event: e,
+          });
 
-        this.emitter.emit('onMouseDown', {
-          sensor: this,
-          pointer: this.getPointer(e),
-          event: e,
-        });
-      },
-      true
+          this.emitter.emit('onMouseDown', {
+            sensor: this,
+            pointer: this.getPointer(e),
+            event: e,
+          });
+        },
+        true
+      )
     );
-    addEventListenerReturnCancel(
-      container,
-      'mouseup',
-      (e) => {
-        this.emitter.emit('onMouseChange', {
-          sensor: this,
-          pointer: this.getPointer(e),
-          event: e,
-        });
-        this.emitter.emit('onMouseUp', {
-          sensor: this,
-          pointer: this.getPointer(e),
-          event: e,
-        });
-      },
-      true
+    this.eventDisposeQueue.push(
+      addEventListenerReturnCancel(
+        container,
+        'mouseup',
+        (e) => {
+          this.emitter.emit('onMouseChange', {
+            sensor: this,
+            pointer: this.getPointer(e),
+            event: e,
+          });
+          this.emitter.emit('onMouseUp', {
+            sensor: this,
+            pointer: this.getPointer(e),
+            event: e,
+          });
+        },
+        true
+      )
     );
-    addEventListenerReturnCancel(
-      container,
-      'mousemove',
-      (e) => {
-        this.emitter.emit('onMouseMove', {
-          sensor: this,
-          pointer: this.getPointer(e),
-          event: e,
-        });
-        this.emitter.emit('onMouseChange', {
-          sensor: this,
-          pointer: this.getPointer(e),
-          event: e,
-        });
-      },
-      true
+
+    this.eventDisposeQueue.push(
+      addEventListenerReturnCancel(
+        container,
+        'mousemove',
+        (e) => {
+          this.emitter.emit('onMouseMove', {
+            sensor: this,
+            pointer: this.getPointer(e),
+            event: e,
+          });
+          this.emitter.emit('onMouseChange', {
+            sensor: this,
+            pointer: this.getPointer(e),
+            event: e,
+          });
+        },
+        true
+      )
     );
-    addEventListenerReturnCancel(
-      container,
-      'click',
-      (e) => {
-        this.emitter.emit('onClick', {
-          sensor: this,
-          event: e,
-        });
-      },
-      true
+
+    this.eventDisposeQueue.push(
+      addEventListenerReturnCancel(
+        container,
+        'click',
+        (e) => {
+          this.emitter.emit('onClick', {
+            sensor: this,
+            event: e,
+          });
+        },
+        true
+      )
     );
   }
 
@@ -183,5 +197,9 @@ export class Sensor extends DEmitter<SensorEventType> {
 
   setCanDrop(cb: Sensor['canDrop']) {
     this.canDrop = cb;
+  }
+
+  destroy() {
+    this.eventDisposeQueue.forEach((el) => el());
   }
 }

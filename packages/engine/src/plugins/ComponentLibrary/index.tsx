@@ -1,5 +1,6 @@
 import { AppstoreAddOutlined } from '@ant-design/icons';
 import {
+  DragAndDropEventType,
   LayoutDragAndDropExtraDataType,
   Sensor,
   SensorEventObjType,
@@ -146,6 +147,30 @@ class ComponentLibView extends React.Component<
     });
     dnd.emitter.on('dragStart', dragStart);
 
+    // const globalClick = (e: unknown) => {
+    //   let target: any = null;
+    //   if ((e as any).sensor) {
+    //     const eventObj = e as DragAndDropEventType['click'];
+    //     target = eventObj.event.target;
+    //   } else {
+    //     target = (e as MouseEvent).target;
+    //   }
+    //   if (this.containerRef.current?.contains(target)) {
+    //     console.log('包含');
+    //   } else {
+    //     console.log('不包含');
+    //   }
+    // };
+    // this.disposeList.push(() => {
+    //   dnd.emitter.off('click', globalClick);
+    // });
+
+    // dnd.emitter.on('click', globalClick);
+
+    // document.addEventListener('click', globalClick);
+    // this.disposeList.push(() => {
+    //   document.removeEventListener('click', globalClick);
+    // });
     // const dragEnd = () => {
     //   const { workbench } = this.props.pluginCtx;
     //   if (!workbench.state.leftBoxFixed) {

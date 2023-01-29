@@ -54,13 +54,16 @@ export class WorkBench extends React.Component<
 > {
   emitter: Emitter<any>;
   currentSelectNode: CNode | null;
+  leftPanelContentRef: React.RefObject<HTMLDivElement>;
   constructor(props: WorkBenchPropsType) {
     super(props);
     this.currentSelectNode = null;
+    this.emitter = props.emitter || mitt();
+    this.leftPanelContentRef = React.createRef<HTMLDivElement>();
     this.state = {
       leftBoxVisible: true,
       leftBoxSize: {
-        width: 350,
+        width: 300,
         height: '100%',
       },
       leftBoxFixed: true,
@@ -75,7 +78,6 @@ export class WorkBench extends React.Component<
       rightView: null,
       topToolBarView: null,
     };
-    this.emitter = props.emitter || mitt();
   }
 
   addLeftPanel = (panel: PanelItem) => {
@@ -203,6 +205,23 @@ export class WorkBench extends React.Component<
     });
   };
 
+  onGlobalClick = (e: MouseEvent) => {
+    if (
+      e.target &&
+      this.leftPanelContentRef.current?.contains(e.target as any)
+    ) {
+      return;
+    }
+
+    if (!this.state.leftBoxFixed && this.state.leftBoxVisible) {
+      this.closeLeftPanel();
+    }
+  };
+
+  componentDidMount() {
+    document.addEventListener('click', this.onGlobalClick);
+  }
+
   render() {
     const {
       leftBoxVisible,
@@ -241,7 +260,7 @@ export class WorkBench extends React.Component<
           <div className={styles.topToolBarView}>{topToolBarView}</div>
         </div>
         <div className={styles.bodyContent}>
-          <div className={styles.leftBox}>
+          <div className={styles.leftBox} ref={this.leftPanelContentRef}>
             <div className={styles.pluginIconBar}>
               {leftPanels.map((pl) => {
                 return (
@@ -263,7 +282,7 @@ export class WorkBench extends React.Component<
                 className={styles.pluginPanelBoxResizeBox}
                 size={leftBoxSize}
                 style={leftBoContentStyle}
-                minWidth={350}
+                minWidth={300}
                 maxWidth={600}
                 enable={{
                   right: leftBoxVisible,

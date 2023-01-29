@@ -59,6 +59,7 @@ export class Designer extends React.Component<
 
   async init() {
     const { layoutRef } = this;
+    const { pluginCtx } = this.props;
     if (!layoutRef.current) {
       console.warn('layout not ready ok');
       return;
@@ -106,8 +107,12 @@ export class Designer extends React.Component<
     // notice other plugin, current is ready ok
     this.ready = true;
 
-    this.props.pluginCtx.emitter.emit('ready', {
+    pluginCtx.emitter.emit('ready', {
       UIInstance: this,
+    });
+
+    layoutInstance.dnd.emitter.on('click', ({ event }) => {
+      pluginCtx.workbench.onGlobalClick(event);
     });
   }
 
