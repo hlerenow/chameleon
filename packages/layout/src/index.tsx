@@ -439,7 +439,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       }
 
       const extraData = e.extraData as LayoutDragAndDropExtraDataType;
-      console.log('dragging ', sensor.name, extraData);
       const componentInstance = (
         this.designRenderRef.current.getInstancesById(
           extraData.dropNode?.id || '',

@@ -3,4 +3,51 @@
   height: 100%;
   border-top: 1px solid $borderColor;
   overflow: auto;
+  * {
+    transition: all 0.1s;
+  }
+}
+.nodeBox {
+}
+
+.nodeContent {
+  font-size: 14px;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  &.selected {
+    background-color: rgba(221, 221, 221, 0.232);
+  }
+  .nodeArrow {
+    font-size: 12px;
+
+    &.expanded {
+      transform-origin: center;
+      transform: rotate(90deg);
+    }
+  }
+
+  .nodeRenderView {
+    flex: 1;
+  }
+}
+
+.nodeChildren {
+  position: relative;
+
+  &::before {
+    display: block;
+    position: absolute;
+    left: 13px;
+    top: 0;
+    content: '';
+    height: 100%;
+    width: 1px;
+    background-color: $borderColor;
+  }
+
+  &.selected::before {
+    background-color: rgba(0, 0, 255, 0.359);
+  }
 }

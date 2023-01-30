@@ -29,6 +29,7 @@ export type SensorEventType = {
 export type SensorEventNameType = keyof SensorEventType;
 
 export class Sensor extends DEmitter<SensorEventType> {
+  // TODO: 用于处理感应区重叠时，事件触发的优先级, 暂时未实现相关功能
   eventPriority = 0;
   private offset: SensorOffsetType = {
     x: 0,

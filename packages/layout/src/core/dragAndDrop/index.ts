@@ -52,16 +52,48 @@ export class DragAndDrop {
       return null;
     });
 
-    this.registerSensor(sensor, {
-      // 是否阻止所有的drag相关的事件
-      banEvent: false,
+    sensor.emitter.on('onMouseMove', (mouseMoveEventObj) => {
+      if (!(this.currentState === 'DRAGGING' && this.currentSensor == null)) {
+        return;
+      }
+
+      this.emitter.emit('onMouseMove', mouseMoveEventObj);
+      const canDrop = sensor.canDrop({
+        ...mouseMoveEventObj,
+        extraData: {
+          ...this.dragStartObj!.extraData,
+        },
+      });
+      if (!canDrop) {
+        return;
+      }
+      const { pointer, event } = mouseMoveEventObj;
+
+      const draggingEventIbj = {
+        from: this.dragStartObj!.event,
+        fromSensor: this.dragStartObj!.sensor,
+        fromPointer: this.dragStartObj!.pointer,
+        extraData: {
+          ...this.dragStartObj!.extraData,
+          ...(canDrop?.extraData || {}),
+        },
+        current: event,
+        currentSensor: null,
+        pointer: pointer,
+      };
+      const dragEventName = 'dragging';
+      this.emitter.emit(dragEventName, draggingEventIbj);
+      this.batchSensorEmit(dragEventName, draggingEventIbj);
     });
 
-    // sensor.emitter.on('onMouseUp', (e) => {
-    //   this.currentState = 'NORMAL';
-    //   this.dragStartObj = null;
-    //   this.batchSensorEmit('dragEnd', {} as any);
-    // });
+    sensor.emitter.on('onMouseUp', (e) => {
+      if (this.currentSensor !== null) {
+        return;
+      }
+      this.currentState = 'NORMAL';
+      this.dragStartObj = null;
+      this.batchSensorEmit('dragEnd', {} as any);
+    });
   }
 
   batchSensorEmit(
@@ -238,21 +270,31 @@ export class DragAndDrop {
       this.dragStartObj = null;
     };
 
-    const onMouseUpWrap = (args: any) => {
-      this.senorEventPriorityQueueMap['onMouseUp'] =
-        this.senorEventPriorityQueueMap['onMouseUp'] || [];
-      this.senorEventPriorityQueueMap['onMouseUp'].push({
-        priority: sensor.eventPriority,
-        handle: () => {
-          onMouseUp(args);
-        },
-      });
-      this.flushSenorEventPriorityQueueMap('onMouseUp');
-    };
+    // const onMouseUpWrap = (args: any) => {
+    //   this.senorEventPriorityQueueMap['onMouseUp'] =
+    //     this.senorEventPriorityQueueMap['onMouseUp'] || [];
+    //   this.senorEventPriorityQueueMap['onMouseUp'].push({
+    //     priority: sensor.eventPriority,
+    //     handle: () => {
+    //       onMouseUp(args);
+    //     },
+    //   });
+    //   this.flushSenorEventPriorityQueueMap('onMouseUp');
+    // };
 
-    sensor.emitter.on('onMouseUp', onMouseUpWrap);
+    sensor.emitter.on('onMouseUp', onMouseUp);
     this.eventHandler.push(() => {
-      sensor.emitter.off('onMouseUp', onMouseUpWrap);
+      sensor.emitter.off('onMouseUp', onMouseUp);
+    });
+
+    sensor.emitter.on('onEnter', () => {
+      this.currentSensor = sensor;
+    });
+    sensor.emitter.on('onLeave', () => {
+      this.currentSensor = null;
+    });
+    this.eventHandler.push(() => {
+      sensor.emitter.off('onMouseUp', onMouseUp);
     });
   }
 

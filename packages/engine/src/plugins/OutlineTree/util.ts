@@ -1,4 +1,5 @@
-import { CNodeDataType } from '@chameleon/model';
+import { DropPosType } from '@chameleon/layout/dist/components/DropAnchor';
+import { CNodeDataType, getRandomStr } from '@chameleon/model';
 import { CPageDataType } from '@chameleon/model';
 import { TreeNodeData } from './components/TreeView/dataStruct';
 
@@ -20,7 +21,6 @@ export const getTargetMNodeKeyVal = (
 export const transformPageSchemaToTreeData = (
   pageSchema: CPageDataType
 ): TreeNodeData[] => {
-  console.log('🚀 ~ file: util.ts:22 ~ pageSchema', pageSchema);
   const tree = pageSchema.componentsTree;
   let child = (tree.children || []) as CNodeDataType[];
   if (!Array.isArray(child)) {
@@ -34,6 +34,8 @@ export const transformPageSchemaToTreeData = (
       nodeChild = [];
     }
 
+    nodeChild = nodeChild.filter((el) => typeof el !== 'string');
+
     // 还需要处理 props 中的节点
 
     return {
@@ -46,8 +48,38 @@ export const transformPageSchemaToTreeData = (
   return [
     {
       title: 'Page',
-      key: tree.id,
+      key: tree.id || getRandomStr(),
       children: child.map((el) => tb(el)),
     },
   ];
 };
+
+export function calculateDropPosInfo(params: {
+  point: { x: number; y: number };
+  dom: HTMLElement;
+}): DropPosType {
+  const { point, dom } = params;
+  let pos: DropPosType['pos'];
+
+  const mousePos = point;
+  const targetRect = dom.getBoundingClientRect();
+  // const targetDomW = targetRect.width;
+  const targetDomH = targetRect.height;
+  const xCenter = targetRect.x + 20;
+  const yCenter = targetRect.y + Math.round(targetDomH / 2);
+
+  if (mousePos.y > yCenter) {
+    pos = 'after';
+  } else {
+    pos = 'before';
+  }
+
+  if (mousePos.x > xCenter && pos == 'after') {
+    pos = 'current';
+  }
+
+  return {
+    pos,
+    direction: 'vertical',
+  };
+}

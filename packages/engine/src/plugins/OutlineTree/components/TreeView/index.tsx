@@ -9,28 +9,30 @@ import { WithTranslation } from 'react-i18next';
 import { CPluginCtx } from '../../../../core/pluginManager';
 import { DesignerExports } from '../../../Designer';
 import {
+  calculateDropPosInfo,
   getTargetMNodeKeyVal,
   transformPageSchemaToTreeData,
 } from '../../util';
-import { DemoTreeData, TreeNodeData } from './dataStruct';
+import { ContextState, CTreeContext, CTreeContextData } from './context';
+import { TreeNodeData } from './dataStruct';
 import styles from './style.module.scss';
 import { DRAG_ITEM_KEY, TreeNode } from './treeNode';
 
 interface TreeViewProps extends WithTranslation {
   pluginCtx: CPluginCtx;
+  multiSelect?: boolean;
 }
 
-type State = {
-  treeData: TreeNodeData[];
-};
-
-export class TreeView extends React.Component<TreeViewProps, State> {
+export class TreeView extends React.Component<TreeViewProps, ContextState> {
   domRef: React.RefObject<HTMLDivElement>;
   constructor(props: TreeViewProps) {
     super(props);
     this.domRef = React.createRef<HTMLDivElement>();
     this.state = {
       treeData: [],
+      currentSelectNodeKeys: [],
+      expandKeys: [],
+      multiSelect: props.multiSelect || false,
     };
   }
 
@@ -82,14 +84,11 @@ export class TreeView extends React.Component<TreeViewProps, State> {
     const designerExports: DesignerExports = designerHandle.exports;
     const dnd = designerExports.getDnd();
     sensor.setCanDrag((eventObj: SensorEventObjType) => {
-      const targetDom = eventObj.event.target;
+      const targetDom = eventObj.event.target as HTMLDivElement;
       if (!targetDom) {
         return;
       }
-      const targetNodeId = getTargetMNodeKeyVal(
-        targetDom as HTMLElement,
-        DRAG_ITEM_KEY
-      );
+      const targetNodeId = getTargetMNodeKeyVal(targetDom, DRAG_ITEM_KEY);
 
       if (!targetNodeId) {
         return;
@@ -110,15 +109,12 @@ export class TreeView extends React.Component<TreeViewProps, State> {
     });
 
     sensor.setCanDrop((eventObj: SensorEventObjType) => {
-      console.log('canDrop', sensor.name);
-      const targetDom = eventObj.event.target;
+      const targetDom = eventObj.event.target as HTMLDivElement;
+
       if (!targetDom) {
         return;
       }
-      const targetNodeId = getTargetMNodeKeyVal(
-        targetDom as HTMLElement,
-        DRAG_ITEM_KEY
-      );
+      const targetNodeId = getTargetMNodeKeyVal(targetDom, DRAG_ITEM_KEY);
 
       if (!targetNodeId) {
         return;
@@ -141,14 +137,16 @@ export class TreeView extends React.Component<TreeViewProps, State> {
       if (startNode.contains(targetNode as any)) {
         return;
       }
+
+      const dropInfo = calculateDropPosInfo({
+        point: eventObj.pointer,
+        dom: targetDom,
+      });
       const res = {
         ...eventObj,
         extraData: {
           ...eventObj.extraData,
-          dropPosInfo: {
-            direction: 'vertical',
-            pos: 'after',
-          },
+          dropPosInfo: dropInfo,
           dropNode: targetNode,
           dropNodeUid: undefined,
         } as LayoutDragAndDropExtraDataType,
@@ -170,11 +168,22 @@ export class TreeView extends React.Component<TreeViewProps, State> {
   render() {
     const { treeData } = this.state;
     return (
-      <div className={styles.contentBox} ref={this.domRef}>
-        {treeData.map((item, index) => {
-          return <TreeNode item={item} key={item.key + `${index}`}></TreeNode>;
-        })}
-      </div>
+      <CTreeContext.Provider
+        value={{
+          state: this.state,
+          updateState: (newVal) => {
+            this.setState(newVal as any);
+          },
+        }}
+      >
+        <div className={styles.contentBox} ref={this.domRef}>
+          {treeData.map((item, index) => {
+            return (
+              <TreeNode item={item} key={item.key + `${index}`}></TreeNode>
+            );
+          })}
+        </div>
+      </CTreeContext.Provider>
     );
   }
 }
