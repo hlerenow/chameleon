@@ -3,6 +3,7 @@
   height: 100%;
   border-top: 1px solid $borderColor;
   overflow: auto;
+  position: relative;
   * {
     transition: all 0.1s;
   }
@@ -50,4 +51,12 @@
   &.selected::before {
     background-color: rgba(0, 0, 255, 0.359);
   }
+}
+
+.dropAnchorLine {
+  width: 100px;
+  height: 2px;
+  background-color: #1890ff;
+  position: fixed;
+  z-index: 99;
 }

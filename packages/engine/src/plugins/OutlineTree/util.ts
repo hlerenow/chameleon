@@ -1,5 +1,5 @@
-import { DropPosType } from '@chameleon/layout/dist/components/DropAnchor';
-import { CNodeDataType, getRandomStr } from '@chameleon/model';
+import { DropPosType } from '@chameleon/layout/dist/components/DropAnchor/util';
+import { CNodeDataType } from '@chameleon/model';
 import { CPageDataType } from '@chameleon/model';
 import { TreeNodeData } from './components/TreeView/dataStruct';
 
@@ -37,7 +37,6 @@ export const transformPageSchemaToTreeData = (
     nodeChild = nodeChild.filter((el) => typeof el !== 'string');
 
     // 还需要处理 props 中的节点
-
     return {
       title: node.title || node.componentName,
       key: node.id,
@@ -48,7 +47,7 @@ export const transformPageSchemaToTreeData = (
   return [
     {
       title: 'Page',
-      key: tree.id || getRandomStr(),
+      key: tree.id || 'Page',
       children: child.map((el) => tb(el)),
     },
   ];
@@ -63,9 +62,8 @@ export function calculateDropPosInfo(params: {
 
   const mousePos = point;
   const targetRect = dom.getBoundingClientRect();
-  // const targetDomW = targetRect.width;
   const targetDomH = targetRect.height;
-  const xCenter = targetRect.x + 20;
+  const xCenter = targetRect.x + 50;
   const yCenter = targetRect.y + Math.round(targetDomH / 2);
 
   if (mousePos.y > yCenter) {
