@@ -12,6 +12,7 @@ export type ContextState = {
 export type CTreeContextData = {
   state: ContextState;
   updateState: (state: Partial<ContextState>) => void;
+  onSelectNode: (params: { keys: string[] }) => void;
 };
 
 export const CTreeContext = React.createContext<CTreeContextData>({
@@ -22,4 +23,5 @@ export const CTreeContext = React.createContext<CTreeContextData>({
     multiSelect: false,
   },
   updateState: () => {},
+  onSelectNode: () => {},
 });

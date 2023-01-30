@@ -524,6 +524,13 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         return;
       }
       const instance = instanceList[0];
+      const dom = ReactDOM.findDOMNode(instance) as Element;
+      if (dom) {
+        dom.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      }
       this.setState({
         currentSelectInstance: instance,
         selectComponentInstances: [...instanceList],

@@ -14,7 +14,11 @@ export type TreeNodeProps = {
 };
 export const TreeNode = (props: TreeNodeProps) => {
   const { level = 0, item, paths = ['0'] } = props;
-  const { state: ctxState, updateState } = useContext(CTreeContext);
+  const {
+    state: ctxState,
+    updateState,
+    onSelectNode,
+  } = useContext(CTreeContext);
   const expanded = ctxState.expandKeys.find((el) => el === item.key);
 
   const toggleExpandNode = () => {
@@ -33,6 +37,12 @@ export const TreeNode = (props: TreeNodeProps) => {
   const toggleSelectNode = () => {
     let newKeys = ctxState.currentSelectNodeKeys;
     if (!ctxState.multiSelect) {
+      if (item.key) {
+        onSelectNode?.({ keys: [item.key] });
+      } else {
+        onSelectNode?.({ keys: [] });
+      }
+
       updateState({
         currentSelectNodeKeys: [String(item.key)],
       });
@@ -43,6 +53,7 @@ export const TreeNode = (props: TreeNodeProps) => {
     } else {
       newKeys.push(String(item.key));
     }
+    onSelectNode?.({ keys: newKeys });
     updateState({
       currentSelectNodeKeys: newKeys,
     });

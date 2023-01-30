@@ -69,6 +69,11 @@ export class TreeView extends React.Component<
     pageModel.emitter.on('onNodeChange', () => {
       this.updateTreeDataFromNode();
     });
+    pluginCtx.globalEmitter.on('onSelectNodeChange', ({ node }: any) => {
+      this.setState({
+        currentSelectNodeKeys: [node.id],
+      });
+    });
 
     const designerHandle = this.props.pluginCtx.pluginManager.get('Designer');
     const designerReady = designerHandle?.exports?.getReadyStatus?.();
@@ -218,6 +223,18 @@ export class TreeView extends React.Component<
       <CTreeContext.Provider
         value={{
           state: this.state,
+          onSelectNode: ({ keys: sk }) => {
+            const { pluginCtx } = this.props;
+            const designer = pluginCtx.pluginManager.get('Designer');
+            designer?.ctx.emitter.on('ready', () => {
+              const designerExports: DesignerExports = designer.exports;
+              designerExports.selectNode(sk?.[0] || '');
+            });
+            if (designer) {
+              const designerExports: DesignerExports = designer.exports;
+              designerExports.selectNode(sk?.[0] || '');
+            }
+          },
           updateState: (newVal) => {
             this.setState(newVal as any);
           },
