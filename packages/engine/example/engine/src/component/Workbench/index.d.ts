@@ -38,10 +38,11 @@ export declare type WorkBenchPropsType = {
 export declare class WorkBench extends React.Component<WorkBenchPropsType, WorkBenchStateType> {
     emitter: Emitter<any>;
     currentSelectNode: CNode | null;
+    leftPanelContentRef: React.RefObject<HTMLDivElement>;
     constructor(props: WorkBenchPropsType);
     addLeftPanel: (panel: PanelItem) => void;
     updateCurrentSelectNode(node: CNode): void;
-    openLeftPanel: () => void;
+    openLeftPanel: (currentActiveLeftPanel?: string) => void;
     closeLeftPanel: () => void;
     toggleLeftPanel: () => void;
     onPluginIconClick: (panel: PanelItem) => void;
@@ -52,6 +53,8 @@ export declare class WorkBench extends React.Component<WorkBenchPropsType, WorkB
     replaceTopBarView: (newView: React.ReactNode) => void;
     toggleRightPanel: () => void;
     onLeftBoxResizeStop: ResizeCallback;
+    onGlobalClick: (e: MouseEvent) => void;
+    componentDidMount(): void;
     render(): JSX.Element;
 }
 export {};

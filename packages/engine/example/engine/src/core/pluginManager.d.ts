@@ -1,4 +1,4 @@
-import { CAssetPackage } from '@chameleon/layout/dist/types/common';
+import { CAssetPackage } from '@chameleon/layout';
 import { CNode, CPage } from '@chameleon/model';
 import { i18n } from 'i18next';
 import { Emitter } from 'mitt';
