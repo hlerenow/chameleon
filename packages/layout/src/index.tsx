@@ -1,3 +1,4 @@
+/* eslint-disable react/no-find-dom-node */
 import React from 'react';
 import styles from './index.module.scss';
 import { DesignRenderInstance } from '@chameleon/render';
@@ -15,10 +16,15 @@ import {
 } from './components/HighlightBox';
 import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
 import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
-import { DropAnchorCanvas, DropPosType } from './components/DropAnchor';
+import { DropAnchorCanvas } from './components/DropAnchor';
 import { CNode, CSchema } from '@chameleon/model';
 import { Pointer } from './core/dragAndDrop/common';
 import { CAssetPackage } from './types/common';
+import {
+  calculateDropPosInfo,
+  DropPosType,
+} from './components/DropAnchor/util';
+import ReactDOM from 'react-dom';
 
 export type LayoutDragAndDropExtraDataType = {
   type: 'NEW_ADD';
@@ -54,6 +60,7 @@ export type LayoutStateType = {
   selectLockStyle: React.CSSProperties;
   hoverComponentInstances: DesignRenderInstance[];
   dropComponentInstances: DesignRenderInstance[];
+  dropPosInfos: DropPosType[];
   dropEvent: DragAndDropEventType['dragging'] | null;
   dropInfo: DropPosType | null;
 };
@@ -89,6 +96,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       selectLockStyle: {},
       hoverComponentInstances: [],
       dropComponentInstances: [],
+      dropPosInfos: [],
       dropEvent: null,
       dropInfo: null,
     };
@@ -357,11 +365,26 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       if (isContainDragStartEl) {
         return;
       }
+      const dropNode = dropInstance._NODE_MODEL;
+      const isContainer =
+        (dropNode.material?.value.isContainer ||
+          dropNode.value?.componentName === 'CPage') &&
+        dropNode.value.children.length === 0;
+      const originalEvent = eventObj.event;
 
+      const dropInstanceDom = ReactDOM.findDOMNode(dropInstance);
+      const dropInfo = calculateDropPosInfo({
+        point: {
+          x: originalEvent.clientX,
+          y: originalEvent.clientY,
+        },
+        dom: dropInstanceDom as HTMLElement,
+        isContainer: isContainer,
+      });
       return {
         ...eventObj,
         extraData: {
-          dropPosInfo: this.state.dropInfo,
+          dropPosInfo: dropInfo,
           dropNode: dropInstance?._NODE_MODEL,
           dropNodeUid: dropInstance?._UNIQUE_ID,
         } as LayoutDragAndDropExtraDataType,
@@ -449,9 +472,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       if (!componentInstance) {
         return;
       }
-
       this.setState({
         dropComponentInstances: [componentInstance],
+        dropPosInfos: [e.extraData.dropPosInfo],
         dropEvent: e,
       });
     });
@@ -543,6 +566,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       selectComponentInstances,
       hoverComponentInstances,
       dropComponentInstances,
+      dropPosInfos,
       dropEvent,
       selectLockStyle,
       isDragging,
@@ -588,11 +612,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           ref={this.highlightDropAnchorCanvasRef}
           instances={dropComponentInstances}
           mouseEvent={dropEvent}
-          onDropInfoChange={(di) => {
-            this.setState({
-              dropInfo: di,
-            });
-          }}
+          dropInfos={dropPosInfos}
         />
         {isDragging && mousePointer && (
           <div
