@@ -6,6 +6,7 @@ export type TreeNodeData = {
   icon?: React.ReactNode;
   key?: string;
   children?: TreeNodeData[];
+  parent?: TreeNodeData | null;
 };
 
 const x = 10;

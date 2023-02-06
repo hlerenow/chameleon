@@ -13,8 +13,10 @@ import {
   calculateDropPosInfo,
   getTargetMNodeKeyVal,
   transformPageSchemaToTreeData,
+  traverseTree,
 } from '../../util';
 import { ContextState, CTreeContext } from './context';
+import { TreeNodeData } from './dataStruct';
 import styles from './style.module.scss';
 import { DRAG_ITEM_KEY, TreeNode } from './treeNode';
 
@@ -61,6 +63,39 @@ export class TreeView extends React.Component<
     });
   };
 
+  getParentKeyPaths = (targetKey: string) => {
+    const { treeData } = this.state;
+    let target: TreeNodeData | null = null;
+    traverseTree(treeData, (node) => {
+      if (node.key === targetKey) {
+        target = node;
+        return true;
+      }
+      return false;
+    });
+
+    if (target) {
+      let tempNode = target as TreeNodeData | undefined | null;
+      const res = [];
+      while (tempNode) {
+        if (tempNode.key) {
+          res.push(tempNode.key);
+        }
+        tempNode = tempNode.parent;
+      }
+      return res;
+    } else {
+      return [];
+    }
+  };
+
+  scrollNodeToView = (key: string) => {
+    const dom = document.querySelector(`[data-drag-key="${key}"]`);
+    dom?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
+  };
   componentDidMount(): void {
     this.updateTreeDataFromNode();
     const { pluginCtx } = this.props;
@@ -70,9 +105,19 @@ export class TreeView extends React.Component<
       this.updateTreeDataFromNode();
     });
     pluginCtx.globalEmitter.on('onSelectNodeChange', ({ node }: any) => {
+      const parentPaths = this.getParentKeyPaths(node.id);
+      const newExpandKeys = Array.from(
+        new Set([...this.state.expandKeys, ...parentPaths])
+      );
+
       this.setState({
         currentSelectNodeKeys: [node.id],
+        expandKeys: newExpandKeys,
       });
+
+      setTimeout(() => {
+        this.scrollNodeToView(node.id);
+      }, 100);
     });
 
     const designerHandle = this.props.pluginCtx.pluginManager.get('Designer');

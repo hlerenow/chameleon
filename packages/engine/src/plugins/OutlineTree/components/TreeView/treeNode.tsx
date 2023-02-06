@@ -67,9 +67,12 @@ export const TreeNode = (props: TreeNodeProps) => {
         style={{ marginLeft: `${-indent}px`, paddingLeft: `${indent + 8}px` }}
       >
         {item.children?.length ? (
-          <span style={{ paddingRight: '5px' }}>
+          <span
+            style={{ paddingRight: '5px' }}
+            className={styles.arrowSpan}
+            onClickCapture={toggleExpandNode}
+          >
             <RightOutlined
-              onClickCapture={toggleExpandNode}
               className={clsx([styles.nodeArrow, expanded && styles.expanded])}
             />
           </span>

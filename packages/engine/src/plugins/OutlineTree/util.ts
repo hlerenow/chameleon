@@ -27,7 +27,10 @@ export const transformPageSchemaToTreeData = (
     child = [];
   }
 
-  const tb = (node: CNodeDataType): TreeNodeData => {
+  const tb = (
+    node: CNodeDataType,
+    parent?: TreeNodeData | null
+  ): TreeNodeData => {
     let nodeChild: any[] = node.children || [];
     if (!Array.isArray(nodeChild)) {
       // TODO: 暂时不处理字符串的情况
@@ -37,20 +40,63 @@ export const transformPageSchemaToTreeData = (
     nodeChild = nodeChild.filter((el) => typeof el !== 'string');
 
     // 还需要处理 props 中的节点
-    return {
+
+    const newCurrentNode: TreeNodeData = {
       title: node.title || node.componentName,
       key: node.id,
-      children: nodeChild.map((el) => tb(el)) || [],
+      children: [],
+      parent: parent,
     };
+
+    newCurrentNode.children =
+      nodeChild.map((el) => tb(el, newCurrentNode)) || [];
+
+    return newCurrentNode;
   };
 
-  return [
-    {
-      title: 'Page',
-      key: tree.id || 'Page',
-      children: child.map((el) => tb(el)),
-    },
-  ];
+  const rootNode: TreeNodeData = {
+    title: 'Page',
+    key: tree.id || 'Page',
+    children: [],
+  };
+
+  rootNode.children = child.map((el) => tb(el, rootNode));
+
+  return [rootNode];
+};
+
+export const traverseTree = (
+  tree: TreeNodeData | TreeNodeData[],
+  handler: (node: TreeNodeData) => boolean
+) => {
+  let tempTree: TreeNodeData[] = [];
+  if (Array.isArray(tree)) {
+    tempTree = tree;
+  } else {
+    tempTree = [tree];
+  }
+
+  let stop = false;
+
+  const traverseCb = (
+    node: TreeNodeData,
+    conditionCb: (node: TreeNodeData) => boolean
+  ) => {
+    if (stop) {
+      return;
+    }
+    const res = conditionCb(node);
+    if (res) {
+      stop = true;
+    } else {
+      node.children?.forEach((el) => {
+        traverseCb(el, conditionCb);
+      });
+    }
+  };
+  tempTree.forEach((el) => {
+    traverseCb(el, handler);
+  });
 };
 
 export function calculateDropPosInfo(params: {
