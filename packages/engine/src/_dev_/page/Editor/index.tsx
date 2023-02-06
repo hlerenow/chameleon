@@ -75,6 +75,14 @@ export const App = () => {
           paddingRight: '10px',
         }}
       >
+        <a
+          target="_blank"
+          href="https://github.com/hlerenow/chameleon"
+          rel="noreferrer"
+        >
+          <Button style={{ marginRight: '10px' }}>Github </Button>
+        </a>
+
         <DisplaySourceSchema pageModel={ctx.engine.pageModel}>
           <Button style={{ marginRight: '10px' }}>Source Code</Button>
         </DisplaySourceSchema>

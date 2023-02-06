@@ -5,5 +5,6 @@ export declare type TreeNodeData = {
     icon?: React.ReactNode;
     key?: string;
     children?: TreeNodeData[];
+    parent?: TreeNodeData | null;
 };
 export declare const DemoTreeData: TreeNodeData;

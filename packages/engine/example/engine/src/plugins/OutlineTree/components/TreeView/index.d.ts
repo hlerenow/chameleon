@@ -20,6 +20,8 @@ export declare class TreeView extends React.Component<TreeViewProps, ContextStat
     domRef: React.RefObject<HTMLDivElement>;
     constructor(props: TreeViewProps);
     updateTreeDataFromNode: () => void;
+    getParentKeyPaths: (targetKey: string) => string[];
+    scrollNodeToView: (key: string) => void;
     componentDidMount(): void;
     registerDragEvent: () => void;
     render(): JSX.Element;
