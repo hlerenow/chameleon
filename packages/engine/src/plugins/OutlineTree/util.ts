@@ -1,6 +1,15 @@
 import { DropPosType } from '@chameleon/layout/dist/components/DropAnchor/util';
-import { CNodeDataType } from '@chameleon/model';
-import { CPageDataType } from '@chameleon/model';
+import {
+  CJSSlotPropDataType,
+  CNodeDataType,
+  CPage,
+  CPageDataType,
+  CSchemaDataType,
+  getMTitle,
+  isJSSlotPropNode,
+  RenderPropType,
+} from '@chameleon/model';
+import { isPlainObject } from 'lodash-es';
 import { TreeNodeData } from './components/TreeView/dataStruct';
 
 export const getTargetMNodeKeyVal = (
@@ -18,15 +27,11 @@ export const getTargetMNodeKeyVal = (
   }
 };
 
-export const transformPageSchemaToTreeData = (
-  pageSchema: CPageDataType
-): TreeNodeData[] => {
-  const tree = pageSchema.componentsTree;
-  let child = (tree.children || []) as CNodeDataType[];
-  if (!Array.isArray(child)) {
-    child = [];
-  }
-
+export const transformNodeSchemaToTreeData = (
+  nodeSchema: CNodeDataType | CNodeDataType[],
+  parent: TreeNodeData,
+  pageModel: CPage
+): TreeNodeData | TreeNodeData[] => {
   const tb = (
     node: CNodeDataType,
     parent?: TreeNodeData | null
@@ -36,32 +41,113 @@ export const transformPageSchemaToTreeData = (
       // TODO: 暂时不处理字符串的情况
       nodeChild = [];
     }
-
+    // 过滤掉字符串的情况
     nodeChild = nodeChild.filter((el) => typeof el !== 'string');
-
-    // 还需要处理 props 中的节点
-
     const newCurrentNode: TreeNodeData = {
       title: node.title || node.componentName,
       key: node.id,
       children: [],
       parent: parent,
     };
+    // 还需要处理 props 中的节点
+    const propsNodeList: TreeNodeData[] = [];
+    const slotNode = {
+      title: 'SLOT',
+      key: `${node.id}-SLOT`,
+      children: propsNodeList,
+      parent: parent,
+    };
+    const props = node.props || {};
 
-    newCurrentNode.children =
-      nodeChild.map((el) => tb(el, newCurrentNode)) || [];
+    const processProps = (val: unknown, key: string, keys: string[]) => {
+      const flag = isJSSlotPropNode(val);
 
+      if (flag) {
+        const tempVal = val as RenderPropType;
+        const propsTitle = pageModel.getNode(node.id!)?.props[key]?.material
+          ?.title;
+        let plainTitle = key;
+        if (propsTitle) {
+          plainTitle = getMTitle(propsTitle) || key;
+        }
+        const tempNode: TreeNodeData = {
+          title: plainTitle,
+          key: `${node.id}-${keys.join('_')}`,
+          children: [],
+          parent: slotNode,
+        };
+
+        let propValue: CNodeDataType[] = [];
+        if (tempVal.value && !Array.isArray(tempVal.value)) {
+          propValue = [tempVal.value];
+        } else {
+          propValue = tempVal.value;
+        }
+
+        tempNode.children = transformNodeSchemaToTreeData(
+          propValue,
+          tempNode,
+          pageModel
+        ) as TreeNodeData[];
+        propsNodeList.push(tempNode);
+        return;
+      }
+      if (isPlainObject(val)) {
+        const tempVal = val as any;
+        Object.keys(tempVal).forEach((key) => {
+          processProps(tempVal[key], key, [...keys, key]);
+        });
+      }
+      if (Array.isArray(val)) {
+        const tempVal = val as any[];
+        tempVal.forEach((item, index) => {
+          processProps(item, String(index), [...keys, String(index)]);
+        });
+      }
+    };
+
+    Object.keys(props).forEach((key) => {
+      processProps(props[key], key, []);
+    });
+
+    if (propsNodeList.length > 0) {
+      newCurrentNode.children?.push(slotNode);
+    }
+    const childNodeList = nodeChild.map((el) => tb(el, newCurrentNode)) || [];
+    newCurrentNode.children = [...newCurrentNode.children!, ...childNodeList];
     return newCurrentNode;
   };
+
+  if (Array.isArray(nodeSchema)) {
+    return nodeSchema.map((el) => {
+      return tb(el, parent);
+    });
+  } else {
+    return tb(nodeSchema, parent);
+  }
+};
+
+export const transformPageSchemaToTreeData = (
+  pageSchema: CPageDataType,
+  pageModel: CPage
+): TreeNodeData[] => {
+  const tree = pageSchema.componentsTree;
+  let child = (tree.children || []) as CNodeDataType[];
+  if (!Array.isArray(child)) {
+    child = [];
+  }
 
   const rootNode: TreeNodeData = {
     title: 'Page',
     key: tree.id || 'Page',
     children: [],
   };
-
-  rootNode.children = child.map((el) => tb(el, rootNode));
-
+  rootNode.children = transformNodeSchemaToTreeData(
+    child,
+    rootNode,
+    pageModel
+  ) as TreeNodeData[];
+  console.log('rootNode', rootNode);
   return [rootNode];
 };
 

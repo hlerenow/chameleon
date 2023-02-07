@@ -57,7 +57,10 @@ export class TreeView extends React.Component<
     const { pluginCtx } = this.props;
     const { pageModel } = pluginCtx;
     const plainTreeData = pageModel.export(ExportTypeEnum.DESIGN);
-    const tempTreeData = transformPageSchemaToTreeData(plainTreeData);
+    const tempTreeData = transformPageSchemaToTreeData(
+      plainTreeData,
+      pageModel
+    );
     this.setState({
       treeData: tempTreeData,
     });
@@ -106,6 +109,10 @@ export class TreeView extends React.Component<
     });
     pluginCtx.globalEmitter.on('onSelectNodeChange', ({ node }: any) => {
       const parentPaths = this.getParentKeyPaths(node.id);
+      console.log(
+        '🚀 ~ file: index.tsx:112 ~ pluginCtx.globalEmitter.on ~ parentPaths',
+        parentPaths
+      );
       const newExpandKeys = Array.from(
         new Set([...this.state.expandKeys, ...parentPaths])
       );
