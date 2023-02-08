@@ -35,12 +35,15 @@ export const TreeNode = (props: TreeNodeProps) => {
   const selected = ctxState.currentSelectNodeKeys.find((el) => el === item.key);
 
   const toggleSelectNode = () => {
+    if (item.canBeSelected !== undefined && item.canBeSelected === false) {
+      return;
+    }
     let newKeys = ctxState.currentSelectNodeKeys;
     if (!ctxState.multiSelect) {
       if (item.key) {
-        onSelectNode?.({ keys: [item.key] });
+        onSelectNode?.({ keys: [item.key], node: item });
       } else {
-        onSelectNode?.({ keys: [] });
+        onSelectNode?.({ keys: [], node: item });
       }
 
       updateState({
@@ -53,17 +56,21 @@ export const TreeNode = (props: TreeNodeProps) => {
     } else {
       newKeys.push(String(item.key));
     }
-    onSelectNode?.({ keys: newKeys });
+    onSelectNode?.({ keys: newKeys, node: item });
     updateState({
       currentSelectNodeKeys: newKeys,
     });
   };
   const singPadding = 20;
   const indent = singPadding * level;
+  const canBeSelected = item.canBeSelected ?? true;
   return (
     <div className={styles.nodeBox}>
       <div
-        className={clsx([styles.nodeContent, selected && styles.selected])}
+        className={clsx([
+          styles.nodeContent,
+          selected && canBeSelected && styles.selected,
+        ])}
         style={{ marginLeft: `${-indent}px`, paddingLeft: `${indent + 8}px` }}
       >
         {item.children?.length ? (

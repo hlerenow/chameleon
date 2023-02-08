@@ -8,6 +8,7 @@ import { CNode, ExportTypeEnum } from '@chameleon/model';
 import React from 'react';
 import { WithTranslation } from 'react-i18next';
 import { CPluginCtx } from '../../../../core/pluginManager';
+import { LOGGER } from '../../../../utils/logger';
 import { DesignerExports } from '../../../Designer';
 import {
   calculateDropPosInfo,
@@ -68,7 +69,7 @@ export class TreeView extends React.Component<
 
   getParentKeyPaths = (targetKey: string) => {
     const { treeData } = this.state;
-    let target: TreeNodeData | null = null;
+    let target: TreeNodeData = null as any;
     traverseTree(treeData, (node) => {
       if (node.key === targetKey) {
         target = node;
@@ -78,7 +79,7 @@ export class TreeView extends React.Component<
     });
 
     if (target) {
-      let tempNode = target as TreeNodeData | undefined | null;
+      let tempNode = target?.parent as TreeNodeData | undefined | null;
       const res = [];
       while (tempNode) {
         if (tempNode.key) {
@@ -99,6 +100,7 @@ export class TreeView extends React.Component<
       block: 'center',
     });
   };
+
   componentDidMount(): void {
     this.updateTreeDataFromNode();
     const { pluginCtx } = this.props;
@@ -109,10 +111,7 @@ export class TreeView extends React.Component<
     });
     pluginCtx.globalEmitter.on('onSelectNodeChange', ({ node }: any) => {
       const parentPaths = this.getParentKeyPaths(node.id);
-      console.log(
-        '🚀 ~ file: index.tsx:112 ~ pluginCtx.globalEmitter.on ~ parentPaths',
-        parentPaths
-      );
+      LOGGER.debug('onSelectNodeChange parent path', parentPaths, node);
       const newExpandKeys = Array.from(
         new Set([...this.state.expandKeys, ...parentPaths])
       );
@@ -137,6 +136,31 @@ export class TreeView extends React.Component<
       });
     }
   }
+
+  containNode = (parentNode: TreeNodeData, targetNode: TreeNodeData) => {
+    let res = null;
+    traverseTree(parentNode, (node) => {
+      if (node.key === targetNode.key) {
+        res = node;
+        return true;
+      }
+      return false;
+    });
+    return res;
+  };
+
+  getTreeNodeByKey = (key: string): TreeNodeData | null => {
+    const { treeData } = this.state;
+    let target: TreeNodeData | null = null;
+    traverseTree(treeData, (node) => {
+      if (node.key === key) {
+        target = node;
+        return true;
+      }
+      return false;
+    });
+    return target;
+  };
 
   registerDragEvent = () => {
     if (!this.domRef.current) {
@@ -169,6 +193,13 @@ export class TreeView extends React.Component<
       }
 
       const targetNode = pageModel.getNode(targetNodeId);
+      const targetTreeNode = this.getTreeNodeByKey(targetNodeId);
+      if (
+        targetTreeNode?.canDrag !== undefined &&
+        targetTreeNode?.canDrag === false
+      ) {
+        return;
+      }
       if (!targetNode) {
         console.log('targetNode not found');
         return;
@@ -186,36 +217,66 @@ export class TreeView extends React.Component<
       const targetDom = eventObj.event.target as HTMLDivElement;
 
       if (!targetDom) {
-        return;
+        LOGGER.debug('drop dom not found');
+        return eventObj;
       }
       const targetNodeId = getTargetMNodeKeyVal(targetDom, DRAG_ITEM_KEY);
 
       if (!targetNodeId) {
-        return;
+        LOGGER.debug(
+          'targetNodeId dom not found',
+          eventObj,
+          targetDom,
+          DRAG_ITEM_KEY
+        );
+        return eventObj;
+      }
+      const targetTreeNode = this.getTreeNodeByKey(targetNodeId);
+      if (
+        targetTreeNode?.canDrop !== undefined &&
+        targetTreeNode.canDrop === false
+      ) {
+        LOGGER.debug('node can not be drop by tree node config');
+        return eventObj;
       }
 
       const targetNode = pageModel.getNode(targetNodeId);
+
       if (!targetNode) {
-        console.log('targetNode not found');
-        return;
+        LOGGER.debug('targetNode not found');
+        return eventObj;
       }
       const startNode = eventObj.extraData?.startNode as CNode;
       if (!startNode) {
-        return;
+        LOGGER.debug('startNode not found');
+        return eventObj;
       }
 
       if (startNode?.id === targetNode.id) {
-        return;
+        LOGGER.debug('startNode and dropNode is the same');
+        return eventObj;
       }
+      const hasContain = startNode.contains(targetNode.id);
 
-      if (startNode.contains(targetNode as any)) {
-        return;
+      if (hasContain) {
+        LOGGER.debug('startNode contain dropNode');
+        return eventObj;
       }
 
       const dropInfo = calculateDropPosInfo({
         point: eventObj.pointer,
         dom: targetDom,
       });
+
+      if (
+        Array.isArray(targetTreeNode?.canDrop) &&
+        !targetTreeNode?.canDrop.includes(dropInfo.pos)
+      ) {
+        return eventObj;
+      }
+
+      LOGGER.info('can dropNode', targetNode);
+
       const res = {
         ...eventObj,
         extraData: {
@@ -266,6 +327,9 @@ export class TreeView extends React.Component<
       this.setState({
         dragState: DragState.NORMAL,
       });
+    });
+    sensor.emitter.on('drop', (e) => {
+      console.log('dropppppp', e);
     });
   };
 

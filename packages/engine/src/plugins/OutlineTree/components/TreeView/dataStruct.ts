@@ -7,6 +7,9 @@ export type TreeNodeData = {
   key?: string;
   children?: TreeNodeData[];
   parent?: TreeNodeData | null;
+  canBeSelected?: boolean;
+  canDrag?: boolean;
+  canDrop?: boolean | ('before' | 'after' | 'current')[];
 };
 
 const x = 10;

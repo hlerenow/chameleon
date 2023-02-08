@@ -23,22 +23,24 @@
     "@dnd-kit/sortable": "^7.0.2",
     "ahooks": "^3.7.4",
     "antd": "^5.0.0",
+    "consola": "^2.15.3",
     "i18next": "^22.1.5",
     "lodash-es": "^4.17.21",
     "monaco-editor": "^0.34.1",
     "re-resizable": "^6.9.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-i18next": "^12.1.1",
-    "sass": "^1.54.0"
+    "react-i18next": "^12.1.1"
   },
   "devDependencies": {
     "@chameleon/build-script": "*",
+    "@types/consola": "^2.2.5",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "cross-env": "^7.0.3",
     "react-router-dom": "^6.7.0",
-    "rollup-plugin-visualizer": "^5.8.3"
+    "rollup-plugin-visualizer": "^5.8.3",
+    "sass": "^1.54.0"
   },
   "config": {
     "commitizen": {

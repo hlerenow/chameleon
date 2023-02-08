@@ -1,10 +1,8 @@
 import { DropPosType } from '@chameleon/layout/dist/components/DropAnchor/util';
 import {
-  CJSSlotPropDataType,
   CNodeDataType,
   CPage,
   CPageDataType,
-  CSchemaDataType,
   getMTitle,
   isJSSlotPropNode,
   RenderPropType,
@@ -55,6 +53,8 @@ export const transformNodeSchemaToTreeData = (
       title: 'SLOT',
       key: `${node.id}-SLOT`,
       children: propsNodeList,
+      canBeSelected: false,
+      canDrop: false,
       parent: parent,
     };
     const props = node.props || {};
@@ -74,6 +74,9 @@ export const transformNodeSchemaToTreeData = (
           title: plainTitle,
           key: `${node.id}-${keys.join('_')}`,
           children: [],
+          canBeSelected: false,
+          canDrag: false,
+          canDrop: ['current'],
           parent: slotNode,
         };
 
@@ -147,7 +150,6 @@ export const transformPageSchemaToTreeData = (
     rootNode,
     pageModel
   ) as TreeNodeData[];
-  console.log('rootNode', rootNode);
   return [rootNode];
 };
 

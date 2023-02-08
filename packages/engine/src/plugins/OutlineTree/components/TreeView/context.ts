@@ -12,7 +12,7 @@ export type ContextState = {
 export type CTreeContextData = {
   state: ContextState;
   updateState: (state: Partial<ContextState>) => void;
-  onSelectNode: (params: { keys: string[] }) => void;
+  onSelectNode: (params: { keys: string[]; node: TreeNodeData }) => void;
 };
 
 export const CTreeContext = React.createContext<CTreeContextData>({
