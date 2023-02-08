@@ -11,6 +11,7 @@ export declare type CTreeContextData = {
     updateState: (state: Partial<ContextState>) => void;
     onSelectNode: (params: {
         keys: string[];
+        node: TreeNodeData;
     }) => void;
 };
 export declare const CTreeContext: React.Context<CTreeContextData>;
