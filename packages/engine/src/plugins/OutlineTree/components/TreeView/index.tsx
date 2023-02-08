@@ -77,7 +77,7 @@ export class TreeView extends React.Component<
       }
       return false;
     });
-
+    debugger;
     if (target) {
       let tempNode = target?.parent as TreeNodeData | undefined | null;
       const res = [];
@@ -115,6 +115,8 @@ export class TreeView extends React.Component<
       const newExpandKeys = Array.from(
         new Set([...this.state.expandKeys, ...parentPaths])
       );
+
+      LOGGER.debug('onSelectNodeChange newExpandKeys', newExpandKeys, node);
 
       this.setState({
         currentSelectNodeKeys: [node.id],

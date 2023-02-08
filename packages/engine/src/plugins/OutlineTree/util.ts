@@ -49,13 +49,13 @@ export const transformNodeSchemaToTreeData = (
     };
     // 还需要处理 props 中的节点
     const propsNodeList: TreeNodeData[] = [];
-    const slotNode = {
+    const slotNode: TreeNodeData = {
       title: 'SLOT',
       key: `${node.id}-SLOT`,
       children: propsNodeList,
       canBeSelected: false,
       canDrop: false,
-      parent: parent,
+      parent: null,
     };
     const props = node.props || {};
 
@@ -115,6 +115,7 @@ export const transformNodeSchemaToTreeData = (
 
     if (propsNodeList.length > 0) {
       newCurrentNode.children?.push(slotNode);
+      slotNode.parent = newCurrentNode;
     }
     const childNodeList = nodeChild.map((el) => tb(el, newCurrentNode)) || [];
     newCurrentNode.children = [...newCurrentNode.children!, ...childNodeList];
