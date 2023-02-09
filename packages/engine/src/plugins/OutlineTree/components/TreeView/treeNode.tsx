@@ -64,6 +64,10 @@ export const TreeNode = (props: TreeNodeProps) => {
   const singPadding = 20;
   const indent = singPadding * level;
   const canBeSelected = item.canBeSelected ?? true;
+
+  const dragKeyProps = {
+    [DRAG_ITEM_KEY]: item.key,
+  };
   return (
     <div className={styles.nodeBox}>
       <div
@@ -86,7 +90,7 @@ export const TreeNode = (props: TreeNodeProps) => {
         ) : null}
         <div
           className={styles.nodeRenderView}
-          data-drag-key={item.key}
+          {...dragKeyProps}
           onClick={toggleSelectNode}
         >
           {item.title}

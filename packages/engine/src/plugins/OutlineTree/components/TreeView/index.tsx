@@ -33,7 +33,7 @@ enum DragState {
 export class TreeView extends React.Component<
   TreeViewProps,
   ContextState & {
-    dropPosInfo: { x: number; y: number };
+    dropPosInfo: { x: number; y: number } | null;
     dragState: DragState;
   }
 > {
@@ -77,7 +77,6 @@ export class TreeView extends React.Component<
       }
       return false;
     });
-    debugger;
     if (target) {
       let tempNode = target?.parent as TreeNodeData | undefined | null;
       const res = [];
@@ -94,7 +93,7 @@ export class TreeView extends React.Component<
   };
 
   scrollNodeToView = (key: string) => {
-    const dom = document.querySelector(`[data-drag-key="${key}"]`);
+    const dom = document.querySelector(`[${DRAG_ITEM_KEY}="${key}"]`);
     dom?.scrollIntoView({
       behavior: 'smooth',
       block: 'center',
@@ -300,10 +299,13 @@ export class TreeView extends React.Component<
       });
 
       if (!dropNode) {
+        this.setState({
+          dropPosInfo: null,
+        });
         return;
       }
       const dropDom = document.querySelectorAll(
-        `[data-drag-key="${dropNode.id}"]`
+        `[${DRAG_ITEM_KEY}="${dropNode.id}"]`
       )?.[0];
       if (!dropDom) {
         return;
@@ -364,7 +366,7 @@ export class TreeView extends React.Component<
               <TreeNode item={item} key={item.key + `${index}`}></TreeNode>
             );
           })}
-          {dragState === DragState.DRAGGING && (
+          {dragState === DragState.DRAGGING && dropPosInfo && (
             <div
               className={styles.dropAnchorLine}
               style={{

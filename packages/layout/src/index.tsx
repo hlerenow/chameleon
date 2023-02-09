@@ -470,6 +470,11 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       ).shift();
 
       if (!componentInstance) {
+        this.setState({
+          dropComponentInstances: [],
+          dropPosInfos: [],
+          dropEvent: null,
+        });
         return;
       }
       this.setState({
