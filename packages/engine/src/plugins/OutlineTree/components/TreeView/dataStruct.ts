@@ -1,7 +1,14 @@
 import React from 'react';
 
 export type TreeNodeData = {
-  containerRender?: (params: any) => React.ReactNode;
+  containerRender?: (params: {
+    item: TreeNodeData;
+    treeNodeView: JSX.Element;
+  }) => React.ReactElement;
+  titleViewRender?: (params: {
+    item: TreeNodeData;
+    titleView: React.ReactNode;
+  }) => React.ReactElement;
   title: React.ReactNode;
   icon?: React.ReactNode;
   key?: string;

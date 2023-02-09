@@ -1,3 +1,4 @@
+import React from 'react';
 import { DropPosType } from '@chameleon/layout/dist/components/DropAnchor/util';
 import {
   CNodeDataType,
@@ -56,6 +57,19 @@ export const transformNodeSchemaToTreeData = (
       canBeSelected: false,
       canDrop: false,
       parent: null,
+      containerRender: ({ treeNodeView }) => {
+        return (
+          <div
+            style={{
+              border: '1px solid #a97cf8',
+              borderTopWidth: '6px',
+              marginRight: '2px',
+            }}
+          >
+            {treeNodeView}
+          </div>
+        );
+      },
     };
     const props = node.props || {};
 

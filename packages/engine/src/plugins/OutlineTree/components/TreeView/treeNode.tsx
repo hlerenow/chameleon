@@ -68,7 +68,15 @@ export const TreeNode = (props: TreeNodeProps) => {
   const dragKeyProps = {
     [DRAG_ITEM_KEY]: item.key,
   };
-  return (
+
+  let titleView = item.title;
+  if (item.titleViewRender) {
+    titleView = item.titleViewRender({
+      item,
+      titleView: item.title,
+    });
+  }
+  const bodyView = (
     <div className={styles.nodeBox}>
       <div
         className={clsx([
@@ -93,7 +101,7 @@ export const TreeNode = (props: TreeNodeProps) => {
           {...dragKeyProps}
           onClick={toggleSelectNode}
         >
-          {item.title}
+          {titleView}
         </div>
       </div>
       <div
@@ -118,4 +126,12 @@ export const TreeNode = (props: TreeNodeProps) => {
       </div>
     </div>
   );
+  if (item.containerRender) {
+    const containerView = item.containerRender({
+      item: item,
+      treeNodeView: bodyView,
+    });
+    return containerView;
+  }
+  return bodyView;
 };
