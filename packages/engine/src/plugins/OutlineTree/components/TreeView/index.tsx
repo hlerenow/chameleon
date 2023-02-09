@@ -16,7 +16,7 @@ import {
   transformPageSchemaToTreeData,
   traverseTree,
 } from '../../util';
-import { ContextState, CTreeContext } from './context';
+import { ContextState, CTreeContext, DragState } from './context';
 import { TreeNodeData } from './dataStruct';
 import styles from './style.module.scss';
 import { DRAG_ITEM_KEY, TreeNode } from './treeNode';
@@ -26,18 +26,14 @@ interface TreeViewProps extends WithTranslation {
   multiSelect?: boolean;
 }
 
-enum DragState {
-  DRAGGING = 'DRAGGING',
-  NORMAL = 'NORMAL',
-}
 export class TreeView extends React.Component<
   TreeViewProps,
   ContextState & {
     dropPosInfo: { x: number; y: number } | null;
-    dragState: DragState;
   }
 > {
   domRef: React.RefObject<HTMLDivElement>;
+  disposeCbList: (() => void)[] = [];
   constructor(props: TreeViewProps) {
     super(props);
     this.domRef = React.createRef<HTMLDivElement>();
@@ -327,6 +323,7 @@ export class TreeView extends React.Component<
         dropPosInfo: newDropInfo,
       });
     });
+
     sensor.emitter.on('dragEnd', (e) => {
       this.setState({
         dragState: DragState.NORMAL,

@@ -1,9 +1,10 @@
+import React, { useContext, useEffect, useRef } from 'react';
 import { RightOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
-import React, { useContext } from 'react';
-import { CTreeContext } from './context';
+import { CTreeContext, DragState } from './context';
 import { TreeNodeData } from './dataStruct';
 import styles from './style.module.scss';
+import { LOGGER } from '../../../../utils/logger';
 
 export const DRAG_ITEM_KEY = 'data-drag-key';
 
@@ -20,7 +21,6 @@ export const TreeNode = (props: TreeNodeProps) => {
     onSelectNode,
   } = useContext(CTreeContext);
   const expanded = ctxState.expandKeys.find((el) => el === item.key);
-
   const toggleExpandNode = () => {
     let newExpandKeys = ctxState.expandKeys;
     if (expanded) {
@@ -69,6 +69,38 @@ export const TreeNode = (props: TreeNodeProps) => {
     [DRAG_ITEM_KEY]: item.key,
   };
 
+  const updateExpandKeyRef = useRef<(key: string) => void>();
+  const ctxStateRef = useRef<typeof ctxState>();
+  ctxStateRef.current = ctxState;
+  updateExpandKeyRef.current = (key) => {
+    const oldExpandKeys = ctxState.expandKeys;
+    const newExpandKeys = Array.from(new Set([...oldExpandKeys, key]));
+    updateState({
+      expandKeys: newExpandKeys,
+    });
+  };
+  const domRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    // auto expand on dragging
+    let timerHandler = 0;
+    domRef.current?.addEventListener('mouseenter', () => {
+      timerHandler = window.setTimeout(() => {
+        if (ctxStateRef.current?.dragState === DragState.DRAGGING) {
+          updateExpandKeyRef.current?.(item.key || '');
+        }
+      }, 0.8 * 1000);
+    });
+    domRef.current?.addEventListener('mouseleave', () => {
+      clearTimeout(timerHandler);
+    });
+
+    return () => {
+      if (timerHandler) {
+        clearTimeout(timerHandler);
+      }
+    };
+  }, []);
+
   let titleView = item.title;
   if (item.titleViewRender) {
     titleView = item.titleViewRender({
@@ -99,6 +131,7 @@ export const TreeNode = (props: TreeNodeProps) => {
         <div
           className={styles.nodeRenderView}
           {...dragKeyProps}
+          ref={domRef}
           onClick={toggleSelectNode}
         >
           {titleView}

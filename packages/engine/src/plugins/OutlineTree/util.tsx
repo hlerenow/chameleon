@@ -64,6 +64,7 @@ export const transformNodeSchemaToTreeData = (
               border: '1px solid #a97cf8',
               borderTopWidth: '6px',
               marginRight: '2px',
+              marginTop: '5px',
             }}
           >
             {treeNodeView}
