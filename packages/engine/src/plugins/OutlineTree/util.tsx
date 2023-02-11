@@ -1,12 +1,18 @@
 import React from 'react';
 import { DropPosType } from '@chameleon/layout/dist/components/DropAnchor/util';
 import {
+  CNode,
   CNodeDataType,
   CPage,
   CPageDataType,
   getMTitle,
   isJSSlotPropNode,
+  isSpecialMaterialPropType,
+  MaterialPropType,
+  MTitle,
   RenderPropType,
+  SetterObjType,
+  SetterType,
 } from '@chameleon/model';
 import { isPlainObject } from 'lodash-es';
 import { TreeNodeData } from './components/TreeView/dataStruct';
@@ -79,8 +85,12 @@ export const transformNodeSchemaToTreeData = (
 
       if (flag) {
         const tempVal = val as RenderPropType;
-        const propsTitle = pageModel.getNode(node.id!)?.props[key]?.material
-          ?.title;
+        // debugger;
+        const pageModeNode = pageModel.getNode(node.id!);
+        let propsTitle = '';
+        if (pageModeNode) {
+          propsTitle = getPropsLabel(pageModeNode as CNode, [...keys, key]);
+        }
         let plainTitle = key;
         if (propsTitle) {
           plainTitle = getMTitle(propsTitle) || key;
@@ -112,16 +122,27 @@ export const transformNodeSchemaToTreeData = (
       }
       if (isPlainObject(val)) {
         const tempVal = val as any;
-        Object.keys(tempVal).forEach((key) => {
-          processProps(tempVal[key], key, [...keys, key]);
+        Object.keys(tempVal).forEach((newKey) => {
+          processProps(tempVal[newKey], newKey, [...keys, key]);
         });
       }
       if (Array.isArray(val)) {
         const tempVal = val as any[];
         tempVal.forEach((item, index) => {
-          processProps(item, String(index), [...keys, String(index)]);
+          processProps(item, String(index), [...keys, key]);
         });
       }
+    };
+    const getPropsLabel = (nodeModel: CNode, keyPath: string[]) => {
+      const propsLabelMap = getNodePropsLabelMap(nodeModel);
+      const newKeyPath = keyPath.map((el) => {
+        if (String(parseInt(el, 10)) === el) {
+          return '$NUM';
+        } else {
+          return el;
+        }
+      });
+      return propsLabelMap[newKeyPath.join('.')] || '';
     };
 
     Object.keys(props).forEach((key) => {
@@ -231,3 +252,71 @@ export function calculateDropPosInfo(params: {
     direction: 'vertical',
   };
 }
+
+//TODO:  移动到 model 包中去
+export const getNodePropsLabelMap = (node: CNode) => {
+  const resMap: Record<string, MTitle> = {};
+  const props = node.material?.value.props;
+  if (!props) {
+    return resMap;
+  }
+  const singleProcessUnit = (val: SetterType, paths: string[]) => {
+    if (isPlainObject(val)) {
+      const newPaths = [...paths];
+      const objSetter = val as SetterObjType;
+      const componentName = objSetter.componentName;
+      if (componentName === 'ArraySetter') {
+        const arrItemSetter = objSetter.props?.item.setters || [];
+        const parentTitle = resMap[paths.join('.')];
+        let currentTitle = '';
+        if (typeof parentTitle === 'string') {
+          currentTitle = parentTitle;
+        } else {
+          currentTitle = parentTitle.label;
+        }
+        newPaths.push('$NUM');
+        arrItemSetter.forEach((el) => {
+          currentTitle = `${currentTitle}`;
+          resMap[newPaths.join('.')] = currentTitle;
+          singleProcessUnit(el, newPaths);
+        });
+      } else if (componentName === 'ShapeSetter') {
+        const elements = objSetter.props?.elements || [];
+        elements.forEach((it) => {
+          const newObjPaths = [...newPaths];
+          newObjPaths.push(it.name);
+          resMap[newObjPaths.join('.')] = it.title;
+          const subSetter = it.setters || [];
+          subSetter.forEach((it2) => {
+            singleProcessUnit(it2, [...newObjPaths]);
+          });
+        });
+      }
+    }
+  };
+
+  props.forEach((item) => {
+    let targetItem: MaterialPropType | MaterialPropType[] | null = null;
+    if (isSpecialMaterialPropType(item)) {
+      targetItem = item.content;
+    } else {
+      targetItem = item;
+    }
+    let itemArr: MaterialPropType[] = [];
+    if (Array.isArray(targetItem)) {
+      itemArr = targetItem;
+    } else {
+      itemArr = [targetItem];
+    }
+
+    itemArr.forEach((it) => {
+      const newPaths: string[] = [it.name];
+      resMap[newPaths.join('.')] = it.title;
+      it.setters?.forEach((it2) => {
+        singleProcessUnit(it2, newPaths);
+      });
+    });
+  });
+
+  return resMap;
+};

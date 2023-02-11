@@ -178,6 +178,12 @@ export const TableMeta: CMaterialType = {
                         setters: ['StringSetter'],
                       },
                       {
+                        name: 'render',
+                        title: '渲染组件',
+                        valueType: 'component',
+                        setters: ['ComponentSetter'],
+                      },
+                      {
                         name: 'filteredValue',
                         title: '过滤值',
                         valueType: 'array',
