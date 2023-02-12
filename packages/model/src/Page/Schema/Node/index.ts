@@ -1,9 +1,13 @@
-import { get, isPlainObject } from 'lodash-es';
+import { get, isPlainObject, merge } from 'lodash-es';
 import { object } from 'superstruct';
 import { CSchema } from '..';
 import { ExportType } from '../../../const/schema';
 import { CMaterials } from '../../../Material';
-import { CNodeDataStructDescribe, CNodeDataType } from '../../../types/node';
+import {
+  CNodeDataStructDescribe,
+  CNodeDataType,
+  CPropObjDataType,
+} from '../../../types/node';
 import { getRandomStr, clearSchema, getNode } from '../../../util';
 import { checkComplexData } from '../../../util/dataCheck';
 import {
@@ -29,6 +33,9 @@ export type CNodeModelDataType = Omit<CNodeDataType, 'children'> & {
   id: string;
   children: (CNode | string)[];
   props: Record<string, CProp>;
+  tempDevConfig: {
+    props: CPropObjDataType;
+  };
 };
 
 export const parseNode = (
@@ -44,6 +51,12 @@ export const parseNode = (
     id: data.id ?? getRandomStr(),
     children: [],
     props: {},
+    tempDevConfig: merge(
+      {
+        props: {},
+      },
+      data.tempDevConfig || {}
+    ),
   };
 
   const propsKeys = Object.keys(data.props || {});

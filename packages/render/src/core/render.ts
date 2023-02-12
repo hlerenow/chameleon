@@ -79,6 +79,7 @@ export class Render extends React.Component<
         refs: this.refManager,
       },
       renderMode: props.renderMode,
+      processNodeConfigHook: props.processNodeConfigHook,
     });
 
     return PageRoot;

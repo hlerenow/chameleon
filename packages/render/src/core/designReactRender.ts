@@ -6,7 +6,7 @@ import {
   CSchema,
   getRandomStr,
 } from '@chameleon/model';
-import { isArray, isPlainObject } from 'lodash-es';
+import { isArray, isPlainObject, merge } from 'lodash-es';
 import React, { useMemo, useRef } from 'react';
 import { RenderPropsType, Render, UseRenderReturnType } from './render';
 import * as ReactDOM from 'react-dom';
@@ -244,6 +244,22 @@ export class DesignRender extends React.Component<DesignRenderProp> {
     return React.createElement(Render, {
       onGetComponent,
       ...renderProps,
+      // 拦截特殊属性配置, 配合开发模式使用
+      processNodeConfigHook: (config, node) => {
+        if (node.nodeType !== 'NODE') {
+          return config;
+        }
+        const { props, condition } = config;
+        const tempDevConfig = node.value.tempDevConfig;
+        let newCondition = condition;
+        if (tempDevConfig.condition === false) {
+          newCondition = tempDevConfig.condition as boolean;
+        }
+        return {
+          props: merge(props, tempDevConfig.props || {}),
+          condition: newCondition,
+        };
+      },
       renderMode: 'design',
       ref: this.renderRef,
     });

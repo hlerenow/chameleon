@@ -365,10 +365,12 @@ export type CMaterialType = {
   props: CMaterialPropsType;
   // 可以拖入组件
   isContainer?: boolean | ContainerConfig;
+  // 浮层组件
   isModal?:
     | boolean
     | {
         visibleKey: string;
+        defaultValue: any;
       };
   // 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize
   isLayout?: boolean;

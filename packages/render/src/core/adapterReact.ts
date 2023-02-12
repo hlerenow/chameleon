@@ -29,27 +29,20 @@ import {
 import { DYNAMIC_COMPONENT_TYPE, InnerPropList } from '../const';
 import { StoreApi } from 'zustand/vanilla';
 import { StoreManager } from './storeManager';
-import { RenderInstance } from './type';
 
-class DefineReactAdapter {
+export class DefineReactAdapter {
   renderMode: AdapterOptionType['renderMode'] = 'normal';
   components: AdapterOptionType['components'] = {};
   storeManager = new StoreManager();
   runtimeComponentCache = new Map();
-  onGetRef?: (
-    ref: React.RefObject<ReactInstance>,
-    nodeModel: CNode | CSchema,
-    handle: RenderInstance
-  ) => void;
-  onGetComponent:
-    | ((component: (...args: any) => any, currentNode: CNode | CSchema) => void)
-    | undefined;
-  onComponentMount:
-    | ((instance: React.ReactInstance, node: CNode | CSchema) => void)
-    | undefined;
-  onComponentDestroy:
-    | ((instance: React.ReactInstance, node: CNode | CSchema) => void)
-    | undefined;
+  onGetRef?: AdapterOptionType['onGetRef'];
+  onGetComponent: AdapterOptionType['onGetComponent'];
+  onComponentMount: AdapterOptionType['onComponentMount'];
+
+  onComponentDestroy: AdapterOptionType['onComponentDestroy'];
+
+  // 处理 props 钩子
+  processNodeConfigHook?: AdapterOptionType['processNodeConfigHook'];
   getComponent(currentNode: CNode | CSchema) {
     const componentName = currentNode.value.componentName;
     let res: any =
@@ -88,6 +81,7 @@ class DefineReactAdapter {
       onComponentMount,
       onComponentDestroy,
       renderMode,
+      processNodeConfigHook,
     }: AdapterOptionType
   ) {
     this.renderMode = renderMode;
@@ -96,6 +90,8 @@ class DefineReactAdapter {
     this.onGetComponent = onGetComponent;
     this.onComponentMount = onComponentMount;
     this.onComponentDestroy = onComponentDestroy;
+    this.processNodeConfigHook = processNodeConfigHook;
+
     //做一些全局 store 操作
     const rootNode = pageModel.value.componentsTree;
     const component = this.getComponent(rootNode);
@@ -514,19 +510,33 @@ class DefineReactAdapter {
         }
 
         // handle children
-        const renderView = that.render(
-          originalComponent,
-          newProps,
-          ...newChildren
-        );
-
         let condition = nodeModel.value.condition ?? true;
         if (typeof condition !== 'boolean') {
           const conditionObj = condition as JSExpressionPropType;
-          condition = runExpression(conditionObj.value, newContext || {});
+          condition = runExpression(
+            conditionObj.value,
+            newContext || {}
+          ) as boolean;
         }
-        this._CONDITION = condition as boolean;
-        if (!condition) {
+        let finalNodeConfig = {
+          condition,
+          props: newProps,
+        };
+        if (that.processNodeConfigHook) {
+          finalNodeConfig = that.processNodeConfigHook(
+            finalNodeConfig,
+            nodeModel as CNode
+          );
+        }
+
+        const renderView = that.render(
+          originalComponent,
+          finalNodeConfig.props,
+          ...newChildren
+        );
+
+        this._CONDITION = finalNodeConfig.condition as boolean;
+        if (!finalNodeConfig.condition) {
           return React.createElement(
             'div',
             {

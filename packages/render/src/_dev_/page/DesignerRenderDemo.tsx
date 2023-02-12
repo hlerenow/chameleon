@@ -7,7 +7,7 @@ import {
 } from '@chameleon/demo-page';
 import { ReactAdapter } from '../../index';
 import '../index.css';
-import { DesignRender, useDesignRender } from '../../core/designRender';
+import { DesignRender, useDesignRender } from '../../core/designReactRender';
 import { CPage } from '@chameleon/model';
 import { components } from '../components';
 import { PageData } from './demoPageData';

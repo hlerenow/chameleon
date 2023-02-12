@@ -42,6 +42,16 @@ export type AdapterOptionType = {
   ) => void;
   onComponentMount?: (instance: ReactInstance, node: CNode | CSchema) => void;
   onComponentDestroy?: (instance: ReactInstance, node: CNode | CSchema) => void;
+  processNodeConfigHook?: (
+    config: {
+      condition: boolean;
+      props: Record<string, any>;
+    },
+    node: CNode
+  ) => {
+    condition: boolean;
+    props: Record<string, any>;
+  };
   renderMode?: 'design' | 'normal';
 };
 

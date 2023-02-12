@@ -108,7 +108,6 @@ export const TreeNode = (props: TreeNodeProps) => {
 
   const toggleNodeVisible = () => {
     const newVisible = !nodeVisible;
-    console.log('!nodeVisible', newVisible);
 
     const targetNodeModel = ctxState.pageModel?.getNode(
       item.key || ''
@@ -116,9 +115,9 @@ export const TreeNode = (props: TreeNodeProps) => {
     if (!targetNodeModel) {
       return;
     }
-    targetNodeModel.value.condition = newVisible;
+    targetNodeModel.value.tempDevConfig.condition = newVisible;
     targetNodeModel.updateValue();
-    setNodeVisible(!nodeVisible);
+    setNodeVisible(newVisible);
   };
 
   let titleView = item.title;
@@ -142,7 +141,6 @@ export const TreeNode = (props: TreeNodeProps) => {
           }
           const compInstances =
             ctxState.designerHandler?.getDynamicComponentInstances(item.key);
-          console.log('compInstances?._CONDITION', compInstances?._CONDITION);
           if (typeof compInstances?._CONDITION !== 'undefined') {
             setNodeVisible(compInstances?._CONDITION);
           }
