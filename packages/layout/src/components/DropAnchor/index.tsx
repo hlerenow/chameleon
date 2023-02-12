@@ -8,17 +8,17 @@ import React, {
 import styles from './style.module.scss';
 import ReactDOM from 'react-dom';
 import { animationFrame, isDOM } from '../../utils';
-import { DesignRenderInstance } from '@chameleon/render';
+import { RenderInstance } from '@chameleon/render';
 import { DragAndDropEventType } from '../../core/dragAndDrop';
 import clsx from 'clsx';
-import { calculateDropPosInfo, DropPosType } from './util';
+import { DropPosType } from './util';
 
 export type HighlightCanvasRefType = {
   update: () => void;
 };
 
 export type DropAnchorPropsType = {
-  instance: DesignRenderInstance;
+  instance: RenderInstance;
   toolRender?: React.ReactNode;
   mouseEvent: DragAndDropEventType['dragging'] | null;
   style?: React.CSSProperties;
@@ -210,7 +210,7 @@ export const DropAnchorCanvasCore = (
     onDropInfoChange,
     dropInfos,
   }: {
-    instances: DesignRenderInstance[];
+    instances: RenderInstance[];
     mouseEvent: DragAndDropEventType['dragging'] | null;
     toolRender?: React.ReactNode;
     style?: React.CSSProperties;

@@ -137,6 +137,7 @@ export type CNodeDataType = {
       }
     >;
   };
+
   style?: string;
   className?: string;
   refId?: string;
@@ -163,6 +164,11 @@ export type CNodeDataType = {
   };
   // 是否渲染
   condition?: boolean | JSExpressionPropType;
+  // 开发模式下中的临时状态存储，不会被到处
+  tempDevConfig?: {
+    condition?: boolean | JSExpressionPropType;
+    props?: CPropObjDataType;
+  };
   extra?: Record<any, any>;
 };
 
@@ -187,6 +193,7 @@ export const CNodeDataStructDescribe: any = object({
   refId: optional(string()),
   extra: optional(record(any(), any())),
   condition: optional(union([boolean(), JSExpressionDescribe])),
+  tempDevConfig: optional(any()),
   loop: optional(
     object({
       open: boolean(),

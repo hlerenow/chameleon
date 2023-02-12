@@ -11,9 +11,10 @@ import React, { useMemo, useRef } from 'react';
 import { RenderPropsType, Render, UseRenderReturnType } from './render';
 import * as ReactDOM from 'react-dom';
 import ErrorBoundary from './ReactErrorBoundary';
+import { RenderInstance } from './type';
 
 export class ComponentInstanceManager {
-  private instanceMap = new Map<string, DesignRenderInstance[]>();
+  private instanceMap = new Map<string, RenderInstance[]>();
 
   get(id: string) {
     return this.instanceMap.get(id);
@@ -50,14 +51,6 @@ export type DesignRenderProp = Omit<RenderPropsType, 'ref' | 'render'> & {
     | React.ComponentClass<{ node: CNode | CSchema }>
     | React.FunctionComponent<{ node: CNode | CSchema }>
     | string;
-};
-
-type DesignWrapType = {
-  _DESIGN_BOX: boolean;
-  _NODE_MODEL: CNode | CSchema;
-  _NODE_ID: string;
-  _UNIQUE_ID: string;
-  _STATUS?: 'DESTROY';
 };
 
 export const DefaultDropPlaceholder: React.FC<{ node: CNode | CSchema }> = (
@@ -190,7 +183,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
     return this.renderRef.current?.rerender(newPage);
   }
 
-  getInstancesById(id: string, uniqueId?: string): DesignRenderInstance[] {
+  getInstancesById(id: string, uniqueId?: string): RenderInstance[] {
     let res = [...(this.instanceManager.get(id) || [])];
     if (uniqueId !== undefined) {
       res = res.filter((el) => {
@@ -200,7 +193,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
     return res;
   }
 
-  getInstanceByDom(el: HTMLHtmlElement | Element): DesignRenderInstance | null {
+  getInstanceByDom(el: HTMLHtmlElement | Element): RenderInstance | null {
     const fiberNode = findClosetFiberNode(el);
     if (!fiberNode) {
       return null;
@@ -257,18 +250,13 @@ export class DesignRender extends React.Component<DesignRenderProp> {
   }
 }
 
-export type DesignRenderInstance =
-  | (React.ReactInstance & DesignWrapType)
-  | null
-  | undefined;
-
 export type UseDesignRenderReturnType = Pick<
   UseRenderReturnType,
   'rerender'
 > & {
   ref: React.MutableRefObject<DesignRender | null>;
-  getInstancesById: (id: string, uid?: string) => DesignRenderInstance[];
-  getInstanceByDom: (dom: HTMLHtmlElement | Element) => DesignRenderInstance;
+  getInstancesById: (id: string, uid?: string) => RenderInstance[];
+  getInstanceByDom: (dom: HTMLHtmlElement | Element) => RenderInstance | null;
   getDomsById: (id: string, selector?: string) => HTMLElement[];
   getDomRectById: (id: string, selector?: string) => DOMRect | DOMRect[];
 };
@@ -295,7 +283,7 @@ const findClosetFiberNode = (
 
 type SimpleFiberNodeType = {
   return: SimpleFiberNodeType;
-  stateNode: (Element | HTMLElement) & DesignRenderInstance;
+  stateNode: (Element | HTMLElement) & RenderInstance;
 };
 
 const findClosetContainerFiberNode = (
@@ -324,7 +312,7 @@ export const useDesignRender = (): UseDesignRenderReturnType => {
       return ref.current?.getInstancesById(id, uid) || [];
     },
     getInstanceByDom(el) {
-      return ref.current?.getInstanceByDom(el);
+      return ref.current?.getInstanceByDom(el) || null;
     },
     getDomsById(id: string, selector?: string) {
       return ref.current?.getDomsById(id, selector) || [];

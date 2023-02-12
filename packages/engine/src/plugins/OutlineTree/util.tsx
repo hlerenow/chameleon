@@ -180,6 +180,7 @@ export const transformPageSchemaToTreeData = (
   const rootNode: TreeNodeData = {
     title: 'Page',
     key: tree.id || 'Page',
+    rootNode: true,
     children: [],
   };
   rootNode.children = transformNodeSchemaToTreeData(

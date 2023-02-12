@@ -1,7 +1,7 @@
 /* eslint-disable react/no-find-dom-node */
 import React from 'react';
 import styles from './index.module.scss';
-import { DesignRenderInstance } from '@chameleon/render';
+import { RenderInstance } from '@chameleon/render';
 import { DesignRender, DesignRenderProp } from '@chameleon/render';
 import { IFrameContainer } from './core/iframeContainer';
 import {
@@ -55,11 +55,11 @@ export type LayoutStateType = {
   ready: boolean;
   isDragging: boolean;
   mousePointer: Pointer | null;
-  currentSelectInstance: DesignRenderInstance;
-  selectComponentInstances: DesignRenderInstance[];
+  currentSelectInstance: RenderInstance | null;
+  selectComponentInstances: RenderInstance[];
   selectLockStyle: React.CSSProperties;
-  hoverComponentInstances: DesignRenderInstance[];
-  dropComponentInstances: DesignRenderInstance[];
+  hoverComponentInstances: RenderInstance[];
+  dropComponentInstances: RenderInstance[];
   dropPosInfos: DropPosType[];
   dropEvent: DragAndDropEventType['dragging'] | null;
   dropInfo: DropPosType | null;
@@ -400,9 +400,12 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       const { currentSelectInstance } = this.state;
       const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
       const dragStartNode = extraData.startNode!;
-      const startInstance: DesignRenderInstance = (
+      const startInstance: RenderInstance | undefined = (
         this.designRenderRef.current?.getInstancesById(dragStartNode.id) || []
       ).shift();
+      if (!startInstance) {
+        return;
+      }
       const currentSelectDom = this.designRenderRef.current?.getDomsById(
         currentSelectInstance?._NODE_ID || ''
       );

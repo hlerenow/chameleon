@@ -10,6 +10,16 @@
 }
 .nodeBox {
   cursor: pointer;
+  .toolbarBox {
+    display: none;
+    padding-right: 10px;
+  }
+}
+
+.nodeContent:hover {
+  .toolbarBox {
+    display: block;
+  }
 }
 
 .nodeContent {

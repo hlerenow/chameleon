@@ -1,10 +1,15 @@
-import React, { useContext, useEffect, useRef } from 'react';
-import { RightOutlined } from '@ant-design/icons';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import {
+  EyeInvisibleOutlined,
+  EyeOutlined,
+  RightOutlined,
+} from '@ant-design/icons';
 import clsx from 'clsx';
 import { CTreeContext, DragState } from './context';
 import { TreeNodeData } from './dataStruct';
 import styles from './style.module.scss';
 import { LOGGER } from '../../../../utils/logger';
+import { CNode } from '@chameleon/model';
 
 export const DRAG_ITEM_KEY = 'data-drag-key';
 
@@ -15,6 +20,7 @@ export type TreeNodeProps = {
 };
 export const TreeNode = (props: TreeNodeProps) => {
   const { level = 0, item, paths = ['0'] } = props;
+  const [nodeVisible, setNodeVisible] = useState(true);
   const {
     state: ctxState,
     updateState,
@@ -68,7 +74,6 @@ export const TreeNode = (props: TreeNodeProps) => {
   const dragKeyProps = {
     [DRAG_ITEM_KEY]: item.key,
   };
-
   const updateExpandKeyRef = useRef<(key: string) => void>();
   const ctxStateRef = useRef<typeof ctxState>();
   ctxStateRef.current = ctxState;
@@ -101,6 +106,21 @@ export const TreeNode = (props: TreeNodeProps) => {
     };
   }, []);
 
+  const toggleNodeVisible = () => {
+    const newVisible = !nodeVisible;
+    console.log('!nodeVisible', newVisible);
+
+    const targetNodeModel = ctxState.pageModel?.getNode(
+      item.key || ''
+    ) as CNode;
+    if (!targetNodeModel) {
+      return;
+    }
+    targetNodeModel.value.condition = newVisible;
+    targetNodeModel.updateValue();
+    setNodeVisible(!nodeVisible);
+  };
+
   let titleView = item.title;
   if (item.titleViewRender) {
     titleView = item.titleViewRender({
@@ -116,6 +136,17 @@ export const TreeNode = (props: TreeNodeProps) => {
           selected && canBeSelected && styles.selected,
         ])}
         style={{ marginLeft: `${-indent}px`, paddingLeft: `${indent + 8}px` }}
+        onMouseMove={() => {
+          if (!item.key) {
+            return;
+          }
+          const compInstances =
+            ctxState.designerHandler?.getDynamicComponentInstances(item.key);
+          console.log('compInstances?._CONDITION', compInstances?._CONDITION);
+          if (typeof compInstances?._CONDITION !== 'undefined') {
+            setNodeVisible(compInstances?._CONDITION);
+          }
+        }}
       >
         {item.children?.length ? (
           <span
@@ -135,6 +166,16 @@ export const TreeNode = (props: TreeNodeProps) => {
           onClick={toggleSelectNode}
         >
           {titleView}
+        </div>
+        <div className={styles.toolbarBox}>
+          {!item.rootNode && (
+            <div>
+              {!nodeVisible && <EyeOutlined onClick={toggleNodeVisible} />}
+              {nodeVisible && (
+                <EyeInvisibleOutlined onClick={toggleNodeVisible} />
+              )}
+            </div>
+          )}
         </div>
       </div>
       <div

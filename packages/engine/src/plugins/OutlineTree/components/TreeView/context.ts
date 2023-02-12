@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
+import { CPage } from '@chameleon/model';
 import React from 'react';
+import { DesignerExports } from '../../../Designer';
 import { TreeNodeData } from './dataStruct';
 export enum DragState {
   DRAGGING = 'DRAGGING',
@@ -11,6 +13,8 @@ export type ContextState = {
   expandKeys: string[];
   multiSelect: boolean;
   dragState: DragState;
+  pageModel: CPage | null;
+  designerHandler: DesignerExports | null;
 };
 
 export type CTreeContextData = {
@@ -25,6 +29,9 @@ export const CTreeContext = React.createContext<CTreeContextData>({
     currentSelectNodeKeys: [],
     expandKeys: [],
     multiSelect: false,
+    dragState: DragState.NORMAL,
+    pageModel: null,
+    designerHandler: null,
   },
   updateState: () => {},
   onSelectNode: () => {},

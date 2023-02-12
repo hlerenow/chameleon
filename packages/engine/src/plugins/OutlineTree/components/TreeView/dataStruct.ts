@@ -17,6 +17,7 @@ export type TreeNodeData = {
   canBeSelected?: boolean;
   canDrag?: boolean;
   canDrop?: boolean | ('before' | 'after' | 'current')[];
+  rootNode?: boolean;
 };
 
 const x = 10;

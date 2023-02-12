@@ -29,6 +29,7 @@ import {
 import { DYNAMIC_COMPONENT_TYPE, InnerPropList } from '../const';
 import { StoreApi } from 'zustand/vanilla';
 import { StoreManager } from './storeManager';
+import { RenderInstance } from './type';
 
 class DefineReactAdapter {
   renderMode: AdapterOptionType['renderMode'] = 'normal';
@@ -38,7 +39,7 @@ class DefineReactAdapter {
   onGetRef?: (
     ref: React.RefObject<ReactInstance>,
     nodeModel: CNode | CSchema,
-    handle: ReactInstance
+    handle: RenderInstance
   ) => void;
   onGetComponent:
     | ((component: (...args: any) => any, currentNode: CNode | CSchema) => void)
@@ -62,6 +63,7 @@ class DefineReactAdapter {
     if (this.onGetComponent) {
       res = this.onGetComponent?.(res, currentNode);
     }
+
     return res;
   }
 
@@ -266,11 +268,18 @@ class DefineReactAdapter {
   convertModelToComponent(originalComponent: any, nodeModel: CNode | CSchema) {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const that = this;
-    type PropsType = { $$context: ContextType; $$nodeModel: CNode | CSchema };
+    type PropsType = {
+      $$context: ContextType;
+      $$nodeModel: CNode | CSchema;
+    };
 
     class DynamicComponent extends React.Component<PropsType> {
       static __CP_TYPE__ = DYNAMIC_COMPONENT_TYPE;
-      NODE_ID = nodeModel.id;
+      _CONDITION = true;
+      _DESIGN_BOX = false;
+      _NODE_MODEL = nodeModel;
+      _NODE_ID = nodeModel.id;
+
       UNIQUE_ID = `${nodeModel.id}_${getRandomStr()}`;
       targetComponentRef: React.MutableRefObject<any>;
       listenerHandle: (() => void)[] = [];
@@ -355,7 +364,7 @@ class DefineReactAdapter {
 
       componentDidMount(): void {
         if (that.onGetRef) {
-          that.onGetRef(this.targetComponentRef, nodeModel, this);
+          that.onGetRef(this.targetComponentRef, nodeModel, this as any);
         }
         that.onComponentMount?.(this, nodeModel);
         const forceUpdate = () => {
@@ -397,15 +406,6 @@ class DefineReactAdapter {
         tempContext.stateManager = that.storeManager.getStateSnapshot();
         const newContext = that.getContext(tempContext, $$context);
 
-        let condition = nodeModel.value.condition ?? true;
-        if (typeof condition !== 'boolean') {
-          const conditionObj = condition as JSExpressionPropType;
-          condition = runExpression(conditionObj.value, newContext || {});
-        }
-
-        if (!condition) {
-          return null;
-        }
         // 处理循环
         const loopObj = nodeModel.value.loop;
         let loopRes: any[] = [];
@@ -514,7 +514,31 @@ class DefineReactAdapter {
         }
 
         // handle children
-        return that.render(originalComponent, newProps, ...newChildren);
+        const renderView = that.render(
+          originalComponent,
+          newProps,
+          ...newChildren
+        );
+
+        let condition = nodeModel.value.condition ?? true;
+        if (typeof condition !== 'boolean') {
+          const conditionObj = condition as JSExpressionPropType;
+          condition = runExpression(conditionObj.value, newContext || {});
+        }
+        this._CONDITION = condition as boolean;
+        if (!condition) {
+          return React.createElement(
+            'div',
+            {
+              style: {
+                display: 'none',
+              },
+            },
+            renderView
+          );
+        }
+
+        return renderView;
         // 可能能复用 end
       }
     }
@@ -525,6 +549,7 @@ class DefineReactAdapter {
 
     return DynamicComponent;
   }
+
   // 递归建页面组件结构
   buildComponent(
     node: CNode | CSchema | string,

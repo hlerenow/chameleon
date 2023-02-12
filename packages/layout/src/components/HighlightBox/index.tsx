@@ -8,14 +8,14 @@ import React, {
 import styles from './style.module.scss';
 import ReactDOM from 'react-dom';
 import { animationFrame, isDOM } from '../../utils';
-import { DesignRenderInstance } from '@chameleon/render';
+import { RenderInstance } from '@chameleon/render';
 
 export type HighlightCanvasRefType = {
   update: () => void;
 };
 
 export type HighlightBoxPropsType = {
-  instance: DesignRenderInstance;
+  instance: RenderInstance;
   toolRender?: React.ReactNode;
   style?: React.CSSProperties;
   getRef?: (ref: React.RefObject<HighlightCanvasRefType>) => void;
@@ -35,7 +35,7 @@ export const HighlightBox = ({
 
   const toolBoxRef = useRef<HTMLDivElement>(null);
   const [targetDom, setTargetDom] = useState<HTMLElement>();
-  const instanceRef = useRef<DesignRenderInstance>();
+  const instanceRef = useRef<RenderInstance>();
   instanceRef.current = instance;
   useEffect(() => {
     getRef?.(ref);
@@ -133,7 +133,7 @@ export const HighlightCanvasCore = (
     toolRender,
     style,
   }: {
-    instances: DesignRenderInstance[];
+    instances: RenderInstance[];
     toolRender?: React.ReactNode;
     style?: React.CSSProperties;
   },

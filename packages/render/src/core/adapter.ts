@@ -1,6 +1,7 @@
 import { CPage, CNode, CSchema } from '@chameleon/model';
 import { ReactInstance } from 'react';
 import { RefManager } from './refManager';
+import { RenderInstance } from './type';
 
 export type ContextType = {
   params?: Record<any, any>;
@@ -33,7 +34,7 @@ export type AdapterOptionType = {
   onGetRef?: (
     ref: React.RefObject<React.ReactInstance>,
     nodeMode: CNode | CSchema,
-    instance: ReactInstance
+    instance: RenderInstance
   ) => void;
   onGetComponent?: (
     component: (...args: any) => any,

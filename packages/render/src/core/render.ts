@@ -3,6 +3,7 @@ import React, { useRef } from 'react';
 import { InnerComponent } from '../commonComponent';
 import { AdapterOptionType, AdapterType } from './adapter';
 import { RefManager } from './refManager';
+import { RenderInstance } from './type';
 
 export type RenderPropsType = {
   page?: CPageDataType;
@@ -20,6 +21,8 @@ export class Render extends React.Component<
   }
 > {
   refManager: RefManager;
+  // save component instance
+  dynamicComponentInstanceMap = new Map<string, RenderInstance>();
   constructor(props: RenderPropsType) {
     super(props);
     this.state = {
@@ -45,6 +48,7 @@ export class Render extends React.Component<
 
   onGetRef: AdapterOptionType['onGetRef'] = (ref, nodeModel, instance) => {
     this.props.onGetRef?.(ref, nodeModel, instance);
+    this.dynamicComponentInstanceMap.set(nodeModel.id, instance);
     this.refManager.add(nodeModel.value.refId || nodeModel.id, ref);
   };
 
@@ -111,3 +115,5 @@ export const useRender = (): UseRenderReturnType => {
     },
   };
 };
+
+export * from './type';

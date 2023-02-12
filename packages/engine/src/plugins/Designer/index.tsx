@@ -5,6 +5,7 @@ import { CPlugin } from '../../core/pluginManager';
 import { PLUGIN_NAME } from './config';
 import { Designer } from './view';
 import { CPageDataType } from '@chameleon/model';
+import { RenderInstance } from '@chameleon/render';
 
 export const DesignerPlugin: CPlugin = () => {
   const designerRef = React.createRef<Designer>();
@@ -34,6 +35,19 @@ export const DesignerPlugin: CPlugin = () => {
             page
           );
         },
+        getComponentInstances: (id: string) => {
+          return (
+            designerRef.current?.layoutRef.current?.designRenderRef.current?.getInstancesById(
+              id
+            ) || []
+          );
+        },
+        getDynamicComponentInstances: (id: string) => {
+          const map =
+            designerRef.current?.layoutRef.current?.designRenderRef.current
+              ?.renderRef.current?.dynamicComponentInstanceMap;
+          return map?.get(id) || [];
+        },
       } as DesignerExports;
     },
     meta: {
@@ -48,4 +62,6 @@ export type DesignerExports = {
   getDnd: () => DragAndDrop;
   selectNode: (nodeId: string) => void;
   updatePage: (page: CPageDataType) => void;
+  getComponentInstances: (id: string) => RenderInstance[];
+  getDynamicComponentInstances: (id: string) => RenderInstance;
 };

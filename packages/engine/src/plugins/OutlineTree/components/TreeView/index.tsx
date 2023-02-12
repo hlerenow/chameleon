@@ -37,6 +37,9 @@ export class TreeView extends React.Component<
   constructor(props: TreeViewProps) {
     super(props);
     this.domRef = React.createRef<HTMLDivElement>();
+    const designerHandler: DesignerExports =
+      this.props.pluginCtx.pluginManager.get('Designer')?.exports;
+
     this.state = {
       treeData: [],
       currentSelectNodeKeys: [],
@@ -46,6 +49,8 @@ export class TreeView extends React.Component<
         x: 0,
         y: 0,
       },
+      pageModel: props.pluginCtx.pageModel,
+      designerHandler: designerHandler,
       dragState: DragState.NORMAL,
     };
   }
