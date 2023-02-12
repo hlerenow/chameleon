@@ -1,5 +1,5 @@
 import { DropPosType } from '@chameleon/layout/dist/components/DropAnchor/util';
-import { CNodeDataType, CPage, CPageDataType } from '@chameleon/model';
+import { CNode, CNodeDataType, CPage, CPageDataType, MTitle } from '@chameleon/model';
 import { TreeNodeData } from './components/TreeView/dataStruct';
 export declare const getTargetMNodeKeyVal: (dom: HTMLElement | null, key: string) => null | string;
 export declare const transformNodeSchemaToTreeData: (nodeSchema: CNodeDataType | CNodeDataType[], parent: TreeNodeData, pageModel: CPage) => TreeNodeData | TreeNodeData[];
@@ -12,3 +12,4 @@ export declare function calculateDropPosInfo(params: {
     };
     dom: HTMLElement;
 }): DropPosType;
+export declare const getNodePropsLabelMap: (node: CNode) => Record<string, MTitle>;

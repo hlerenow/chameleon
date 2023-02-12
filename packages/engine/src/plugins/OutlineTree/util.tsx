@@ -85,11 +85,14 @@ export const transformNodeSchemaToTreeData = (
 
       if (flag) {
         const tempVal = val as RenderPropType;
-        // debugger;
         const pageModeNode = pageModel.getNode(node.id!);
         let propsTitle = '';
         if (pageModeNode) {
-          propsTitle = getPropsLabel(pageModeNode as CNode, [...keys, key]);
+          const tempTitle = getPropsLabel(pageModeNode as CNode, [
+            ...keys,
+            key,
+          ]);
+          propsTitle = getMTitle(tempTitle);
         }
         let plainTitle = key;
         if (propsTitle) {

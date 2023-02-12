@@ -1,6 +1,13 @@
 import React from 'react';
 export declare type TreeNodeData = {
-    containerRender?: (params: any) => React.ReactNode;
+    containerRender?: (params: {
+        item: TreeNodeData;
+        treeNodeView: JSX.Element;
+    }) => React.ReactElement;
+    titleViewRender?: (params: {
+        item: TreeNodeData;
+        titleView: React.ReactNode;
+    }) => React.ReactElement;
     title: React.ReactNode;
     icon?: React.ReactNode;
     key?: string;
@@ -9,5 +16,6 @@ export declare type TreeNodeData = {
     canBeSelected?: boolean;
     canDrag?: boolean;
     canDrop?: boolean | ('before' | 'after' | 'current')[];
+    rootNode?: boolean;
 };
 export declare const DemoTreeData: TreeNodeData;

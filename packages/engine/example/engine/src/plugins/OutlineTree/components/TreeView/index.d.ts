@@ -7,18 +7,14 @@ interface TreeViewProps extends WithTranslation {
     pluginCtx: CPluginCtx;
     multiSelect?: boolean;
 }
-declare enum DragState {
-    DRAGGING = "DRAGGING",
-    NORMAL = "NORMAL"
-}
 export declare class TreeView extends React.Component<TreeViewProps, ContextState & {
     dropPosInfo: {
         x: number;
         y: number;
-    };
-    dragState: DragState;
+    } | null;
 }> {
     domRef: React.RefObject<HTMLDivElement>;
+    disposeCbList: (() => void)[];
     constructor(props: TreeViewProps);
     updateTreeDataFromNode: () => void;
     getParentKeyPaths: (targetKey: string) => string[];
