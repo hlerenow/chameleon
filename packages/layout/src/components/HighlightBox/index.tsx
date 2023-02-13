@@ -37,16 +37,27 @@ export const HighlightBox = ({
   const [targetDom, setTargetDom] = useState<HTMLElement>();
   const instanceRef = useRef<RenderInstance>();
   instanceRef.current = instance;
+  const updateTargetDom = (ins: RenderInstance) => {
+    // eslint-disable-next-line react/no-find-dom-node
+    let dom = ReactDOM.findDOMNode(ins) as HTMLElement;
+    const rootSelector = instance._NODE_MODEL.material?.value.rootSelector;
+
+    if (rootSelector) {
+      dom = dom.querySelector(rootSelector) || dom;
+    }
+    if (isDOM(dom)) {
+      setTargetDom(dom);
+      return true;
+    }
+    return false;
+  };
+
   useEffect(() => {
     getRef?.(ref);
     if (instance?._STATUS === 'DESTROY') {
       return;
     }
-    // eslint-disable-next-line react/no-find-dom-node
-    const dom = ReactDOM.findDOMNode(instance);
-    if (isDOM(dom)) {
-      setTargetDom(dom as unknown as HTMLElement);
-    }
+    updateTargetDom(instance);
     return () => {
       onRefDestroy?.(ref);
     };
@@ -70,9 +81,13 @@ export const HighlightBox = ({
     }
 
     // eslint-disable-next-line react/no-find-dom-node
-    const dom = ReactDOM.findDOMNode(tempInstance);
+    let dom = ReactDOM.findDOMNode(tempInstance) as HTMLElement;
+    const rootSelector = instance._NODE_MODEL.material?.value.rootSelector;
+    if (rootSelector) {
+      dom = dom.querySelector(rootSelector) || dom;
+    }
     if (isDOM(dom)) {
-      instanceDom = dom as unknown as HTMLElement;
+      instanceDom = dom;
       setTargetDom(instanceDom);
     } else {
       return;

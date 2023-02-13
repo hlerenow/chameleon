@@ -363,15 +363,13 @@ export type CMaterialType = {
   npm: LibMetaType | false;
   snippets: SnippetsType[];
   props: CMaterialPropsType;
+  // 固定的props, 不被 setter 的值覆盖
+  fixedProps?:
+    | Record<string, any>
+    | ((props: Record<string, any>) => Record<string, any>);
   // 可以拖入组件
   isContainer?: boolean | ContainerConfig;
-  // 浮层组件
-  isModal?:
-    | boolean
-    | {
-        visibleKey: string;
-        defaultValue: any;
-      };
+
   // 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize
   isLayout?: boolean;
   isSupportStyle?: boolean;
@@ -443,6 +441,7 @@ export const CMaterialTypeDescribe = object({
       }),
     ])
   ),
+  fixedProps: optional(any()),
   // 可以拖入组件
   isContainer: optional(
     union([

@@ -541,7 +541,18 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       }
       this.setState({
         currentSelectInstance: instance,
-        selectComponentInstances: [...instanceList],
+        selectComponentInstances: [...instanceList].filter((el) => {
+          let res: boolean | undefined;
+          const ins =
+            this.designRenderRef.current?.renderRef?.current?.dynamicComponentInstanceMap.get(
+              el._NODE_ID
+            );
+
+          if (ins) {
+            res = ins._CONDITION;
+          }
+          return res !== false;
+        }),
         hoverComponentInstances: [],
       });
       this.props.onSelectNode?.(instance?._NODE_MODEL as CNode);

@@ -10,8 +10,11 @@ import { getRandomStr } from '../util';
 
 const parseMaterial = (data: CMaterialType): CMaterialStanderType => {
   const newData = cloneDeep(data);
-  newData.snippets = newData.snippets.map((el) => {
+  const snippets = newData.snippets;
+  delete (newData as any).snippets;
+  newData.snippets = snippets.map((el) => {
     return {
+      ...newData,
       ...el,
       id: el.id || `${data.componentName}-${getRandomStr()}`,
       title: el.title || data.title,

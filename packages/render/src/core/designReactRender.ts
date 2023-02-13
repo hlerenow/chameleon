@@ -250,13 +250,29 @@ export class DesignRender extends React.Component<DesignRenderProp> {
           return config;
         }
         const { props, condition } = config;
+        let newProps = { ...props };
         const tempDevConfig = node.value.tempDevConfig;
+        const fixedPropsObj = node.material?.value.fixedProps;
+        if (fixedPropsObj !== undefined) {
+          if (isPlainObject(fixedPropsObj)) {
+            newProps = {
+              ...newProps,
+              ...fixedPropsObj,
+            };
+          } else if (typeof fixedPropsObj === 'function') {
+            const tempProps = fixedPropsObj(newProps);
+            newProps = {
+              ...newProps,
+              ...tempProps,
+            };
+          }
+        }
         let newCondition = condition;
         if (tempDevConfig.condition === false) {
           newCondition = tempDevConfig.condition as boolean;
         }
         return {
-          props: merge(props, tempDevConfig.props || {}),
+          props: merge(newProps, tempDevConfig.props || {}),
           condition: newCondition,
         };
       },

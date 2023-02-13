@@ -17,6 +17,11 @@ export const ModalMeta: CMaterialType = {
       setters: ['JSONSetter'],
     },
   ],
+  fixedProps: {
+    open: true,
+    getContainer: false,
+  },
+  rootSelector: '.ant-modal-content',
   snippets: [
     {
       title: '基础元素',
