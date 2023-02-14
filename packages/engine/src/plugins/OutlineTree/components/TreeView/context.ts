@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
+import { Sensor } from '@chameleon/layout';
 import { CPage } from '@chameleon/model';
 import React from 'react';
 import { DesignerExports } from '../../../Designer';
@@ -18,9 +19,11 @@ export type ContextState = {
 };
 
 export type CTreeContextData = {
+  sensor?: Sensor;
   state: ContextState;
   updateState: (state: Partial<ContextState>) => void;
   onSelectNode: (params: { keys: string[]; node: TreeNodeData }) => void;
+  onDeleteNode: (id: string) => void;
 };
 
 export const CTreeContext = React.createContext<CTreeContextData>({
@@ -35,4 +38,5 @@ export const CTreeContext = React.createContext<CTreeContextData>({
   },
   updateState: () => {},
   onSelectNode: () => {},
+  onDeleteNode: (id: string) => {},
 });

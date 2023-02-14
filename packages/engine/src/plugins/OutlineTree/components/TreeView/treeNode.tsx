@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  DeleteOutlined,
   EyeInvisibleOutlined,
   EyeOutlined,
   RightOutlined,
@@ -10,6 +11,7 @@ import { TreeNodeData } from './dataStruct';
 import styles from './style.module.scss';
 import { LOGGER } from '../../../../utils/logger';
 import { CNode } from '@chameleon/model';
+import { Input, InputRef } from 'antd';
 
 export const DRAG_ITEM_KEY = 'data-drag-key';
 
@@ -19,13 +21,22 @@ export type TreeNodeProps = {
   paths?: (string | number)[];
 };
 export const TreeNode = (props: TreeNodeProps) => {
+  const allStateRef = useRef<{ titleEditable: boolean }>({
+    titleEditable: false,
+  });
   const { level = 0, item, paths = ['0'] } = props;
   const [nodeVisible, setNodeVisible] = useState(true);
   const {
     state: ctxState,
     updateState,
     onSelectNode,
+    onDeleteNode,
   } = useContext(CTreeContext);
+
+  const [titleEditable, setTitleEditable] = useState(
+    allStateRef.current?.titleEditable
+  );
+  allStateRef.current.titleEditable = titleEditable;
   const expanded = ctxState.expandKeys.find((el) => el === item.key);
   const toggleExpandNode = () => {
     let newExpandKeys = ctxState.expandKeys;
@@ -39,8 +50,12 @@ export const TreeNode = (props: TreeNodeProps) => {
     });
   };
   const selected = ctxState.currentSelectNodeKeys.find((el) => el === item.key);
-
+  const titleEditInputRef = useRef<InputRef>(null);
   const toggleSelectNode = () => {
+    if (titleEditable) {
+      titleEditInputRef?.current?.focus();
+      return;
+    }
     if (item.canBeSelected !== undefined && item.canBeSelected === false) {
       return;
     }
@@ -99,19 +114,33 @@ export const TreeNode = (props: TreeNodeProps) => {
       clearTimeout(timerHandler);
     });
 
+    const clickHandle = (e: MouseEvent) => {
+      if (allStateRef.current.titleEditable) {
+        if (e.target === titleEditInputRef.current?.input) {
+          return;
+        }
+        setTitleEditable(false);
+        targetNodeModel.updateValue();
+      }
+    };
+
+    document.addEventListener('click', clickHandle);
+
     return () => {
       if (timerHandler) {
         clearTimeout(timerHandler);
       }
+      document.removeEventListener('click', clickHandle);
     };
   }, []);
+
+  const targetNodeModel = useMemo(() => {
+    return ctxState.pageModel?.getNode(item.key || '') as CNode;
+  }, [item.key]);
 
   const toggleNodeVisible = () => {
     const newVisible = !nodeVisible;
 
-    const targetNodeModel = ctxState.pageModel?.getNode(
-      item.key || ''
-    ) as CNode;
     if (!targetNodeModel) {
       return;
     }
@@ -129,6 +158,9 @@ export const TreeNode = (props: TreeNodeProps) => {
       titleView: item.title,
     });
   }
+  const titleText =
+    targetNodeModel?.value.title || targetNodeModel?.value.componentName;
+
   const bodyView = (
     <div className={styles.nodeBox}>
       <div
@@ -164,19 +196,58 @@ export const TreeNode = (props: TreeNodeProps) => {
           {...dragKeyProps}
           ref={domRef}
           onClick={toggleSelectNode}
+          onDoubleClick={() => {
+            // slot 节点，属性节点不能编辑 title
+            if (!targetNodeModel) {
+              return;
+            }
+            setTitleEditable(true);
+            setTimeout(() => {
+              titleEditInputRef.current?.focus();
+            });
+          }}
         >
-          {titleView}
+          {!titleEditable && titleView}
+          {titleEditable && (
+            <div
+              style={{
+                paddingRight: '10px',
+              }}
+            >
+              <Input
+                size="small"
+                maxLength={20}
+                defaultValue={titleText}
+                ref={titleEditInputRef}
+                onPressEnter={() => {
+                  setTitleEditable(false);
+                  targetNodeModel.updateValue();
+                }}
+                onChange={(e) => {
+                  targetNodeModel.value.title = e.target.value;
+                }}
+              />
+            </div>
+          )}
         </div>
-        <div className={styles.toolbarBox}>
-          {!item.rootNode && (
-            <div>
+        {!titleEditable && !item.rootNode && (
+          <div className={styles.toolbarBox}>
+            <div className={styles.iconItem}>
               {!nodeVisible && <EyeOutlined onClick={toggleNodeVisible} />}
               {nodeVisible && (
                 <EyeInvisibleOutlined onClick={toggleNodeVisible} />
               )}
             </div>
-          )}
-        </div>
+            <div
+              className={styles.iconItem}
+              onClick={() => {
+                onDeleteNode(item.key || '');
+              }}
+            >
+              <DeleteOutlined />
+            </div>
+          </div>
+        )}
       </div>
       <div
         className={clsx([styles.nodeChildren, selected && styles.selected])}

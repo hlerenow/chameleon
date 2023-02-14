@@ -14,11 +14,14 @@
     display: none;
     padding-right: 10px;
   }
+  .iconItem {
+    margin-right: 8px;
+  }
 }
 
 .nodeContent:hover {
   .toolbarBox {
-    display: block;
+    display: flex;
   }
 }
 

@@ -34,6 +34,7 @@ export class TreeView extends React.Component<
 > {
   domRef: React.RefObject<HTMLDivElement>;
   disposeCbList: (() => void)[] = [];
+  sensor?: Sensor;
   constructor(props: TreeViewProps) {
     super(props);
     this.domRef = React.createRef<HTMLDivElement>();
@@ -337,16 +338,19 @@ export class TreeView extends React.Component<
     sensor.emitter.on('drop', (e) => {
       console.log('dropppppp', e);
     });
+    this.sensor = sensor;
   };
 
   render() {
     const { treeData, dragState, dropPosInfo } = this.state;
+    const { pluginCtx } = this.props;
+
     return (
       <CTreeContext.Provider
         value={{
+          sensor: this.sensor,
           state: this.state,
           onSelectNode: ({ keys: sk }) => {
-            const { pluginCtx } = this.props;
             const designer = pluginCtx.pluginManager.get('Designer');
             designer?.ctx.emitter.on('ready', () => {
               const designerExports: DesignerExports = designer.exports;
@@ -359,6 +363,9 @@ export class TreeView extends React.Component<
           },
           updateState: (newVal) => {
             this.setState(newVal as any);
+          },
+          onDeleteNode: (id) => {
+            pluginCtx.pageModel.deleteNodeById(id);
           },
         }}
       >
