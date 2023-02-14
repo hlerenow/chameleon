@@ -1,13 +1,8 @@
 import { get, isPlainObject, merge } from 'lodash-es';
-import { object } from 'superstruct';
 import { CSchema } from '..';
 import { ExportType } from '../../../const/schema';
 import { CMaterials } from '../../../Material';
-import {
-  CNodeDataStructDescribe,
-  CNodeDataType,
-  CPropObjDataType,
-} from '../../../types/node';
+import { CNodeDataStructDescribe, CNodeDataType } from '../../../types/node';
 import { getRandomStr, clearSchema, getNode } from '../../../util';
 import { checkComplexData } from '../../../util/dataCheck';
 import {
@@ -33,9 +28,7 @@ export type CNodeModelDataType = Omit<CNodeDataType, 'children'> & {
   id: string;
   children: (CNode | string)[];
   props: Record<string, CProp>;
-  tempDevConfig: {
-    props: CPropObjDataType;
-  };
+  configure: Required<CNodeDataType>['configure'];
 };
 
 export const parseNode = (
@@ -51,12 +44,7 @@ export const parseNode = (
     id: data.id ?? getRandomStr(),
     children: [],
     props: {},
-    tempDevConfig: merge(
-      {
-        props: {},
-      },
-      data.tempDevConfig || {}
-    ),
+    configure: merge(data.configure, {}),
   };
 
   const propsKeys = Object.keys(data.props || {});
@@ -231,15 +219,15 @@ export class CNode {
 
     // handle configure props setter config, clear invalidate setter config
     const configure = data.configure || {};
-    const propsSetter = configure.props || {};
-    const newPropsSetter: typeof configure.props = {};
+    const propsSetter = configure.propsSetter || {};
+    const newPropsSetter: typeof configure.propsSetter = {};
     Object.keys(propsSetter).forEach((key) => {
       const val = get(propsSetter, key, false);
       if (val) {
         newPropsSetter[key] = val;
       }
     });
-    configure.props = newPropsSetter;
+    configure.propsSetter = newPropsSetter;
     // handle configure props setter config, clear invalidate setter config end
 
     let newRes: any = {

@@ -251,7 +251,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
         }
         const { props, condition } = config;
         let newProps = { ...props };
-        const tempDevConfig = node.value.tempDevConfig;
+        const tempDevState = node.value.configure?.devState || {};
         const fixedPropsObj = node.material?.value.fixedProps;
         if (fixedPropsObj !== undefined) {
           if (isPlainObject(fixedPropsObj)) {
@@ -268,11 +268,11 @@ export class DesignRender extends React.Component<DesignRenderProp> {
           }
         }
         let newCondition = condition;
-        if (tempDevConfig.condition === false) {
-          newCondition = tempDevConfig.condition as boolean;
+        if (tempDevState.condition === false) {
+          newCondition = tempDevState.condition as boolean;
         }
         return {
-          props: merge(newProps, tempDevConfig.props || {}),
+          props: merge(newProps, tempDevState.props || {}),
           condition: newCondition,
         };
       },

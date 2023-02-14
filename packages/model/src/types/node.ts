@@ -122,20 +122,25 @@ export type CNodeDataType = {
    */
   configure?: {
     // 由于一个 prop 可能会有多个设置器，这里用来存储当前使用的那个设置器
-    props?: Record<
+    propsSetter?: Record<
       string,
       {
         name: string;
         setter: string;
       }
     >;
-    advance?: Record<
+    advanceSetter?: Record<
       string,
       {
         name: string;
         setter: string;
       }
     >;
+    // 开发模式下中的临时状态存储
+    devState?: {
+      condition?: boolean | JSExpressionPropType;
+      props?: CPropObjDataType;
+    };
   };
 
   style?: string;
@@ -164,11 +169,7 @@ export type CNodeDataType = {
   };
   // 是否渲染
   condition?: boolean | JSExpressionPropType;
-  // 开发模式下中的临时状态存储，不会被到处
-  tempDevConfig?: {
-    condition?: boolean | JSExpressionPropType;
-    props?: CPropObjDataType;
-  };
+
   extra?: Record<any, any>;
 };
 

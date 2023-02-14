@@ -42,8 +42,8 @@ export const PropertyPanel = (props: {
     setterName
   ) => {
     node.value.configure = node.value.configure || {};
-    node.value.configure.props = node.value.configure.props || {};
-    node.value.configure.props[keyPaths.join('.')] = {
+    node.value.configure.propsSetter = node.value.configure.propsSetter || {};
+    node.value.configure.propsSetter[keyPaths.join('.')] = {
       name: keyPaths.join('.'),
       setter: setterName,
     };
@@ -53,7 +53,7 @@ export const PropertyPanel = (props: {
     <div className={styles.CFromRenderBox}>
       <CustomSchemaForm
         key={node.id}
-        defaultSetterConfig={node.value.configure?.props || {}}
+        defaultSetterConfig={node.value.configure.propsSetter || {}}
         onSetterChange={onSetterChange}
         properties={properties}
         initialValue={value}

@@ -115,7 +115,9 @@ export const TreeNode = (props: TreeNodeProps) => {
     if (!targetNodeModel) {
       return;
     }
-    targetNodeModel.value.tempDevConfig.condition = newVisible;
+    const devState = targetNodeModel.value.configure.devState ?? {};
+    devState.condition = newVisible;
+    targetNodeModel.value.configure.devState = devState;
     targetNodeModel.updateValue();
     setNodeVisible(newVisible);
   };

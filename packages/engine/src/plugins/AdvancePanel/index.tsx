@@ -141,8 +141,9 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
     setterName
   ) => {
     node.value.configure = node.value.configure || {};
-    node.value.configure.advance = node.value.configure.advance || {};
-    node.value.configure.advance[keyPaths.join('.')] = {
+    node.value.configure.advanceSetter =
+      node.value.configure.advanceSetter || {};
+    node.value.configure.advanceSetter[keyPaths.join('.')] = {
       name: keyPaths.join('.'),
       setter: setterName,
     };
@@ -185,7 +186,7 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
     <div className={styles.advanceBox}>
       <CustomSchemaForm
         key={node.id}
-        defaultSetterConfig={node.value.configure?.advance || {}}
+        defaultSetterConfig={node.value.configure?.advanceSetter || {}}
         onSetterChange={onSetterChange}
         properties={properties}
         initialValue={{}}
