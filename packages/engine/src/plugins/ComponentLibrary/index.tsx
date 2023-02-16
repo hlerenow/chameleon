@@ -148,41 +148,6 @@ class ComponentLibView extends React.Component<
       dnd.emitter.off('dragStart', dragStart);
     });
     dnd.emitter.on('dragStart', dragStart);
-
-    //   let target: any = null;
-    //   if ((e as any).sensor) {
-    //     const eventObj = e as DragAndDropEventType['click'];
-    //     target = eventObj.event.target;
-    //   } else {
-    //     target = (e as MouseEvent).target;
-    //   }
-    //   if (this.containerRef.current?.contains(target)) {
-    //     console.log('包含');
-    //   } else {
-    //     console.log('不包含');
-    //   }
-    // };
-    // this.disposeList.push(() => {
-    //   dnd.emitter.off('click', globalClick);
-    // });
-
-    // dnd.emitter.on('click', globalClick);
-
-    // document.addEventListener('click', globalClick);
-    // this.disposeList.push(() => {
-    //   document.removeEventListener('click', globalClick);
-    // });
-    // const dragEnd = () => {
-    //   const { workbench } = this.props.pluginCtx;
-    //   if (!workbench.state.leftBoxFixed) {
-    //     workbench.openLeftPanel();
-    //   }
-    // };
-
-    // this.disposeList.push(() => {
-    //   dnd.emitter.off('dragEnd', dragEnd);
-    // });
-    // dnd.emitter.on('dragEnd', dragEnd);
   };
 
   render(): React.ReactNode {
