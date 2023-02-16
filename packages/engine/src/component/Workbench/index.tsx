@@ -137,7 +137,7 @@ export class WorkBench extends React.Component<
 
   onPluginIconClick = (panel: PanelItem) => {
     const { currentActiveLeftPanel } = this.state;
-    if (currentActiveLeftPanel === panel.name) {
+    if (currentActiveLeftPanel === panel.name && this.state.leftBoxVisible) {
       this.closeLeftPanel();
     } else {
       this.openLeftPanel(panel.name);

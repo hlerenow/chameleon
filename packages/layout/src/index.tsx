@@ -403,6 +403,10 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       const startInstance: RenderInstance | undefined = (
         this.designRenderRef.current?.getInstancesById(dragStartNode.id) || []
       ).shift();
+      this.dragStartNode = dragStartNode;
+      this.props.onDragStart?.(this.dragStartNode);
+
+      // dom 不存在
       if (!startInstance) {
         return;
       }
@@ -412,7 +416,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       const dragStartDom = this.designRenderRef.current?.getDomsById(
         dragStartNode.id
       );
-      this.dragStartNode = dragStartNode;
       // 新增节点
       if (extraData?.type === 'NEW_ADD') {
         this.setState({
@@ -455,8 +458,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           hoverComponentInstances: [],
         });
       }
-
-      this.props.onDragStart?.(this.dragStartNode);
     });
 
     sensor.emitter.on('dragging', (e) => {
@@ -606,7 +607,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       hoverBoxStyle = {},
       ghostView = <>Ghost</>,
     } = this.props;
-
     return (
       <div className={styles.layoutContainer} id="iframeBox">
         {/* 左上角添加显示元素名功能 */}

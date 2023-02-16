@@ -167,7 +167,6 @@ export class Designer extends React.Component<
     if (!material) {
       console.warn('material not found', node);
     }
-
     if (!startNode) {
       this.setState({
         hoverToolBar: (
