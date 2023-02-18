@@ -3,13 +3,6 @@ import loadjs from 'loadjs';
 
 export type Asset = AssetPackage;
 
-export const isAssetPackage = (asset: any): asset is AssetPackage => {
-  if (asset?.name && asset?.assets) {
-    return true;
-  }
-  return false;
-};
-
 export class AssetLoader {
   assets: Asset[];
   loadStatus: 'INIT' | 'SUCCESS' | 'ERROR';
@@ -29,7 +22,7 @@ export class AssetLoader {
         item.id = getRandomStr();
       }
       ids.push(item.id);
-      const srcList = item.assets.map((el) => el.src);
+      const srcList = item.resources.map((el) => el.src);
       loadjs(srcList, item.id, {
         async: false,
       });

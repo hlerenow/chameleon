@@ -24,9 +24,27 @@ import { AssetPackage } from '@chameleon/model';
 // },
 const assets: AssetPackage[] = [
   {
-    name: 'antd',
+    package: 'antd',
     globalName: 'antd',
-    assets: [
+    resources: [
+      {
+        src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/reset.css',
+      },
+      {
+        src: 'https://cdn.bootcdn.net/ajax/libs/dayjs/1.11.7/dayjs.min.js',
+      },
+      {
+        src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/antd.js',
+      },
+    ],
+  },
+];
+
+const assetPackagesList = [
+  {
+    package: '@chameleon/mock-material',
+    globalName: 'antd',
+    resources: [
       {
         src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/reset.css',
       },
@@ -122,6 +140,7 @@ export const App = () => {
       schema={page as any}
       material={Material}
       assets={assets}
+      assetPackagesList={assetPackagesList}
       onReady={onReady}
     />
   );

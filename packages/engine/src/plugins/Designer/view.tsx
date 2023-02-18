@@ -39,7 +39,7 @@ export class Designer extends React.Component<
       hoverToolBar: null,
       selectToolBar: null,
       ghostView: null,
-      assets: props.pluginCtx.assets || ([] as AssetPackage[]),
+      assets: props.pluginCtx.pageModel.value.assets || ([] as AssetPackage[]),
     };
     this.layoutRef = React.createRef<Layout>();
   }

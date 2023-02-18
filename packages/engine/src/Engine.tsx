@@ -22,6 +22,7 @@ export type EngineProps = {
   schema: CPageDataType;
   material?: CMaterialType[];
   assets?: AssetPackage[];
+  assetPackagesList?: AssetPackage[];
   onReady?: (ctx: EnginContext) => void;
 };
 
@@ -39,6 +40,7 @@ class Engine extends React.Component<EngineProps> {
     try {
       this.pageModel = new CPage(this.pageSchema, {
         materials: this.material || [],
+        assetPackagesList: props.assetPackagesList || [],
       });
     } catch (e) {
       console.error(e);
@@ -56,7 +58,6 @@ class Engine extends React.Component<EngineProps> {
       workbench: () => this.workbenchRef.current!,
       emitter: this.emitter,
       pageModel: this.pageModel,
-      assets: this.props.assets || [],
       i18n,
     });
 

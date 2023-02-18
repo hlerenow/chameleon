@@ -11,7 +11,7 @@ export type AssetPackage = {
   package: string;
   // window.[globalName]
   globalName: string;
-  assets: AssetItem[];
+  resources: AssetItem[];
 };
 
 export type LibMetaType = {
@@ -35,7 +35,6 @@ export const LibMetaTypeDescribe = object({
   main: optional(string()),
 });
 
-export type ThirdLibType = LibMetaType[];
 export const ThirdLibTypeDescribe = array(LibMetaTypeDescribe);
 
 export type MaterialAssetPackage = {

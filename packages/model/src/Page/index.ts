@@ -15,6 +15,7 @@ import { CProp } from './Schema/Node/prop';
 import { CSlot } from './Schema/Node/slot';
 import { clearSchema, getNode, getRandomStr } from '../util';
 import { InnerComponentNameEnum } from '../types/schema';
+import { AssetPackage } from '../types/base';
 
 export const checkPage = (data: any): CPageDataType => {
   checkComplexData({
@@ -64,13 +65,17 @@ export class CPage {
   data: CPpageDataModelType;
   parent: null | undefined;
   materialsModel: CMaterials;
+  assetPackagesList: AssetPackage[];
+
   constructor(
     data: CPageDataType,
     options?: {
       materials?: any;
+      assetPackagesList?: AssetPackage[];
     }
   ) {
     checkPage(data);
+    this.assetPackagesList = options?.assetPackagesList || [];
     this.rawData = JSON.parse(JSON.stringify(data));
     this.materialsModel = new CMaterials(options?.materials || []);
     this.data = parsePage(data, this, this.materialsModel);
@@ -281,8 +286,19 @@ export class CPage {
   // TODO
   export(mode: ExportType = ExportTypeEnum.SAVE): CPageDataType {
     const componentsTree = this.data.componentsTree.export(mode);
+
+    const assetPackagesList = this.assetPackagesList;
+
+    const assets: AssetPackage[] = [];
+
     const componentsMetaList: ComponentMetaType[] =
       this.materialsModel.usedMaterials.map((it) => {
+        const asset = assetPackagesList.find((el) => {
+          return el.package === it.value.npm.package;
+        });
+        if (asset) {
+          assets.push(asset);
+        }
         return {
           componentName: it.componentName,
           ...cloneDeep(it.value.npm || {}),
@@ -293,7 +309,20 @@ export class CPage {
       ...this.data,
       componentsTree: clearSchema(componentsTree),
       componentsMeta: componentsMetaList,
+      thirdLibs: this.data.thirdLibs,
+      assets: [],
     };
+
+    this.data.thirdLibs?.forEach((el) => {
+      const asset = assetPackagesList.find((el) => {
+        el.package === el.package;
+      });
+      if (asset) {
+        assets.push(asset);
+      }
+    });
+
+    res.assets = assets;
     res = omit(res, ['id']) as any;
     return JSON.parse(JSON.stringify(res));
   }

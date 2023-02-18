@@ -2,7 +2,6 @@ import { any, array, assign, object, optional, string } from 'superstruct';
 import { CSchemaDataType, CSchemaDataTypeDescribe } from './schema';
 import {
   LibMetaType,
-  ThirdLibType,
   ThirdLibTypeDescribe,
   LibMetaTypeDescribe,
   AssetPackage,
@@ -21,7 +20,7 @@ export type CPageDataType = {
     value: string;
   };
   componentsMeta: ComponentMetaType[];
-  thirdLibs?: ThirdLibType[];
+  thirdLibs?: LibMetaType[];
   componentsTree: CSchemaDataType;
   assets?: AssetPackage[];
 };
