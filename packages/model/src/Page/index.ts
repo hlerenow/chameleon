@@ -10,7 +10,7 @@ import { ExportType, ExportTypeEnum } from '../const/schema';
 import { CMaterials } from '../Material';
 import { CNode } from './Schema/Node';
 import { CNodeDataType } from '../types/node';
-import { cloneDeep, isPlainObject, merge, omit } from 'lodash-es';
+import { cloneDeep, isPlainObject, merge, omit, unionBy } from 'lodash-es';
 import { CProp } from './Schema/Node/prop';
 import { CSlot } from './Schema/Node/slot';
 import { clearSchema, getNode, getRandomStr } from '../util';
@@ -322,7 +322,7 @@ export class CPage {
       }
     });
 
-    res.assets = assets;
+    res.assets = unionBy(assets, (el) => el.package);
     res = omit(res, ['id']) as any;
     return JSON.parse(JSON.stringify(res));
   }

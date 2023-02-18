@@ -13,7 +13,7 @@ import { CPluginCtx } from '../../core/pluginManager';
 export type CustomSchemaFormInstance = CForm;
 
 export type CustomSchemaFormProps = {
-  pluginCtx: CPluginCtx;
+  pluginCtx?: CPluginCtx;
   initialValue: Record<string, any>;
   properties: CMaterialPropsType;
   onValueChange?: (val: any) => void;

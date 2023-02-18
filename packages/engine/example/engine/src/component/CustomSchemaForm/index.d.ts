@@ -1,8 +1,10 @@
 import React from 'react';
 import { CMaterialPropsType } from '@chameleon/model';
 import { CForm } from './components/Form';
+import { CPluginCtx } from '../../core/pluginManager';
 export declare type CustomSchemaFormInstance = CForm;
 export declare type CustomSchemaFormProps = {
+    pluginCtx?: CPluginCtx;
     initialValue: Record<string, any>;
     properties: CMaterialPropsType;
     onValueChange?: (val: any) => void;
