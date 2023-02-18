@@ -18,7 +18,7 @@ describe('test node model', () => {
         },
       },
     };
-    const node = new CNode(mockData, { parent: null });
+    const node = new CNode(mockData, { parent: null, materials: null });
     expect(node).not.toBeNull();
     expect(node.value.componentName).toEqual(mockData.componentName);
   });

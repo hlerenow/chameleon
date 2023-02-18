@@ -125,8 +125,12 @@ class ComponentLibView extends React.Component<
       if (!meta) {
         return;
       }
-
       const newNode = pageModel?.createNode(meta.schema);
+
+      const designerHandle = this.props.pluginCtx.pluginManager.get('Designer');
+      const designerExports: DesignerExports = designerHandle?.exports;
+      designerExports.selectNode('');
+
       return {
         ...eventObj,
         extraData: {

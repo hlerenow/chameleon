@@ -6,6 +6,7 @@ import { SetterType } from '@chameleon/model';
 
 import { ArrayItem } from './ArrayItem';
 import { SortItemOrderModal } from './SortItemOrderModal';
+import styles from './style.module.scss';
 
 export type CArraySetterProps = {
   item: {
@@ -94,7 +95,8 @@ export const ArraySetter = ({
       })}
 
       <Button
-        style={{ width: '100%' }}
+        className={styles.addOneBtn}
+        size="small"
         onClick={() => {
           const newVal = [...listValue];
           onValueChange?.([...newVal, initialValue ?? '']);

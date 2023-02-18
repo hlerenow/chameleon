@@ -1,11 +1,11 @@
-import { CPageDataType } from '@chameleon/model';
+import { CPageDataType, InnerComponentNameEnum } from '@chameleon/model';
 
 export const EmptyPage: CPageDataType = {
   version: '1.0.0',
-  pageName: 'EmptyPage',
+  name: 'EmptyPage',
   componentsMeta: [],
   componentsTree: {
-    componentName: 'CPage',
+    componentName: InnerComponentNameEnum.PAGE,
     props: {},
     children: [],
   },

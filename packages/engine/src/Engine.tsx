@@ -4,8 +4,13 @@ import styles from './Engine.module.scss';
 import i18n from './i18n/index';
 import { CPlugin, PluginManager } from './core/pluginManager';
 import mitt, { Emitter } from 'mitt';
-import { CMaterialType, CPage, CPageDataType } from '@chameleon/model';
-import { CAssetPackage } from '@chameleon/layout/dist/types/common';
+import {
+  AssetPackage,
+  CMaterialType,
+  CPage,
+  CPageDataType,
+  EmptyPage,
+} from '@chameleon/model';
 
 export type EnginContext = {
   pluginManager: PluginManager;
@@ -16,7 +21,7 @@ export type EngineProps = {
   plugins: CPlugin[];
   schema: CPageDataType;
   material?: CMaterialType[];
-  assets?: CAssetPackage[];
+  assets?: AssetPackage[];
   onReady?: (ctx: EnginContext) => void;
 };
 
@@ -31,9 +36,15 @@ class Engine extends React.Component<EngineProps> {
     super(props);
     this.pageSchema = props.schema;
     this.material = props.material;
-    this.pageModel = new CPage(this.pageSchema, {
-      materials: this.material || [],
-    });
+    try {
+      this.pageModel = new CPage(this.pageSchema, {
+        materials: this.material || [],
+      });
+    } catch (e) {
+      console.error(e);
+      this.pageModel = new CPage(EmptyPage);
+    }
+
     this.emitter = mitt();
   }
 

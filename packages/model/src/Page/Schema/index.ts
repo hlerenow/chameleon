@@ -1,4 +1,4 @@
-import { omit } from 'lodash-es';
+import { merge, omit } from 'lodash-es';
 import { CPage } from '..';
 import { ExportType, ExportTypeEnum } from '../../const/schema';
 import { CMaterials } from '../../Material';
@@ -40,6 +40,10 @@ export const parseSchema = (
     props: {} as any,
     componentName: InnerComponentNameEnum.PAGE,
     children: [],
+    configure: merge(data.configure || {}, {
+      propsSetter: {},
+      advanceSetter: {},
+    }),
   };
   let child: any = [];
   if (isArray(data.children)) {
@@ -59,8 +63,6 @@ export const parseSchema = (
     } else {
       if (data.children && isPlainObject(data.children)) {
         child.push(new CNode(data.children, { parent: parent, materials }));
-      } else {
-        child.push(data.children, { parent: parent });
       }
     }
   }
@@ -170,14 +172,15 @@ export class CSchema {
     Object.keys(data.props || {}).forEach((key) => {
       props[key] = data.props[key].export(mode);
     });
-    const children: any[] = data.children?.map((child) => {
-      return child.export(mode);
-    });
+    const children: any[] =
+      data.children?.map((child) => {
+        return child?.export?.(mode);
+      }) || [];
 
     const tempData: CSchemaDataType = {
       ...data,
       props: props,
-      children,
+      children: children.filter((el) => el),
     };
     let finalRes: any = omit(tempData, ['id']);
     finalRes = clearSchema(finalRes);

@@ -17,9 +17,8 @@ import {
 import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
 import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
 import { DropAnchorCanvas } from './components/DropAnchor';
-import { CNode, CSchema } from '@chameleon/model';
+import { AssetPackage, CNode, CSchema } from '@chameleon/model';
 import { Pointer } from './core/dragAndDrop/common';
-import { CAssetPackage } from './types/common';
 import {
   calculateDropPosInfo,
   DropPosType,
@@ -37,7 +36,7 @@ export type LayoutDragAndDropExtraDataType = {
 
 export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   renderScriptPath?: string;
-  assets?: CAssetPackage[];
+  assets?: AssetPackage[];
   onSelectNode?: (node: CNode | CSchema | null) => void;
   onHoverNode?: (
     node: CNode | CSchema | null,
@@ -79,7 +78,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   highlightHoverCanvasRef: React.RefObject<HighlightCanvasRefType>;
   highlightDropAnchorCanvasRef: React.RefObject<HighlightCanvasRefType>;
   readyCbList: ((layoutInstance: Layout) => void)[] = [];
-  assets: CAssetPackage[];
+  assets: AssetPackage[];
   dragStartNode: CNode | CSchema | null = null;
   constructor(props: LayoutPropsType) {
     super(props);
@@ -136,11 +135,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     assetLoader
       .onSuccess(() => {
         // 从子窗口获取物料对象
-        const componentCollection = collectVariable(
-          this.assets,
-          'Component',
-          iframeWindow
-        );
+        const componentCollection = collectVariable(this.assets, iframeWindow);
         const components = flatObject(componentCollection);
 
         const App = IframeReact?.createElement(CRender.DesignRender, {
@@ -209,6 +204,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           const instanceList = this.designRenderRef.current.getInstancesById(
             componentInstance._NODE_ID || ''
           );
+          if (componentInstance._NODE_MODEL.nodeType !== 'NODE') {
+            return;
+          }
           this.setState({
             currentSelectInstance: componentInstance,
             selectComponentInstances: [...instanceList],
@@ -535,7 +533,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       const instance = instanceList[0];
       const dom = ReactDOM.findDOMNode(instance) as Element;
       if (dom) {
-        dom.scrollIntoView({
+        dom.scrollIntoView?.({
           behavior: 'smooth',
           block: 'center',
         });
@@ -661,4 +659,3 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
 export * from './core/dragAndDrop';
 export * from './core/iframeContainer';
-export * from './types/common';

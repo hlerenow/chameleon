@@ -96,7 +96,7 @@ export class TreeView extends React.Component<
 
   scrollNodeToView = (key: string) => {
     const dom = document.querySelector(`[${DRAG_ITEM_KEY}="${key}"]`);
-    dom?.scrollIntoView({
+    dom?.scrollIntoView?.({
       behavior: 'smooth',
       block: 'center',
     });

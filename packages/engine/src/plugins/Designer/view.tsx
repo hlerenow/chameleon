@@ -1,15 +1,16 @@
 import React from 'react';
 import { Layout, LayoutDragAndDropExtraDataType } from '@chameleon/layout';
-import styles from './style.module.scss';
-import '@chameleon/layout/dist/style.css';
 import { CNode, CPage, CSchema, InsertNodePosType } from '@chameleon/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import localize from './localize';
-import { CAssetPackage } from '@chameleon/layout/dist/types/common';
 import { PLUGIN_NAME } from './config';
 import { DefaultSelectToolBar } from './components/DefaultSelectToolBar';
 import { getCloseNodeList } from './util';
 import { GhostView } from './components/GhostView';
+
+import styles from './style.module.scss';
+import '@chameleon/layout/dist/style.css';
+import { AssetPackage } from '@chameleon/model';
 
 export type DesignerPropsType = {
   pluginCtx: CPluginCtx;
@@ -20,7 +21,7 @@ type DesignerStateType = {
   hoverToolBar: React.ReactNode;
   selectToolBar: React.ReactNode;
   ghostView: React.ReactNode;
-  assets: CAssetPackage[];
+  assets: AssetPackage[];
 };
 
 export class Designer extends React.Component<
@@ -38,7 +39,7 @@ export class Designer extends React.Component<
       hoverToolBar: null,
       selectToolBar: null,
       ghostView: null,
-      assets: props.pluginCtx.assets || ([] as CAssetPackage[]),
+      assets: props.pluginCtx.assets || ([] as AssetPackage[]),
     };
     this.layoutRef = React.createRef<Layout>();
   }
@@ -82,11 +83,19 @@ export class Designer extends React.Component<
         return;
       }
       if (extraData.type === 'NEW_ADD') {
-        pageModel?.addNode(
-          extraData.startNode as CNode,
-          extraData.dropNode!,
-          posFlag
-        );
+        if (extraData.dropNode?.nodeType !== 'NODE') {
+          pageModel?.addNode(
+            extraData.startNode as CNode,
+            extraData.dropNode!,
+            'CHILD_START'
+          );
+        } else {
+          pageModel?.addNode(
+            extraData.startNode as CNode,
+            extraData.dropNode!,
+            posFlag
+          );
+        }
       } else {
         if (extraData.dropNode?.id === extraData.startNode?.id) {
           console.warn(' id is the same');

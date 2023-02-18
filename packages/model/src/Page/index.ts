@@ -1,15 +1,20 @@
 import { checkComplexData } from '../util/dataCheck';
-import { CPageDataType, CPageDataTypeDescribe } from '../types/page';
+import {
+  ComponentMetaType,
+  CPageDataType,
+  CPageDataTypeDescribe,
+} from '../types/page';
 import { DataModelEmitter } from '../util/modelEmitter';
 import { CSchema } from './Schema';
 import { ExportType, ExportTypeEnum } from '../const/schema';
 import { CMaterials } from '../Material';
 import { CNode } from './Schema/Node';
 import { CNodeDataType } from '../types/node';
-import { isPlainObject, omit } from 'lodash-es';
+import { cloneDeep, isPlainObject, merge, omit } from 'lodash-es';
 import { CProp } from './Schema/Node/prop';
 import { CSlot } from './Schema/Node/slot';
 import { clearSchema, getNode, getRandomStr } from '../util';
+import { InnerComponentNameEnum } from '../types/schema';
 
 export const checkPage = (data: any): CPageDataType => {
   checkComplexData({
@@ -274,14 +279,33 @@ export class CPage {
   }
 
   // TODO
-  export(mode: ExportType = ExportTypeEnum.SAVE) {
+  export(mode: ExportType = ExportTypeEnum.SAVE): CPageDataType {
     const componentsTree = this.data.componentsTree.export(mode);
-    let res = {
+    const componentsMetaList: ComponentMetaType[] =
+      this.materialsModel.usedMaterials.map((it) => {
+        return {
+          componentName: it.componentName,
+          ...cloneDeep(it.value.npm || {}),
+        } as ComponentMetaType;
+      });
+    this.materialsModel.usedMaterials = [];
+    let res: CPageDataType = {
       ...this.data,
       componentsTree: clearSchema(componentsTree),
+      componentsMeta: componentsMetaList,
     };
     res = omit(res, ['id']) as any;
-
     return JSON.parse(JSON.stringify(res));
   }
 }
+
+export const EmptyPage: CPageDataType = {
+  version: '1.0.0',
+  name: 'EmptyPage',
+  componentsMeta: [],
+  componentsTree: {
+    componentName: InnerComponentNameEnum.PAGE,
+    props: {},
+    children: [],
+  },
+};

@@ -3,6 +3,7 @@ import { CMaterialType } from '../../src/types/material';
 import { CNodeDataType } from '../../src/types/node';
 import { CPageDataType } from '../../src/types/page';
 import { BasePage } from '@chameleon/demo-page';
+import { InnerComponentNameEnum } from '../../src/types/schema';
 
 const mockMaterial: CMaterialType[] = [
   {
@@ -90,7 +91,7 @@ const mockPageData: CPageDataType = {
     },
   ],
   componentsTree: {
-    componentName: 'Page',
+    componentName: InnerComponentNameEnum.PAGE,
     children: [mockNodeData],
   },
 };

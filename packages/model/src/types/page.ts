@@ -1,10 +1,11 @@
-import { array, assign, object, optional, string } from 'superstruct';
+import { any, array, assign, object, optional, string } from 'superstruct';
 import { CSchemaDataType, CSchemaDataTypeDescribe } from './schema';
 import {
   LibMetaType,
   ThirdLibType,
   ThirdLibTypeDescribe,
   LibMetaTypeDescribe,
+  AssetPackage,
 } from './base';
 
 export type ComponentMetaType = {
@@ -13,7 +14,7 @@ export type ComponentMetaType = {
 
 export type CPageDataType = {
   version: string;
-  pageName: string;
+  name: string;
   style?: string;
   css?: {
     type: 'css' | 'less' | 'scs';
@@ -22,11 +23,12 @@ export type CPageDataType = {
   componentsMeta: ComponentMetaType[];
   thirdLibs?: ThirdLibType[];
   componentsTree: CSchemaDataType;
+  assets?: AssetPackage[];
 };
 
 export const CPageDataTypeDescribe = object({
   version: string(),
-  pageName: string(),
+  name: string(),
   style: optional(string()),
   css: optional(string()),
   componentsMeta: array(
@@ -39,4 +41,5 @@ export const CPageDataTypeDescribe = object({
   ),
   thirdLibs: optional(ThirdLibTypeDescribe),
   componentsTree: CSchemaDataTypeDescribe,
+  assets: optional(array(any())),
 });

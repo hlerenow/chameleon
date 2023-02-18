@@ -1,19 +1,7 @@
-import { getRandomStr } from '@chameleon/model';
+import { AssetPackage, getRandomStr } from '@chameleon/model';
 import loadjs from 'loadjs';
 
-export type AssetItem = {
-  id?: string;
-  type?: 'CSS' | 'JS';
-  src: string;
-};
-
-export type AssetPackage = {
-  id?: string;
-  name: string;
-  assets: AssetItem[];
-};
-
-export type Asset = AssetItem | AssetPackage;
+export type Asset = AssetPackage;
 
 export const isAssetPackage = (asset: any): asset is AssetPackage => {
   if (asset?.name && asset?.assets) {
@@ -21,8 +9,6 @@ export const isAssetPackage = (asset: any): asset is AssetPackage => {
   }
   return false;
 };
-
-Array.isArray;
 
 export class AssetLoader {
   assets: Asset[];
@@ -43,12 +29,10 @@ export class AssetLoader {
         item.id = getRandomStr();
       }
       ids.push(item.id);
-      if (isAssetPackage(item)) {
-        const srcList = item.assets.map((el) => el.src);
-        loadjs(srcList, item.id);
-      } else {
-        loadjs(item.src, item.id);
-      }
+      const srcList = item.assets.map((el) => el.src);
+      loadjs(srcList, item.id, {
+        async: false,
+      });
     }
     // 在下一个事件循环执行，确保 onSuccess 和 onError 被注册
     setTimeout(() => {

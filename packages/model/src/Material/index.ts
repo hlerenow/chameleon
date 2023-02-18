@@ -84,6 +84,9 @@ export type SnippetsCollection = {
 export class CMaterials {
   private rowData: CMaterialType[];
   private data: CMaterial[];
+  // 使用过的物料
+  usedMaterials: CMaterial[] = [];
+
   constructor(data: any) {
     this.rowData = data;
     checkMaterials(data);

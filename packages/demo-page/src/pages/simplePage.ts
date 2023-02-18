@@ -2,7 +2,7 @@ import { CPageDataType } from '@chameleon/model';
 
 export const SamplePage: CPageDataType = {
   version: '1.0.0',
-  pageName: 'BaseDemoPage',
+  name: 'BaseDemoPage',
   componentsMeta: [],
   componentsTree: {
     id: '1',

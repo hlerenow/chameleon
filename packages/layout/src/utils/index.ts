@@ -1,4 +1,4 @@
-import { CAssetPackage } from '../types/common';
+import { AssetPackage } from '@chameleon/model';
 
 export function addEventListenerReturnCancel<
   K extends keyof HTMLElementEventMap
@@ -47,17 +47,13 @@ export const animationFrame = (stepCb: () => void) => {
   };
 };
 
-export const collectVariable = (
-  assetPackages: CAssetPackage[],
-  resourceType: CAssetPackage['resourceType'],
-  win: Window
-) => {
+export const collectVariable = (assetPackages: AssetPackage[], win: Window) => {
   const res: Record<string, any> = {};
   assetPackages.forEach((el) => {
-    if (el.resourceType === resourceType) {
-      const target = (win as any)[el.name];
+    if (el.globalName) {
+      const target = (win as any)[el.globalName];
       if (target) {
-        res[el.name] = target;
+        res[el.globalName] = target;
       }
     }
   });

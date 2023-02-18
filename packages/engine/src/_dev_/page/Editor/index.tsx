@@ -1,5 +1,4 @@
 import { BasePage, EmptyPage, Material } from '@chameleon/demo-page';
-import { CAssetPackage } from '@chameleon/layout/dist/types/common';
 import { Button, message } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
@@ -9,6 +8,7 @@ import '../../index.css';
 import { DEFAULT_PLUGIN_LIST } from '../../../plugins';
 import { DesignerExports } from '../../../plugins/Designer';
 import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
+import { AssetPackage } from '@chameleon/model';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOM;
@@ -22,10 +22,10 @@ import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 // {
 //   src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/antd.min.js',
 // },
-const assets: CAssetPackage[] = [
+const assets: AssetPackage[] = [
   {
     name: 'antd',
-    resourceType: 'Component',
+    globalName: 'antd',
     assets: [
       {
         src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/reset.css',

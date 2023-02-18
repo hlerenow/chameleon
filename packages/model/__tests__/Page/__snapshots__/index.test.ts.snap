@@ -6,14 +6,23 @@ Object {
     Object {
       "componentName": "Button",
       "exportName": "Button",
-      "package": "antd",
-      "version": "1.0",
+      "package": "demo",
+      "version": "1.0.0",
+    },
+    Object {
+      "componentName": "Header",
+      "exportName": "Header",
+      "package": "demo",
+      "version": "1.0.0",
     },
   ],
   "componentsTree": Object {
     "children": Array [
       Object {
         "componentName": "Header",
+        "configure": Object {
+          "propsSetter": Object {},
+        },
         "id": "1",
         "props": Object {
           "age": 12,
@@ -23,6 +32,9 @@ Object {
             "value": Array [
               Object {
                 "componentName": "Button",
+                "configure": Object {
+                  "propsSetter": Object {},
+                },
                 "id": "2",
               },
             ],
@@ -31,9 +43,10 @@ Object {
         },
       },
     ],
-    "componentName": "Page",
+    "componentName": "CPage",
   },
   "pageName": "testPage",
+  "style": "",
   "version": "1.1.0",
 }
 `;

@@ -6,17 +6,16 @@ import { Layout, LayoutDragAndDropExtraDataType } from '.';
 import * as antD from 'antd';
 import './dev.css';
 import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
-import { CNode, CPage } from '@chameleon/model';
-import { CAssetPackage } from './types/common';
+import { AssetPackage, CNode, CPage } from '@chameleon/model';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOMAll;
 (window as any).ReactDOMClient = ReactDOM;
 
-const assets: CAssetPackage[] = [
+const assets: AssetPackage[] = [
   {
-    name: 'antd',
-    resourceType: 'Component',
+    package: 'antd',
+    globalName: 'antd',
     assets: [
       {
         src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/reset.css',
@@ -36,10 +35,10 @@ const components = {
 };
 
 const App = () => {
-  const [page] = useState<any>(BasePage);
+  const [page] = useState<any>(EmptyPage);
   const [ghostView, setGhostView] = useState(<div>213</div>);
   const [pageModel] = useState<any>(
-    new CPage(BasePage, {
+    new CPage(EmptyPage, {
       materials: Material,
     })
   );

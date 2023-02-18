@@ -44,7 +44,10 @@ export const parseNode = (
     id: data.id ?? getRandomStr(),
     children: [],
     props: {},
-    configure: merge(data.configure, {}),
+    configure: merge(data.configure || {}, {
+      propsSetter: {},
+      advanceSetter: {},
+    }),
   };
 
   const propsKeys = Object.keys(data.props || {});
@@ -229,7 +232,9 @@ export class CNode {
     });
     configure.propsSetter = newPropsSetter;
     // handle configure props setter config, clear invalidate setter config end
-
+    if (this.material) {
+      this.materialsModel.usedMaterials.push(this.material);
+    }
     let newRes: any = {
       ...data,
       configure,

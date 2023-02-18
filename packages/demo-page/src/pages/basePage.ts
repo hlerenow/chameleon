@@ -100,7 +100,7 @@ const columns = [
 
 export const BasePage: CPageDataType = {
   version: '1.0.0',
-  pageName: 'BaseDemoPage',
+  name: 'BaseDemoPage',
   componentsMeta: [],
   componentsTree: {
     id: '1',
@@ -251,18 +251,7 @@ export const BasePage: CPageDataType = {
             value: '$$context.state.data',
           },
         },
-        configure: {
-          props: {
-            name: {
-              name: 'ArraySetter',
-              setter: 'ArraySetter',
-            },
-            'columns.0.title': {
-              name: 'StringSetter',
-              setter: 'NumberSetter',
-            },
-          },
-        },
+        configure: {},
       },
       {
         id: '4',

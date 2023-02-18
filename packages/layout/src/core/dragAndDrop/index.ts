@@ -270,18 +270,6 @@ export class DragAndDrop {
       this.dragStartObj = null;
     };
 
-    // const onMouseUpWrap = (args: any) => {
-    //   this.senorEventPriorityQueueMap['onMouseUp'] =
-    //     this.senorEventPriorityQueueMap['onMouseUp'] || [];
-    //   this.senorEventPriorityQueueMap['onMouseUp'].push({
-    //     priority: sensor.eventPriority,
-    //     handle: () => {
-    //       onMouseUp(args);
-    //     },
-    //   });
-    //   this.flushSenorEventPriorityQueueMap('onMouseUp');
-    // };
-
     sensor.emitter.on('onMouseUp', onMouseUp);
     this.eventHandler.push(() => {
       sensor.emitter.off('onMouseUp', onMouseUp);
