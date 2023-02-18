@@ -3,7 +3,7 @@ import {
   CNode,
   ContainerConfig,
   CPageDataType,
-  CSchema,
+  CRootNode,
   getRandomStr,
 } from '@chameleon/model';
 import { isArray, isPlainObject, merge } from 'lodash-es';
@@ -48,12 +48,12 @@ export type DesignRenderProp = Omit<RenderPropsType, 'ref' | 'render'> & {
   render?: UseDesignRenderReturnType;
   onMount?: (instance: DesignRender) => void;
   dropPlaceholder?:
-    | React.ComponentClass<{ node: CNode | CSchema }>
-    | React.FunctionComponent<{ node: CNode | CSchema }>
+    | React.ComponentClass<{ node: CNode | CRootNode }>
+    | React.FunctionComponent<{ node: CNode | CRootNode }>
     | string;
 };
 
-export const DefaultDropPlaceholder: React.FC<{ node: CNode | CSchema }> = (
+export const DefaultDropPlaceholder: React.FC<{ node: CNode | CRootNode }> = (
   props
 ) => {
   const { node } = props;
@@ -118,7 +118,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
     return this.renderRef.current?.state.pageModel;
   }
 
-  onGetComponent = (comp: any, node: CNode | CSchema) => {
+  onGetComponent = (comp: any, node: CNode | CRootNode) => {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
     class DesignWrap extends React.Component<any> {

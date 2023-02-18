@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout, LayoutDragAndDropExtraDataType } from '@chameleon/layout';
-import { CNode, CPage, CSchema, InsertNodePosType } from '@chameleon/model';
+import { CNode, CPage, CRootNode, InsertNodePosType } from '@chameleon/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import localize from './localize';
 import { PLUGIN_NAME } from './config';
@@ -134,7 +134,7 @@ export class Designer extends React.Component<
     });
   }
 
-  onSelectNode = (node: CNode | CSchema | null) => {
+  onSelectNode = (node: CNode | CRootNode | null) => {
     if (!node) {
       return;
     }
@@ -170,7 +170,7 @@ export class Designer extends React.Component<
     });
   };
 
-  onDragStart = (startNode: CNode | CSchema | null) => {
+  onDragStart = (startNode: CNode | CRootNode | null) => {
     if (!startNode) {
       return;
     }
@@ -179,7 +179,10 @@ export class Designer extends React.Component<
     });
   };
 
-  onHoverNode = (node: CNode | CSchema | null, startNode: CNode | CSchema) => {
+  onHoverNode = (
+    node: CNode | CRootNode | null,
+    startNode: CNode | CRootNode
+  ) => {
     this.props.pluginCtx.emitter.emit('onHover', node);
     const material = node?.material;
     if (!material) {

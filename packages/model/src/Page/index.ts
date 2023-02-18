@@ -5,16 +5,16 @@ import {
   CPageDataTypeDescribe,
 } from '../types/page';
 import { DataModelEmitter } from '../util/modelEmitter';
-import { CSchema } from './Schema';
+import { CRootNode } from './RootNode';
 import { ExportType, ExportTypeEnum } from '../const/schema';
 import { CMaterials } from '../Material';
-import { CNode } from './Schema/Node';
+import { CNode } from './RootNode/Node';
 import { CNodeDataType } from '../types/node';
 import { cloneDeep, isPlainObject, merge, omit, unionBy } from 'lodash-es';
-import { CProp } from './Schema/Node/prop';
-import { CSlot } from './Schema/Node/slot';
+import { CProp } from './RootNode/Node/prop';
+import { CSlot } from './RootNode/Node/slot';
 import { clearSchema, getNode, getRandomStr } from '../util';
-import { InnerComponentNameEnum } from '../types/schema';
+import { InnerComponentNameEnum } from '../types/rootNode';
 import { AssetPackage } from '../types/base';
 
 export const checkPage = (data: any): CPageDataType => {
@@ -34,7 +34,7 @@ export const parsePage = (
 ) => {
   return {
     ...data,
-    componentsTree: new CSchema(data.componentsTree, {
+    componentsTree: new CRootNode(data.componentsTree, {
       parent: parent,
       materials,
     }),
@@ -42,7 +42,7 @@ export const parsePage = (
 };
 
 export type CPpageDataModelType = Omit<CPageDataType, 'componentsTree'> & {
-  componentsTree: CSchema;
+  componentsTree: CRootNode;
 };
 
 export type PosObj = {
@@ -93,13 +93,13 @@ export class CPage {
 
   addNode(
     newNode: CNode,
-    targetNode: CNode | CSchema,
+    targetNode: CNode | CRootNode,
     pos: InsertNodePosType = 'AFTER'
   ) {
     if (pos === 'AFTER' || pos === 'BEFORE') {
       const parentNode = targetNode.parent;
       // 说明是容器节点, 只能插入 child
-      if (parentNode === null && targetNode instanceof CSchema) {
+      if (parentNode === null && targetNode instanceof CRootNode) {
         console.warn('Not found parent node');
         return false;
       }
@@ -248,7 +248,7 @@ export class CPage {
 
   // replaceNode(targetNode, node) {}
 
-  deleteNode(node: CNode | CSchema) {
+  deleteNode(node: CNode | CRootNode) {
     const parent = node.parent;
     if (!parent) {
       throw new Error('parent node is null or undefined, pls check it');
@@ -265,7 +265,7 @@ export class CPage {
       return deleteNode;
     }
 
-    if (parent instanceof CNode || parent instanceof CSchema) {
+    if (parent instanceof CNode || parent instanceof CRootNode) {
       const childList = parent.value.children;
       const targetIndex = childList.findIndex((el) => el === node);
       const deleteNode = childList[targetIndex];
@@ -294,7 +294,7 @@ export class CPage {
     const componentsMetaList: ComponentMetaType[] =
       this.materialsModel.usedMaterials.map((it) => {
         const asset = assetPackagesList.find((el) => {
-          return el.package === it.value.npm.package;
+          return el.package === it.value.npm?.package;
         });
         if (asset) {
           assets.push(asset);
@@ -333,7 +333,7 @@ export const EmptyPage: CPageDataType = {
   name: 'EmptyPage',
   componentsMeta: [],
   componentsTree: {
-    componentName: InnerComponentNameEnum.PAGE,
+    componentName: InnerComponentNameEnum.ROOT_CONTAINER,
     props: {},
     children: [],
   },

@@ -360,7 +360,7 @@ export type CMaterialType = {
   category?: string;
   // 排序
   priority?: number;
-  npm: LibMetaType;
+  npm?: LibMetaType;
   snippets: SnippetsType[];
   props: CMaterialPropsType;
   // 固定的props, 不被 setter 的值覆盖
@@ -424,7 +424,7 @@ export const CMaterialTypeDescribe = object({
   category: optional(string()),
   // 排序
   priority: optional(number()),
-  npm: union([LibMetaTypeDescribe, literal(false)]),
+  npm: optional(LibMetaTypeDescribe),
   snippets: array(SnippetsTypeDescribe),
   props: array(
     union([

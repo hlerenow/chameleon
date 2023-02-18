@@ -1,8 +1,8 @@
-import { CNode, CSchema } from '@chameleon/model';
+import { CNode, CRootNode } from '@chameleon/model';
 import React from 'react';
 
 export const DefaultDropPlaceholder = (props: {
-  node: CNode | CSchema;
+  node: CNode | CRootNode;
   placeholder?: string;
   width?: number;
   height?: number;

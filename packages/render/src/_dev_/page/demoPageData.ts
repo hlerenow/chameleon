@@ -5,7 +5,7 @@ export const PageData: CPageDataType = {
   pageName: 'BaseDemoPage',
   componentsMeta: [],
   componentsTree: {
-    componentName: 'CPage',
+    componentName: 'RootContainer',
     props: {
       a: 1,
     },
@@ -18,9 +18,7 @@ export const PageData: CPageDataType = {
       {
         id: 'row11111',
         componentName: 'Row',
-        configure: {
-          props: {},
-        },
+        configure: {},
       },
       {
         id: 'globalStateText',

@@ -17,7 +17,12 @@ import {
 import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
 import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
 import { DropAnchorCanvas } from './components/DropAnchor';
-import { AssetPackage, CNode, CSchema } from '@chameleon/model';
+import {
+  AssetPackage,
+  CNode,
+  CRootNode,
+  InnerComponentNameEnum,
+} from '@chameleon/model';
 import { Pointer } from './core/dragAndDrop/common';
 import {
   calculateDropPosInfo,
@@ -27,9 +32,9 @@ import ReactDOM from 'react-dom';
 
 export type LayoutDragAndDropExtraDataType = {
   type: 'NEW_ADD';
-  startNode?: CNode | CSchema;
+  startNode?: CNode | CRootNode;
   startNodeUid?: string;
-  dropNode?: CNode | CSchema;
+  dropNode?: CNode | CRootNode;
   dropNodeUid?: string;
   dropPosInfo?: Partial<DropPosType>;
 };
@@ -37,12 +42,12 @@ export type LayoutDragAndDropExtraDataType = {
 export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   renderScriptPath?: string;
   assets?: AssetPackage[];
-  onSelectNode?: (node: CNode | CSchema | null) => void;
+  onSelectNode?: (node: CNode | CRootNode | null) => void;
   onHoverNode?: (
-    node: CNode | CSchema | null,
-    dragNode: CNode | CSchema
+    node: CNode | CRootNode | null,
+    dragNode: CNode | CRootNode
   ) => void;
-  onDragStart?: (node: CNode | CSchema | null) => void;
+  onDragStart?: (node: CNode | CRootNode | null) => void;
   selectToolBar?: React.ReactNode;
   selectBoxStyle?: React.CSSProperties;
   hoverBoxStyle?: React.CSSProperties;
@@ -79,7 +84,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   highlightDropAnchorCanvasRef: React.RefObject<HighlightCanvasRefType>;
   readyCbList: ((layoutInstance: Layout) => void)[] = [];
   assets: AssetPackage[];
-  dragStartNode: CNode | CSchema | null = null;
+  dragStartNode: CNode | CRootNode | null = null;
   constructor(props: LayoutPropsType) {
     super(props);
     this.designRenderRef = React.createRef<DesignRender | null>();
@@ -383,7 +388,8 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       const dropNode = dropInstance._NODE_MODEL;
       const isContainer =
         (dropNode.material?.value.isContainer ||
-          dropNode.value?.componentName === 'CPage') &&
+          dropNode.value?.componentName ===
+            InnerComponentNameEnum.ROOT_CONTAINER) &&
         dropNode.value.children.length === 0;
       const originalEvent = eventObj.event;
 

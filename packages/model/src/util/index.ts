@@ -1,10 +1,11 @@
 import { isArray, isPlainObject, omitBy } from 'lodash-es';
 import { CNodePropsTypeEnum } from '../const/schema';
 import { CPage } from '../Page';
-import { CSchema } from '../Page/Schema';
-import { CNode } from '../Page/Schema/Node';
-import { CProp } from '../Page/Schema/Node/prop';
-import { CSlot } from '../Page/Schema/Node/slot';
+import { CRootNode } from '../Page/RootNode';
+import { CNode } from '../Page/RootNode/Node';
+import { CProp } from '../Page/RootNode/Node/prop';
+import { CSlot } from '../Page/RootNode/Node/slot';
+import { InnerComponentNameEnum } from '../types/rootNode';
 
 export const isExpression = (arg: any) => {
   if (arg?.type === CNodePropsTypeEnum.EXPRESSION) {
@@ -34,8 +35,8 @@ export const getRandomStr = () => {
   return Math.random().toString(32).slice(3, 9);
 };
 
-export const isSchemaModel = (val: any): val is CSchema => {
-  if (val?.nodeType === 'SCHEMA' && val instanceof CSchema) {
+export const isSchemaModel = (val: any): val is CRootNode => {
+  if (val?.nodeType === 'SCHEMA' && val instanceof CRootNode) {
     return true;
   }
 
@@ -43,7 +44,7 @@ export const isSchemaModel = (val: any): val is CSchema => {
 };
 
 export const isPageModel = (val: any): val is CPage => {
-  if (val?.nodeType === 'PAGE') {
+  if (val?.nodeType === InnerComponentNameEnum.ROOT_CONTAINER) {
     return true;
   }
 
@@ -89,8 +90,8 @@ export const clearSchema = (res: any) => {
   return newRes;
 };
 
-export function getNode(nodeTree: CSchema | CNode, id: string) {
-  const nodeList: (CSchema | CNode)[] = [nodeTree];
+export function getNode(nodeTree: CRootNode | CNode, id: string) {
+  const nodeList: (CRootNode | CNode)[] = [nodeTree];
   while (nodeList.length) {
     const target = nodeList.shift();
     if (target?.id === id) {

@@ -3,7 +3,6 @@ import { CMaterialType } from '@chameleon/model';
 export const DivMeta: CMaterialType = {
   title: 'Div',
   componentName: 'div',
-  npm: false,
   icon: 'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
   props: [
     {

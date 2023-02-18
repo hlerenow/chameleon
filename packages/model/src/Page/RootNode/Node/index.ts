@@ -1,5 +1,5 @@
 import { get, isPlainObject, merge } from 'lodash-es';
-import { CSchema } from '..';
+import { CRootNode } from '..';
 import { ExportType } from '../../../const/schema';
 import { CMaterials } from '../../../Material';
 import { CNodeDataStructDescribe, CNodeDataType } from '../../../types/node';
@@ -33,7 +33,7 @@ export type CNodeModelDataType = Omit<CNodeDataType, 'children'> & {
 
 export const parseNode = (
   data: CNodeDataType | CNodeModelDataType,
-  self: CNode | CSchema,
+  self: CNode | CRootNode,
   materials: CMaterials = new CMaterials([])
 ) => {
   if (typeof data === 'string') {
@@ -98,7 +98,7 @@ export const parseNode = (
 };
 
 type OnNodeChangeType = (params: DataModelEventType['onNodeChange']) => void;
-type ParentType = CNode | CSchema | CSlot | null;
+type ParentType = CNode | CRootNode | CSlot | null;
 
 export class CNode {
   nodeType = 'NODE';

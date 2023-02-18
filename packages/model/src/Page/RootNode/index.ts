@@ -3,10 +3,10 @@ import { CPage } from '..';
 import { ExportType, ExportTypeEnum } from '../../const/schema';
 import { CMaterials } from '../../Material';
 import {
-  CSchemaDataType,
-  CSchemaDataTypeDescribe,
+  CRootNodeDataType,
+  CRootNodeDataTypeDescribe,
   InnerComponentNameEnum,
-} from '../../types/schema';
+} from '../../types/rootNode';
 import { clearSchema, getNode, getRandomStr } from '../../util';
 import { checkComplexData } from '../../util/dataCheck';
 import { isArray, isPlainObject } from '../../util/lodash';
@@ -14,31 +14,31 @@ import { DataModelEmitter, DataModelEventType } from '../../util/modelEmitter';
 import { CNode } from './Node/index';
 import { CProp } from './Node/prop';
 
-export type CSchemaModelDataType = Omit<CSchemaDataType, 'children'> & {
+export type CRootNodeModelDataType = Omit<CRootNodeDataType, 'children'> & {
   id: string;
   children: CNode[];
   props: Record<string, CProp>;
 };
 
-export const checkSchema = (data: any): CSchemaDataType => {
+export const checkRootNode = (data: any): CRootNodeDataType => {
   checkComplexData({
     data: data,
-    dataStruct: CSchemaDataTypeDescribe,
+    dataStruct: CRootNodeDataTypeDescribe,
     throwError: true,
   });
   return data;
 };
 
 export const parseSchema = (
-  data: CSchemaDataType | CSchemaModelDataType,
-  parent: CSchema,
+  data: CRootNodeDataType | CRootNodeModelDataType,
+  parent: CRootNode,
   materials: CMaterials
-): CSchemaModelDataType => {
-  const res: CSchemaModelDataType = {
+): CRootNodeModelDataType => {
+  const res: CRootNodeModelDataType = {
     ...data,
     id: getRandomStr(),
     props: {} as any,
-    componentName: InnerComponentNameEnum.PAGE,
+    componentName: InnerComponentNameEnum.ROOT_CONTAINER,
     children: [],
     configure: merge(data.configure || {}, {
       propsSetter: {},
@@ -89,10 +89,10 @@ export const parseSchema = (
 
 type OnNodeChangeType = (params: DataModelEventType['onNodeChange']) => void;
 
-export class CSchema {
-  private rawData: CSchemaDataType;
-  private data: CSchemaModelDataType;
-  nodeType = 'SCHEMA';
+export class CRootNode {
+  private rawData: CRootNodeDataType;
+  private data: CRootNodeModelDataType;
+  nodeType = InnerComponentNameEnum.ROOT_CONTAINER;
   emitter = DataModelEmitter;
   materialsModel: CMaterials;
   listenerHandle: (() => void)[];
@@ -148,7 +148,7 @@ export class CSchema {
     return materialModel?.findByComponentName(this.data.componentName);
   }
 
-  updateValue(val?: CSchemaModelDataType) {
+  updateValue(val?: CRootNodeModelDataType) {
     const oldData = this.data;
     const newVal = {
       ...this.data,
@@ -166,7 +166,7 @@ export class CSchema {
     return res;
   }
 
-  export(mode: ExportType = ExportTypeEnum.SAVE): CSchemaDataType {
+  export(mode: ExportType = ExportTypeEnum.SAVE): CRootNodeDataType {
     const data = this.data;
     const props: any = {};
     Object.keys(data.props || {}).forEach((key) => {
@@ -177,7 +177,7 @@ export class CSchema {
         return child?.export?.(mode);
       }) || [];
 
-    const tempData: CSchemaDataType = {
+    const tempData: CRootNodeDataType = {
       ...data,
       props: props,
       children: children.filter((el) => el),

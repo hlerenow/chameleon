@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { CopyOutlined, DeleteOutlined } from '@ant-design/icons';
 import styles from './style.module.scss';
-import { CNode, CSchema } from '@chameleon/model';
+import { CNode, CRootNode } from '@chameleon/model';
 import clsx from 'clsx';
 
 export type DefaultSelectToolBarProps = {

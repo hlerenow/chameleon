@@ -1,5 +1,5 @@
 import { CNode } from '.';
-import { CSchema } from '..';
+import { CRootNode } from '..';
 import { CNodePropsTypeEnum, ExportType } from '../../../const/schema';
 import { CMaterials } from '../../../Material';
 import {
@@ -91,7 +91,7 @@ const parseData = (data: any, parent: ParentType, materials: CMaterials) => {
 export class CProp {
   nodeType = 'PROP';
   private rawData: CPropDataType;
-  parent: CNode | CSchema | null;
+  parent: CNode | CRootNode | null;
   emitter = DataModelEmitter;
   private data: CPropModelDataType;
   name: string;
@@ -99,7 +99,7 @@ export class CProp {
   constructor(
     name: string,
     data: CPropDataType,
-    options: { parent: CNode | CSchema | null; materials?: CMaterials }
+    options: { parent: CNode | CRootNode | null; materials?: CMaterials }
   ) {
     const materials = options?.materials || new CMaterials([]);
     this.materialsMode = materials;

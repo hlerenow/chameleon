@@ -1,7 +1,7 @@
 import React from 'react';
-import { CNode, CSchema } from '@chameleon/model';
+import { CNode, CRootNode } from '@chameleon/model';
 
-export const GhostView = ({ node }: { node: CNode | CSchema }) => {
+export const GhostView = ({ node }: { node: CNode | CRootNode }) => {
   return (
     <div
       style={{

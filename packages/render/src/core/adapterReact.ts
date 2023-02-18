@@ -1,10 +1,10 @@
-import React, { ReactInstance } from 'react';
+import React from 'react';
 import {
   CNode,
   CPage,
   CProp,
   CPropDataType,
-  CSchema,
+  CRootNode,
   FunctionPropType,
   getRandomStr,
   InnerComponentNameEnum,
@@ -43,10 +43,11 @@ export class DefineReactAdapter {
 
   // 处理 props 钩子
   processNodeConfigHook?: AdapterOptionType['processNodeConfigHook'];
-  getComponent(currentNode: CNode | CSchema) {
+  getComponent(currentNode: CNode | CRootNode) {
     const componentName = currentNode.value.componentName;
     let res: any =
-      this.components[componentName] || (() => 'Component not found');
+      this.components[componentName] ||
+      (() => `Component [${componentName}] not found`);
     // check component can accept ref
     if (!canAcceptsRef(res)) {
       res = compWrapper(res);
@@ -261,12 +262,15 @@ export class DefineReactAdapter {
     return res;
   }
 
-  convertModelToComponent(originalComponent: any, nodeModel: CNode | CSchema) {
+  convertModelToComponent(
+    originalComponent: any,
+    nodeModel: CNode | CRootNode
+  ) {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const that = this;
     type PropsType = {
       $$context: ContextType;
-      $$nodeModel: CNode | CSchema;
+      $$nodeModel: CNode | CRootNode;
     };
 
     class DynamicComponent extends React.Component<PropsType> {
@@ -394,7 +398,10 @@ export class DefineReactAdapter {
           updateState: this.updateState,
         };
 
-        if (nodeModel.value.componentName === InnerComponentNameEnum.PAGE) {
+        if (
+          nodeModel.value.componentName ===
+          InnerComponentNameEnum.ROOT_CONTAINER
+        ) {
           tempContext.globalState = this.state;
           tempContext.updateGlobalState = this.updateState;
         }
@@ -562,7 +569,7 @@ export class DefineReactAdapter {
 
   // 递归建页面组件结构
   buildComponent(
-    node: CNode | CSchema | string,
+    node: CNode | CRootNode | string,
     {
       $$context = {},
     }: {
@@ -578,7 +585,11 @@ export class DefineReactAdapter {
     if (!isNodeModel(node)) {
       return;
     }
-    const handleNode = ({ currentNode }: { currentNode: CSchema | CNode }) => {
+    const handleNode = ({
+      currentNode,
+    }: {
+      currentNode: CRootNode | CNode;
+    }) => {
       const nodeId = currentNode.value.id;
       let component = null;
       if (runtimeComponentCache.get(nodeId)) {

@@ -5,7 +5,7 @@ export const EmptyPage: CPageDataType = {
   name: 'EmptyPage',
   componentsMeta: [],
   componentsTree: {
-    componentName: InnerComponentNameEnum.PAGE,
+    componentName: InnerComponentNameEnum.ROOT_CONTAINER,
     props: {},
     children: [],
   },

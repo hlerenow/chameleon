@@ -20,7 +20,6 @@ const htmlNativeComponentMeta = HTMl_TAGS.map((tag) => {
   const DivMeta: CMaterialType = {
     title: capitalize(tag),
     componentName: tag,
-    npm: false,
     icon: '',
     props: [
       {
@@ -54,7 +53,7 @@ const htmlNativeComponentMeta = HTMl_TAGS.map((tag) => {
 
 // 内置物料组件
 export const InnerComponent = {
-  CPage: ({ children }: any) => {
+  RootContainer: ({ children }: any) => {
     return children;
   },
   ...htmlNativeComponents,

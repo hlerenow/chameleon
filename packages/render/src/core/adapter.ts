@@ -1,4 +1,4 @@
-import { CPage, CNode, CSchema } from '@chameleon/model';
+import { CPage, CNode, CRootNode } from '@chameleon/model';
 import { ReactInstance } from 'react';
 import { RefManager } from './refManager';
 import { RenderInstance } from './type';
@@ -17,7 +17,7 @@ export type ContextType = {
 
 export type RuntimeRenderHelper = {
   renderComponent: (
-    node: CNode | CSchema,
+    node: CNode | CRootNode,
     options: {
       $$context: ContextType;
       idx?: number;
@@ -33,15 +33,18 @@ export type AdapterOptionType = {
   $$context: ContextType;
   onGetRef?: (
     ref: React.RefObject<React.ReactInstance>,
-    nodeMode: CNode | CSchema,
+    nodeMode: CNode | CRootNode,
     instance: RenderInstance
   ) => void;
   onGetComponent?: (
     component: (...args: any) => any,
-    currentNode: CNode | CSchema
+    currentNode: CNode | CRootNode
   ) => void;
-  onComponentMount?: (instance: ReactInstance, node: CNode | CSchema) => void;
-  onComponentDestroy?: (instance: ReactInstance, node: CNode | CSchema) => void;
+  onComponentMount?: (instance: ReactInstance, node: CNode | CRootNode) => void;
+  onComponentDestroy?: (
+    instance: ReactInstance,
+    node: CNode | CRootNode
+  ) => void;
   processNodeConfigHook?: (
     config: {
       condition: boolean;
@@ -64,7 +67,7 @@ export interface AdapterType {
   // 将一个 组件 model 节点 转换为一个可被运行的渲染函数
   convertModelToComponent: (
     originalComponent: any,
-    nodeModal: CNode | CSchema,
+    nodeModal: CNode | CRootNode,
     options: {
       pageModel: CPage;
       idx?: number;
@@ -78,7 +81,7 @@ export interface AdapterType {
   ) => any;
   // find target component render function
   getComponent: (
-    currentNode: CNode | CSchema,
+    currentNode: CNode | CRootNode,
     components: ComponentsType
   ) => void;
   getContext: (data: Record<any, any>, ctx: ContextType | null) => ContextType;

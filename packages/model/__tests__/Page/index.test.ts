@@ -80,8 +80,7 @@ const mockNodeData: CNodeDataType = {
 
 const mockPageData: CPageDataType = {
   version: '1.1.0',
-  pageName: 'testPage',
-  style: '',
+  name: 'testPage',
   componentsMeta: [
     {
       componentName: 'Button',
@@ -91,7 +90,7 @@ const mockPageData: CPageDataType = {
     },
   ],
   componentsTree: {
-    componentName: InnerComponentNameEnum.PAGE,
+    componentName: InnerComponentNameEnum.ROOT_CONTAINER,
     children: [mockNodeData],
   },
 };
