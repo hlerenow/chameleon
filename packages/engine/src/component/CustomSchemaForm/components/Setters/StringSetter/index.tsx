@@ -4,10 +4,10 @@ import { CSetter, CSetterProps } from '../type';
 
 export const StringSetter: CSetter<InputProps> = ({
   onValueChange,
-  keyPaths,
-  onSetterChange,
+  setterContext,
   ...props
 }: CSetterProps<InputProps>) => {
+  const { keyPaths, onSetterChange } = setterContext;
   return (
     <ConfigProvider
       theme={{

@@ -4,10 +4,11 @@ import { CSetter, CSetterProps } from '../type';
 
 export const SelectSetter: CSetter<SelectProps> = ({
   onValueChange,
-  keyPaths,
-  onSetterChange,
+  setterContext,
   ...props
 }: CSetterProps<SelectProps>) => {
+  const { keyPaths, onSetterChange } = setterContext;
+
   return (
     <ConfigProvider
       theme={{

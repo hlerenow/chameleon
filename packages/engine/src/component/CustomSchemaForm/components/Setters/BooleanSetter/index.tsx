@@ -6,8 +6,7 @@ type BooleanSetterProps = SwitchProps;
 
 export const BooleanSetter: CSetter<BooleanSetterProps> = ({
   onValueChange,
-  keyPaths,
-  onSetterChange,
+  setterContext,
   ...props
 }: CSetterProps<BooleanSetterProps>) => {
   return (

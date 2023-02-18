@@ -5,10 +5,11 @@ import { MonacoEditor, MonacoEditorInstance } from '../../../../MonacoEditor';
 
 export const JSONSetter: CSetter<any> = ({
   onValueChange,
-  keyPaths,
-  onSetterChange,
+  setterContext,
   ...props
 }: CSetterProps<any>) => {
+  const { keyPaths, onSetterChange } = setterContext;
+
   const editorRef = useRef<MonacoEditorInstance | null>(null);
 
   const [open, setOpen] = useState(false);

@@ -83,7 +83,7 @@ export const App = () => {
       designerExports.reload({
         assets,
       });
-    }, 3 * 1000);
+    }, 0);
 
     // designer?.ctx.emitter.on('onDrop', (e) => {
     //   console.log('out onDrop', e);

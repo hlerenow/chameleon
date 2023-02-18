@@ -8,10 +8,12 @@ import { getSetterList } from './utils';
 import styles from './style.module.scss';
 import { ConfigProvider } from 'antd';
 import { CCustomSchemaFormContext } from './context';
+import { CPluginCtx } from '../../core/pluginManager';
 
 export type CustomSchemaFormInstance = CForm;
 
 export type CustomSchemaFormProps = {
+  pluginCtx: CPluginCtx;
   initialValue: Record<string, any>;
   properties: CMaterialPropsType;
   onValueChange?: (val: any) => void;
@@ -29,13 +31,17 @@ const CustomSchemaFormCore = (
     onValueChange,
     onSetterChange,
     defaultSetterConfig,
+    pluginCtx,
   } = props;
+  console.log('pluginCtx', pluginCtx);
 
   return (
     <CCustomSchemaFormContext.Provider
       value={{
         defaultSetterConfig,
         onSetterChange,
+        formRef: ref,
+        pluginCtx: pluginCtx,
       }}
     >
       <ConfigProvider

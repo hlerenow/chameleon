@@ -38,6 +38,10 @@ export class CForm extends React.Component<CFormProps, CFormContextData> {
     };
   }
 
+  getFieldsValue = () => {
+    return this.formatValue(this.state.formState);
+  };
+
   setFields = (state: Record<string, any>) => {
     this.setState({
       formState: state,

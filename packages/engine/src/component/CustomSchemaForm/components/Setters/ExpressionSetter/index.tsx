@@ -12,8 +12,7 @@ export const ExpressionSetter: CSetter<
   }
 > = ({
   onValueChange,
-  keyPaths,
-  onSetterChange,
+  setterContext,
   ...props
 }: CSetterProps<
   InputProps & {

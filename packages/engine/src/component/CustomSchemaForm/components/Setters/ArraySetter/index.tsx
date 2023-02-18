@@ -25,11 +25,11 @@ function formatValue(value: unknown) {
 
 export const ArraySetter = ({
   onValueChange,
-  keyPaths,
-  label,
+  setterContext,
   item: { setters, initialValue },
   ...props
 }: CSetterProps<CArraySetterProps>) => {
+  const { keyPaths, label } = setterContext;
   const listValue: any[] = useMemo(() => {
     return formatValue(props.value);
   }, [props.value]);
@@ -44,8 +44,8 @@ export const ArraySetter = ({
   );
 
   useEffect(() => {
-    if (props.setCollapseHeaderExt) {
-      props.setCollapseHeaderExt?.(
+    if (setterContext.setCollapseHeaderExt) {
+      setterContext.setCollapseHeaderExt?.(
         <Button
           type="text"
           size="small"

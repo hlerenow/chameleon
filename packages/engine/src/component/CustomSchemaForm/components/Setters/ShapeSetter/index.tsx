@@ -16,8 +16,9 @@ export const ShapeSetter: CSetter<CShapeSetterProps> = ({
   onValueChange,
   elements,
   value,
-  keyPaths,
+  setterContext,
 }: CSetterProps<CShapeSetterProps>) => {
+  const { keyPaths } = setterContext;
   const formRef = useRef<CForm>(null);
   useEffect(() => {
     formRef.current?.setFields(value || {});
