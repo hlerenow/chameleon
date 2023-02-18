@@ -1,3 +1,4 @@
+import { Sensor } from '@chameleon/layout';
 import { CPage } from '@chameleon/model';
 import React from 'react';
 import { DesignerExports } from '../../../Designer';
@@ -16,11 +17,13 @@ export declare type ContextState = {
     designerHandler: DesignerExports | null;
 };
 export declare type CTreeContextData = {
+    sensor?: Sensor;
     state: ContextState;
     updateState: (state: Partial<ContextState>) => void;
     onSelectNode: (params: {
         keys: string[];
         node: TreeNodeData;
     }) => void;
+    onDeleteNode: (id: string) => void;
 };
 export declare const CTreeContext: React.Context<CTreeContextData>;

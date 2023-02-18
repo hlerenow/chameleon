@@ -1,3 +1,4 @@
+import { Sensor } from '@chameleon/layout';
 import React from 'react';
 import { WithTranslation } from 'react-i18next';
 import { CPluginCtx } from '../../../../core/pluginManager';
@@ -15,6 +16,7 @@ export declare class TreeView extends React.Component<TreeViewProps, ContextStat
 }> {
     domRef: React.RefObject<HTMLDivElement>;
     disposeCbList: (() => void)[];
+    sensor?: Sensor;
     constructor(props: TreeViewProps);
     updateTreeDataFromNode: () => void;
     getParentKeyPaths: (targetKey: string) => string[];

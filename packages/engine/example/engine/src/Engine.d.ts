@@ -2,8 +2,7 @@ import React from 'react';
 import { WorkBench } from './component/Workbench';
 import { CPlugin, PluginManager } from './core/pluginManager';
 import { Emitter } from 'mitt';
-import { CMaterialType, CPage, CPageDataType } from '@chameleon/model';
-import { CAssetPackage } from '@chameleon/layout/dist/types/common';
+import { AssetPackage, CMaterialType, CPage, CPageDataType } from '@chameleon/model';
 export declare type EnginContext = {
     pluginManager: PluginManager;
     engine: Engine;
@@ -12,7 +11,8 @@ export declare type EngineProps = {
     plugins: CPlugin[];
     schema: CPageDataType;
     material?: CMaterialType[];
-    assets?: CAssetPackage[];
+    assets?: AssetPackage[];
+    assetPackagesList?: AssetPackage[];
     onReady?: (ctx: EnginContext) => void;
 };
 declare class Engine extends React.Component<EngineProps> {
@@ -25,6 +25,7 @@ declare class Engine extends React.Component<EngineProps> {
     constructor(props: EngineProps);
     componentDidMount(): Promise<void>;
     updatePage: (page: CPageDataType) => void;
+    updateDesignerAssets: (assets: AssetPackage[]) => void;
     updateMaterial: (material: CMaterialType[]) => void;
     refresh: () => void;
     getWorkBench: () => WorkBench | null;

@@ -1,5 +1,4 @@
-import { CAssetPackage } from '@chameleon/layout';
-import { CNode, CPage } from '@chameleon/model';
+import { AssetPackage, CNode, CPage } from '@chameleon/model';
 import { i18n } from 'i18next';
 import { Emitter } from 'mitt';
 import { WorkBench } from '../component/Workbench';
@@ -20,7 +19,7 @@ declare type PluginManagerOptions = {
     emitter: Emitter<any>;
     pageModel: CPage;
     i18n: i18n;
-    assets?: CAssetPackage[];
+    assets: AssetPackage[];
 };
 export declare type CPluginCtx<C = any> = {
     globalEmitter: Emitter<any>;
@@ -39,7 +38,7 @@ export declare class PluginManager {
     workbench: () => WorkBench;
     pageModel: CPage;
     i18n: i18n;
-    assets: CAssetPackage[] | undefined;
+    assets: AssetPackage[];
     constructor({ workbench, emitter, pageModel, i18n, assets, }: PluginManagerOptions);
     add(plugin: CPlugin): Promise<void>;
     get(pluginName: string): {
