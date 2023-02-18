@@ -33,10 +33,12 @@ class Engine extends React.Component<EngineProps> {
   pageModel: CPage;
   material: CMaterialType[] | undefined;
   emitter: Emitter<any>;
+
   constructor(props: EngineProps) {
     super(props);
     this.pageSchema = props.schema;
     this.material = props.material;
+
     try {
       this.pageModel = new CPage(this.pageSchema, {
         materials: this.material || [],
@@ -59,6 +61,7 @@ class Engine extends React.Component<EngineProps> {
       emitter: this.emitter,
       pageModel: this.pageModel,
       i18n,
+      assets: this.props.assets || [],
     });
 
     const pList = plugins.map((p) => {
@@ -76,6 +79,10 @@ class Engine extends React.Component<EngineProps> {
   updatePage = (page: CPageDataType) => {
     this.emitter.emit('updatePage');
     console.log(page);
+  };
+
+  updateDesignerAssets = (assets: AssetPackage[]) => {
+    console.log('updateDesignerAssets', assets);
   };
 
   updateMaterial = (material: CMaterialType[]) => {

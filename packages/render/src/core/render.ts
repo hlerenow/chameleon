@@ -17,7 +17,7 @@ export type RenderPropsType = {
 export class Render extends React.Component<
   RenderPropsType,
   {
-    pageModel: CPage | null;
+    pageModel: CPage;
   }
 > {
   refManager: RefManager;
@@ -85,10 +85,10 @@ export class Render extends React.Component<
     return PageRoot;
   }
 
-  rerender = (newPage: CPageDataType) => {
+  rerender = (newPage?: CPageDataType) => {
     this.props.adapter.clear();
     this.setState({
-      pageModel: new CPage(newPage),
+      pageModel: new CPage(newPage || this.state.pageModel.export()),
     });
     // 触发 model 变化
     this.state.pageModel?.emitter.emit('onNodeChange', {

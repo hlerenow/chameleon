@@ -103,10 +103,27 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     this.highlightHoverCanvasRef = React.createRef<HighlightCanvasRefType>();
     this.highlightDropAnchorCanvasRef =
       React.createRef<HighlightCanvasRefType>();
+    const dnd = new DragAndDrop({
+      doc: document,
+    });
+
+    this.dnd = dnd;
   }
 
   componentDidMount(): void {
+    this.init();
+  }
+
+  reload({ assets }: { assets: AssetPackage[] }) {
+    this.assets = assets;
+    return this.init();
+  }
+
+  init() {
     const { renderScriptPath } = this.props;
+    this.iframeContainer.destroy();
+    this.iframeContainer = new IFrameContainer();
+
     (window as any).___CHAMELEON_DESIGNER_RENDER___ = this.designRenderRef;
     const iframeContainer = this.iframeContainer;
     iframeContainer.load(document.getElementById('iframeBox')!);
@@ -119,7 +136,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         window.ReactDOM = window.parent.ReactDOM;
         window.ReactDOMClient = window.parent.ReactDOMClient;
       `);
-      await iframeContainer.injectJs(renderScriptPath || './render.umd.js');
+      await iframeContainer.injectJS(renderScriptPath || './render.umd.js');
       this.initIframeLogic();
     });
   }
@@ -153,6 +170,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         });
 
         IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
+      })
+      .onError(() => {
+        console.log('资源加载出粗');
       })
       .load();
   }
@@ -305,12 +325,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   }
 
   registerDragAndDropEvent() {
+    const dnd = this.dnd;
     const iframeDoc = this.iframeContainer.getDocument()!;
-    const dnd = new DragAndDrop({
-      doc: document,
-    });
 
-    this.dnd = dnd;
     const sensor = new Sensor({
       name: 'layout',
       container: iframeDoc.body,

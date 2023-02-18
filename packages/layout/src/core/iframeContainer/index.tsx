@@ -109,7 +109,7 @@ export class IFrameContainer {
     return this.iframe?.contentDocument;
   }
 
-  injectJs(jsUrl: string) {
+  injectJS(jsUrl: string) {
     const document = this.getDocument();
     if (!document) {
       return false;
@@ -153,6 +153,7 @@ export class IFrameContainer {
   }
 
   destroy() {
+    this.iframe?.parentNode?.removeChild(this.iframe);
     this.iframe = null;
   }
 }

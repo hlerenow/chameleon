@@ -179,7 +179,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
     });
   };
 
-  rerender(newPage: CPageDataType) {
+  rerender(newPage?: CPageDataType) {
     return this.renderRef.current?.rerender(newPage);
   }
 

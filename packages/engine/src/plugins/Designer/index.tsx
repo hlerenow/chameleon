@@ -4,7 +4,7 @@ import '@chameleon/layout/dist/style.css';
 import { CPlugin } from '../../core/pluginManager';
 import { PLUGIN_NAME } from './config';
 import { Designer } from './view';
-import { CPageDataType } from '@chameleon/model';
+import { AssetPackage, CPageDataType } from '@chameleon/model';
 import { RenderInstance } from '@chameleon/render';
 
 export const DesignerPlugin: CPlugin = () => {
@@ -35,6 +35,9 @@ export const DesignerPlugin: CPlugin = () => {
             page
           );
         },
+        reload: ({ assets }) => {
+          designerRef.current?.reloadRender({ assets });
+        },
         getComponentInstances: (id: string) => {
           return (
             designerRef.current?.layoutRef.current?.designRenderRef.current?.getInstancesById(
@@ -59,6 +62,7 @@ export const DesignerPlugin: CPlugin = () => {
 };
 
 export type DesignerExports = {
+  reload: (params: { assets: AssetPackage[] }) => void;
   getDnd: () => DragAndDrop;
   selectNode: (nodeId: string) => void;
   updatePage: (page: CPageDataType) => void;

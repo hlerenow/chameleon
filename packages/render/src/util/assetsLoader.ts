@@ -27,6 +27,10 @@ export class AssetLoader {
         async: false,
       });
     }
+    if (assets.length === 0) {
+      this._onSuccessList.forEach((el) => el());
+      return;
+    }
     // 在下一个事件循环执行，确保 onSuccess 和 onError 被注册
     setTimeout(() => {
       loadjs.ready(ids, {

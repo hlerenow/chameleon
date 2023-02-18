@@ -29,7 +29,6 @@ export class Designer extends React.Component<
   DesignerStateType
 > {
   layoutRef: React.RefObject<Layout>;
-
   ready = false;
   constructor(props: DesignerPropsType) {
     super(props);
@@ -39,7 +38,7 @@ export class Designer extends React.Component<
       hoverToolBar: null,
       selectToolBar: null,
       ghostView: null,
-      assets: props.pluginCtx.pageModel.value.assets || ([] as AssetPackage[]),
+      assets: props.pluginCtx.assets || ([] as AssetPackage[]),
     };
     this.layoutRef = React.createRef<Layout>();
   }
@@ -56,6 +55,16 @@ export class Designer extends React.Component<
       );
     });
     this.init();
+  }
+
+  updateAssets(assets: AssetPackage[]) {
+    this.setState({
+      assets: assets,
+    });
+  }
+
+  reloadRender({ assets }: { assets: AssetPackage[] }) {
+    this.layoutRef.current?.reload({ assets });
   }
 
   async init() {

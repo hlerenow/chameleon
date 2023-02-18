@@ -77,6 +77,14 @@ export const App = () => {
       designerExports.selectNode('3');
     });
 
+    setTimeout(() => {
+      const designerExports = designer?.exports as DesignerExports;
+      console.log('to reload');
+      designerExports.reload({
+        assets,
+      });
+    }, 3 * 1000);
+
     // designer?.ctx.emitter.on('onDrop', (e) => {
     //   console.log('out onDrop', e);
     // });
@@ -139,7 +147,7 @@ export const App = () => {
       plugins={DEFAULT_PLUGIN_LIST}
       schema={page as any}
       material={Material}
-      assets={assets}
+      assets={[]}
       assetPackagesList={assetPackagesList}
       onReady={onReady}
     />

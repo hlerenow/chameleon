@@ -22,6 +22,7 @@ type PluginManagerOptions = {
   emitter: Emitter<any>;
   pageModel: CPage;
   i18n: i18n;
+  assets: AssetPackage[];
 };
 
 export type CPluginCtx<C = any> = {
@@ -39,12 +40,20 @@ export class PluginManager {
   workbench!: () => WorkBench;
   pageModel!: CPage;
   i18n: i18n;
+  assets: AssetPackage[];
 
-  constructor({ workbench, emitter, pageModel, i18n }: PluginManagerOptions) {
+  constructor({
+    workbench,
+    emitter,
+    pageModel,
+    i18n,
+    assets,
+  }: PluginManagerOptions) {
     this.workbench = workbench;
     this.emitter = emitter;
     this.pageModel = pageModel;
     this.i18n = i18n;
+    this.assets = assets;
   }
 
   async add(plugin: CPlugin) {
@@ -57,6 +66,7 @@ export class PluginManager {
       pluginManager: this,
       pageModel: this.pageModel,
       i18n: this.i18n,
+      assets: this.assets,
       getActiveNode: () => {
         return workbench.currentSelectNode;
       },
