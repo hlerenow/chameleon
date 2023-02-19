@@ -59,7 +59,7 @@ export class TreeView extends React.Component<
   updateTreeDataFromNode = () => {
     const { pluginCtx } = this.props;
     const { pageModel } = pluginCtx;
-    const plainTreeData = pageModel.export(ExportTypeEnum.DESIGN);
+    const plainTreeData = pageModel.export();
     const tempTreeData = transformPageSchemaToTreeData(
       plainTreeData,
       pageModel

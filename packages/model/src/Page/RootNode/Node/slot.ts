@@ -90,9 +90,9 @@ export class CSlot {
         });
         return newList;
       }
-      // if (mode === 'design') {
-      //   delete propVal.id;
-      // }
+      if (mode === 'design') {
+        delete propVal.id;
+      }
       return propVal;
     };
     return handleSingleProps(data);

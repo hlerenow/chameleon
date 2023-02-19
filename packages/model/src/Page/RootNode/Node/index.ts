@@ -241,9 +241,9 @@ export class CNode {
       props: props,
       children,
     };
-    // if (mode === 'design') {
-    //   delete newRes.id;
-    // }
+    if (mode === 'design') {
+      delete newRes.id;
+    }
     newRes = clearSchema(newRes);
     return newRes;
   }
