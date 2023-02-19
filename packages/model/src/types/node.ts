@@ -15,7 +15,10 @@ import {
   enums,
 } from 'superstruct';
 import { CNodePropsTypeEnum, SlotRenderType } from '../const/schema';
+import { CPage } from '../Page';
 import { isPlainObject } from '../util/lodash';
+import { CSSType, CSSValue } from './base';
+import { CPageDataType } from './page';
 
 export type NormalPropType = string | boolean | number | Record<string, any>;
 
@@ -109,11 +112,13 @@ export type CNodeDataType = {
   title?: string;
   componentName: string;
   // 组件类型
-  type?: 'html' | 'react' | 'vue' | 'lowcode';
+  type?: 'lowcode' | 'normal';
   // 所有的 props 的 value 需要支持表达式 $$context
   props?: CPropObjDataType;
   state?: Record<string, any>;
   stateName?: string;
+  // if type is low code, schema is required
+  schema?: CPageDataType;
   children?: (string | CNodeDataType)[];
   /**
    * only used in dev mode, if you are run in prod, this key will be undefined
@@ -142,9 +147,8 @@ export type CNodeDataType = {
       props?: CPropObjDataType;
     };
   };
-
-  style?: string;
-  className?: string;
+  className?: string[];
+  css?: CSSValue[];
   refId?: string;
   // 逻辑编排使用
   onEvents?: Record<
@@ -189,8 +193,8 @@ export const CNodeDataStructDescribe: any = object({
     return optional(array(union([string(), CNodeDataStructDescribe])));
   }),
   configure: optional(any()),
-  style: optional(string()),
-  className: optional(string()),
+  css: optional(any()),
+  className: optional(array(string())),
   refId: optional(string()),
   extra: optional(record(any(), any())),
   condition: optional(union([boolean(), JSExpressionDescribe])),

@@ -1,12 +1,4 @@
-import {
-  array,
-  assign,
-  literal,
-  object,
-  omit,
-  optional,
-  string,
-} from 'superstruct';
+import { assign, literal, object, omit, string } from 'superstruct';
 import { CNodePropsTypeEnum } from '../const/schema';
 import { CNodeDataStructDescribe, CNodeDataType } from './node';
 
@@ -27,6 +19,5 @@ export const CRootNodeDataTypeDescribe = assign(
   omit(CNodeDataStructDescribe, ['componentName']),
   object({
     componentName: literal(InnerComponentNameEnum.ROOT_CONTAINER),
-    methods: optional(array(FunctionPropertyTypeDescribe)),
   })
 );

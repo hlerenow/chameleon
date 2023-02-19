@@ -43,3 +43,20 @@ export type MaterialAssetPackage = {
   component: AssetPackage;
   version?: string;
 };
+
+export type PseudoCSS = {
+  state: 'hover' | 'active' | 'focus';
+  style: Record<string, string>;
+};
+
+export type MediaCSS = {
+  size: number;
+  style: Record<string, string>;
+};
+
+export type CSSValue = PseudoCSS | MediaCSS;
+
+export type CSSType = {
+  class: string;
+  value: CSSValue[];
+};

@@ -10,9 +10,7 @@ export const FunctionSetter: CSetter<any> = ({
   setterContext,
   ...props
 }: CSetterProps<any>) => {
-  const { keyPaths, onSetterChange } = setterContext;
   const editorRef = useRef<MonacoEditorInstance | null>(null);
-  console.log('setterContext', setterContext);
   const [open, setOpen] = useState(false);
   const onInnerValueChange = () => {
     const newValStr = editorRef.current?.getValue() || '';

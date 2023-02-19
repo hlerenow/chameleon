@@ -4,8 +4,14 @@ import {
   ThirdLibTypeDescribe,
   LibMetaTypeDescribe,
   AssetPackage,
+  CSSType,
 } from './base';
-import { CRootNodeDataType, CRootNodeDataTypeDescribe } from './rootNode';
+import { FunctionPropType } from './node';
+import {
+  CRootNodeDataType,
+  CRootNodeDataTypeDescribe,
+  FunctionPropertyTypeDescribe,
+} from './rootNode';
 
 export type ComponentMetaType = {
   componentName: string;
@@ -14,14 +20,13 @@ export type ComponentMetaType = {
 export type CPageDataType = {
   version: string;
   name: string;
-  css?: {
-    type: 'css' | 'less' | 'scs';
-    value: string;
-  };
+  css?: CSSType[];
   renderType?: 'PAGE' | 'COMPONENT';
+  methods?: FunctionPropType[];
   componentsMeta: ComponentMetaType[];
   thirdLibs?: LibMetaType[];
   componentsTree: CRootNodeDataType;
+  // runtime render need
   assets?: AssetPackage[];
 };
 
@@ -30,6 +35,7 @@ export const CPageDataTypeDescribe = object({
   name: string(),
   style: optional(string()),
   css: optional(string()),
+  methods: optional(array(FunctionPropertyTypeDescribe)),
   componentsMeta: array(
     assign(
       object({
