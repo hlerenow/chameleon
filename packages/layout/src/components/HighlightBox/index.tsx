@@ -94,13 +94,17 @@ export const HighlightBox = ({
     }
 
     const tempRect = instanceDom.getBoundingClientRect();
-    setRect(tempRect);
     const transformStr = `translate3d(${tempRect?.left}px, ${tempRect.top}px, 0)`;
     const tempObj = {
       width: tempRect?.width + 'px',
       height: tempRect?.height + 'px',
       transform: transformStr,
     };
+    if (tempRect?.width === 0 || tempRect?.height === 0) {
+      setRect(undefined);
+      return;
+    }
+    setRect(tempRect);
     const toolBoxDom = document.getElementById(tempInstance?._UNIQUE_ID || '');
     if (toolBoxDom) {
       toolBoxDom.style.transform = transformStr;
