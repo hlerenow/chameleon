@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import { CNode, CSchema } from '@chameleon/model';
+import { CNode, CRootNode } from '@chameleon/model';
 export declare const GhostView: ({ node }: {
-    node: CNode | CSchema;
+    node: CNode | CRootNode;
 }) => JSX.Element;
