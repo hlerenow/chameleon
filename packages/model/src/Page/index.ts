@@ -304,11 +304,17 @@ export class CPage {
           ...cloneDeep(it.value.npm || {}),
         } as ComponentMetaType;
       });
+    // 剔除不合法的meta
+    const finalComponentsMetaList = componentsMetaList.filter((el) => {
+      if (el.componentName && el.package && el.version) {
+        return true;
+      }
+    });
     this.materialsModel.usedMaterials = [];
     let res: CPageDataType = {
       ...this.data,
       componentsTree: clearSchema(componentsTree),
-      componentsMeta: componentsMetaList,
+      componentsMeta: finalComponentsMetaList,
       thirdLibs: this.data.thirdLibs,
       assets: [],
     };
