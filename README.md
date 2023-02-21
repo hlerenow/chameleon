@@ -31,7 +31,7 @@ A streamlined low-code engine, all modules support custom extensions, which can 
 - [x] 第三方库组件快速接入
 - [x] 支持函数逻辑编辑
 - [ ] 支持自定义拖拽行为
-- [ ] 支持 async/await 语法实施变异
+- [ ] 支持 async/await 语法实时编译
 - [ ] 支持第三方库在线引入
 - [ ] 支持 React 代码生成
 - [ ] 支持 Vue 组件渲染
@@ -45,7 +45,7 @@ A streamlined low-code engine, all modules support custom extensions, which can 
 - [x] Quick access to third-party library components
 - [x] Support function logic editing
 - [ ] Support custom drag and drop behavior
-- [ ] support for async/await syntax implementation mutation
+- [ ] Support real-time compilation of async/await syntax
 - [ ] Support online introduction of third-party libraries
 - [ ] support React code generation
 - [ ] Support Vue component rendering
