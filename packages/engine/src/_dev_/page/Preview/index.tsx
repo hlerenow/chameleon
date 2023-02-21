@@ -17,7 +17,7 @@ export const Preview = () => {
     return <>not found page</>;
   }
   return (
-    <div className="App">
+    <div className="App" style={{ overflow: 'auto', height: '100%' }}>
       <Render
         page={page}
         components={components}

@@ -1,4 +1,13 @@
-import { any, array, assign, object, optional, string } from 'superstruct';
+import {
+  any,
+  array,
+  assign,
+  literal,
+  object,
+  optional,
+  string,
+  union,
+} from 'superstruct';
 import {
   LibMetaType,
   ThirdLibTypeDescribe,
@@ -17,11 +26,16 @@ export type ComponentMetaType = {
   componentName: string;
 } & LibMetaType;
 
+export enum RenderType {
+  PAGE = 'PAGE',
+  COMPONENT = 'COMPONENT',
+}
+
 export type CPageDataType = {
   version: string;
   name: string;
   css?: CSSType[];
-  renderType?: 'PAGE' | 'COMPONENT';
+  renderType?: RenderType;
   methods?: FunctionPropType[];
   componentsMeta: ComponentMetaType[];
   thirdLibs?: LibMetaType[];
@@ -33,8 +47,10 @@ export type CPageDataType = {
 export const CPageDataTypeDescribe = object({
   version: string(),
   name: string(),
-  style: optional(string()),
   css: optional(string()),
+  renderType: optional(
+    union([literal(RenderType.COMPONENT), literal(RenderType.PAGE)])
+  ),
   methods: optional(array(FunctionPropertyTypeDescribe)),
   componentsMeta: array(
     assign(

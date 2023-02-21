@@ -116,7 +116,7 @@ export class DefineReactAdapter {
     {
       $$context: parentContext,
     }: {
-      $$context: Record<string, any>;
+      $$context: ContextType;
     }
   ) {
     const propsModel = originalProps;

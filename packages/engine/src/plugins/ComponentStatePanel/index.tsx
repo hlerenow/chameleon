@@ -18,7 +18,6 @@ export const ComponentStatePanel = (props: ComponentStatePanelProps) => {
   const editorRef = useRef<MonacoEditorInstance | null>(null);
   useEffect(() => {
     const currentState = node.value.state || {};
-
     editorRef?.current?.setValue(JSON.stringify(currentState, null, 2));
   }, [node]);
 

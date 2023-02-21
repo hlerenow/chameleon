@@ -137,7 +137,7 @@ export const App = () => {
       </div>
     );
 
-    workbench?.openLeftPanel('OutlineTree');
+    workbench?.openLeftPanel('GlobalState');
   }, []);
   if (!ready) {
     return <>loading...</>;
