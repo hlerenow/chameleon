@@ -165,6 +165,7 @@ export enum SetterTypeEnum {
   EXPRESSION_SETTER = 'ExpressionSetter',
   FUNCTION_SETTER = 'FunctionSetter',
   COMPONENT_SETTER = 'ComponentSetter',
+  TEXT_AREA_SETTER = 'TextAreaSetter',
 }
 
 export enum ComplexSetterTypeEnum {
@@ -183,8 +184,10 @@ export type SetterObjType =
   | {
       componentName: SetterTypeEnum | `${SetterTypeEnum}`;
       props?: Record<any, any>;
-      // 被设置属性的初始值
+      /** 被设置属性的初始值 */
       initialValue?: any;
+      /** props reference CSetterProps<T> from engine */
+      component?: (props: any) => React.ReactNode;
     }
   | {
       componentName:
@@ -192,8 +195,12 @@ export type SetterObjType =
         | `${ComplexSetterTypeEnum.SHAPE_SETTER}`;
       props?: {
         elements: MaterialPropType[];
+        /** 是否可以收缩，默认： true  */
+        collapse?: boolean;
       };
       initialValue: any;
+      /** props reference CSetterProps<T> from engine */
+      component?: (props: any) => React.ReactNode;
     }
   | {
       componentName:
@@ -206,6 +213,8 @@ export type SetterObjType =
         };
       };
       initialValue: any;
+      /** props reference CSetterProps<T> from engine */
+      component?: (props: any) => React.ReactNode;
     };
 
 export const SetterTypeDescribe = union([
@@ -213,8 +222,9 @@ export const SetterTypeDescribe = union([
   object({
     componentName: string(),
     props: optional(any()),
-    // 用于标记当前数据的初始值，如添加一个数组元素可以使用该值填充
+    /** 用于标记当前数据的初始值，如添加一个数组元素可以使用该值填充 */
     initialValue: optional(any()),
+    component: optional(any()),
   }),
 ]);
 
@@ -352,31 +362,30 @@ export type CMaterialType = {
   title: string;
   screenshot?: string;
   icon?: string;
-  // 组件标签用于搜索
+  /** 组件标签用于搜索 */
   tags?: string[];
-  // 分 tab 面板
+  /** 分 tab 面板 */
   groupName?: string;
-  // 分类
+  /** 分类 */
   category?: string;
-  // 排序
+  /** 排序 */
   priority?: number;
   npm?: LibMetaType;
   snippets: SnippetsType[];
   props: CMaterialPropsType;
-  // 固定的props, 不被 setter 的值覆盖
+  /** 固定的props, 不被 setter 的值覆盖 */
   fixedProps?:
     | Record<string, any>
     | ((props: Record<string, any>) => Record<string, any>);
-  // 可以拖入组件
+  /** 可以拖入组件 */
   isContainer?: boolean | ContainerConfig;
-
-  // 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize
+  /** 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize */
   isLayout?: boolean;
   isSupportStyle?: boolean;
   rootSelector?: string;
-  // 是否可以派发dom事件，默认被禁止： click、mousedown、mouseup 等等
+  /** 是否可以派发dom事件，默认被禁止： click、mousedown、mouseup 等等 */
   isSupportDispatchNativeEvent?: boolean;
-  // 组件支持的可被调用的方法， todo： 没有补充验证 类型 describe
+  /** 组件支持的可被调用的方法， todo： 没有补充验证 类型 describe */
   actions?: {
     title: string;
     // 方法名
@@ -387,7 +396,7 @@ export type CMaterialType = {
     }[];
     template?: string;
   }[];
-  // 组件可能触发的事件
+  /** 组件可能触发的事件 */
   events?: CMaterialEventType[];
   // 用于定制组件额外的交互行为,
   panels?: {
@@ -395,15 +404,15 @@ export type CMaterialType = {
     key: string;
     component: ($$context: any) => React.ReactNode;
   }[];
-  // 用于定制组件特有的一些选中交互， todo: 没有补充验证 类型 describe
+  /** 用于定制组件特有的一些选中交互， todo: 没有补充验证 类型 describe */
   selection?: ($$context: any) => React.ReactNode;
   selectionToolBars?: ActionType[];
-  // 定制组件释放时的行为
+  /**定制组件释放时的行为 */
   advance?: {
     onDragStart: ($$context: any) => Promise<void>;
     onDrop: ($$context: any) => Promise<void>;
   };
-  // 扩展配置
+  /** 扩展配置 */
   extra?: Record<any, any>;
 };
 

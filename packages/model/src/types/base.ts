@@ -1,4 +1,7 @@
 import { array, boolean, object, optional, string } from 'superstruct';
+import { htmlTagNames } from 'html-tag-names';
+
+export const HTMl_TAGS = htmlTagNames;
 
 export type AssetItem = {
   id?: string;
@@ -60,3 +63,15 @@ export type CSSType = {
   class: string;
   value: CSSValue[];
 };
+
+/** 基础的组件列表 */
+export const BaseComponentTagList = [
+  'CBlock',
+  'CContainer',
+  'CImage',
+  'CCanvas',
+  'CVideo',
+  'CAudio',
+  'CText',
+  'CNativeTag',
+];

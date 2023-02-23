@@ -61,7 +61,7 @@ class ComponentLibView extends React.Component<
 
   componentDidMount(): void {
     const { pluginCtx } = this.props;
-    const { pageModel } = pluginCtx;
+    const { pageModel, i18n } = pluginCtx;
     const { materialsModel } = pageModel;
     const designerHandle = this.props.pluginCtx.pluginManager.get('Designer');
     const designerReady = designerHandle?.exports?.getReadyStatus?.();
@@ -73,11 +73,11 @@ class ComponentLibView extends React.Component<
       });
     }
 
-    const { i18n } = this.props.pluginCtx;
-
     Object.keys(localize).forEach((lng) => {
       i18n.addResourceBundle(lng, i18nNamespace, localize[lng], true, true);
     });
+
+    i18n.update();
     const allSnippets = materialsModel.getAllSnippets();
     this.setState({
       componentsList: allSnippets,
@@ -182,9 +182,9 @@ export const ComponentLibPlugin: CPlugin = {
   async init(ctx) {
     const ComponentLibViewWithLocalize =
       withTranslation(i18nNamespace)(ComponentLibView);
-    const Title = withTranslation(i18nNamespace)(({ t }) => (
-      <>{t('pluginName')}</>
-    ));
+    const Title = withTranslation(i18nNamespace)(({ t }) => {
+      return <>{t('pluginName')}</>;
+    });
     ctx.workbench.addLeftPanel({
       title: <Title />,
       name: 'ComponentLib',

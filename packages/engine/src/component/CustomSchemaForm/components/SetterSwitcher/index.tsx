@@ -123,7 +123,7 @@ export const SetterSwitcher = ({
         style={{
           marginBottom: '10px',
         }}
-        // defaultActiveKey={[props.name]}
+        defaultActiveKey={[props.name]}
       >
         <Collapse.Panel
           header={
@@ -159,26 +159,8 @@ export const SetterSwitcher = ({
     bodyView = (
       <div className={styles.shapeFieldBox}>
         {props.prefix ?? null}
-        <Collapse
-          bordered={false}
-          // defaultActiveKey={[props.name]}
-          style={{ flex: 1 }}
-        >
-          <Collapse.Panel
-            header={
-              <div className={styles.collapseHeader}>
-                <span
-                  style={{
-                    flex: 1,
-                  }}
-                >
-                  {props.label}
-                </span>
-                {switcher}
-              </div>
-            }
-            key={props.name}
-          >
+        {(currentSetter?.props as any)?.collapse === false && (
+          <div style={{ width: '100%' }}>
             <CField {...props} noStyle {...conditionProps}>
               <CurrentSetterComp
                 {...setterProps}
@@ -188,8 +170,42 @@ export const SetterSwitcher = ({
                 }}
               />
             </CField>
-          </Collapse.Panel>
-        </Collapse>
+          </div>
+        )}
+        {(currentSetter?.props as any)?.collapse !== false && (
+          <Collapse
+            bordered={false}
+            // defaultActiveKey={[props.name]}
+            style={{ flex: 1 }}
+          >
+            <Collapse.Panel
+              header={
+                <div className={styles.collapseHeader}>
+                  <span
+                    style={{
+                      flex: 1,
+                    }}
+                  >
+                    {props.label}
+                  </span>
+                  {switcher}
+                </div>
+              }
+              key={props.name}
+            >
+              <CField {...props} noStyle {...conditionProps}>
+                <CurrentSetterComp
+                  {...setterProps}
+                  setterContext={{
+                    ...setterContext,
+                    keyPaths: [...keyPaths],
+                  }}
+                />
+              </CField>
+            </Collapse.Panel>
+          </Collapse>
+        )}
+
         {props.suffix ?? null}
       </div>
     );

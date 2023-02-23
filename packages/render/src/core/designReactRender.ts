@@ -5,6 +5,7 @@ import {
   CPageDataType,
   CRootNode,
   getRandomStr,
+  InnerComponentNameEnum,
 } from '@chameleon/model';
 import { isArray, isPlainObject, merge } from 'lodash-es';
 import React, { useMemo, useRef } from 'react';
@@ -148,7 +149,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
         if (
           !hasChildren &&
           (node.material?.value.isContainer ||
-            node.value.componentName === 'CPage')
+            node.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER)
         ) {
           newChildren.push(
             React.createElement(self.dropPlaceholder, {
@@ -156,7 +157,6 @@ export class DesignRender extends React.Component<DesignRenderProp> {
             })
           );
         }
-
         if (onlyRenderChild) {
           return newChildren;
         }

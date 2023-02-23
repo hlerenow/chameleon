@@ -8,13 +8,13 @@ export const TableMeta: CMaterialType = {
     exportName: 'Table',
     version: '1.0.0',
   },
-  icon: 'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
   props: [
     {
       name: 'name',
       title: '表名',
       valueType: 'string',
       setters: [
+        'TextAreaSetter',
         'StringSetter',
         {
           componentName: 'ArraySetter',
@@ -237,9 +237,8 @@ export const TableMeta: CMaterialType = {
   snippets: [
     {
       title: '表格',
-      snapshot:
-        'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
-      category: 'HTML 元素',
+      snapshotText: 'Table',
+      category: '高级组件',
       schema: {
         props: {
           data: [

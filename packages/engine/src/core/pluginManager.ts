@@ -2,6 +2,7 @@ import { AssetPackage, CNode, CPage } from '@chameleon/model';
 import { i18n } from 'i18next';
 import mitt, { Emitter } from 'mitt';
 import { WorkBench } from '../component/Workbench';
+import { CustomI18n } from '../i18n';
 
 export type PluginObj = {
   name: string;
@@ -21,7 +22,7 @@ type PluginManagerOptions = {
   workbench: () => WorkBench;
   emitter: Emitter<any>;
   pageModel: CPage;
-  i18n: i18n;
+  i18n: CustomI18n;
   assets: AssetPackage[];
 };
 
@@ -39,7 +40,7 @@ export class PluginManager {
   emitter: Emitter<any> = mitt();
   workbench!: () => WorkBench;
   pageModel!: CPage;
-  i18n: i18n;
+  i18n: CustomI18n;
   assets: AssetPackage[];
 
   constructor({

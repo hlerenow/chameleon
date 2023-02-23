@@ -1,4 +1,5 @@
 import { Popover } from 'antd';
+import clsx from 'clsx';
 import React, { useMemo } from 'react';
 import styles from './style.module.scss';
 
@@ -9,6 +10,7 @@ export type DragComponentItemProps = {
   icon: React.ReactNode | string;
   iconText?: string;
   style?: React.CSSProperties;
+  containerClassName?: string;
 };
 
 export const DragComponentItem = (props: DragComponentItemProps) => {
@@ -32,7 +34,7 @@ export const DragComponentItem = (props: DragComponentItemProps) => {
   }, [props.icon]);
 
   const contentView = (
-    <div className={styles.square}>
+    <div className={clsx([styles.square, props.containerClassName])}>
       <div {...dragInfo} className={styles.componentItem} style={props.style}>
         <div className={styles.iconBox}>{icon}</div>
         <span>{props.name}</span>

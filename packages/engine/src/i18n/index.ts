@@ -18,9 +18,22 @@ i18n
     lng: 'zh_CN', // language to use, more information here: https://www.i18next.com/overview/configuration-options#languages-namespaces-resources
     // you can use the i18n.changeLanguage function to change the language manually: https://www.i18next.com/overview/api#changelanguage
     // if you're using a language detector, do not define the lng option
-    interpolation: {
-      escapeValue: false, // react already safes from xss
+    react: {
+      bindI18n: 'added languageChanged',
+      bindI18nStore: 'added',
     },
   });
 
-export default i18n;
+export type CustomI18n = typeof i18n & {
+  update: () => void;
+};
+
+const customI18n: CustomI18n = i18n as any;
+
+customI18n.update = () => {
+  setTimeout(() => {
+    i18n.emit('added');
+  }, 0);
+};
+
+export default customI18n;

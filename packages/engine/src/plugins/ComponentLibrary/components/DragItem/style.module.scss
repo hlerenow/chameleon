@@ -13,6 +13,7 @@
     clear: both;
   }
 }
+
 .componentItem {
   user-select: none;
   overflow: hidden;
@@ -51,7 +52,7 @@
 }
 
 .iconText {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bolder;
   color: $textColor;
 }

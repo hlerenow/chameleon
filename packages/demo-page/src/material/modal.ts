@@ -11,10 +11,10 @@ export const ModalMeta: CMaterialType = {
   icon: 'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
   props: [
     {
-      name: 'style',
-      title: '样式',
-      valueType: 'object',
-      setters: ['JSONSetter'],
+      name: 'visible',
+      title: '可见性',
+      valueType: 'boolean',
+      setters: ['BooleanSetter', 'ExpressionSetter'],
     },
   ],
   fixedProps: {
@@ -25,12 +25,11 @@ export const ModalMeta: CMaterialType = {
   snippets: [
     {
       title: '基础元素',
-      snapshot:
-        'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
-      category: 'HTML 元素',
+      snapshotText: 'Modal',
+      category: '高级组件',
       schema: {
         props: {},
-        children: ['I am a Div tag'],
+        children: ['I am a Modal'],
       },
     },
   ],

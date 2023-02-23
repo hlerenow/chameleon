@@ -9,6 +9,7 @@ import { DEFAULT_PLUGIN_LIST } from '../../../plugins';
 import { DesignerExports } from '../../../plugins/Designer';
 import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 import { AssetPackage } from '@chameleon/model';
+import { InnerComponentMeta } from '../../../material/innerMaterial';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOM;
@@ -22,6 +23,7 @@ import { AssetPackage } from '@chameleon/model';
 // {
 //   src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/antd.min.js',
 // },
+
 const assets: AssetPackage[] = [
   {
     package: 'antd',
@@ -136,8 +138,6 @@ export const App = () => {
         </Button>
       </div>
     );
-
-    workbench?.openLeftPanel('GlobalState');
   }, []);
   if (!ready) {
     return <>loading...</>;
@@ -146,7 +146,7 @@ export const App = () => {
     <Engine
       plugins={DEFAULT_PLUGIN_LIST}
       schema={page as any}
-      material={Material}
+      material={[...InnerComponentMeta]}
       assets={[]}
       assetPackagesList={assetPackagesList}
       onReady={onReady}

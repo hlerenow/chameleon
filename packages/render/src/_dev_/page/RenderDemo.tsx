@@ -4,6 +4,7 @@ import { ReactAdapter, Render, useRender } from '../../index';
 import '../index.css';
 import { CPage } from '@chameleon/model';
 import { components } from '../components';
+import { PageData } from './demoPageData';
 
 export type AppProp = {
   a: string;
@@ -13,7 +14,7 @@ export function RenderDemo() {
   SamplePage;
   BasePage;
   const [page] = useState(
-    new CPage(BasePage, {
+    new CPage(PageData, {
       materials: Material,
     })
   );

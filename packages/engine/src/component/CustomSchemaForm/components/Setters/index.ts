@@ -8,6 +8,7 @@ import { BooleanSetter } from './BooleanSetter';
 import { SelectSetter } from './SelectSetter';
 import { JSONSetter } from './JSONSetter';
 import { FunctionSetter } from './FunctionSetter';
+import { TextAreaSetter } from './TextAreaSetter';
 
 export default {
   StringSetter,
@@ -19,4 +20,5 @@ export default {
   SelectSetter,
   JSONSetter,
   FunctionSetter,
+  TextAreaSetter,
 } as Record<string, CSetter>;

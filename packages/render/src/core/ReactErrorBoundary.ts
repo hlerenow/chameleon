@@ -80,7 +80,7 @@ class ErrorBoundary extends React.Component<
           },
         })
       );
-      // return errorView;
+      // return errorView; onlyRenderChild from  errorView
       return React.createElement(
         this.props.targetComponent,
         { onlyRenderChild: true },

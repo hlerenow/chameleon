@@ -18,6 +18,7 @@ export const SelectSetter: CSetter<SelectProps> = ({
       }}
     >
       <Select
+        showSearch
         style={{
           width: '100%',
         }}
