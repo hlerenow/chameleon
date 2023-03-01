@@ -81,9 +81,10 @@ export const MonacoEditor = (props: MonacoEditorProps) => {
       },
       { ...(props.override || {}) }
     );
+
     editorInstance.current = editor;
     props.onDidMount?.(editor);
-    const subscription = editor.onDidChangeModelContent(() => {
+    const subscription = editor.getModel()?.onDidChangeContent(() => {
       onChangeRef.current?.(editor.getValue());
     });
 
@@ -104,7 +105,7 @@ export const MonacoEditor = (props: MonacoEditorProps) => {
 
     () => {
       editor.dispose();
-      subscription.dispose();
+      subscription?.dispose();
     };
   }, []);
 

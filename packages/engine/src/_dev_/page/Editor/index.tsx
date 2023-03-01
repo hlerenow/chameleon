@@ -139,6 +139,7 @@ export const App = () => {
       </div>
     );
   }, []);
+
   if (!ready) {
     return <>loading...</>;
   }

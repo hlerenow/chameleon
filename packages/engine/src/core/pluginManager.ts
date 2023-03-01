@@ -34,9 +34,13 @@ export type CPluginCtx<C = any> = {
   getActiveNode: () => CNode | null;
 } & Omit<PluginManagerOptions, 'workbench'>;
 
+export type PluginInstance = {
+  ctx: CPluginCtx;
+  exports: any;
+  source: PluginObj;
+};
 export class PluginManager {
-  plugins: Map<string, { ctx: CPluginCtx; exports: any; source: PluginObj }> =
-    new Map();
+  plugins: Map<string, PluginInstance> = new Map();
   emitter: Emitter<any> = mitt();
   workbench!: () => WorkBench;
   pageModel!: CPage;

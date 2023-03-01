@@ -132,6 +132,11 @@ export class Designer extends React.Component<
     layoutInstance.dnd.emitter.on('click', ({ event }) => {
       pluginCtx.workbench.onGlobalClick(event);
     });
+
+    this.props.pluginCtx.pageModel.emitter.on('onPageChange', ({ node }) => {
+      const newPage = node.export();
+      layoutRef.current?.designRenderRef?.current?.rerender(newPage);
+    });
   }
 
   onSelectNode = (node: CNode | CRootNode | null) => {

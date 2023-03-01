@@ -28,12 +28,13 @@ export declare type CPluginCtx<C = any> = {
     pluginManager: PluginManager;
     getActiveNode: () => CNode | null;
 } & Omit<PluginManagerOptions, 'workbench'>;
+export declare type PluginInstance = {
+    ctx: CPluginCtx;
+    exports: any;
+    source: PluginObj;
+};
 export declare class PluginManager {
-    plugins: Map<string, {
-        ctx: CPluginCtx;
-        exports: any;
-        source: PluginObj;
-    }>;
+    plugins: Map<string, PluginInstance>;
     emitter: Emitter<any>;
     workbench: () => WorkBench;
     pageModel: CPage;
@@ -41,11 +42,7 @@ export declare class PluginManager {
     assets: AssetPackage[];
     constructor({ workbench, emitter, pageModel, i18n, assets, }: PluginManagerOptions);
     add(plugin: CPlugin): Promise<void>;
-    get(pluginName: string): {
-        ctx: CPluginCtx<any>;
-        exports: any;
-        source: PluginObj;
-    } | undefined;
+    get(pluginName: string): PluginInstance | undefined;
     remove(name: string): Promise<void>;
 }
 export {};

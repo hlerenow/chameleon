@@ -81,6 +81,16 @@ export class CPage {
     this.data = parsePage(data, this, this.materialsModel);
   }
 
+  updatePage(data: CPageDataType) {
+    const oldData = this.data;
+    this.data = parsePage(data, this, this.materialsModel);
+    this.emitter.emit('onPageChange', {
+      value: this.data,
+      preValue: oldData,
+      node: this,
+    });
+  }
+
   get value() {
     return this.data;
   }
