@@ -445,6 +445,11 @@ export class DefineReactAdapter {
               }
             );
 
+            // font-size to fontSize
+            if (newProps.style) {
+              newProps.style = formatSourceStyle(newProps.style);
+            }
+
             const { children } = newProps;
             let newChildren: React.ReactNode[] = [];
             if (children !== undefined) {
@@ -514,6 +519,10 @@ export class DefineReactAdapter {
         // font-size to fontSize
         if (newProps.style) {
           newProps.style = formatSourceStyle(newProps.style);
+          console.log(
+            '🚀 ~ file: adapterReact.ts:516 ~ DynamicComponent ~ render ~ newProps.style:',
+            newProps.style
+          );
         }
 
         // handle children
