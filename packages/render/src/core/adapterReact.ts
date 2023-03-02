@@ -460,7 +460,7 @@ export class DefineReactAdapter {
               const childModel = nodeModel.value.children;
               childModel.forEach((node, index) => {
                 const child = that.buildComponent(node, {
-                  $$context: newContext,
+                  $$context: loopContext,
                   idx: index,
                 });
                 children.push(child);

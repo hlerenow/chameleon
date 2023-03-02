@@ -228,6 +228,158 @@ export const PageData: CPageDataType = {
                 title: 'array-right',
                 id: 'je9fi5',
               },
+              {
+                props: {
+                  width: '100px',
+                  height: '100px',
+                  style: {
+                    position: 'absolute',
+                    bottom: '10px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    height: '20px',
+                    display: 'flex',
+                    'align-items': 'center',
+                    'background-color': 'rgba(0,0,0,0.5)',
+                    'border-radius': '2px',
+                    padding: '0 10px',
+                    'justify-content': 'space-around',
+                    width: '80px',
+                  },
+                },
+                componentName: 'CContainer',
+                id: 'bl87pg',
+                children: [
+                  {
+                    props: {
+                      width: '100px',
+                      height: '100px',
+                      style: {
+                        width: '10px',
+                        height: '10px',
+                        background: 'rgba(200,200,200,0.5)',
+                        'border-radius': '4px',
+                      },
+                      $$attributes: [
+                        {
+                          key: 'onClick',
+                          value: {
+                            type: 'FUNCTION',
+                            value:
+                              'function click() {\n  console.log($$context.loopData);\n}',
+                          },
+                        },
+                      ],
+                    },
+                    componentName: 'CBlock',
+                    id: 'jn98v0',
+                    configure: {
+                      propsSetter: {
+                        '$$attributes.0.value': {
+                          name: '$$attributes.0.value',
+                          setter: 'FunctionSetter',
+                        },
+                        children: {
+                          name: 'children',
+                          setter: 'ExpressionSetter',
+                        },
+                      },
+                      advanceSetter: {
+                        'loop.data': {
+                          name: 'loop.data',
+                          setter: 'ExpressionSetter',
+                        },
+                      },
+                    },
+                    loop: {
+                      open: true,
+                      data: {
+                        type: 'EXPRESSION',
+                        value:
+                          '$$context.stateManager.bannerState.state.imgList',
+                      },
+                      forName: 'item',
+                      forIndex: 'index',
+                      key: '',
+                      name: '',
+                    },
+                    condition: true,
+                    children: [
+                      {
+                        props: {
+                          width: '100px',
+                          height: '100px',
+                          style: {
+                            width: '10px',
+                            height: '10px',
+                            background: 'rgba(200,200,200,0.5)',
+                            'border-radius': '4px',
+                          },
+                          $$attributes: [
+                            {
+                              key: 'onClick',
+                              value: {
+                                type: 'FUNCTION',
+                                value:
+                                  'function click() {\n  console.log(222, $$context.loopData);\n}',
+                              },
+                            },
+                          ],
+                          children: {
+                            type: 'EXPRESSION',
+                            value: '$$context.loopData.index',
+                          },
+                        },
+                        componentName: 'CBlock',
+                        configure: {
+                          propsSetter: {
+                            '$$attributes.0.value': {
+                              name: '$$attributes.0.value',
+                              setter: 'FunctionSetter',
+                            },
+                            children: {
+                              name: 'children',
+                              setter: 'ExpressionSetter',
+                            },
+                          },
+                          advanceSetter: {
+                            'loop.data': {
+                              name: 'loop.data',
+                              setter: 'ExpressionSetter',
+                            },
+                          },
+                        },
+                        loop: {
+                          open: false,
+                          data: {
+                            type: 'EXPRESSION',
+                            value: '',
+                          },
+                          forName: 'item',
+                          forIndex: 'index',
+                          key: '',
+                          name: '',
+                        },
+                        condition: true,
+                        id: '5mu9jm',
+                      },
+                    ],
+                  },
+                ],
+                configure: {
+                  propsSetter: {},
+                  advanceSetter: {},
+                },
+                loop: {
+                  open: false,
+                  data: [],
+                  forName: 'item',
+                  forIndex: 'index',
+                  key: '',
+                  name: '',
+                },
+                condition: true,
+              },
             ],
             configure: {
               propsSetter: {},
@@ -636,156 +788,6 @@ export const PageData: CPageDataType = {
             stateName: 'bannerState1',
             id: 'enhsom',
             title: 'CContainer2',
-          },
-          {
-            props: {
-              width: '100px',
-              height: '100px',
-              style: {
-                position: 'relative',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                height: '20px',
-                display: 'flex',
-                'align-items': 'center',
-                'background-color': 'rgba(0,0,0,0.5)',
-                'border-radius': '2px',
-                padding: '0 10px',
-                'justify-content': 'space-around',
-                width: '80px',
-              },
-            },
-            componentName: 'CContainer',
-            id: 'bl87pg',
-            children: [
-              {
-                props: {
-                  width: '100px',
-                  height: '100px',
-                  style: {
-                    width: '10px',
-                    height: '10px',
-                    background: 'rgba(200,200,200,0.5)',
-                    'border-radius': '4px',
-                  },
-                  $$attributes: [
-                    {
-                      key: 'onClick',
-                      value: {
-                        type: 'FUNCTION',
-                        value:
-                          'function click() {\n  console.log($$context.loopData);\n}',
-                      },
-                    },
-                  ],
-                },
-                componentName: 'CBlock',
-                id: 'jn98v0',
-                configure: {
-                  propsSetter: {
-                    '$$attributes.0.value': {
-                      name: '$$attributes.0.value',
-                      setter: 'FunctionSetter',
-                    },
-                    children: {
-                      name: 'children',
-                      setter: 'ExpressionSetter',
-                    },
-                  },
-                  advanceSetter: {
-                    'loop.data': {
-                      name: 'loop.data',
-                      setter: 'ExpressionSetter',
-                    },
-                  },
-                },
-                loop: {
-                  open: true,
-                  data: {
-                    type: 'EXPRESSION',
-                    value: '$$context.stateManager.bannerState.state.imgList',
-                  },
-                  forName: 'item',
-                  forIndex: 'index',
-                  key: '',
-                  name: '',
-                },
-                condition: true,
-                children: [
-                  {
-                    props: {
-                      width: '100px',
-                      height: '100px',
-                      style: {
-                        width: '10px',
-                        height: '10px',
-                        background: 'rgba(200,200,200,0.5)',
-                        'border-radius': '4px',
-                      },
-                      $$attributes: [
-                        {
-                          key: 'onClick',
-                          value: {
-                            type: 'FUNCTION',
-                            value:
-                              'function click() {\n  console.log(222, $$context.loopData);\n}',
-                          },
-                        },
-                      ],
-                      children: {
-                        type: 'EXPRESSION',
-                        value: '',
-                      },
-                    },
-                    componentName: 'CBlock',
-                    configure: {
-                      propsSetter: {
-                        '$$attributes.0.value': {
-                          name: '$$attributes.0.value',
-                          setter: 'FunctionSetter',
-                        },
-                        children: {
-                          name: 'children',
-                          setter: 'ExpressionSetter',
-                        },
-                      },
-                      advanceSetter: {
-                        'loop.data': {
-                          name: 'loop.data',
-                          setter: 'ExpressionSetter',
-                        },
-                      },
-                    },
-                    loop: {
-                      open: false,
-                      data: {
-                        type: 'EXPRESSION',
-                        value: '',
-                      },
-                      forName: 'item',
-                      forIndex: 'index',
-                      key: '',
-                      name: '',
-                    },
-                    condition: true,
-                    id: '5mu9jm',
-                  },
-                ],
-              },
-            ],
-            configure: {
-              propsSetter: {},
-              advanceSetter: {},
-            },
-            loop: {
-              open: false,
-              data: [],
-              forName: 'item',
-              forIndex: 'index',
-              key: '',
-              name: '',
-            },
-            condition: true,
           },
         ],
         configure: {
