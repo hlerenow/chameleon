@@ -126,8 +126,11 @@ export const VisualPanel = (props: { node: CNode; pluginCtx: CPluginCtx }) => {
     const handel = () => {
       const newStyle = node.getPlainProps?.()['style'] || {};
       setStyle(newStyle);
-      const { normalProperty } = formatProperty(newStyle);
+      const { normalProperty, expressionProperty } = formatProperty(newStyle);
       cssEditorRef.current?.setValue(normalProperty);
+      formRef.current?.setFields({
+        css: expressionProperty,
+      });
     };
     handel();
     node.emitter.on('onNodeChange', handel);
@@ -139,10 +142,6 @@ export const VisualPanel = (props: { node: CNode; pluginCtx: CPluginCtx }) => {
   const onUpdateStyle = (styleArr: styleArr) => {
     // merge style
     const newStyle = styleArr2Obj([...styleArr]);
-    console.log(
-      '🚀 ~ file: index.tsx:129 ~ onUpdateStyle ~ newStyle:',
-      newStyle
-    );
     setStyle(newStyle);
     if (node.value.props.style) {
       node.value.props.style.updateValue(newStyle);
@@ -182,7 +181,7 @@ export const VisualPanel = (props: { node: CNode; pluginCtx: CPluginCtx }) => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         onSetterChange={() => {}}
         properties={CSSBindPropsSchema}
-        initialValue={[]}
+        initialValue={formatStyle.expressionProperty}
         ref={formRef}
         onValueChange={(val) => {
           onUpdateStyle([...formatStyle.normalProperty, ...val.css]);

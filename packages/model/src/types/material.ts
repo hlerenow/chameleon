@@ -174,38 +174,44 @@ export type SetterType<T extends SetterBasicType = any> =
   | T
   | `${T}`;
 
-export type SetterObjType<T extends SetterBasicType = any> =
-  | {
-      componentName: SetterTypeEnum | `${SetterTypeEnum}` | T | `${T}`;
-      props?: Record<any, any>;
-      /** 被设置属性的初始值 */
-      initialValue?: any;
-      /** props reference CSetterProps<T> from engine */
-      component?: (props: any) => React.ReactNode;
-    }
-  | {
-      componentName: ComplexSetterTypeEnum.SHAPE_SETTER | `${ComplexSetterTypeEnum.SHAPE_SETTER}` | T | `${T}`;
-      props?: {
-        elements: MaterialPropType<T>[];
-        /** 是否可以收缩，默认： true  */
-        collapse?: boolean;
-      };
+export type BasicSetterObjType<T extends SetterBasicType = any> = {
+  componentName: SetterTypeEnum | `${SetterTypeEnum}` | T | `${T}`;
+  props?: Record<any, any>;
+  /** 被设置属性的初始值 */
+  initialValue?: any;
+  /** props reference CSetterProps<T> from engine */
+  component?: (props: any) => React.ReactNode;
+};
+
+export type ShapeSetterObjType<T extends SetterBasicType = any> = {
+  componentName: ComplexSetterTypeEnum.SHAPE_SETTER | `${ComplexSetterTypeEnum.SHAPE_SETTER}` | T | `${T}`;
+  props?: {
+    elements: MaterialPropType<T>[];
+    /** 是否可以收缩，默认： true  */
+    collapse?: boolean;
+  };
+  initialValue: any;
+  /** props reference CSetterProps<T> from engine */
+  component?: (props: any) => React.ReactNode;
+};
+
+export type ArraySetterObjType<T extends SetterBasicType = any> = {
+  componentName: ComplexSetterTypeEnum.ARRAY_SETTER | `${ComplexSetterTypeEnum.ARRAY_SETTER}` | T | `${T}`;
+  props?: {
+    item: {
+      setters: SetterType<T>[];
       initialValue: any;
-      /** props reference CSetterProps<T> from engine */
-      component?: (props: any) => React.ReactNode;
-    }
-  | {
-      componentName: ComplexSetterTypeEnum.ARRAY_SETTER | `${ComplexSetterTypeEnum.ARRAY_SETTER}` | T | `${T}`;
-      props?: {
-        item: {
-          setters: SetterType<T>[];
-          initialValue: any;
-        };
-      };
-      initialValue: any;
-      /** props reference CSetterProps<T> from engine */
-      component?: (props: any) => React.ReactNode;
     };
+  };
+  initialValue: any;
+  /** props reference CSetterProps<T> from engine */
+  component?: (props: any) => React.ReactNode;
+};
+
+export type SetterObjType<T extends SetterBasicType = any> =
+  | BasicSetterObjType
+  | ShapeSetterObjType
+  | ArraySetterObjType;
 
 export const SetterTypeDescribe = union([
   string(),

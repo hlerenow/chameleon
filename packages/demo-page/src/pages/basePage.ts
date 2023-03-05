@@ -1,341 +1,436 @@
+/* eslint-disable quotes */
 import { CPageDataType } from '@chameleon/model';
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer'],
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser'],
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-];
-
-const columns = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
-    render: {
-      type: 'SLOT',
-      renderType: 'FUNC',
-      params: ['val', 'record', 'index'],
-      value: [
-        {
-          id: '5',
-          componentName: 'Row',
-          children: [
-            {
-              id: '6',
-              componentName: 'Button',
-              props: {
-                mark: 'nameRender',
-                children: {
-                  type: 'EXPRESSION',
-                  value: '$$context.params.val',
-                },
-              },
-            },
-            {
-              id: '7',
-              componentName: 'Col',
-              children: [
-                {
-                  componentName: 'Button',
-                  props: {
-                    mark: 'nameRender',
-                  },
-                  children: [
-                    {
-                      id: '8',
-                      componentName: 'div',
-                      children: ['I am div'],
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: '99898999',
-          componentName: 'Button',
-          children: ['123'],
-        },
-      ],
-    },
-  },
-  {
-    title: 'Age',
-    dataIndex: 'age',
-    key: 'age',
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-    key: 'address',
-  },
-  {
-    title: 'Tags',
-    key: 'tags',
-    dataIndex: 'tags',
-  },
-  {
-    title: 'Action',
-    key: 'action',
-  },
-];
 
 export const BasePage: CPageDataType = {
   version: '1.0.0',
   name: 'BaseDemoPage',
   componentsMeta: [],
   componentsTree: {
-    id: '1',
     componentName: 'RootContainer',
     props: {
       a: 1,
     },
     state: {
-      b: 1,
+      b: 2,
       buttonVisible: true,
       modalVisible: false,
     },
+    configure: {
+      propsSetter: {},
+      advanceSetter: {},
+    },
     children: [
       {
-        id: 'row11111',
-        componentName: 'Row',
-      },
-      {
-        id: 'globalStateText',
-        componentName: 'div',
         props: {
-          children: {
-            type: 'EXPRESSION',
-            value:
-              '"rowState to reshow: " + $$context.stateManager.RowState.state.rowMark',
+          width: '100px',
+          height: '100px',
+          style: {
+            'background-color': 'white',
+            width: '100%',
           },
         },
-      },
-      {
-        id: 'div1',
-        componentName: 'div',
+        componentName: 'CContainer',
+        id: 'ckakcd',
         children: [
           {
-            id: 'div1btn',
-            componentName: 'Button',
-            state: {
-              list: [11, 22, 33, 44, 55],
-            },
             props: {
-              children: {
-                type: 'EXPRESSION',
-                value: '$$context.loopData.index',
+              content: 'Hello Chamelon EG',
+              style: {
+                'text-align': 'center',
+                width: '100%',
+                display: 'inline-block',
+                'font-size': '20px',
+                background: 'white',
+                padding: '20px',
+                'box-sizing': 'border-box',
               },
             },
-            loop: {
-              open: true,
-              data: {
-                type: 'EXPRESSION',
-                value: '$$context.state.list',
-              },
-              key: {
-                type: 'EXPRESSION',
-                value: '$$context.loopData.item',
-              },
-            },
-          },
-        ],
-      },
-      {
-        id: 'div12222',
-        componentName: 'div',
-        children: ['566666'],
-      },
-      {
-        id: 'Modal',
-        componentName: 'Modal',
-        refId: 'ModalRef',
-        props: {
-          open: {
-            type: 'EXPRESSION',
-            value: '$$context.globalState.modalVisible',
-          },
-          onCancel: {
-            type: 'FUNCTION',
-            value: `
-            function (a) {
-                $$context.updateGlobalState({
-                 modalVisible: false
-                });
-            }
-            `,
-          },
-        },
-        children: ['I am a modal'],
-      },
-      {
-        id: '999',
-        componentName: 'Button',
-        state: {
-          a: 1,
-        },
-        props: {
-          type: 'primary',
-          onClick: {
-            type: 'FUNCTION',
-            value: `function onClick(a) {
-              console.log(a);
-              $$context.updateState({a: $$context.state.a + 1})
-              $$context.updateGlobalState({
-                buttonVisible: !$$context.globalState.buttonVisible,
-                modalVisible: !$$context.globalState.modalVisible
-              })
-            }`,
-          },
-          children: ['控制右边按钮的显示隐藏'],
-        },
-      },
-      {
-        id: '2',
-        componentName: 'Button',
-        state: {
-          a: 1,
-        },
-        props: {
-          type: 'primary',
-          onClick: {
-            type: 'FUNCTION',
-            value: `function onClick(a) {
-              console.log(a);
-              $$context.updateState({a: $$context.state.a + 1})
-              $$context.updateGlobalState({ b: $$context.globalState.b + 1})
-            }`,
-          },
-          children: {
-            type: 'EXPRESSION',
-            value: '$$context.globalState.b',
-          },
-        },
-        condition: {
-          type: 'EXPRESSION',
-          value: '$$context.globalState.buttonVisible',
-        },
-      },
-
-      {
-        id: '3',
-        componentName: 'Table',
-        state: {
-          a: 3,
-          data: data,
-        },
-        props: {
-          name: 111,
-          testArrayString: [1, 2, 3, 4, 5],
-          columns,
-          dataSource: {
-            type: 'EXPRESSION',
-            value: '$$context.state.data',
-          },
-        },
-        configure: {},
-      },
-      {
-        id: '4',
-        componentName: 'Row',
-        state: {
-          rowMark: 1,
-        },
-        stateName: 'RowState',
-        children: [
-          {
-            componentName: 'div',
-            props: {
-              children: {
-                type: 'EXPRESSION',
-                value:
-                  '"rowState to reshow: " + $$context.stateManager.RowState.state.rowMark',
-              },
+            componentName: 'CText',
+            id: 'qpbnqn',
+            configure: {
+              propsSetter: {},
+              advanceSetter: {},
             },
           },
           {
-            id: '10',
-            componentName: 'Col',
-            children: [
-              {
-                id: '11',
-                componentName: 'Button',
-                children: ['123 木头人'],
-              },
-            ],
-          },
-          {
-            id: '12',
-            componentName: 'Input',
             props: {
-              value: {
-                type: 'EXPRESSION',
-                value: '$$context.globalState.b',
+              width: '100px',
+              height: '100px',
+              style: {
+                height: '500px',
+                position: 'relative',
+                width: '100%',
+                overflow: 'hidden',
               },
-              onChange: {
+              afterMount: {
                 type: 'FUNCTION',
-                value: `
-                  function(value) {
-                    console.log(value, $$context);
-                    $$context.updateGlobalState({
-                      b: value.target.value
-                    })
-                  }
-                `,
+                value:
+                  "function didRender() {\n  setInterval(() => {\n    $$context.stateManager.bannerState.updateState((oldState) => {\n      const newPage = (oldState.currentPage + 1) % 3;\n      console.log('newPage', newPage, oldState)\n      return {\n        ...oldState,\n        currentPage: newPage\n      };\n    })\n  }, 2 * 1000)\n}",
+              },
+              beforeDestroy: {
+                type: 'FUNCTION',
+                value: 'if (window.timer) {\n  clearInterval(window.timer);\n}',
               },
             },
-          },
-          {
-            componentName: 'div',
+            componentName: 'CContainer',
+            id: '2vi5b1',
             children: [
-              '2222',
               {
-                componentName: 'div',
+                props: {
+                  width: '100px',
+                  height: '100px',
+                  style: {
+                    display: 'flex',
+                    width: '100%',
+                    position: 'absolute',
+                    transition: 'all 0.3s',
+                    height: '100%',
+                    transform: {
+                      type: 'EXPRESSION',
+                      value:
+                        '`translateX(-${($$context.stateManager.bannerState.state.currentPage) * 100}%)`',
+                    },
+                  },
+                  $$attributes: [],
+                },
+                componentName: 'CContainer',
+                id: '69079u',
                 children: [
-                  '1111',
                   {
-                    componentName: 'Button',
                     props: {
-                      onClick: {
-                        type: 'FUNCTION',
-                        value: `
-                          function (a) {
-                            console.log(a);
-                            const stateManager = $$context.stateManager;
-                            const state = stateManager.RowState.state;
-                            stateManager.RowState.updateState({
-                              rowMark: state.rowMark  +1
-                            })
-                          }
-                        `,
+                      width: '100px',
+                      height: '100px',
+                      style: {
+                        width: '100%',
+                        'background-repeat': 'no-repeat',
+                        'background-position': 'center',
+                        'background-size': 'cover',
+                        'flex-shrink': '0',
+                        height: '100%',
+                        'background-image': {
+                          type: 'EXPRESSION',
+                          value: '`url("${$$context.loopData.item}")`',
+                        },
+                      },
+                      $$attributes: [],
+                    },
+                    componentName: 'CBlock',
+                    id: 'v59d71',
+                    configure: {
+                      propsSetter: {},
+                      advanceSetter: {
+                        'loop.data': {
+                          name: 'loop.data',
+                          setter: 'ExpressionSetter',
+                        },
                       },
                     },
-                    children: ['change row state value'],
+                    title: 'CBlock-1',
+                    loop: {
+                      open: true,
+                      data: {
+                        type: 'EXPRESSION',
+                        value:
+                          '$$context.stateManager.bannerState.state.imgList',
+                      },
+                      forName: 'item',
+                      forIndex: 'index',
+                      key: '',
+                      name: '',
+                    },
+                    condition: true,
                   },
                 ],
+                configure: {
+                  propsSetter: {},
+                  advanceSetter: {},
+                },
+                title: 'banner-box',
+                loop: {
+                  open: false,
+                  data: [],
+                  forName: 'item',
+                  forIndex: 'index',
+                  key: '',
+                  name: '',
+                },
+                condition: true,
+                refId: 'bannerBox',
+              },
+              {
+                props: {
+                  width: '100px',
+                  height: '100px',
+                  style: {
+                    width: '50px',
+                    height: '50px',
+                    'background-color': 'rgba(0,0,0,0.5)',
+                    position: 'absolute',
+                    'z-index': '999',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    cursor: 'pointer',
+                  },
+                  $$attributes: [
+                    {
+                      key: 'onClick',
+                      value: {
+                        type: 'FUNCTION',
+                        value:
+                          "function leftClick(e) {\n  console.log($$context, e);\n  const dom = ReactDOM.findDOMNode($$context.refs.get('bannerBox').current);\n  console.log(111, dom);\n  const currentStateObj = $$context.stateManager.bannerState;\n  console.log('currentStateObj', currentStateObj);\n  if (currentStateObj.state.currentPage === 2) {\n    return\n  }\n  const newPage = (currentStateObj.state.currentPage + 1) % 3;\n  dom.style.transform = `translateX(-${100 * newPage}%)`;\n  currentStateObj.updateState({\n    currentPage: newPage\n  });\n}",
+                      },
+                    },
+                  ],
+                  children: {
+                    type: 'EXPRESSION',
+                    value: '',
+                  },
+                },
+                componentName: 'CBlock',
+                id: '9g9ohd',
+                configure: {
+                  propsSetter: {
+                    '$$attributes.0.value': {
+                      name: '$$attributes.0.value',
+                      setter: 'FunctionSetter',
+                    },
+                    children: {
+                      name: 'children',
+                      setter: 'ExpressionSetter',
+                    },
+                  },
+                  advanceSetter: {},
+                },
+                title: 'array-left',
+              },
+              {
+                props: {
+                  width: '100px',
+                  height: '100px',
+                  style: {
+                    width: '50px',
+                    height: '50px',
+                    'background-color': 'rgba(0,0,0,0.5)',
+                    position: 'absolute',
+                    'z-index': '999',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    right: '0',
+                    cursor: 'pointer',
+                  },
+                  $$attributes: [
+                    {
+                      key: 'onClick',
+                      value: {
+                        type: 'FUNCTION',
+                        value:
+                          "function rightClick(e) {\n  console.log($$context, e);\n  const dom = ReactDOM.findDOMNode($$context.refs.get('bannerBox').current);\n  console.log(111, dom);\n  const currentStateObj = $$context.stateManager.bannerState;\n  console.log('currentStateObj', currentStateObj);\n\n  if (currentStateObj.state.currentPage === 0) {\n    return\n  }\n  const newPage = (currentStateObj.state.currentPage - 1) % 3\n  dom.style.transform = `translateX(-${100 * newPage}%)`;\n  currentStateObj.updateState({\n    currentPage: newPage\n  });\n}",
+                      },
+                    },
+                  ],
+                },
+                componentName: 'CBlock',
+                configure: {
+                  propsSetter: {
+                    '$$attributes.0.value': {
+                      name: '$$attributes.0.value',
+                      setter: 'FunctionSetter',
+                    },
+                  },
+                  advanceSetter: {},
+                },
+                title: 'array-right',
+                id: 'je9fi5',
+              },
+              {
+                props: {
+                  width: '100px',
+                  height: '100px',
+                  style: {
+                    position: 'absolute',
+                    bottom: '10px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    height: '20px',
+                    display: 'flex',
+                    'align-items': 'center',
+                    'background-color': 'rgba(0,0,0,0.5)',
+                    'border-radius': '2px',
+                    padding: '0 10px',
+                    'justify-content': 'space-around',
+                    width: '80px',
+                  },
+                },
+                componentName: 'CContainer',
+                id: 'bl87pg',
+                children: [
+                  {
+                    props: {
+                      width: '100px',
+                      height: '100px',
+                      style: {
+                        width: '10px',
+                        height: '10px',
+                        background: 'rgba(200,200,200,0.5)',
+                        'border-radius': '4px',
+                      },
+                      $$attributes: [
+                        {
+                          key: 'onClick',
+                          value: {
+                            type: 'FUNCTION',
+                            value:
+                              'function click() {\n  console.log($$context.loopData);\n}',
+                          },
+                        },
+                      ],
+                    },
+                    componentName: 'CBlock',
+                    id: 'jn98v0',
+                    configure: {
+                      propsSetter: {
+                        '$$attributes.0.value': {
+                          name: '$$attributes.0.value',
+                          setter: 'FunctionSetter',
+                        },
+                        children: {
+                          name: 'children',
+                          setter: 'ExpressionSetter',
+                        },
+                      },
+                      advanceSetter: {
+                        'loop.data': {
+                          name: 'loop.data',
+                          setter: 'ExpressionSetter',
+                        },
+                      },
+                    },
+                    loop: {
+                      open: true,
+                      data: {
+                        type: 'EXPRESSION',
+                        value:
+                          '$$context.stateManager.bannerState.state.imgList',
+                      },
+                      forName: 'item',
+                      forIndex: 'index',
+                      key: '',
+                      name: '',
+                    },
+                    condition: true,
+                    children: [
+                      {
+                        props: {
+                          width: '100px',
+                          height: '100px',
+                          style: {
+                            width: '10px',
+                            height: '10px',
+                            'border-radius': '4px',
+                            background: {
+                              type: 'EXPRESSION',
+                              value:
+                                "$$context.stateManager.bannerState.state.currentPage === $$context.loopData.index ? 'white' : 'rgba(0,0,0,0.3)'",
+                            },
+                          },
+                          $$attributes: [
+                            {
+                              key: 'onClick',
+                              value: {
+                                type: 'FUNCTION',
+                                value:
+                                  'function click() {\n  console.log(222, $$context.loopData);\n}',
+                              },
+                            },
+                          ],
+                          children: {
+                            type: 'EXPRESSION',
+                            value: '',
+                          },
+                        },
+                        componentName: 'CBlock',
+                        configure: {
+                          propsSetter: {
+                            '$$attributes.0.value': {
+                              name: '$$attributes.0.value',
+                              setter: 'FunctionSetter',
+                            },
+                            children: {
+                              name: 'children',
+                              setter: 'ExpressionSetter',
+                            },
+                          },
+                          advanceSetter: {
+                            'loop.data': {
+                              name: 'loop.data',
+                              setter: 'ExpressionSetter',
+                            },
+                          },
+                        },
+                        loop: {
+                          open: false,
+                          data: {
+                            type: 'EXPRESSION',
+                            value: '',
+                          },
+                          forName: 'item',
+                          forIndex: 'index',
+                          key: '',
+                          name: '',
+                        },
+                        condition: true,
+                        id: '5mu9jm',
+                      },
+                    ],
+                  },
+                ],
+                configure: {
+                  propsSetter: {},
+                  advanceSetter: {},
+                },
+                loop: {
+                  open: false,
+                  data: [],
+                  forName: 'item',
+                  forIndex: 'index',
+                  key: '',
+                  name: '',
+                },
+                condition: true,
+                title: 'CContainer-thumbail',
               },
             ],
+            configure: {
+              propsSetter: {},
+              advanceSetter: {},
+            },
+            state: {
+              currentPage: 1,
+              imgList: [
+                'https://images.unsplash.com/photo-1584080277544-2db5b2c2d9dd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
+                'https://images.unsplash.com/photo-1486046866764-e426b5b93d98?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2091&q=80',
+                'https://images.unsplash.com/photo-1534803005787-fa0b3987f6fc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1502&q=80',
+              ],
+            },
+            loop: {
+              open: false,
+              data: [],
+              forName: 'item',
+              forIndex: 'index',
+              key: '',
+              name: '',
+            },
+            condition: true,
+            stateName: 'bannerState',
           },
         ],
+        configure: {
+          propsSetter: {},
+          advanceSetter: {},
+        },
+        title: 'bg-CContainer',
       },
     ],
   },
+  assets: [],
 };

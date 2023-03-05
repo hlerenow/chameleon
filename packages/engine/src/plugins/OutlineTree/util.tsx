@@ -1,6 +1,7 @@
 import React from 'react';
 import { DropPosType } from '@chameleon/layout/dist/components/DropAnchor/util';
 import {
+  ArraySetterObjType,
   CNode,
   CNodeDataType,
   CPage,
@@ -16,6 +17,7 @@ import {
 } from '@chameleon/model';
 import { isPlainObject } from 'lodash-es';
 import { TreeNodeData } from './components/TreeView/dataStruct';
+import { ShapeSetterObjType } from '@chameleon/model/src/types/material';
 
 export const getTargetMNodeKeyVal = (
   dom: HTMLElement | null,
@@ -270,7 +272,8 @@ export const getNodePropsLabelMap = (node: CNode) => {
       const objSetter = val as SetterObjType;
       const componentName = objSetter.componentName;
       if (componentName === 'ArraySetter') {
-        const arrItemSetter = objSetter.props?.item.setters || [];
+        const setter = objSetter as ArraySetterObjType;
+        const arrItemSetter = setter.props?.item.setters || [];
         const parentTitle = resMap[paths.join('.')];
         let currentTitle = '';
         if (typeof parentTitle === 'string') {
@@ -285,7 +288,8 @@ export const getNodePropsLabelMap = (node: CNode) => {
           singleProcessUnit(el, newPaths);
         });
       } else if (componentName === 'ShapeSetter') {
-        const elements = objSetter.props?.elements || [];
+        const setter = objSetter as ShapeSetterObjType;
+        const elements = setter.props?.elements || [];
         elements.forEach((it) => {
           const newObjPaths = [...newPaths];
           newObjPaths.push(it.name);

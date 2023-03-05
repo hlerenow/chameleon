@@ -26,7 +26,6 @@ export const SetterSwitcher = ({
   const [visible, setVisible] = useState(true);
   const { onSetterChange, defaultSetterConfig, formRef, pluginCtx } =
     useContext(CCustomSchemaFormContext);
-  console.log('setter change', setters);
 
   const [currentSetter, setCurrentSetter] = useState<SetterObjType | null>(
     () => {

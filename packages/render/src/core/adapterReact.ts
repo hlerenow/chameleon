@@ -45,9 +45,7 @@ export class DefineReactAdapter {
   processNodeConfigHook?: AdapterOptionType['processNodeConfigHook'];
   getComponent(currentNode: CNode | CRootNode) {
     const componentName = currentNode.value.componentName;
-    let res: any =
-      this.components[componentName] ||
-      (() => `Component [${componentName}] not found`);
+    let res: any = this.components[componentName] || (() => `Component [${componentName}] not found`);
     // check component can accept ref
     if (!canAcceptsRef(res)) {
       res = compWrapper(res);
@@ -97,10 +95,7 @@ export class DefineReactAdapter {
     const rootNode = pageModel.value.componentsTree;
     const component = this.getComponent(rootNode);
 
-    const newComp = this.convertModelToComponent(
-      component,
-      pageModel.value.componentsTree
-    );
+    const newComp = this.convertModelToComponent(component, pageModel.value.componentsTree);
 
     const props: Record<string, any> = {};
     const propsModel = rootNode.props;
@@ -120,9 +115,7 @@ export class DefineReactAdapter {
     }
   ) {
     const propsModel = originalProps;
-    const handlePropVal: (propVal: CPropDataType) => Record<string, any> = (
-      propVal: CPropDataType
-    ) => {
+    const handlePropVal: (propVal: CPropDataType) => Record<string, any> = (propVal: CPropDataType) => {
       if (Array.isArray(propVal)) {
         return propVal.map((it) => handlePropVal(it));
       } else if (isPropModel(propVal)) {
@@ -131,10 +124,7 @@ export class DefineReactAdapter {
         const slotProp = propVal.value;
         const tempVal = slotProp.value;
         if (!tempVal) {
-          console.warn(
-            'slot value is null, this maybe cause some error, pls check it',
-            originalProps
-          );
+          console.warn('slot value is null, this maybe cause some error, pls check it', originalProps);
           // eslint-disable-next-line @typescript-eslint/no-empty-function
           return () => {};
         }
@@ -153,10 +143,7 @@ export class DefineReactAdapter {
           const parmaList = slotProp.params || [];
           // 运行时组件函数
           const PropNodeFuncWrap = (...args: any) => {
-            const params: Record<any, any> = getObjFromArrayMap(
-              args,
-              parmaList
-            );
+            const params: Record<any, any> = getObjFromArrayMap(args, parmaList);
             const $$context = this.getContext(
               {
                 params,
@@ -202,11 +189,7 @@ export class DefineReactAdapter {
         return newVal;
       } else if (isFunction(propVal)) {
         const funcProp = propVal as FunctionPropType;
-        return convertCodeStringToFunction(
-          funcProp.value,
-          parentContext,
-          this.storeManager
-        );
+        return convertCodeStringToFunction(funcProp.value, parentContext, this.storeManager);
       } else if (isPlainObject(propVal)) {
         // 可能是 普通的 props 模型
         let specialPropVal = propVal;
@@ -232,10 +215,7 @@ export class DefineReactAdapter {
     return newProps;
   }
 
-  collectSpecialProps(
-    originalProps: Record<string, unknown> = {},
-    isValidate: (val: unknown) => boolean
-  ) {
+  collectSpecialProps(originalProps: Record<string, unknown> = {}, isValidate: (val: unknown) => boolean) {
     const res: { keyPath: string[]; val: any }[] = [];
     const cb = (keyPath: string[], val: Record<string, any>) => {
       let tempVal: any = val;
@@ -262,10 +242,7 @@ export class DefineReactAdapter {
     return res;
   }
 
-  convertModelToComponent(
-    originalComponent: any,
-    nodeModel: CNode | CRootNode
-  ) {
+  convertModelToComponent(originalComponent: any, nodeModel: CNode | CRootNode) {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const that = this;
     type PropsType = {
@@ -321,16 +298,13 @@ export class DefineReactAdapter {
       };
 
       connectStore() {
-        const expressionList = that.collectSpecialProps(
-          nodeModel.props,
-          (val) => {
-            if (isExpression(val)) {
-              return true;
-            } else {
-              return false;
-            }
+        const expressionList = that.collectSpecialProps(nodeModel.props, (val) => {
+          if (isExpression(val)) {
+            return true;
+          } else {
+            return false;
           }
-        );
+        });
 
         // get all stateManager nameList
         const list = expressionList
@@ -369,10 +343,7 @@ export class DefineReactAdapter {
         that.onComponentMount?.(this, nodeModel);
         const forceUpdate = () => {
           // stateName maybe changed
-          that.storeManager.setStore(
-            nodeModel.value.stateName || nodeModel.id,
-            this.storeState
-          );
+          that.storeManager.setStore(nodeModel.value.stateName || nodeModel.id, this.storeState);
           this.storeState.setState({
             ...this.state,
             ...(nodeModel.value.state || {}),
@@ -398,10 +369,7 @@ export class DefineReactAdapter {
           updateState: this.updateState,
         };
 
-        if (
-          nodeModel.value.componentName ===
-          InnerComponentNameEnum.ROOT_CONTAINER
-        ) {
+        if (nodeModel.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER) {
           tempContext.globalState = this.state;
           tempContext.updateGlobalState = this.updateState;
         }
@@ -421,10 +389,7 @@ export class DefineReactAdapter {
           }
           loopRes = loopList.map((...args) => {
             const innerIndex = args[1];
-            const argsName = [
-              loopObj.forName || 'item',
-              loopObj.forIndex || 'index',
-            ];
+            const argsName = [loopObj.forName || 'item', loopObj.forIndex || 'index'];
             const loopData = getObjFromArrayMap(args, argsName);
             let loopDataName = 'loopData';
             // loopDataName: loopData or loopData${xxx}, xxx is capitalize
@@ -438,13 +403,9 @@ export class DefineReactAdapter {
               newContext
             );
             // handle props
-            const newProps: Record<string, any> = that.transformProps(
-              newOriginalProps,
-              {
-                $$context: loopContext,
-              }
-            );
-
+            const newProps: Record<string, any> = that.transformProps(newOriginalProps, {
+              $$context: loopContext,
+            });
             // font-size to fontSize
             if (newProps.style) {
               newProps.style = formatSourceStyle(newProps.style);
@@ -475,8 +436,7 @@ export class DefineReactAdapter {
               newProps.key += `-${specialKey}`;
             }
             newProps.ref = (ref: any) => {
-              this.targetComponentRef.current =
-                this.targetComponentRef.current || [];
+              this.targetComponentRef.current = this.targetComponentRef.current || [];
               this.targetComponentRef.current[innerIndex] = ref;
             };
 
@@ -489,12 +449,9 @@ export class DefineReactAdapter {
         }
 
         // handle props
-        const newProps: Record<string, any> = that.transformProps(
-          newOriginalProps,
-          {
-            $$context: newContext,
-          }
-        );
+        const newProps: Record<string, any> = that.transformProps(newOriginalProps, {
+          $$context: newContext,
+        });
 
         const { children } = newProps;
         let newChildren: React.ReactNode[] = [];
@@ -519,37 +476,23 @@ export class DefineReactAdapter {
         // font-size to fontSize
         if (newProps.style) {
           newProps.style = formatSourceStyle(newProps.style);
-          console.log(
-            '🚀 ~ file: adapterReact.ts:516 ~ DynamicComponent ~ render ~ newProps.style:',
-            newProps.style
-          );
         }
 
         // handle children
         let condition = nodeModel.value.condition ?? true;
         if (typeof condition !== 'boolean') {
           const conditionObj = condition as JSExpressionPropType;
-          condition = runExpression(
-            conditionObj.value,
-            newContext || {}
-          ) as boolean;
+          condition = runExpression(conditionObj.value, newContext || {}) as boolean;
         }
         let finalNodeConfig = {
           condition,
           props: newProps,
         };
         if (that.processNodeConfigHook) {
-          finalNodeConfig = that.processNodeConfigHook(
-            finalNodeConfig,
-            nodeModel as CNode
-          );
+          finalNodeConfig = that.processNodeConfigHook(finalNodeConfig, nodeModel as CNode);
         }
 
-        const renderView = that.render(
-          originalComponent,
-          finalNodeConfig.props,
-          ...newChildren
-        );
+        const renderView = that.render(originalComponent, finalNodeConfig.props, ...newChildren);
 
         this._CONDITION = finalNodeConfig.condition as boolean;
         if (!finalNodeConfig.condition) {
@@ -569,9 +512,7 @@ export class DefineReactAdapter {
       }
     }
 
-    (
-      DynamicComponent as any
-    ).displayName = `${nodeModel.value.componentName}Dynamic`;
+    (DynamicComponent as any).displayName = `${nodeModel.value.componentName}Dynamic`;
 
     return DynamicComponent;
   }
@@ -594,11 +535,7 @@ export class DefineReactAdapter {
     if (!isNodeModel(node)) {
       return;
     }
-    const handleNode = ({
-      currentNode,
-    }: {
-      currentNode: CRootNode | CNode;
-    }) => {
+    const handleNode = ({ currentNode }: { currentNode: CRootNode | CNode }) => {
       const nodeId = currentNode.value.id;
       let component = null;
       if (runtimeComponentCache.get(nodeId)) {
@@ -606,10 +543,7 @@ export class DefineReactAdapter {
       } else {
         const originalComponent = this.getComponent(currentNode);
 
-        component = this.convertModelToComponent(
-          originalComponent,
-          currentNode
-        );
+        component = this.convertModelToComponent(originalComponent, currentNode);
       }
 
       // cache runtime component
@@ -633,24 +567,15 @@ export class DefineReactAdapter {
 
   // 真实渲染
   render(
-    originalComponent:
-      | React.ComponentClass<any>
-      | React.FunctionComponent
-      | string,
+    originalComponent: React.ComponentClass<any> | React.FunctionComponent | string,
     props: Record<any, any> = {},
     ...children: React.ReactNode[]
   ) {
-    if (
-      typeof originalComponent === 'string' ||
-      typeof originalComponent === 'number'
-    ) {
+    if (typeof originalComponent === 'string' || typeof originalComponent === 'number') {
       return String(originalComponent);
     }
     InnerPropList.forEach((key) => {
-      if (
-        key in props &&
-        (originalComponent as any).__CP_TYPE__ !== DYNAMIC_COMPONENT_TYPE
-      ) {
+      if (key in props && (originalComponent as any).__CP_TYPE__ !== DYNAMIC_COMPONENT_TYPE) {
         delete props[key];
       }
     });

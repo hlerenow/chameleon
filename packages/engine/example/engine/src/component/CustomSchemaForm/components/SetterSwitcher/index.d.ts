@@ -7,5 +7,6 @@ export declare type SetterSwitcherProps = {
     prefix?: React.ReactNode;
     suffix?: React.ReactNode;
     style?: React.CSSProperties;
+    useField?: boolean;
 } & Omit<CFieldProps, 'children'>;
-export declare const SetterSwitcher: ({ setters, keyPaths, condition, ...props }: SetterSwitcherProps) => JSX.Element;
+export declare const SetterSwitcher: ({ setters, keyPaths, condition, useField, ...props }: SetterSwitcherProps) => JSX.Element;

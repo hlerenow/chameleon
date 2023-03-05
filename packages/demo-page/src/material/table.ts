@@ -188,7 +188,7 @@ export const TableMeta: CMaterialType = {
                         title: '过滤值',
                         valueType: 'array',
                         setters: ['StringSetter'],
-                        condition: (state) => {
+                        condition: (state: any) => {
                           if (state.dataIndex === '1') {
                             return true;
                           }
