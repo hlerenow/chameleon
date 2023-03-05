@@ -27,7 +27,17 @@
 }
 
 .cssBox {
-  background-color: rgba(238, 238, 238, 0.263);
-  border-radius: 2px;
-  padding: 5px 10px 10px;
+  overflow-x: hidden;
+  :global {
+    .ant-collapse-borderless > .ant-collapse-item {
+      border-bottom: 1px solid #e4e4e4;
+    }
+
+    .ant-collapse-borderless > .ant-collapse-item:last-child {
+      border-bottom: none;
+    }
+    .ant-collapse-content-box {
+      padding-bottom: 30px !important;
+    }
+  }
 }

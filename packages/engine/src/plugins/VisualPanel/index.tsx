@@ -1,5 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { CNode, CProp } from '@chameleon/model';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  CMaterialPropsType,
+  CNode,
+  CNodePropsTypeEnum,
+  CProp,
+  isExpression,
+} from '@chameleon/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';
 
@@ -8,16 +14,120 @@ import {
   CSSPropertiesEditor,
   CSSPropertiesEditorRef,
 } from '../../component/CSSPropertiesEditor';
+import { Collapse } from 'antd';
+import {
+  CustomSchemaForm,
+  CustomSchemaFormInstance,
+} from '../../component/CustomSchemaForm';
+
+type styleArr = {
+  key: string;
+  value: any;
+}[];
+
+const CSSBindPropsSchema: CMaterialPropsType<'CSSValueSetter'> = [
+  {
+    name: 'css',
+    title: 'CSS Variable Bind',
+    valueType: 'array',
+    setters: [
+      {
+        componentName: 'ArraySetter',
+        props: {
+          item: {
+            setters: [
+              {
+                componentName: 'ShapeSetter',
+                props: {
+                  elements: [
+                    {
+                      name: 'key',
+                      title: '属性',
+                      valueType: 'string',
+                      setters: ['StringSetter'],
+                      description: '',
+                    },
+                    {
+                      name: 'value',
+                      title: '置',
+                      valueType: 'string',
+                      setters: ['ExpressionSetter'],
+                      description: '',
+                    },
+                  ],
+                  collapse: false,
+                },
+                initialValue: {
+                  key: '',
+                  value: {
+                    type: CNodePropsTypeEnum.EXPRESSION,
+                    value: '',
+                  },
+                },
+              },
+            ],
+            initialValue: {
+              key: '',
+              value: {
+                type: CNodePropsTypeEnum.EXPRESSION,
+                value: '',
+              },
+            },
+          },
+        },
+        initialValue: [],
+      },
+    ],
+  },
+];
+
+const formatProperty = (cssVal: Record<string, any>) => {
+  const normalProperty: { key: string; value: string }[] = [];
+  const expressionProperty: { key: string; value: any }[] = [];
+  Object.keys(cssVal).forEach((key) => {
+    const val = cssVal[key];
+    if (isExpression(val)) {
+      expressionProperty.push({
+        key,
+        value: val,
+      });
+    } else {
+      normalProperty.push({
+        key,
+        value: val,
+      });
+    }
+  });
+  const res = {
+    normalProperty,
+    expressionProperty,
+  };
+  return res;
+};
+
+const styleArr2Obj = (val: styleArr) => {
+  const res: Record<string, any> = {};
+  val.forEach((item) => {
+    res[item.key] = item.value;
+  });
+  return res;
+};
 
 export const VisualPanel = (props: { node: CNode; pluginCtx: CPluginCtx }) => {
+  const formRef = useRef<CustomSchemaFormInstance>(null);
   const { node } = props;
   const cssEditorRef = useRef<CSSPropertiesEditorRef>(null);
   const [style, setStyle] = useState<Record<string, string>>({});
+  const formatStyle = useMemo(() => {
+    return formatProperty(style);
+  }, [style]);
+
   useEffect(() => {
     const handel = () => {
       const newStyle = node.getPlainProps?.()['style'] || {};
-      cssEditorRef.current?.setValue(newStyle);
       setStyle(newStyle);
+      const { normalProperty } = formatProperty(newStyle);
+      cssEditorRef.current?.setValue(normalProperty);
     };
     handel();
     node.emitter.on('onNodeChange', handel);
@@ -26,12 +136,18 @@ export const VisualPanel = (props: { node: CNode; pluginCtx: CPluginCtx }) => {
     };
   }, [node]);
 
-  const onUpdateStyle = (style: Record<string, string>) => {
-    setStyle(style);
+  const onUpdateStyle = (styleArr: styleArr) => {
+    // merge style
+    const newStyle = styleArr2Obj([...styleArr]);
+    console.log(
+      '🚀 ~ file: index.tsx:129 ~ onUpdateStyle ~ newStyle:',
+      newStyle
+    );
+    setStyle(newStyle);
     if (node.value.props.style) {
-      node.value.props.style.updateValue(style);
+      node.value.props.style.updateValue(newStyle);
     } else {
-      node.value.props.style = new CProp('style', style, {
+      node.value.props.style = new CProp('style', newStyle, {
         parent: node,
         materials: node.materialsModel,
       });
@@ -41,11 +157,36 @@ export const VisualPanel = (props: { node: CNode; pluginCtx: CPluginCtx }) => {
 
   return (
     <div className={styles.visualPanelBox}>
-      <CSSPropertiesEditor
+      <Collapse
+        defaultActiveKey={['origin-css-edit']}
+        bordered={false}
+        style={{
+          marginBottom: '10px',
+        }}
+      >
+        <Collapse.Panel header="CSS Source" key="origin-css-edit">
+          <CSSPropertiesEditor
+            key={node.id}
+            ref={cssEditorRef}
+            onValueChange={(val) => {
+              onUpdateStyle([...val, ...formatStyle.expressionProperty]);
+            }}
+            initialValue={formatStyle.normalProperty}
+          />
+        </Collapse.Panel>
+      </Collapse>
+      <CustomSchemaForm
+        pluginCtx={props.pluginCtx}
         key={node.id}
-        ref={cssEditorRef}
-        onValueChange={onUpdateStyle}
-        initialValue={style}
+        defaultSetterConfig={node.value.configure.propsSetter || {}}
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        onSetterChange={() => {}}
+        properties={CSSBindPropsSchema}
+        initialValue={[]}
+        ref={formRef}
+        onValueChange={(val) => {
+          onUpdateStyle([...formatStyle.normalProperty, ...val.css]);
+        }}
       />
     </div>
   );

@@ -36,7 +36,7 @@ export class RightPanel extends React.Component<
     super(props);
     this.state = {
       node: props.pluginCtx.getActiveNode(),
-      activeKey: '',
+      activeKey: 'Visual',
       panels: [
         // AdvancePanelConfig,
         PropertyPanelConfig,

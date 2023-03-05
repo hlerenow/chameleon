@@ -41,6 +41,8 @@ export enum SpecialDataType {
   FUNCTION = 'function',
 }
 
+export type SetterBasicType = string;
+
 export type MTitle =
   | string
   | {
@@ -139,18 +141,8 @@ export type PropsValueType =
   | UnionDataType;
 
 export const PropsValueTypeDescribe: any = union([
-  enums([
-    BaseDataType.ARRAY,
-    BaseDataType.BOOLEAN,
-    BaseDataType.NUMBER,
-    BaseDataType.OBJECT,
-    BaseDataType.STRING,
-  ]),
-  enums([
-    SpecialDataType.COMPONENT,
-    SpecialDataType.EXPRESSION,
-    SpecialDataType.FUNCTION,
-  ]),
+  enums([BaseDataType.ARRAY, BaseDataType.BOOLEAN, BaseDataType.NUMBER, BaseDataType.OBJECT, BaseDataType.STRING]),
+  enums([SpecialDataType.COMPONENT, SpecialDataType.EXPRESSION, SpecialDataType.FUNCTION]),
   ShapeDataTypeDescribe,
   EnumDataTypeDescribe,
   UnionDataTypeDescribe,
@@ -173,16 +165,18 @@ export enum ComplexSetterTypeEnum {
   ARRAY_SETTER = 'ArraySetter',
 }
 
-export type SetterType =
+export type SetterType<T extends SetterBasicType = any> =
   | SetterTypeEnum
   | `${SetterTypeEnum}`
   | ComplexSetterTypeEnum
   | `${ComplexSetterTypeEnum}`
-  | SetterObjType;
+  | SetterObjType<T>
+  | T
+  | `${T}`;
 
-export type SetterObjType =
+export type SetterObjType<T extends SetterBasicType = any> =
   | {
-      componentName: SetterTypeEnum | `${SetterTypeEnum}`;
+      componentName: SetterTypeEnum | `${SetterTypeEnum}` | T | `${T}`;
       props?: Record<any, any>;
       /** 被设置属性的初始值 */
       initialValue?: any;
@@ -190,11 +184,9 @@ export type SetterObjType =
       component?: (props: any) => React.ReactNode;
     }
   | {
-      componentName:
-        | ComplexSetterTypeEnum.SHAPE_SETTER
-        | `${ComplexSetterTypeEnum.SHAPE_SETTER}`;
+      componentName: ComplexSetterTypeEnum.SHAPE_SETTER | `${ComplexSetterTypeEnum.SHAPE_SETTER}` | T | `${T}`;
       props?: {
-        elements: MaterialPropType[];
+        elements: MaterialPropType<T>[];
         /** 是否可以收缩，默认： true  */
         collapse?: boolean;
       };
@@ -203,12 +195,10 @@ export type SetterObjType =
       component?: (props: any) => React.ReactNode;
     }
   | {
-      componentName:
-        | ComplexSetterTypeEnum.ARRAY_SETTER
-        | `${ComplexSetterTypeEnum.ARRAY_SETTER}`;
+      componentName: ComplexSetterTypeEnum.ARRAY_SETTER | `${ComplexSetterTypeEnum.ARRAY_SETTER}` | T | `${T}`;
       props?: {
         item: {
-          setters: SetterType[];
+          setters: SetterType<T>[];
           initialValue: any;
         };
       };
@@ -228,13 +218,13 @@ export const SetterTypeDescribe = union([
   }),
 ]);
 
-export type MaterialPropType = {
+export type MaterialPropType<CustomSetter extends SetterBasicType = any> = {
   name: string;
   title: MTitle;
   valueType: PropsValueType;
   description?: string;
   defaultValue?: any;
-  setters?: SetterType[];
+  setters?: SetterType<CustomSetter>[];
   condition?: (state: any) => boolean;
 };
 
@@ -259,23 +249,26 @@ export enum PropsUIType {
   GROUP = 'group',
 }
 
-export type SpecialMaterialPropType =
+export type SpecialMaterialPropType<CustomSetter extends SetterBasicType = any> =
   | {
       title: MTitle;
       type: PropsUIType.SINGLE | `${PropsUIType.SINGLE}`;
-      content: MaterialPropType;
+      content: MaterialPropType<CustomSetter>;
     }
   | {
       title: MTitle;
       type: PropsUIType.GROUP | `${PropsUIType.GROUP}`;
-      content: MaterialPropType[];
+      content: MaterialPropType<CustomSetter>[];
     };
 
-export type CMaterialPropsType = (MaterialPropType | SpecialMaterialPropType)[];
+export type CMaterialPropsType<CustomSetter extends SetterBasicType = any> = (
+  | MaterialPropType<CustomSetter>
+  | SpecialMaterialPropType<CustomSetter>
+)[];
 
-export const isSpecialMaterialPropType = (
+export const isSpecialMaterialPropType = <CustomSetter extends SetterBasicType = any>(
   val: any
-): val is SpecialMaterialPropType => {
+): val is SpecialMaterialPropType<CustomSetter> => {
   if (val.type && [PropsUIType.GROUP, PropsUIType.SINGLE].includes(val.type)) {
     return true;
   } else {
@@ -344,10 +337,7 @@ export const SnippetsTypeDescribe = object({
   groupName: optional(string()),
   // 分类
   category: optional(string()),
-  schema: assign(
-    omit(CNodeDataStructDescribe, ['id']),
-    object({ componentName: optional(string()) })
-  ),
+  schema: assign(omit(CNodeDataStructDescribe, ['id']), object({ componentName: optional(string()) })),
 });
 
 export type ContainerConfig = {
@@ -374,9 +364,7 @@ export type CMaterialType = {
   snippets: SnippetsType[];
   props: CMaterialPropsType;
   /** 固定的props, 不被 setter 的值覆盖 */
-  fixedProps?:
-    | Record<string, any>
-    | ((props: Record<string, any>) => Record<string, any>);
+  fixedProps?: Record<string, any> | ((props: Record<string, any>) => Record<string, any>);
   /** 可以拖入组件 */
   isContainer?: boolean | ContainerConfig;
   /** 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize */

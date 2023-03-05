@@ -9,6 +9,7 @@ import { SelectSetter } from './SelectSetter';
 import { JSONSetter } from './JSONSetter';
 import { FunctionSetter } from './FunctionSetter';
 import { TextAreaSetter } from './TextAreaSetter';
+import { CSSValueSetter } from './CSSValueSetter';
 
 export default {
   StringSetter,
@@ -21,4 +22,5 @@ export default {
   JSONSetter,
   FunctionSetter,
   TextAreaSetter,
+  CSSValueSetter,
 } as Record<string, CSetter>;

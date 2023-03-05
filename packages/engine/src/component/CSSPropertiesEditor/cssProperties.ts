@@ -1055,6 +1055,8 @@ const CSSSourceInfo = {
 
 export const CSSProperties = CSSSourceInfo.cssKeyValue;
 
+export const CSSColors = CSSSourceInfo.cssColors;
+
 export type CSSPropertiesKey = keyof typeof CSSProperties;
 
 export const CSSPropertyList = Object.keys(CSSSourceInfo.cssKeyValue);

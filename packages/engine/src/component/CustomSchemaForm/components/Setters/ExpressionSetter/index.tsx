@@ -35,6 +35,7 @@ export const ExpressionSetter: CSetter<
         value={props.value?.value || ''}
         onChange={(e) => {
           props.onChange?.(e);
+          console.log('🚀 ~ file: index.tsx:48 ~ e:', e, props);
           onValueChange?.({
             type: CNodePropsTypeEnum.EXPRESSION,
             value: e.target.value,

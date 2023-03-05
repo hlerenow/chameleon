@@ -13,12 +13,11 @@ import {
 
 import styles from './style.module.scss';
 
-import { AutoComplete } from 'antd';
+import { AutoComplete, ConfigProvider } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { getTextWidth } from './util';
 import { BaseSelectRef } from 'rc-select';
 import { useDebounceFn } from 'ahooks';
-import { unionBy } from 'lodash-es';
 import clsx from 'clsx';
 
 const defaultPropertyOptions = CSSPropertyList.map((el) => {
@@ -33,26 +32,30 @@ export type SinglePropertyEditorProps = {
     value: string;
   };
   onValueChange: (value: { key: string; value: string }) => void;
+  onEnter?: (parameters: {
+    pos: 'left' | 'right';
+    value: { key: string; value: string };
+  }) => void;
   onDelete?: () => void;
-  mode?: 'create' | 'edit';
 };
 
 type SinglePropertyEditorRef = {
   reset: () => void;
 };
+
 export const SinglePropertyEditor = forwardRef<
   SinglePropertyEditorRef,
   SinglePropertyEditorProps
 >(function SinglePropertyEditorCore(props, ref) {
-  const { mode = 'edit' } = props;
   const [innerValue, setInnerVal] = useState({
-    key: '',
-    value: '',
+    key: props.value.key,
+    value: props.value.value,
   });
 
   useEffect(() => {
     setInnerVal(props.value);
   }, [props.value]);
+
   const [propertyOptions, setPropertyOptions] = useState(
     defaultPropertyOptions
   );
@@ -102,13 +105,13 @@ export const SinglePropertyEditor = forwardRef<
     }
   };
 
-  const onBlur = () => {
+  const updateOuterValue = () => {
     props.onValueChange({
       ...innerValue,
     });
   };
 
-  const { run: updateOuterValue } = useDebounceFn(onBlur, {
+  const { run: updateOuterValueDebounce } = useDebounceFn(updateOuterValue, {
     wait: 20,
   });
 
@@ -117,16 +120,12 @@ export const SinglePropertyEditor = forwardRef<
   useEffect(() => {
     getTextWidth(innerValue.key, 13.33).then((w) => {
       let tempW = parseFloat(w);
-      if (mode === 'create') {
-        tempW = 180;
-      } else {
-        if (innerValue.key === '') {
-          tempW = 20;
-        }
+      if (innerValue.key === '') {
+        tempW = 200;
       }
       setKeyInputWidth(tempW + 6);
     });
-  }, [innerValue.key, mode]);
+  }, [innerValue.key]);
 
   const propertyValueRef = useRef<BaseSelectRef | null>(null);
   const propertyKeyRef = useRef<BaseSelectRef | null>(null);
@@ -163,35 +162,26 @@ export const SinglePropertyEditor = forwardRef<
             ...innerValue,
             key: val,
           });
+          updateOuterValueDebounce();
         }}
         style={{
           width: `${keyInputWidth}px`,
         }}
-        className={clsx([
-          mode === 'create' && styles.inputAuto,
-          focusState.key && styles.active,
-        ])}
-        placeholder="property"
-        options={propertyOptions}
+        className={clsx([styles.inputAuto, focusState.key && styles.active])}
         onFocus={() => {
           setFocusState({
-            ...focusState,
             key: true,
+            value: false,
           });
         }}
         onBlur={() => {
           setFocusState({
-            ...focusState,
             key: false,
+            value: false,
           });
-          updateOuterValue();
         }}
-        onInputKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            updateOuterValue();
-            propertyValueRef.current?.focus();
-          }
-        }}
+        placeholder="property"
+        options={propertyOptions}
       />
       <span>:</span>
       <AutoComplete
@@ -205,34 +195,34 @@ export const SinglePropertyEditor = forwardRef<
             ...innerValue,
             value: val,
           });
+          updateOuterValueDebounce();
         }}
         style={{
           flex: 1,
         }}
         onFocus={() => {
-          updateValueOptions();
           setFocusState({
-            ...focusState,
+            key: false,
             value: true,
           });
         }}
         onBlur={() => {
           setFocusState({
-            ...focusState,
+            key: false,
             value: false,
           });
-          updateOuterValue();
         }}
-        className={clsx([
-          mode === 'create' && styles.inputAuto,
-          focusState.value && styles.active,
-        ])}
+        className={clsx([styles.inputAuto, focusState.value && styles.active])}
         placeholder="value"
         onSearch={onValueSearch}
         options={valueOptions}
-        onInputKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            updateOuterValue();
+        onKeyDown={(e) => {
+          console.log(e);
+          if (e.code === 'Enter') {
+            props.onEnter?.({
+              value: innerValue,
+              pos: 'right',
+            });
           }
         }}
       ></AutoComplete>
@@ -242,9 +232,15 @@ export const SinglePropertyEditor = forwardRef<
             props.onDelete?.();
           }}
           style={{
-            marginLeft: '10px',
+            display: 'block',
             fontSize: '12px',
             cursor: 'pointer',
+            marginLeft: '10px',
+            borderRadius: '10px',
+            overflow: 'hidden',
+            border: '1px solid gray',
+            padding: '2px',
+            transform: 'scale(0.6)',
           }}
         />
       )}
@@ -253,11 +249,11 @@ export const SinglePropertyEditor = forwardRef<
 });
 
 export type CSSPropertiesEditorProps = {
-  initialValue?: Record<string, string>;
-  onValueChange?: (val: Record<string, string>) => void;
+  initialValue?: { key: string; value: string }[];
+  onValueChange?: (val: { key: string; value: string }[]) => void;
 };
 export type CSSPropertiesEditorRef = {
-  setValue: (val: Record<string, string>) => void;
+  setValue: (val: { key: string; value: string }[]) => void;
 };
 
 export const CSSPropertiesEditor = forwardRef<
@@ -265,7 +261,7 @@ export const CSSPropertiesEditor = forwardRef<
   CSSPropertiesEditorProps
 >(function CSSPropertiesEditorCore(props, ref) {
   const [propertyList, setPropertyList] = useState<
-    { key: string; value: string }[]
+    { key: string; value: any }[]
   >([]);
 
   useImperativeHandle(
@@ -273,14 +269,7 @@ export const CSSPropertiesEditor = forwardRef<
     () => {
       return {
         setValue: (val) => {
-          const res =
-            Object.keys(val || {}).map((key) => {
-              return {
-                key,
-                value: val?.[key] || '',
-              };
-            }) || [];
-          setPropertyList(res);
+          setPropertyList(val);
         },
       };
     },
@@ -289,14 +278,7 @@ export const CSSPropertiesEditor = forwardRef<
 
   useEffect(() => {
     if (props.initialValue) {
-      const res =
-        Object.keys(props.initialValue || {}).map((key) => {
-          return {
-            key,
-            value: props.initialValue?.[key] || '',
-          };
-        }) || [];
-      setPropertyList(res);
+      setPropertyList(props.initialValue);
     }
   }, []);
 
@@ -306,61 +288,69 @@ export const CSSPropertiesEditor = forwardRef<
   });
 
   const innerOnValueChange = (val: typeof propertyList) => {
-    const res = val.reduce((res, it) => {
-      res[it.key] = it.value;
-      return res;
-    }, {} as any);
-    props.onValueChange?.(res);
+    props.onValueChange?.(val);
   };
 
   const createPropertyRef = useRef<SinglePropertyEditorRef>(null);
-
   return (
-    <div className={styles.cssBox}>
-      {propertyList.map((el, index) => {
-        return (
-          <div key={index}>
-            <SinglePropertyEditor
-              value={el}
-              onValueChange={(newVal) => {
-                if (newVal.key === '') {
+    <ConfigProvider
+      theme={{
+        token: {
+          borderRadius: 4,
+        },
+      }}
+    >
+      <div className={styles.cssBox}>
+        {propertyList.map((el, index) => {
+          return (
+            <div key={index}>
+              <SinglePropertyEditor
+                value={el}
+                onValueChange={(newVal) => {
+                  if (newVal.key === '') {
+                    propertyList.splice(index, 1);
+                    setPropertyList([...propertyList]);
+                    return;
+                  }
+                  propertyList[index] = newVal;
+                  setPropertyList([...propertyList]);
+                  innerOnValueChange(propertyList);
+                }}
+                onDelete={() => {
                   propertyList.splice(index, 1);
                   setPropertyList([...propertyList]);
-                  return;
-                }
-                propertyList[index] = newVal;
-                setPropertyList([...propertyList]);
-                innerOnValueChange(propertyList);
-              }}
-              onDelete={() => {
-                propertyList.splice(index, 1);
-                setPropertyList([...propertyList]);
-                innerOnValueChange(propertyList);
-              }}
-            />
-          </div>
-        );
-      })}
-      <SinglePropertyEditor
-        mode="create"
-        value={newProperty}
-        ref={createPropertyRef}
-        onValueChange={(newVal) => {
-          if (newVal.key && newVal.value) {
-            propertyList.push(newVal);
-            const newList = unionBy(propertyList.reverse(), 'key').reverse();
-            setPropertyList(newList);
-            innerOnValueChange(newList);
-            createPropertyRef.current?.reset();
-            setNewProperty({
-              key: '',
-              value: '',
-            });
-          } else {
-            setNewProperty(newProperty);
-          }
-        }}
-      />
-    </div>
+                  innerOnValueChange(propertyList);
+                }}
+              />
+            </div>
+          );
+        })}
+        <SinglePropertyEditor
+          value={newProperty}
+          ref={createPropertyRef}
+          onEnter={({ pos, value: newVal }) => {
+            if (pos !== 'right') {
+              return;
+            }
+            if (newVal.key && newVal.value) {
+              const newList = propertyList.filter(
+                (el) => el.key !== newVal.key
+              );
+              newList.push(newVal);
+              setPropertyList(newList);
+              innerOnValueChange(newList);
+              createPropertyRef.current?.reset();
+              setNewProperty({
+                key: '',
+                value: '',
+              });
+            }
+          }}
+          onValueChange={(newVal) => {
+            setNewProperty(newVal);
+          }}
+        />
+      </div>
+    </ConfigProvider>
   );
 });

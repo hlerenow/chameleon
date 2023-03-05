@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { SetterObjType } from '@chameleon/model';
 import Setters from '../Setters/index';
 import { CField, CFieldProps } from '../Form/Field';
@@ -13,17 +13,20 @@ export type SetterSwitcherProps = {
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
   style?: React.CSSProperties;
+  useField?: boolean;
 } & Omit<CFieldProps, 'children'>;
 
 export const SetterSwitcher = ({
   setters,
   keyPaths,
   condition,
+  useField = true,
   ...props
 }: SetterSwitcherProps) => {
   const [visible, setVisible] = useState(true);
   const { onSetterChange, defaultSetterConfig, formRef, pluginCtx } =
     useContext(CCustomSchemaFormContext);
+  console.log('setter change', setters);
 
   const [currentSetter, setCurrentSetter] = useState<SetterObjType | null>(
     () => {
@@ -99,9 +102,21 @@ export const SetterSwitcher = ({
     switcher = null;
   }
 
-  const setterProps = {
-    ...(currentSetter?.props || {}),
-  };
+  const setterProps = useMemo(() => {
+    let newProps = {
+      ...(currentSetter?.props || {}),
+    };
+    const target = setters.find(
+      (el) => el.componentName === currentSetter?.componentName
+    );
+    if (target) {
+      newProps = {
+        ...newProps,
+        ...target.props,
+      };
+    }
+    return newProps;
+  }, [setters]);
 
   const setterContext = {
     formRef,
@@ -141,7 +156,20 @@ export const SetterSwitcher = ({
           }
           key={props.name}
         >
-          <CField {...props} noStyle {...conditionProps}>
+          {useField && (
+            <CField {...props} noStyle {...conditionProps}>
+              <CurrentSetterComp
+                {...setterProps}
+                setterContext={{
+                  ...setterContext,
+                  keyPaths: [...keyPaths],
+                  label: props.label,
+                  setCollapseHeaderExt: setCollapseHeaderExt,
+                }}
+              />
+            </CField>
+          )}
+          {!useField && (
             <CurrentSetterComp
               {...setterProps}
               setterContext={{
@@ -151,7 +179,7 @@ export const SetterSwitcher = ({
                 setCollapseHeaderExt: setCollapseHeaderExt,
               }}
             />
-          </CField>
+          )}
         </Collapse.Panel>
       </Collapse>
     );
@@ -161,7 +189,18 @@ export const SetterSwitcher = ({
         {props.prefix ?? null}
         {(currentSetter?.props as any)?.collapse === false && (
           <div style={{ width: '100%' }}>
-            <CField {...props} noStyle {...conditionProps}>
+            {useField && (
+              <CField {...props} noStyle {...conditionProps}>
+                <CurrentSetterComp
+                  {...setterProps}
+                  setterContext={{
+                    ...setterContext,
+                    keyPaths: [...keyPaths],
+                  }}
+                />
+              </CField>
+            )}
+            {!useField && (
               <CurrentSetterComp
                 {...setterProps}
                 setterContext={{
@@ -169,7 +208,7 @@ export const SetterSwitcher = ({
                   keyPaths: [...keyPaths],
                 }}
               />
-            </CField>
+            )}
           </div>
         )}
         {(currentSetter?.props as any)?.collapse !== false && (
@@ -215,13 +254,24 @@ export const SetterSwitcher = ({
         style={{ display: 'flex', alignItems: 'center', paddingBottom: '8px' }}
       >
         {props.prefix ?? null}
-        <CField
-          {...props}
-          condition={condition}
-          onConditionValueChange={(val) => {
-            setVisible(val);
-          }}
-        >
+        {useField && (
+          <CField
+            {...props}
+            condition={condition}
+            onConditionValueChange={(val) => {
+              setVisible(val);
+            }}
+          >
+            <CurrentSetterComp
+              {...setterProps}
+              setterContext={{
+                ...setterContext,
+                keyPaths: [...keyPaths],
+              }}
+            />
+          </CField>
+        )}
+        {!useField && (
           <CurrentSetterComp
             {...setterProps}
             setterContext={{
@@ -229,7 +279,8 @@ export const SetterSwitcher = ({
               keyPaths: [...keyPaths],
             }}
           />
-        </CField>
+        )}
+
         {switcher}
         {props.suffix ?? null}
       </div>

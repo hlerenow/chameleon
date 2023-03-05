@@ -1,6 +1,8 @@
-import { SetterObjType, SetterType } from '@chameleon/model';
+import { SetterBasicType, SetterObjType, SetterType } from '@chameleon/model';
 
-export const getSetterList = (setters: SetterType[] = []): SetterObjType[] => {
+export const getSetterList = <T extends SetterBasicType = any>(
+  setters: SetterType<T>[] = []
+): SetterObjType[] => {
   return setters.map((setter) => {
     if (typeof setter === 'string') {
       return {
