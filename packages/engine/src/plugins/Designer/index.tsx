@@ -4,7 +4,7 @@ import '@chameleon/layout/dist/style.css';
 import { CPlugin } from '../../core/pluginManager';
 import { PLUGIN_NAME } from './config';
 import { Designer } from './view';
-import { AssetPackage, CPageDataType } from '@chameleon/model';
+import { AssetPackage, CPage, CPageDataType } from '@chameleon/model';
 import { RenderInstance } from '@chameleon/render';
 
 export const DesignerPlugin: CPlugin = () => {
@@ -30,7 +30,7 @@ export const DesignerPlugin: CPlugin = () => {
         selectNode: (nodeId) => {
           designerRef.current?.layoutRef.current?.selectNode(nodeId);
         },
-        updatePage: (page: CPageDataType) => {
+        updatePage: (page: CPageDataType | CPage) => {
           designerRef.current?.layoutRef.current?.designRenderRef?.current?.rerender(
             page
           );

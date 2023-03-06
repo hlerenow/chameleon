@@ -228,7 +228,7 @@ const BaseComponentMeta: CMaterialType[] = [
         setters: ['StringSetter', 'ExpressionSetter'],
       },
       {
-        name: 'autoplay',
+        name: 'autoPlay',
         title: '自动播放',
         valueType: 'string',
         setters: ['BooleanSetter', 'ExpressionSetter'],

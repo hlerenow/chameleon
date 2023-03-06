@@ -1,12 +1,5 @@
 /* eslint-disable react/no-find-dom-node */
-import {
-  CNode,
-  ContainerConfig,
-  CPageDataType,
-  CRootNode,
-  getRandomStr,
-  InnerComponentNameEnum,
-} from '@chameleon/model';
+import { CNode, ContainerConfig, CPage, CPageDataType, CRootNode, getRandomStr, InnerComponentNameEnum } from '@chameleon/model';
 import { isArray, isPlainObject, merge } from 'lodash-es';
 import React, { useMemo, useRef } from 'react';
 import { RenderPropsType, Render, UseRenderReturnType } from './render';
@@ -48,15 +41,10 @@ export type DesignRenderProp = Omit<RenderPropsType, 'ref' | 'render'> & {
   ref?: React.MutableRefObject<DesignRender | null>;
   render?: UseDesignRenderReturnType;
   onMount?: (instance: DesignRender) => void;
-  dropPlaceholder?:
-    | React.ComponentClass<{ node: CNode | CRootNode }>
-    | React.FunctionComponent<{ node: CNode | CRootNode }>
-    | string;
+  dropPlaceholder?: React.ComponentClass<{ node: CNode | CRootNode }> | React.FunctionComponent<{ node: CNode | CRootNode }> | string;
 };
 
-export const DefaultDropPlaceholder: React.FC<{ node: CNode | CRootNode }> = (
-  props
-) => {
+export const DefaultDropPlaceholder: React.FC<{ node: CNode | CRootNode }> = (props) => {
   const { node } = props;
   const configInfo = useMemo(() => {
     const isContainer = node.material?.value?.isContainer;
@@ -101,8 +89,7 @@ export const DefaultDropPlaceholder: React.FC<{ node: CNode | CRootNode }> = (
 export class DesignRender extends React.Component<DesignRenderProp> {
   instanceManager = new ComponentInstanceManager();
   renderRef: React.MutableRefObject<Render | null>;
-  dropPlaceholder: Required<DesignRenderProp>['dropPlaceholder'] =
-    DefaultDropPlaceholder;
+  dropPlaceholder: Required<DesignRenderProp>['dropPlaceholder'] = DefaultDropPlaceholder;
 
   constructor(props: DesignRenderProp) {
     super(props);
@@ -146,11 +133,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
         }
 
         const hasChildren = Boolean(newChildren.filter(Boolean).length);
-        if (
-          !hasChildren &&
-          (node.material?.value.isContainer ||
-            node.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER)
-        ) {
+        if (!hasChildren && (node.material?.value.isContainer || node.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER)) {
           newChildren.push(
             React.createElement(self.dropPlaceholder, {
               node: node,
@@ -179,7 +162,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
     });
   };
 
-  rerender(newPage?: CPageDataType) {
+  rerender(newPage?: CPageDataType | CPage) {
     return this.renderRef.current?.rerender(newPage);
   }
 
@@ -212,9 +195,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
       if (dom && !(dom instanceof Text)) {
         if (selector) {
           // 判断是不是数组
-          const list: HTMLElement[] = Array.from(
-            dom.querySelectorAll(selector)
-          );
+          const list: HTMLElement[] = Array.from(dom.querySelectorAll(selector));
           doms.push(...list);
         } else {
           doms.push(dom as unknown as HTMLElement);
@@ -282,10 +263,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
   }
 }
 
-export type UseDesignRenderReturnType = Pick<
-  UseRenderReturnType,
-  'rerender'
-> & {
+export type UseDesignRenderReturnType = Pick<UseRenderReturnType, 'rerender'> & {
   ref: React.MutableRefObject<DesignRender | null>;
   getInstancesById: (id: string, uid?: string) => RenderInstance[];
   getInstanceByDom: (dom: HTMLHtmlElement | Element) => RenderInstance | null;
@@ -293,18 +271,11 @@ export type UseDesignRenderReturnType = Pick<
   getDomRectById: (id: string, selector?: string) => DOMRect | DOMRect[];
 };
 
-const findClosetFiberNode = (
-  el: Element | null
-): SimpleFiberNodeType | null => {
+const findClosetFiberNode = (el: Element | null): SimpleFiberNodeType | null => {
   if (!el) {
     return null;
   }
-  const REACT_KEY =
-    Object.keys(el).find(
-      (key) =>
-        key.startsWith('__reactInternalInstance$') ||
-        key.startsWith('__reactFiber$')
-    ) || '';
+  const REACT_KEY = Object.keys(el).find((key) => key.startsWith('__reactInternalInstance$') || key.startsWith('__reactFiber$')) || '';
 
   if (REACT_KEY) {
     return (el as any)[REACT_KEY];
@@ -318,9 +289,7 @@ type SimpleFiberNodeType = {
   stateNode: (Element | HTMLElement) & RenderInstance;
 };
 
-const findClosetContainerFiberNode = (
-  fiberNode: SimpleFiberNodeType
-): SimpleFiberNodeType | null => {
+const findClosetContainerFiberNode = (fiberNode: SimpleFiberNodeType): SimpleFiberNodeType | null => {
   if (!fiberNode) {
     return null;
   }

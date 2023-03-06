@@ -1,4 +1,5 @@
-import { CPage, CPageDataType } from '@chameleon/model';
+import { checkPage, CPage, CPageDataType } from '@chameleon/model';
+import { isPlainObject } from 'lodash-es';
 import React, { useRef } from 'react';
 import { InnerComponent } from '../commonComponent';
 import { AdapterOptionType, AdapterType } from './adapter';
@@ -54,8 +55,7 @@ export class Render extends React.Component<
 
   render() {
     const { props } = this;
-    const { adapter, onGetComponent, onComponentDestroy, onComponentMount } =
-      props;
+    const { adapter, onGetComponent, onComponentDestroy, onComponentMount } = props;
 
     const { pageModel } = this.state;
     // todo: 加载 page 资源
@@ -85,11 +85,21 @@ export class Render extends React.Component<
     return PageRoot;
   }
 
-  rerender = (newPage?: CPageDataType) => {
+  rerender = (newPage?: CPageDataType | CPage) => {
     this.props.adapter.clear();
-    this.setState({
-      pageModel: new CPage(newPage || this.state.pageModel.export()),
-    });
+    if ((newPage as CPage)?.nodeType === 'PAGE' && newPage) {
+      this.setState({
+        pageModel: newPage as CPage,
+      });
+    } else if (isPlainObject(newPage) && checkPage(newPage)) {
+      const newP = newPage as CPageDataType;
+      this.setState({
+        pageModel: new CPage(newP, {
+          materials: this.state.pageModel.materialsModel.value,
+        }),
+      });
+    }
+
     // 触发 model 变化
     this.state.pageModel?.emitter.emit('onNodeChange', {
       value: newPage as any,

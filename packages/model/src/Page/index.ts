@@ -1,9 +1,5 @@
 import { checkComplexData } from '../util/dataCheck';
-import {
-  ComponentMetaType,
-  CPageDataType,
-  CPageDataTypeDescribe,
-} from '../types/page';
+import { ComponentMetaType, CPageDataType, CPageDataTypeDescribe } from '../types/page';
 import { DataModelEmitter } from '../util/modelEmitter';
 import { CRootNode } from './RootNode';
 import { ExportType, ExportTypeEnum } from '../const/schema';
@@ -27,11 +23,7 @@ export const checkPage = (data: any): CPageDataType => {
   return data;
 };
 
-export const parsePage = (
-  data: CPageDataType,
-  parent: CPage,
-  materials: CMaterials
-) => {
+export const parsePage = (data: CPageDataType, parent: CPage, materials: CMaterials) => {
   return {
     ...data,
     componentsTree: new CRootNode(data.componentsTree, {
@@ -51,12 +43,7 @@ export type PosObj = {
   pos: 'BEFORE' | 'AFTER';
 };
 
-export type InsertNodePosType =
-  | 'BEFORE'
-  | 'AFTER'
-  | 'CHILD_START'
-  | 'CHILD_END'
-  | PosObj;
+export type InsertNodePosType = 'BEFORE' | 'AFTER' | 'CHILD_START' | 'CHILD_END' | PosObj;
 
 export class CPage {
   nodeType = 'PAGE';
@@ -83,6 +70,7 @@ export class CPage {
 
   updatePage(data: CPageDataType) {
     const oldData = this.data;
+    this.rawData = JSON.parse(JSON.stringify(data));
     this.data = parsePage(data, this, this.materialsModel);
     this.emitter.emit('onPageChange', {
       value: this.data,
@@ -101,11 +89,7 @@ export class CPage {
     return getNode(nodeTree, id);
   }
 
-  addNode(
-    newNode: CNode,
-    targetNode: CNode | CRootNode,
-    pos: InsertNodePosType = 'AFTER'
-  ) {
+  addNode(newNode: CNode, targetNode: CNode | CRootNode, pos: InsertNodePosType = 'AFTER') {
     if (pos === 'AFTER' || pos === 'BEFORE') {
       const parentNode = targetNode.parent;
       // 说明是容器节点, 只能插入 child
@@ -122,8 +106,7 @@ export class CPage {
       if (parentNode instanceof CSlot) {
         const parentList = parentNode.value.value;
         // find it on children;
-        const targetIndex =
-          parentList.findIndex((el) => el === targetNode) ?? -1;
+        const targetIndex = parentList.findIndex((el) => el === targetNode) ?? -1;
         if (targetIndex >= 0) {
           if (pos === 'BEFORE') {
             parentList.splice(targetIndex, 0, newNode);
@@ -141,8 +124,7 @@ export class CPage {
         return false;
       }
       // find it on children;
-      const targetIndex =
-        parentNode?.value.children.findIndex((el) => el === targetNode) ?? -1;
+      const targetIndex = parentNode?.value.children.findIndex((el) => el === targetNode) ?? -1;
       if (targetIndex >= 0) {
         if (pos === 'BEFORE') {
           parentNode?.value.children.splice(targetIndex, 0, newNode);
@@ -200,11 +182,7 @@ export class CPage {
     return newNode;
   }
 
-  addNodeById(
-    newNode: CNode,
-    targetNodeId: string,
-    pos: InsertNodePosType = 'AFTER'
-  ) {
+  addNodeById(newNode: CNode, targetNodeId: string, pos: InsertNodePosType = 'AFTER') {
     const targetNode = this.getNode(targetNodeId);
     if (targetNode) {
       return this.addNode(newNode, targetNode, pos);
@@ -301,19 +279,18 @@ export class CPage {
 
     const assets: AssetPackage[] = [];
 
-    const componentsMetaList: ComponentMetaType[] =
-      this.materialsModel.usedMaterials.map((it) => {
-        const asset = assetPackagesList.find((el) => {
-          return el.package === it.value.npm?.package;
-        });
-        if (asset) {
-          assets.push(asset);
-        }
-        return {
-          componentName: it.componentName,
-          ...cloneDeep(it.value.npm || {}),
-        } as ComponentMetaType;
+    const componentsMetaList: ComponentMetaType[] = this.materialsModel.usedMaterials.map((it) => {
+      const asset = assetPackagesList.find((el) => {
+        return el.package === it.value.npm?.package;
       });
+      if (asset) {
+        assets.push(asset);
+      }
+      return {
+        componentName: it.componentName,
+        ...cloneDeep(it.value.npm || {}),
+      } as ComponentMetaType;
+    });
     // 剔除不合法的meta
     const finalComponentsMetaList = componentsMetaList.filter((el) => {
       if (el.componentName && el.package && el.version) {

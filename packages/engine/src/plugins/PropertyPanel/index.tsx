@@ -20,7 +20,14 @@ export const PropertyPanel = (props: {
 
   useEffect(() => {
     const handel = () => {
-      formRef.current?.setFields(node.getPlainProps?.() || {});
+      const newVal = node.getPlainProps?.() || {};
+      console.log(
+        '🚀 ~ file: index.tsx:24 ~ handel ~ newVal:',
+        newVal,
+        node,
+        node.material?.value.props
+      );
+      formRef.current?.setFields(newVal);
     };
     handel();
     node.emitter.on('onNodeChange', handel);
@@ -30,6 +37,7 @@ export const PropertyPanel = (props: {
   }, [node]);
 
   const value = node.getPlainProps?.() || {};
+  console.log('🚀 ~ file: index.tsx:34 ~ value:', value);
 
   const onValueChange: CustomSchemaFormProps['onValueChange'] = (val) => {
     node.updateValue({
