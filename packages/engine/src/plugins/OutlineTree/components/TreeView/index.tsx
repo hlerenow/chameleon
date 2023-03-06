@@ -110,24 +110,28 @@ export class TreeView extends React.Component<
     pageModel.emitter.on('onNodeChange', () => {
       this.updateTreeDataFromNode();
     });
-    pluginCtx.globalEmitter.on('onSelectNodeChange', ({ node }: any) => {
-      const parentPaths = this.getParentKeyPaths(node.id);
-      LOGGER.debug('onSelectNodeChange parent path', parentPaths, node);
-      const newExpandKeys = Array.from(
-        new Set([...this.state.expandKeys, ...parentPaths])
-      );
 
-      LOGGER.debug('onSelectNodeChange newExpandKeys', newExpandKeys, node);
-
-      this.setState({
-        currentSelectNodeKeys: [node.id],
-        expandKeys: newExpandKeys,
-      });
-
-      setTimeout(() => {
-        this.scrollNodeToView(node.id);
-      }, 100);
+    pluginCtx.globalEmitter.on('onSelectNodeChange', ({ node }) => {
+      this.toSelectTreeNode(node);
     });
+
+    pluginCtx.workbench.emitter.on(
+      'leftPanelVisible',
+      ({ visible, panelName }) => {
+        if (visible && panelName === 'OutlineTree') {
+          console.log('visible, panelName', visible, panelName);
+          const currentSelectNode = pluginCtx.workbench.currentSelectNode;
+          if (currentSelectNode) {
+            this.toSelectTreeNode(currentSelectNode);
+          }
+        }
+      }
+    );
+
+    const currentSelectNode = pluginCtx.workbench.currentSelectNode;
+    if (currentSelectNode) {
+      this.toSelectTreeNode(currentSelectNode);
+    }
 
     const designerHandle = this.props.pluginCtx.pluginManager.get('Designer');
     const designerReady = designerHandle?.exports?.getReadyStatus?.();
@@ -139,6 +143,25 @@ export class TreeView extends React.Component<
       });
     }
   }
+
+  toSelectTreeNode = (node: CNode) => {
+    const parentPaths = this.getParentKeyPaths(node.id);
+    LOGGER.debug('onSelectNodeChange parent path', parentPaths, node);
+    const newExpandKeys = Array.from(
+      new Set([...this.state.expandKeys, ...parentPaths])
+    );
+
+    LOGGER.debug('onSelectNodeChange newExpandKeys', newExpandKeys, node);
+
+    this.setState({
+      currentSelectNodeKeys: [node.id],
+      expandKeys: newExpandKeys,
+    });
+
+    setTimeout(() => {
+      this.scrollNodeToView(node.id);
+    }, 100);
+  };
 
   containNode = (parentNode: TreeNodeData, targetNode: TreeNodeData) => {
     let res = null;
@@ -330,13 +353,10 @@ export class TreeView extends React.Component<
       });
     });
 
-    sensor.emitter.on('dragEnd', (e) => {
+    sensor.emitter.on('dragEnd', () => {
       this.setState({
         dragState: DragState.NORMAL,
       });
-    });
-    sensor.emitter.on('drop', (e) => {
-      console.log('dropppppp', e);
     });
     this.sensor = sensor;
   };

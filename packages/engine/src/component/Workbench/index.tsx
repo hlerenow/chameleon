@@ -10,6 +10,7 @@ import {
 import clsx from 'clsx';
 import mitt, { Emitter } from 'mitt';
 import { CNode } from '@chameleon/model';
+import { waitReactUpdate } from '../../utils';
 
 export interface PluginContext {
   openPanel: () => void;
@@ -72,7 +73,7 @@ export class WorkBench extends React.Component<
         width: 350,
         height: '100%',
       },
-      currentActiveLeftPanel: 'ComponentLib',
+      currentActiveLeftPanel: 'OutlineTree',
       leftPanels: [],
       bodyView: null,
       rightView: null,
@@ -94,7 +95,7 @@ export class WorkBench extends React.Component<
     });
   }
 
-  openLeftPanel = (currentActiveLeftPanel?: string) => {
+  openLeftPanel = async (currentActiveLeftPanel?: string) => {
     const newActive =
       currentActiveLeftPanel || this.state.currentActiveLeftPanel;
     this.setState({
@@ -105,13 +106,15 @@ export class WorkBench extends React.Component<
       },
       currentActiveLeftPanel: newActive,
     });
+
+    await waitReactUpdate();
     this.emitter.emit('leftPanelVisible', {
       visible: true,
       panelName: newActive,
     });
   };
 
-  closeLeftPanel = () => {
+  closeLeftPanel = async () => {
     this.setState({
       leftBoxVisible: false,
       leftBoxSize: {
@@ -119,6 +122,7 @@ export class WorkBench extends React.Component<
         height: '100%',
       },
     });
+    await waitReactUpdate();
     this.emitter.emit('leftPanelVisible', {
       visible: false,
       panelName: this.state.currentActiveLeftPanel,

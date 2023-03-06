@@ -7,10 +7,10 @@ import { GlobalStatePanelPlugin } from './GlobalStatePanel';
 
 export const DEFAULT_PLUGIN_LIST: CPlugin[] = [
   DesignerPlugin,
-  ComponentLibPlugin,
-  RightPanelPlugin,
   OutlineTreePlugin,
+  ComponentLibPlugin,
   GlobalStatePanelPlugin,
+  RightPanelPlugin,
 ];
 
 export default {
