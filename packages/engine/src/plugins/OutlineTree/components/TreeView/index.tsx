@@ -372,13 +372,21 @@ export class TreeView extends React.Component<
           state: this.state,
           onSelectNode: ({ keys: sk }) => {
             const designer = pluginCtx.pluginManager.get('Designer');
+            const nodeId = sk?.[0] || '';
+            const nn = pluginCtx.pageModel.getNode(nodeId);
             designer?.ctx.emitter.on('ready', () => {
               const designerExports: DesignerExports = designer.exports;
-              designerExports.selectNode(sk?.[0] || '');
+              designerExports.selectNode(nodeId);
+              if (nn) {
+                pluginCtx.workbench.updateCurrentSelectNode(nn as CNode);
+              }
             });
             if (designer) {
               const designerExports: DesignerExports = designer.exports;
-              designerExports.selectNode(sk?.[0] || '');
+              designerExports.selectNode(nodeId);
+              if (nn) {
+                pluginCtx.workbench.updateCurrentSelectNode(nn as CNode);
+              }
             }
           },
           updateState: (newVal) => {
