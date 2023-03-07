@@ -42,8 +42,8 @@ export declare class WorkBench extends React.Component<WorkBenchPropsType, WorkB
     constructor(props: WorkBenchPropsType);
     addLeftPanel: (panel: PanelItem) => void;
     updateCurrentSelectNode(node: CNode): void;
-    openLeftPanel: (currentActiveLeftPanel?: string) => void;
-    closeLeftPanel: () => void;
+    openLeftPanel: (currentActiveLeftPanel?: string) => Promise<void>;
+    closeLeftPanel: () => Promise<void>;
     toggleLeftPanel: () => void;
     onPluginIconClick: (panel: PanelItem) => void;
     openRightPanel: () => void;

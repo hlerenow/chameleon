@@ -60,6 +60,7 @@ export type LayoutStateType = {
   isDragging: boolean;
   mousePointer: Pointer | null;
   currentSelectInstance: RenderInstance | null;
+  currentSelectId: string;
   selectComponentInstances: RenderInstance[];
   selectLockStyle: React.CSSProperties;
   hoverComponentInstances: RenderInstance[];
@@ -85,6 +86,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   readyCbList: ((layoutInstance: Layout) => void)[] = [];
   assets: AssetPackage[];
   dragStartNode: CNode | CRootNode | null = null;
+  realTimeSelectNodeInstanceTimer = 0;
   constructor(props: LayoutPropsType) {
     super(props);
     this.designRenderRef = React.createRef<DesignRender | null>();
@@ -96,6 +98,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       ready: false,
       mousePointer: null,
       currentSelectInstance: null,
+      currentSelectId: '',
       selectComponentInstances: [],
       selectLockStyle: {},
       hoverComponentInstances: [],
@@ -117,6 +120,13 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
   componentDidMount(): void {
     this.init();
+
+    this.realTimeSelectNodeInstanceTimer = window.setInterval(() => {
+      // 实时更新选中的节点的实例
+      if (this.state.currentSelectId) {
+        this.selectNode(this.state.currentSelectId);
+      }
+    }, 50);
   }
 
   reload({ assets }: { assets: AssetPackage[] }) {
@@ -233,6 +243,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             return;
           }
           this.setState({
+            currentSelectId: componentInstance._NODE_ID,
             currentSelectInstance: componentInstance,
             selectComponentInstances: [...instanceList],
             hoverComponentInstances: [],
@@ -440,6 +451,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       // 新增节点
       if (extraData?.type === 'NEW_ADD') {
         this.setState({
+          currentSelectId: '',
           currentSelectInstance: null,
           selectComponentInstances: [],
           hoverComponentInstances: [],
@@ -449,6 +461,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         // 如果当前选中的dom 不包含 拖动开始的元素
         if (!currentSelectDom[0].contains(dragStartDom[0])) {
           this.setState({
+            currentSelectId: startInstance._NODE_ID,
             currentSelectInstance: startInstance,
             selectComponentInstances:
               this.designRenderRef.current?.getInstancesById(
@@ -466,6 +479,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       } else if (!currentSelectDom?.length) {
         // 没有选中元素时，当前拖动的元素为选中元素
         this.setState({
+          currentSelectId: startInstance._NODE_ID,
           currentSelectInstance: startInstance,
           selectComponentInstances:
             this.designRenderRef.current?.getInstancesById(
@@ -547,6 +561,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       instanceList = instanceList.filter((el) => el?._STATUS !== 'DESTROY');
       if (!instanceList.length) {
         this.setState({
+          currentSelectId: '',
           currentSelectInstance: null,
           selectComponentInstances: [],
           hoverComponentInstances: [],
@@ -562,6 +577,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         });
       }
       this.setState({
+        currentSelectId: instance._NODE_ID,
         currentSelectInstance: instance,
         selectComponentInstances: [...instanceList].filter((el) => {
           let res: boolean | undefined;
@@ -583,6 +599,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
   clearSelectNode() {
     this.setState({
+      currentSelectId: '',
       currentSelectInstance: null,
       selectComponentInstances: [],
     });
@@ -593,6 +610,10 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     this.iframeContainer.iframe?.parentNode?.removeChild(
       this.iframeContainer.iframe
     );
+    if (this.realTimeSelectNodeInstanceTimer) {
+      clearInterval(this.realTimeSelectNodeInstanceTimer);
+      this.realTimeSelectNodeInstanceTimer = 0;
+    }
   }
 
   async ready(cb?: (layoutInstance: Layout) => void) {
