@@ -24,12 +24,8 @@ type DesignerStateType = {
   assets: AssetPackage[];
 };
 
-export class Designer extends React.Component<
-  DesignerPropsType,
-  DesignerStateType
-> {
+export class Designer extends React.Component<DesignerPropsType, DesignerStateType> {
   layoutRef: React.RefObject<Layout>;
-  ready = false;
   constructor(props: DesignerPropsType) {
     super(props);
 
@@ -46,13 +42,7 @@ export class Designer extends React.Component<
   componentDidMount(): void {
     const { i18n } = this.props.pluginCtx;
     Object.keys(localize).forEach((lng) => {
-      i18n.addResourceBundle(
-        lng,
-        `plugin:${PLUGIN_NAME}`,
-        localize[lng],
-        true,
-        true
-      );
+      i18n.addResourceBundle(lng, `plugin:${PLUGIN_NAME}`, localize[lng], true, true);
     });
     this.init();
   }
@@ -93,28 +83,16 @@ export class Designer extends React.Component<
       }
       if (extraData.type === 'NEW_ADD') {
         if (extraData.dropNode?.nodeType !== 'NODE') {
-          pageModel?.addNode(
-            extraData.startNode as CNode,
-            extraData.dropNode!,
-            'CHILD_START'
-          );
+          pageModel?.addNode(extraData.startNode as CNode, extraData.dropNode!, 'CHILD_START');
         } else {
-          pageModel?.addNode(
-            extraData.startNode as CNode,
-            extraData.dropNode!,
-            posFlag
-          );
+          pageModel?.addNode(extraData.startNode as CNode, extraData.dropNode!, posFlag);
         }
       } else {
         if (extraData.dropNode?.id === extraData.startNode?.id) {
           console.warn(' id is the same');
           return;
         }
-        const res = pageModel.moveNodeById(
-          extraData.startNode?.id || '',
-          extraData?.dropNode?.id || '',
-          posFlag
-        );
+        const res = pageModel.moveNodeById(extraData.startNode?.id || '', extraData?.dropNode?.id || '', posFlag);
         if (!res) {
           console.warn('drop failed');
         }
@@ -122,8 +100,6 @@ export class Designer extends React.Component<
       layoutRef.current?.selectNode(extraData.startNode?.id || '');
       this.props.pluginCtx.emitter.emit('onDrop', eventObj);
     });
-    // notice other plugin, current is ready ok
-    this.ready = true;
 
     pluginCtx.emitter.emit('ready', {
       UIInstance: this,
@@ -175,6 +151,16 @@ export class Designer extends React.Component<
             layoutRef.current?.selectNode('');
             this.onSelectNode(null);
           }}
+          toHidden={(id) => {
+            const targetNodeModel = this.props.pluginCtx.pageModel.getNode(id) as CNode;
+            if (!targetNodeModel) {
+              return;
+            }
+            const devState = targetNodeModel.value.configure.devState ?? {};
+            devState.condition = false;
+            targetNodeModel.value.configure.devState = devState;
+            targetNodeModel.updateValue();
+          }}
         />
       ),
     });
@@ -189,10 +175,7 @@ export class Designer extends React.Component<
     });
   };
 
-  onHoverNode = (
-    node: CNode | CRootNode | null,
-    startNode: CNode | CRootNode
-  ) => {
+  onHoverNode = (node: CNode | CRootNode | null, startNode: CNode | CRootNode) => {
     this.props.pluginCtx.emitter.emit('onHover', node);
     const material = node?.material;
     if (!material) {
@@ -200,30 +183,21 @@ export class Designer extends React.Component<
     }
     if (!startNode) {
       this.setState({
-        hoverToolBar: (
-          <div className={styles.hoverTips}>
-            {material?.value.title || material?.componentName}
-          </div>
-        ),
+        hoverToolBar: <div className={styles.hoverTips}>{material?.value.title || material?.componentName}</div>,
         ghostView: null,
       });
       return;
     }
 
     this.setState({
-      hoverToolBar: (
-        <div className={styles.hoverTips}>
-          {material?.value.title || material?.componentName}
-        </div>
-      ),
+      hoverToolBar: <div className={styles.hoverTips}>{material?.value.title || material?.componentName}</div>,
       ghostView: <GhostView node={startNode} />,
     });
   };
 
   render() {
     const { layoutRef, props, onSelectNode, onDragStart, onHoverNode } = this;
-    const { pageModel, hoverToolBar, selectToolBar, ghostView, assets } =
-      this.state;
+    const { pageModel, hoverToolBar, selectToolBar, ghostView, assets } = this.state;
 
     return (
       <Layout

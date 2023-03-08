@@ -1,10 +1,5 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  DeleteOutlined,
-  EyeInvisibleOutlined,
-  EyeOutlined,
-  RightOutlined,
-} from '@ant-design/icons';
+import { CopyOutlined, DeleteOutlined, EyeInvisibleOutlined, EyeOutlined, RightOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
 import { CTreeContext, DragState } from './context';
 import { TreeNodeData } from './dataStruct';
@@ -26,16 +21,9 @@ export const TreeNode = (props: TreeNodeProps) => {
   });
   const { level = 0, item, paths = ['0'] } = props;
   const [nodeVisible, setNodeVisible] = useState(true);
-  const {
-    state: ctxState,
-    updateState,
-    onSelectNode,
-    onDeleteNode,
-  } = useContext(CTreeContext);
+  const { state: ctxState, updateState, onSelectNode, onDeleteNode, getDesignerHandler, onCopyNode } = useContext(CTreeContext);
 
-  const [titleEditable, setTitleEditable] = useState(
-    allStateRef.current?.titleEditable
-  );
+  const [titleEditable, setTitleEditable] = useState(allStateRef.current?.titleEditable);
   allStateRef.current.titleEditable = titleEditable;
   const expanded = ctxState.expandKeys.find((el) => el === item.key);
   const toggleExpandNode = () => {
@@ -158,37 +146,27 @@ export const TreeNode = (props: TreeNodeProps) => {
       titleView: item.title,
     });
   }
-  const titleText =
-    targetNodeModel?.value.title || targetNodeModel?.value.componentName;
+  const titleText = targetNodeModel?.value.title || targetNodeModel?.value.componentName;
 
   const bodyView = (
     <div className={styles.nodeBox}>
       <div
-        className={clsx([
-          styles.nodeContent,
-          selected && canBeSelected && styles.selected,
-        ])}
+        className={clsx([styles.nodeContent, selected && canBeSelected && styles.selected])}
         style={{ marginLeft: `${-indent}px`, paddingLeft: `${indent + 8}px` }}
-        onMouseMove={() => {
+        onMouseMove={async () => {
           if (!item.key) {
             return;
           }
-          const compInstances =
-            ctxState.designerHandler?.getDynamicComponentInstances(item.key);
+          const designerHandler = await getDesignerHandler?.();
+          const compInstances = designerHandler?.getDynamicComponentInstances(item.key);
           if (typeof compInstances?._CONDITION !== 'undefined') {
             setNodeVisible(compInstances?._CONDITION);
           }
         }}
       >
         {item.children?.length ? (
-          <span
-            style={{ paddingRight: '5px' }}
-            className={styles.arrowSpan}
-            onClickCapture={toggleExpandNode}
-          >
-            <RightOutlined
-              className={clsx([styles.nodeArrow, expanded && styles.expanded])}
-            />
+          <span style={{ paddingRight: '5px' }} className={styles.arrowSpan} onClickCapture={toggleExpandNode}>
+            <RightOutlined className={clsx([styles.nodeArrow, expanded && styles.expanded])} />
           </span>
         ) : null}
         <div
@@ -230,13 +208,20 @@ export const TreeNode = (props: TreeNodeProps) => {
             </div>
           )}
         </div>
+
         {!titleEditable && !item.rootNode && (
           <div className={styles.toolbarBox}>
             <div className={styles.iconItem}>
               {!nodeVisible && <EyeOutlined onClick={toggleNodeVisible} />}
-              {nodeVisible && (
-                <EyeInvisibleOutlined onClick={toggleNodeVisible} />
-              )}
+              {nodeVisible && <EyeInvisibleOutlined onClick={toggleNodeVisible} />}
+            </div>
+            <div
+              className={styles.iconItem}
+              onClick={() => {
+                onCopyNode(item.key || '');
+              }}
+            >
+              <CopyOutlined />
             </div>
             <div
               className={styles.iconItem}
@@ -259,14 +244,7 @@ export const TreeNode = (props: TreeNodeProps) => {
         {expanded &&
           item.children?.map((el, index) => {
             const key = `${el.key}-${index}`;
-            return (
-              <TreeNode
-                key={key}
-                item={el}
-                paths={[...paths, index]}
-                level={level + 1}
-              />
-            );
+            return <TreeNode key={key} item={el} paths={[...paths, index]} level={level + 1} />;
           })}
       </div>
     </div>

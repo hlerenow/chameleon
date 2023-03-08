@@ -20,9 +20,6 @@ export const DesignerPlugin: CPlugin = (ctx) => {
     },
     exports: () => {
       return {
-        getReadyStatus: () => {
-          return designerRef.current?.ready;
-        },
         getDnd: () => {
           return designerRef.current?.layoutRef.current?.dnd;
         },
@@ -30,24 +27,16 @@ export const DesignerPlugin: CPlugin = (ctx) => {
           designerRef.current?.layoutRef.current?.selectNode(nodeId);
         },
         updatePage: (page: CPageDataType | CPage) => {
-          designerRef.current?.layoutRef.current?.designRenderRef?.current?.rerender(
-            page
-          );
+          designerRef.current?.layoutRef.current?.designRenderRef?.current?.rerender(page);
         },
         reload: ({ assets }) => {
           designerRef.current?.reloadRender({ assets });
         },
         getComponentInstances: (id: string) => {
-          return (
-            designerRef.current?.layoutRef.current?.designRenderRef.current?.getInstancesById(
-              id
-            ) || []
-          );
+          return designerRef.current?.layoutRef.current?.designRenderRef.current?.getInstancesById(id) || [];
         },
         getDynamicComponentInstances: (id: string) => {
-          const map =
-            designerRef.current?.layoutRef.current?.designRenderRef.current
-              ?.renderRef.current?.dynamicComponentInstanceMap;
+          const map = designerRef.current?.layoutRef.current?.designRenderRef.current?.renderRef.current?.dynamicComponentInstanceMap;
           return map?.get(id) || [];
         },
       } as DesignerExports;

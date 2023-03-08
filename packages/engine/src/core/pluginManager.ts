@@ -49,13 +49,7 @@ export class PluginManager {
   i18n: CustomI18n;
   assets: AssetPackage[];
 
-  constructor({
-    getWorkbench,
-    emitter,
-    pageModel,
-    i18n,
-    assets,
-  }: PluginManagerOptions) {
+  constructor({ getWorkbench, emitter, pageModel, i18n, assets }: PluginManagerOptions) {
     this.getWorkbench = getWorkbench;
     this.emitter = emitter;
     this.pageModel = pageModel;
@@ -114,13 +108,14 @@ export class PluginManager {
     this.plugins.delete(name);
   }
 
-  onPluginReadyOk(
-    pluginName: string,
-    cb?: (pluginHandle: PluginInstance) => void
-  ) {
+  onPluginReadyOk(pluginName: string, cb?: (pluginHandle: PluginInstance) => void) {
+    const pluginObj = this.plugins.get(pluginName);
+    if (pluginObj?.ready) {
+      return;
+    }
+
     return new Promise<PluginInstance>((resolve) => {
       this.emitter.on(`${pluginName}:ready`, () => {
-        const pluginObj = this.plugins.get(pluginName);
         if (pluginObj) {
           pluginObj.ready = true;
           cb?.(pluginObj);

@@ -1,9 +1,5 @@
 import { AppstoreAddOutlined } from '@ant-design/icons';
-import {
-  LayoutDragAndDropExtraDataType,
-  Sensor,
-  SensorEventObjType,
-} from '@chameleon/layout';
+import { LayoutDragAndDropExtraDataType, Sensor, SensorEventObjType } from '@chameleon/layout';
 import { Tabs } from 'antd';
 import React from 'react';
 import { CPlugin, CPluginCtx } from '../../core/pluginManager';
@@ -31,10 +27,7 @@ const TabTitle = ({ children }: { children: any }) => {
 type ComponentLibViewState = {
   componentsList: SnippetsCollection;
 };
-class ComponentLibView extends React.Component<
-  ComponentLibViewProps,
-  ComponentLibViewState
-> {
+class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentLibViewState> {
   containerRef: React.RefObject<HTMLDivElement>;
   disposeList: (() => void)[] = [];
   constructor(props: ComponentLibViewProps) {
@@ -45,18 +38,9 @@ class ComponentLibView extends React.Component<
     };
   }
 
-  leftPanelVisibleCb = async ({
-    visible,
-    panelName,
-  }: {
-    visible: boolean;
-    panelName: string;
-  }) => {
-    const designerHandle = await this.props.pluginCtx.pluginManager.get(
-      'Designer'
-    );
-    const designerReady = designerHandle?.exports?.getReadyStatus?.();
-    if (panelName === PLUGIN_NAME && visible && designerReady) {
+  leftPanelVisibleCb = async ({ visible, panelName }: { visible: boolean; panelName: string }) => {
+    await this.props.pluginCtx.pluginManager.onPluginReadyOk('Designer');
+    if (panelName === PLUGIN_NAME && visible) {
       this.registerDragEvent();
     }
   };
@@ -65,17 +49,8 @@ class ComponentLibView extends React.Component<
     const { pluginCtx } = this.props;
     const { pageModel, i18n } = pluginCtx;
     const { materialsModel } = pageModel;
-    const designerHandle = await this.props.pluginCtx.pluginManager.get(
-      'Designer'
-    );
-    const designerReady = designerHandle?.exports?.getReadyStatus?.();
-    if (designerReady) {
-      this.registerDragEvent();
-    } else {
-      designerHandle?.ctx.emitter.on('ready', () => {
-        this.registerDragEvent();
-      });
-    }
+    await this.props.pluginCtx.pluginManager.onPluginReadyOk('Designer');
+    this.registerDragEvent();
 
     Object.keys(localize).forEach((lng) => {
       i18n.addResourceBundle(lng, i18nNamespace, localize[lng], true, true);
@@ -116,10 +91,7 @@ class ComponentLibView extends React.Component<
       if (!targetDom) {
         return;
       }
-      const targetNodeId = getTargetMNodeKeyVal(
-        targetDom as HTMLElement,
-        DRAG_ITEM_KEY
-      );
+      const targetNodeId = getTargetMNodeKeyVal(targetDom as HTMLElement, DRAG_ITEM_KEY);
 
       if (!targetNodeId) {
         return;
@@ -131,12 +103,10 @@ class ComponentLibView extends React.Component<
       }
       const newNode = pageModel?.createNode(meta.schema);
 
-      this.props.pluginCtx.pluginManager
-        .get('Designer')
-        .then((designerHandle) => {
-          const designerExports: DesignerExports = designerHandle?.exports;
-          designerExports.selectNode('');
-        });
+      this.props.pluginCtx.pluginManager.get('Designer').then((designerHandle) => {
+        const designerExports: DesignerExports = designerHandle?.exports;
+        designerExports.selectNode('');
+      });
 
       return {
         ...eventObj,
@@ -188,8 +158,7 @@ class ComponentLibView extends React.Component<
 export const ComponentLibPlugin: CPlugin = {
   name: PLUGIN_NAME,
   async init(ctx) {
-    const ComponentLibViewWithLocalize =
-      withTranslation(i18nNamespace)(ComponentLibView);
+    const ComponentLibViewWithLocalize = withTranslation(i18nNamespace)(ComponentLibView);
     const Title = withTranslation(i18nNamespace)(({ t }) => {
       return <>{t('pluginName')}</>;
     });

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CopyOutlined, DeleteOutlined } from '@ant-design/icons';
+import { CopyOutlined, DeleteOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import styles from './style.module.scss';
 import { CNode, CRootNode } from '@chameleon/model';
 import clsx from 'clsx';
@@ -9,6 +9,7 @@ export type DefaultSelectToolBarProps = {
   toSelectNode: (id: string) => void;
   toDelete: (id: string) => void;
   toCopy: (idd: string) => void;
+  toHidden: (idd: string) => void;
 };
 
 const LayoutSelect = ({
@@ -26,33 +27,20 @@ const LayoutSelect = ({
       <div className={clsx([styles.hoverBox, hover && styles.hoverBoxActive])}>
         {dataSource.map((el) => {
           return (
-            <div
-              className={styles.hoverItem}
-              key={el.key}
-              onClick={() => onSelect(el.key)}
-            >
+            <div className={styles.hoverItem} key={el.key} onClick={() => onSelect(el.key)}>
               {el.label}
             </div>
           );
         })}
       </div>
-      <div
-        className={styles.placeholder}
-        onMouseOver={() => setHover(true)}
-        onMouseOut={() => setHover(false)}
-      >
+      <div className={styles.placeholder} onMouseOver={() => setHover(true)} onMouseOut={() => setHover(false)}>
         {children}
       </div>
     </div>
   );
 };
 
-export const DefaultSelectToolBar = ({
-  nodeList,
-  toSelectNode,
-  toDelete,
-  toCopy,
-}: DefaultSelectToolBarProps) => {
+export const DefaultSelectToolBar = ({ nodeList, toSelectNode, toDelete, toCopy, toHidden }: DefaultSelectToolBarProps) => {
   const tempList = [...nodeList];
   const currentNode = tempList.shift();
   const parentNodeItems = tempList.map((el) => {
@@ -69,30 +57,27 @@ export const DefaultSelectToolBar = ({
   );
 
   const deleteItem = (
-    <div
-      className={styles.item}
-      onClick={() => toDelete(currentNode?.id || '')}
-    >
+    <div className={styles.item} onClick={() => toDelete(currentNode?.id || '')}>
       <DeleteOutlined />
     </div>
   );
 
+  const visibleItem = (
+    <div className={styles.item} onClick={() => toHidden(currentNode?.id || '')}>
+      <EyeInvisibleOutlined />
+    </div>
+  );
+
   const nodeLayout = (
-    <LayoutSelect
-      dataSource={parentNodeItems.reverse()}
-      onSelect={toSelectNode}
-    >
-      <div>
-        {currentNode?.value.title ||
-          currentNode?.material?.value.title ||
-          'Empty'}
-      </div>
+    <LayoutSelect dataSource={parentNodeItems.reverse()} onSelect={toSelectNode}>
+      <div>{currentNode?.value.title || currentNode?.material?.value.title || 'Empty'}</div>
     </LayoutSelect>
   );
 
   return (
     <div className={styles.toolBarBox}>
       {nodeLayout}
+      {visibleItem}
       {copyItem}
       {deleteItem}
     </div>

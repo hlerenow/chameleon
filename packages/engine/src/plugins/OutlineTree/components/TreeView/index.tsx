@@ -1,8 +1,4 @@
-import {
-  LayoutDragAndDropExtraDataType,
-  Sensor,
-  SensorEventObjType,
-} from '@chameleon/layout';
+import { LayoutDragAndDropExtraDataType, Sensor, SensorEventObjType } from '@chameleon/layout';
 import { DropPosType } from '@chameleon/layout/dist/components/DropAnchor/util';
 import { CNode, ExportTypeEnum } from '@chameleon/model';
 import React from 'react';
@@ -10,12 +6,7 @@ import { WithTranslation } from 'react-i18next';
 import { CPluginCtx } from '../../../../core/pluginManager';
 import { LOGGER } from '../../../../utils/logger';
 import { DesignerExports } from '../../../Designer';
-import {
-  calculateDropPosInfo,
-  getTargetMNodeKeyVal,
-  transformPageSchemaToTreeData,
-  traverseTree,
-} from '../../util';
+import { calculateDropPosInfo, getTargetMNodeKeyVal, transformPageSchemaToTreeData, traverseTree } from '../../util';
 import { ContextState, CTreeContext, DragState } from './context';
 import { TreeNodeData } from './dataStruct';
 import styles from './style.module.scss';
@@ -54,9 +45,7 @@ export class TreeView extends React.Component<
   }
 
   getDesignerHandler = async () => {
-    const designerPluginInstance = await this.props.pluginCtx.pluginManager.get(
-      'Designer'
-    );
+    const designerPluginInstance = await this.props.pluginCtx.pluginManager.get('Designer');
     const designerHandler: DesignerExports = designerPluginInstance?.exports;
     return designerHandler;
   };
@@ -65,10 +54,7 @@ export class TreeView extends React.Component<
     const { pluginCtx } = this.props;
     const { pageModel } = pluginCtx;
     const plainTreeData = pageModel.export();
-    const tempTreeData = transformPageSchemaToTreeData(
-      plainTreeData,
-      pageModel
-    );
+    const tempTreeData = transformPageSchemaToTreeData(plainTreeData, pageModel);
     this.setState({
       treeData: tempTreeData,
     });
@@ -144,9 +130,7 @@ export class TreeView extends React.Component<
   toSelectTreeNode = (node: CNode) => {
     const parentPaths = this.getParentKeyPaths(node.id);
     LOGGER.debug('onSelectNodeChange parent path', parentPaths, node);
-    const newExpandKeys = Array.from(
-      new Set([...this.state.expandKeys, ...parentPaths])
-    );
+    const newExpandKeys = Array.from(new Set([...this.state.expandKeys, ...parentPaths]));
 
     LOGGER.debug('onSelectNodeChange newExpandKeys', newExpandKeys, node);
 
@@ -212,10 +196,7 @@ export class TreeView extends React.Component<
 
       const targetNode = pageModel.getNode(targetNodeId);
       const targetTreeNode = this.getTreeNodeByKey(targetNodeId);
-      if (
-        targetTreeNode?.canDrag !== undefined &&
-        targetTreeNode?.canDrag === false
-      ) {
+      if (targetTreeNode?.canDrag !== undefined && targetTreeNode?.canDrag === false) {
         return;
       }
       if (!targetNode) {
@@ -241,19 +222,11 @@ export class TreeView extends React.Component<
       const targetNodeId = getTargetMNodeKeyVal(targetDom, DRAG_ITEM_KEY);
 
       if (!targetNodeId) {
-        LOGGER.debug(
-          'targetNodeId dom not found',
-          eventObj,
-          targetDom,
-          DRAG_ITEM_KEY
-        );
+        LOGGER.debug('targetNodeId dom not found', eventObj, targetDom, DRAG_ITEM_KEY);
         return eventObj;
       }
       const targetTreeNode = this.getTreeNodeByKey(targetNodeId);
-      if (
-        targetTreeNode?.canDrop !== undefined &&
-        targetTreeNode.canDrop === false
-      ) {
+      if (targetTreeNode?.canDrop !== undefined && targetTreeNode.canDrop === false) {
         LOGGER.debug('node can not be drop by tree node config');
         return eventObj;
       }
@@ -286,10 +259,7 @@ export class TreeView extends React.Component<
         dom: targetDom,
       });
 
-      if (
-        Array.isArray(targetTreeNode?.canDrop) &&
-        !targetTreeNode?.canDrop.includes(dropInfo.pos)
-      ) {
+      if (Array.isArray(targetTreeNode?.canDrop) && !targetTreeNode?.canDrop.includes(dropInfo.pos)) {
         return eventObj;
       }
 
@@ -321,9 +291,7 @@ export class TreeView extends React.Component<
         });
         return;
       }
-      const dropDom = document.querySelectorAll(
-        `[${DRAG_ITEM_KEY}="${dropNode.id}"]`
-      )?.[0];
+      const dropDom = document.querySelectorAll(`[${DRAG_ITEM_KEY}="${dropNode.id}"]`)?.[0];
       if (!dropDom) {
         return;
       }
@@ -362,6 +330,7 @@ export class TreeView extends React.Component<
         value={{
           sensor: this.sensor,
           state: this.state,
+          getDesignerHandler: this.getDesignerHandler,
           onSelectNode: async ({ keys: sk }) => {
             const designer = await pluginCtx.pluginManager.get('Designer');
             if (!designer) {
@@ -383,13 +352,14 @@ export class TreeView extends React.Component<
           onDeleteNode: (id) => {
             pluginCtx.pageModel.deleteNodeById(id);
           },
+          onCopyNode: (id) => {
+            pluginCtx.pageModel.copyNodeById(id);
+          },
         }}
       >
         <div className={styles.contentBox} ref={this.domRef}>
           {treeData.map((item, index) => {
-            return (
-              <TreeNode item={item} key={item.key + `${index}`}></TreeNode>
-            );
+            return <TreeNode item={item} key={item.key + `${index}`}></TreeNode>;
           })}
           {dragState === DragState.DRAGGING && dropPosInfo && (
             <div
