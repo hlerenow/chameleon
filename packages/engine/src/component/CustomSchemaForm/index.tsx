@@ -33,7 +33,6 @@ const CustomSchemaFormCore = (
     defaultSetterConfig,
     pluginCtx,
   } = props;
-  console.log('pluginCtx', pluginCtx);
 
   return (
     <CCustomSchemaFormContext.Provider

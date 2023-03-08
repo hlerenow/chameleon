@@ -45,25 +45,29 @@ class ComponentLibView extends React.Component<
     };
   }
 
-  leftPanelVisibleCb = ({
+  leftPanelVisibleCb = async ({
     visible,
     panelName,
   }: {
     visible: boolean;
     panelName: string;
   }) => {
-    const designerHandle = this.props.pluginCtx.pluginManager.get('Designer');
+    const designerHandle = await this.props.pluginCtx.pluginManager.get(
+      'Designer'
+    );
     const designerReady = designerHandle?.exports?.getReadyStatus?.();
     if (panelName === PLUGIN_NAME && visible && designerReady) {
       this.registerDragEvent();
     }
   };
 
-  componentDidMount(): void {
+  async componentDidMount() {
     const { pluginCtx } = this.props;
     const { pageModel, i18n } = pluginCtx;
     const { materialsModel } = pageModel;
-    const designerHandle = this.props.pluginCtx.pluginManager.get('Designer');
+    const designerHandle = await this.props.pluginCtx.pluginManager.get(
+      'Designer'
+    );
     const designerReady = designerHandle?.exports?.getReadyStatus?.();
     if (designerReady) {
       this.registerDragEvent();
@@ -88,10 +92,10 @@ class ComponentLibView extends React.Component<
     this.disposeList.map((el) => el());
   }
 
-  registerDragEvent = () => {
+  registerDragEvent = async () => {
     const { containerRef } = this;
     const { pluginCtx } = this.props;
-    const designerHandle = pluginCtx.pluginManager.get('Designer');
+    const designerHandle = await pluginCtx.pluginManager.get('Designer');
 
     if (!designerHandle) {
       return;
@@ -127,9 +131,12 @@ class ComponentLibView extends React.Component<
       }
       const newNode = pageModel?.createNode(meta.schema);
 
-      const designerHandle = this.props.pluginCtx.pluginManager.get('Designer');
-      const designerExports: DesignerExports = designerHandle?.exports;
-      designerExports.selectNode('');
+      this.props.pluginCtx.pluginManager
+        .get('Designer')
+        .then((designerHandle) => {
+          const designerExports: DesignerExports = designerHandle?.exports;
+          designerExports.selectNode('');
+        });
 
       return {
         ...eventObj,
@@ -142,7 +149,8 @@ class ComponentLibView extends React.Component<
     dnd.registerSensor(boxSensor);
 
     const dragStart = () => {
-      const { workbench } = this.props.pluginCtx;
+      const { getWorkbench } = this.props.pluginCtx;
+      const workbench = getWorkbench();
       if (!workbench.state.leftBoxFixed) {
         workbench.closeLeftPanel();
       }

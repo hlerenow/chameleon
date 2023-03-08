@@ -71,13 +71,9 @@ export const App = () => {
     }
     setReady(true);
   }, []);
-  const onReady = useCallback((ctx: EnginContext) => {
-    const designer = ctx.pluginManager.get('Designer');
-    designer?.ctx.emitter.on('ready', (uiInstance) => {
-      // console.log('out ready', uiInstance);
-      const designerExports: DesignerExports = designer.exports;
-      designerExports.selectNode('3');
-    });
+  const onReady = useCallback(async (ctx: EnginContext) => {
+    const designer = await ctx.pluginManager.onPluginReadyOk('Designer');
+    await ctx.pluginManager.onPluginReadyOk('Designer');
 
     setTimeout(() => {
       const designerExports = designer?.exports as DesignerExports;

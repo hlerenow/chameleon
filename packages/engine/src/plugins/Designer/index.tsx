@@ -50,9 +50,6 @@ export const DesignerPlugin: CPlugin = (ctx) => {
               ?.renderRef.current?.dynamicComponentInstanceMap;
           return map?.get(id) || [];
         },
-        ready(cb) {
-          ctx.globalEmitter.on(`${PLUGIN_NAME}:ready`, cb);
-        },
       } as DesignerExports;
     },
     meta: {
@@ -70,5 +67,4 @@ export type DesignerExports = {
   updatePage: (page: CPageDataType) => void;
   getComponentInstances: (id: string) => RenderInstance[];
   getDynamicComponentInstances: (id: string) => RenderInstance;
-  ready: (cb: (ctx: CPlugin) => void) => void;
 };

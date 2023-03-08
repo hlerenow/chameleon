@@ -2,7 +2,6 @@
 import { Sensor } from '@chameleon/layout';
 import { CPage } from '@chameleon/model';
 import React from 'react';
-import { DesignerExports } from '../../../Designer';
 import { TreeNodeData } from './dataStruct';
 export enum DragState {
   DRAGGING = 'DRAGGING',
@@ -15,7 +14,6 @@ export type ContextState = {
   multiSelect: boolean;
   dragState: DragState;
   pageModel: CPage | null;
-  designerHandler: DesignerExports | null;
 };
 
 export type CTreeContextData = {
@@ -34,7 +32,6 @@ export const CTreeContext = React.createContext<CTreeContextData>({
     multiSelect: false,
     dragState: DragState.NORMAL,
     pageModel: null,
-    designerHandler: null,
   },
   updateState: () => {},
   onSelectNode: () => {},

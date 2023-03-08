@@ -38,8 +38,6 @@ export class TreeView extends React.Component<
   constructor(props: TreeViewProps) {
     super(props);
     this.domRef = React.createRef<HTMLDivElement>();
-    const designerHandler: DesignerExports =
-      this.props.pluginCtx.pluginManager.get('Designer')?.exports;
 
     this.state = {
       treeData: [],
@@ -51,10 +49,17 @@ export class TreeView extends React.Component<
         y: 0,
       },
       pageModel: props.pluginCtx.pageModel,
-      designerHandler: designerHandler,
       dragState: DragState.NORMAL,
     };
   }
+
+  getDesignerHandler = async () => {
+    const designerPluginInstance = await this.props.pluginCtx.pluginManager.get(
+      'Designer'
+    );
+    const designerHandler: DesignerExports = designerPluginInstance?.exports;
+    return designerHandler;
+  };
 
   updateTreeDataFromNode = () => {
     const { pluginCtx } = this.props;
@@ -102,7 +107,7 @@ export class TreeView extends React.Component<
     });
   };
 
-  componentDidMount(): void {
+  async componentDidMount() {
     this.updateTreeDataFromNode();
     const { pluginCtx } = this.props;
     const { pageModel } = pluginCtx;
@@ -132,15 +137,8 @@ export class TreeView extends React.Component<
       this.toSelectTreeNode(currentSelectNode);
     }
 
-    const designerHandle = this.props.pluginCtx.pluginManager.get('Designer');
-    const designerReady = designerHandle?.exports?.getReadyStatus?.();
-    if (designerReady) {
-      this.registerDragEvent();
-    } else {
-      designerHandle?.ctx.emitter.on('ready', () => {
-        this.registerDragEvent();
-      });
-    }
+    await this.props.pluginCtx.pluginManager.onPluginReadyOk('Designer');
+    this.registerDragEvent();
   }
 
   toSelectTreeNode = (node: CNode) => {
@@ -187,7 +185,7 @@ export class TreeView extends React.Component<
     return target;
   };
 
-  registerDragEvent = () => {
+  registerDragEvent = async () => {
     if (!this.domRef.current) {
       return;
     }
@@ -197,14 +195,9 @@ export class TreeView extends React.Component<
       eventPriority: 999,
     });
     const { pluginCtx } = this.props;
-    const designerHandle = pluginCtx.pluginManager.get('Designer');
-
-    if (!designerHandle) {
-      return;
-    }
 
     const pageModel = pluginCtx.pageModel;
-    const designerExports: DesignerExports = designerHandle.exports;
+    const designerExports: DesignerExports = await this.getDesignerHandler();
     const dnd = designerExports.getDnd();
     sensor.setCanDrag((eventObj: SensorEventObjType) => {
       const targetDom = eventObj.event.target as HTMLDivElement;
@@ -369,24 +362,19 @@ export class TreeView extends React.Component<
         value={{
           sensor: this.sensor,
           state: this.state,
-          onSelectNode: ({ keys: sk }) => {
-            const designer = pluginCtx.pluginManager.get('Designer');
+          onSelectNode: async ({ keys: sk }) => {
+            const designer = await pluginCtx.pluginManager.get('Designer');
+            if (!designer) {
+              console.warn('Designer is empty');
+              return;
+            }
             const nodeId = sk?.[0] || '';
             const nn = pluginCtx.pageModel.getNode(nodeId);
             const workbench = pluginCtx.getWorkbench();
-            designer?.ctx.emitter.on('ready', () => {
-              const designerExports: DesignerExports = designer.exports;
-              designerExports.selectNode(nodeId);
-              if (nn) {
-                workbench.updateCurrentSelectNode(nn as CNode);
-              }
-            });
-            if (designer) {
-              const designerExports: DesignerExports = designer.exports;
-              designerExports.selectNode(nodeId);
-              if (nn) {
-                workbench.updateCurrentSelectNode(nn as CNode);
-              }
+            const designerExports: DesignerExports = designer.exports;
+            designerExports.selectNode(nodeId);
+            if (nn) {
+              workbench.updateCurrentSelectNode(nn as CNode);
             }
           },
           updateState: (newVal) => {

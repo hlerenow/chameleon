@@ -31,13 +31,14 @@ export type CPluginCtx<C = any> = {
   config: C;
   pluginManager: PluginManager;
   getActiveNode: () => CNode | null;
+  pluginReadyOk: () => void;
 } & PluginManagerOptions;
 
 export type PluginInstance = {
   ctx: CPluginCtx;
   exports: any;
-  readyOk: () => void;
   source: PluginObj;
+  ready: boolean;
 };
 
 export class PluginManager {
@@ -76,6 +77,9 @@ export class PluginManager {
       getActiveNode: () => {
         return workbench.currentSelectNode;
       },
+      pluginReadyOk: () => {
+        this.emitter.emit(`${innerPlugin.name}:ready`);
+      },
     };
 
     let innerPlugin: PluginObj;
@@ -88,20 +92,41 @@ export class PluginManager {
       source: innerPlugin,
       ctx: ctx,
       exports: innerPlugin.exports?.(ctx) || {},
-      readyOk: () => {
-        this.emitter.emit(`${innerPlugin.name}:ready`);
-      },
+      ready: false,
     });
     await innerPlugin.init(ctx);
   }
 
-  get(pluginName: string) {
-    return this.plugins.get(pluginName);
+  async get(pluginName: string) {
+    const pluginInstance = this.plugins.get(pluginName);
+    if (pluginInstance?.ready) {
+      return pluginInstance;
+    } else {
+      await this.onPluginReadyOk(pluginName);
+      return pluginInstance;
+    }
+    return;
   }
 
   async remove(name: string) {
     const p = this.plugins.get(name);
     await p?.source.destroy(p.ctx);
     this.plugins.delete(name);
+  }
+
+  onPluginReadyOk(
+    pluginName: string,
+    cb?: (pluginHandle: PluginInstance) => void
+  ) {
+    return new Promise<PluginInstance>((resolve) => {
+      this.emitter.on(`${pluginName}:ready`, () => {
+        const pluginObj = this.plugins.get(pluginName);
+        if (pluginObj) {
+          pluginObj.ready = true;
+          cb?.(pluginObj);
+          resolve(pluginObj);
+        }
+      });
+    });
   }
 }

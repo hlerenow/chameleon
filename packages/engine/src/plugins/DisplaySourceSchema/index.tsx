@@ -45,8 +45,9 @@ export const DisplaySourceSchema = (props: DisplaySourceSchemaProps) => {
           await waitReactUpdate();
           const workbench = engineCtx.engine.getWorkbench();
           const currentSelectNode = workbench?.currentSelectNode;
-          const designerPluginInstance =
-            engineCtx.pluginManager.get('Designer');
+          const designerPluginInstance = await engineCtx.pluginManager.get(
+            'Designer'
+          );
           const nodeId = currentSelectNode?.id || '';
           designerPluginInstance?.ctx.emitter.on('ready', () => {
             const designerExports: DesignerExports =

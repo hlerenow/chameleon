@@ -129,6 +129,8 @@ export class Designer extends React.Component<
       UIInstance: this,
     });
 
+    pluginCtx.pluginReadyOk();
+
     layoutInstance.dnd.emitter.on('click', ({ event }) => {
       const workbench = pluginCtx.getWorkbench();
       workbench.onGlobalClick(event);
