@@ -12,6 +12,7 @@ import { CSlot } from './RootNode/Node/slot';
 import { clearSchema, getNode, getRandomStr } from '../util';
 import { InnerComponentNameEnum } from '../types/rootNode';
 import { AssetPackage } from '../types/base';
+import { CMaterialType } from '../types/material';
 
 export const checkPage = (data: any): CPageDataType => {
   checkComplexData({
@@ -57,7 +58,7 @@ export class CPage {
   constructor(
     data: CPageDataType,
     options?: {
-      materials?: any;
+      materials?: CMaterialType[];
       assetPackagesList?: AssetPackage[];
     }
   ) {

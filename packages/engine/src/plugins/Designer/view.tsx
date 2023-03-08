@@ -134,8 +134,7 @@ export class Designer extends React.Component<
     });
 
     this.props.pluginCtx.pageModel.emitter.on('onPageChange', ({ node }) => {
-      const newPage = node.export();
-      layoutRef.current?.designRenderRef?.current?.rerender(newPage);
+      layoutRef.current?.designRenderRef?.current?.rerender(node);
     });
   }
 

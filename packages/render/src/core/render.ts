@@ -95,7 +95,7 @@ export class Render extends React.Component<
       const newP = newPage as CPageDataType;
       this.setState({
         pageModel: new CPage(newP, {
-          materials: this.state.pageModel.materialsModel.value,
+          materials: this.state.pageModel.materialsModel.rawValue,
         }),
       });
     }

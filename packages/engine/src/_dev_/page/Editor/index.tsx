@@ -111,7 +111,7 @@ export const App = () => {
           <Button style={{ marginRight: '10px' }}>Github </Button>
         </a>
 
-        <DisplaySourceSchema pageModel={ctx.engine.pageModel}>
+        <DisplaySourceSchema pageModel={ctx.engine.pageModel} engineCtx={ctx}>
           <Button style={{ marginRight: '10px' }}>Source Code</Button>
         </DisplaySourceSchema>
         <Button

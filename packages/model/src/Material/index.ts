@@ -1,9 +1,4 @@
-import {
-  CMaterialStanderType,
-  CMaterialType,
-  CMaterialTypeDescribe,
-  SnippetsType,
-} from '../types/material';
+import { CMaterialStanderType, CMaterialType, CMaterialTypeDescribe, SnippetsType } from '../types/material';
 import { cloneDeep, isArray } from '../util/lodash';
 import { checkComplexData } from '../util/dataCheck';
 import { getRandomStr } from '../util';
@@ -44,6 +39,10 @@ export class CMaterial {
     return this.data;
   }
 
+  get rawValue() {
+    return this.rawData;
+  }
+
   get componentName() {
     return this.data.componentName;
   }
@@ -82,13 +81,13 @@ export type SnippetsCollection = {
   list: { name: string; list: SnippetsType[] }[];
 }[];
 export class CMaterials {
-  private rowData: CMaterialType[];
+  private rawData: CMaterialType[];
   private data: CMaterial[];
   // 使用过的物料
   usedMaterials: CMaterial[] = [];
 
-  constructor(data: any) {
-    this.rowData = data;
+  constructor(data: CMaterialType[]) {
+    this.rawData = data;
     checkMaterials(data);
     this.data = parseMaterials(data);
   }
@@ -175,5 +174,9 @@ export class CMaterials {
 
   get value() {
     return this.data;
+  }
+
+  get rawValue() {
+    return this.rawData;
   }
 }
