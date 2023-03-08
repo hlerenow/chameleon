@@ -90,7 +90,7 @@ export const App = () => {
     // designer?.ctx.emitter.on('onDrop', (e) => {
     //   console.log('out onDrop', e);
     // });
-    const workbench = ctx.engine.getWorkBench();
+    const workbench = ctx.engine.getWorkbench();
 
     workbench?.replaceTopBarView(
       <div

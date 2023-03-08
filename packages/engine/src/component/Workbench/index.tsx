@@ -26,7 +26,7 @@ type PanelItem = {
   render: React.ReactNode;
 };
 
-type WorkBenchStateType = {
+type WorkbenchStateType = {
   leftBoxVisible: boolean;
   leftBoxSize: {
     width: number;
@@ -45,18 +45,18 @@ type WorkBenchStateType = {
   topToolBarView: React.ReactNode | null;
 };
 
-export type WorkBenchPropsType = {
+export type WorkbenchPropsType = {
   emitter: Emitter<any>;
 };
 
-export class WorkBench extends React.Component<
-  WorkBenchPropsType,
-  WorkBenchStateType
+export class Workbench extends React.Component<
+  WorkbenchPropsType,
+  WorkbenchStateType
 > {
   emitter: Emitter<any>;
   currentSelectNode: CNode | null;
   leftPanelContentRef: React.RefObject<HTMLDivElement>;
-  constructor(props: WorkBenchPropsType) {
+  constructor(props: WorkbenchPropsType) {
     super(props);
     this.currentSelectNode = null;
     this.emitter = props.emitter || mitt();

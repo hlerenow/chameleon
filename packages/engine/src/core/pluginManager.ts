@@ -1,7 +1,7 @@
 import { AssetPackage, CNode, CPage } from '@chameleon/model';
 import { i18n } from 'i18next';
 import mitt, { Emitter } from 'mitt';
-import { WorkBench } from '../component/Workbench';
+import { Workbench } from '../component/Workbench';
 import { CustomI18n } from '../i18n';
 
 export type PluginObj = {
@@ -19,7 +19,7 @@ export type PluginObj = {
 export type CPlugin = PluginObj | ((ctx: CPluginCtx) => PluginObj);
 
 type PluginManagerOptions = {
-  workbench: () => WorkBench;
+  getWorkbench: () => Workbench;
   emitter: Emitter<any>;
   pageModel: CPage;
   i18n: CustomI18n;
@@ -29,32 +29,33 @@ type PluginManagerOptions = {
 export type CPluginCtx<C = any> = {
   globalEmitter: Emitter<any>;
   config: C;
-  workbench: WorkBench;
   pluginManager: PluginManager;
   getActiveNode: () => CNode | null;
-} & Omit<PluginManagerOptions, 'workbench'>;
+} & PluginManagerOptions;
 
 export type PluginInstance = {
   ctx: CPluginCtx;
   exports: any;
+  readyOk: () => void;
   source: PluginObj;
 };
+
 export class PluginManager {
   plugins: Map<string, PluginInstance> = new Map();
   emitter: Emitter<any> = mitt();
-  workbench!: () => WorkBench;
+  getWorkbench!: () => Workbench;
   pageModel!: CPage;
   i18n: CustomI18n;
   assets: AssetPackage[];
 
   constructor({
-    workbench,
+    getWorkbench,
     emitter,
     pageModel,
     i18n,
     assets,
   }: PluginManagerOptions) {
-    this.workbench = workbench;
+    this.getWorkbench = getWorkbench;
     this.emitter = emitter;
     this.pageModel = pageModel;
     this.i18n = i18n;
@@ -62,12 +63,12 @@ export class PluginManager {
   }
 
   async add(plugin: CPlugin) {
-    const workbench = this.workbench();
+    const workbench = this.getWorkbench();
     const ctx: CPluginCtx = {
       globalEmitter: this.emitter,
       emitter: mitt(),
       config: {},
-      workbench: this.workbench(),
+      getWorkbench: this.getWorkbench,
       pluginManager: this,
       pageModel: this.pageModel,
       i18n: this.i18n,
@@ -87,6 +88,9 @@ export class PluginManager {
       source: innerPlugin,
       ctx: ctx,
       exports: innerPlugin.exports?.(ctx) || {},
+      readyOk: () => {
+        this.emitter.emit(`${innerPlugin.name}:ready`);
+      },
     });
     await innerPlugin.init(ctx);
   }

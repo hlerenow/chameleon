@@ -115,20 +115,19 @@ export class TreeView extends React.Component<
       this.toSelectTreeNode(node);
     });
 
-    pluginCtx.workbench.emitter.on(
-      'leftPanelVisible',
-      ({ visible, panelName }) => {
-        if (visible && panelName === 'OutlineTree') {
-          console.log('visible, panelName', visible, panelName);
-          const currentSelectNode = pluginCtx.workbench.currentSelectNode;
-          if (currentSelectNode) {
-            this.toSelectTreeNode(currentSelectNode);
-          }
+    const workbench = pluginCtx.getWorkbench();
+
+    workbench.emitter.on('leftPanelVisible', ({ visible, panelName }) => {
+      if (visible && panelName === 'OutlineTree') {
+        console.log('visible, panelName', visible, panelName);
+        const currentSelectNode = workbench.currentSelectNode;
+        if (currentSelectNode) {
+          this.toSelectTreeNode(currentSelectNode);
         }
       }
-    );
+    });
 
-    const currentSelectNode = pluginCtx.workbench.currentSelectNode;
+    const currentSelectNode = workbench.currentSelectNode;
     if (currentSelectNode) {
       this.toSelectTreeNode(currentSelectNode);
     }
@@ -374,18 +373,19 @@ export class TreeView extends React.Component<
             const designer = pluginCtx.pluginManager.get('Designer');
             const nodeId = sk?.[0] || '';
             const nn = pluginCtx.pageModel.getNode(nodeId);
+            const workbench = pluginCtx.getWorkbench();
             designer?.ctx.emitter.on('ready', () => {
               const designerExports: DesignerExports = designer.exports;
               designerExports.selectNode(nodeId);
               if (nn) {
-                pluginCtx.workbench.updateCurrentSelectNode(nn as CNode);
+                workbench.updateCurrentSelectNode(nn as CNode);
               }
             });
             if (designer) {
               const designerExports: DesignerExports = designer.exports;
               designerExports.selectNode(nodeId);
               if (nn) {
-                pluginCtx.workbench.updateCurrentSelectNode(nn as CNode);
+                workbench.updateCurrentSelectNode(nn as CNode);
               }
             }
           },

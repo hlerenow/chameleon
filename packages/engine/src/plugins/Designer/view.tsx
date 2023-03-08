@@ -130,7 +130,8 @@ export class Designer extends React.Component<
     });
 
     layoutInstance.dnd.emitter.on('click', ({ event }) => {
-      pluginCtx.workbench.onGlobalClick(event);
+      const workbench = pluginCtx.getWorkbench();
+      workbench.onGlobalClick(event);
     });
 
     this.props.pluginCtx.pageModel.emitter.on('onPageChange', ({ node }) => {
@@ -142,7 +143,10 @@ export class Designer extends React.Component<
     if (!node) {
       return;
     }
-    this.props.pluginCtx.workbench.updateCurrentSelectNode(node as CNode);
+    const { pluginCtx } = this.props;
+    const workbench = pluginCtx.getWorkbench();
+
+    workbench.updateCurrentSelectNode(node as CNode);
     const pageModel = this.props.pluginCtx.pageModel;
     const list = getCloseNodeList(node, 5);
     const { layoutRef } = this;

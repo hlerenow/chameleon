@@ -1,5 +1,5 @@
 import React from 'react';
-import { WorkBench } from './component/Workbench';
+import { Workbench } from './component/Workbench';
 import styles from './Engine.module.scss';
 import i18n from './i18n/index';
 import { CPlugin, PluginManager } from './core/pluginManager';
@@ -28,7 +28,7 @@ export type EngineProps = {
 
 class Engine extends React.Component<EngineProps> {
   pluginManager!: PluginManager;
-  workbenchRef = React.createRef<WorkBench>();
+  workbenchRef = React.createRef<Workbench>();
   pageSchema: CPageDataType | undefined;
   pageModel: CPage;
   material: CMaterialType[] | undefined;
@@ -57,7 +57,7 @@ class Engine extends React.Component<EngineProps> {
 
     const plugins = this.props.plugins;
     this.pluginManager = new PluginManager({
-      workbench: () => this.workbenchRef.current!,
+      getWorkbench: () => this.workbenchRef.current!,
       emitter: this.emitter,
       pageModel: this.pageModel,
       i18n,
@@ -95,14 +95,14 @@ class Engine extends React.Component<EngineProps> {
     console.log('refresh engine');
   };
 
-  getWorkBench = () => {
+  getWorkbench = () => {
     return this.workbenchRef.current;
   };
 
   render() {
     return (
       <div className={styles.engineContainer}>
-        <WorkBench ref={this.workbenchRef} emitter={this.emitter} />
+        <Workbench ref={this.workbenchRef} emitter={this.emitter} />
       </div>
     );
   }

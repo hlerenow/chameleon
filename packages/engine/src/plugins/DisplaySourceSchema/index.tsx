@@ -41,22 +41,21 @@ export const DisplaySourceSchema = (props: DisplaySourceSchemaProps) => {
             return;
           }
           const newPageJSON = JSON.parse(newPage);
-          console.log(
-            '🚀 ~ file: index.tsx:40 ~ DisplaySourceSchema ~ newPageJSON:',
-            newPageJSON
-          );
           props.pageModel.updatePage(newPageJSON);
           await waitReactUpdate();
-          const workBench = engineCtx.engine.getWorkBench();
-          const currentSelectNode = workBench?.currentSelectNode;
-          const designer = engineCtx.pluginManager.get('Designer');
+          const workbench = engineCtx.engine.getWorkbench();
+          const currentSelectNode = workbench?.currentSelectNode;
+          const designerPluginInstance =
+            engineCtx.pluginManager.get('Designer');
           const nodeId = currentSelectNode?.id || '';
-          designer?.ctx.emitter.on('ready', () => {
-            const designerExports: DesignerExports = designer.exports;
+          designerPluginInstance?.ctx.emitter.on('ready', () => {
+            const designerExports: DesignerExports =
+              designerPluginInstance.exports;
             designerExports.selectNode(nodeId);
           });
-          if (designer) {
-            const designerExports: DesignerExports = designer.exports;
+          if (designerPluginInstance) {
+            const designerExports: DesignerExports =
+              designerPluginInstance.exports;
             designerExports.selectNode(nodeId);
           }
         }}

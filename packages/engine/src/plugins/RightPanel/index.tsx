@@ -8,9 +8,8 @@ export const RightPanelPlugin: CPlugin = (ctx) => {
   return {
     name: PLUGIN_NAME,
     async init(ctx) {
-      ctx.workbench.replaceRightView(
-        <RightPanel ref={uiHandle} pluginCtx={ctx} />
-      );
+      const workbench = ctx.getWorkbench();
+      workbench.replaceRightView(<RightPanel ref={uiHandle} pluginCtx={ctx} />);
     },
     async destroy(ctx) {
       console.log('destroy', ctx);

@@ -7,14 +7,13 @@ import { Designer } from './view';
 import { AssetPackage, CPage, CPageDataType } from '@chameleon/model';
 import { RenderInstance } from '@chameleon/render';
 
-export const DesignerPlugin: CPlugin = () => {
+export const DesignerPlugin: CPlugin = (ctx) => {
   const designerRef = React.createRef<Designer>();
   return {
     name: PLUGIN_NAME,
     async init(ctx) {
-      ctx.workbench.replaceBodyView(
-        <Designer ref={designerRef} pluginCtx={ctx} />
-      );
+      const workbench = ctx.getWorkbench();
+      workbench.replaceBodyView(<Designer ref={designerRef} pluginCtx={ctx} />);
     },
     async destroy(ctx) {
       console.log('destroy', ctx);
@@ -51,6 +50,9 @@ export const DesignerPlugin: CPlugin = () => {
               ?.renderRef.current?.dynamicComponentInstanceMap;
           return map?.get(id) || [];
         },
+        ready(cb) {
+          ctx.globalEmitter.on(`${PLUGIN_NAME}:ready`, cb);
+        },
       } as DesignerExports;
     },
     meta: {
@@ -68,4 +70,5 @@ export type DesignerExports = {
   updatePage: (page: CPageDataType) => void;
   getComponentInstances: (id: string) => RenderInstance[];
   getDynamicComponentInstances: (id: string) => RenderInstance;
+  ready: (cb: (ctx: CPlugin) => void) => void;
 };

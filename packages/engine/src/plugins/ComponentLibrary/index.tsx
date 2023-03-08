@@ -185,7 +185,8 @@ export const ComponentLibPlugin: CPlugin = {
     const Title = withTranslation(i18nNamespace)(({ t }) => {
       return <>{t('pluginName')}</>;
     });
-    ctx.workbench.addLeftPanel({
+    const workbench = ctx.getWorkbench();
+    workbench.addLeftPanel({
       title: <Title />,
       name: 'ComponentLib',
       icon: <AppstoreAddOutlined />,

@@ -70,7 +70,8 @@ export const GlobalStatePanelPlugin: CPlugin = {
     const Title = withTranslation(i18nNamespace)(({ t }) => (
       <>{t('pluginName')}</>
     ));
-    ctx.workbench.addLeftPanel({
+    const workbench = ctx.getWorkbench();
+    workbench.addLeftPanel({
       title: <Title />,
       name: PLUGIN_NAME,
       icon: <DatabaseOutlined />,
