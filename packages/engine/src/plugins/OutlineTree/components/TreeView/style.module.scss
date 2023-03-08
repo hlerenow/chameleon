@@ -45,6 +45,10 @@
   .nodeRenderView {
     padding: 5px 0;
     flex: 1;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 

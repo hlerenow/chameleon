@@ -120,7 +120,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           selectComponentInstances: [...instanceList].filter((el) => {
             let res: boolean | undefined;
             const ins = this.designRenderRef.current?.renderRef?.current?.dynamicComponentInstanceMap.get(el._NODE_ID);
-
             if (ins) {
               res = ins._CONDITION;
             }
@@ -129,7 +128,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           hoverComponentInstances: [],
         });
       }
-    }, 500);
+    }, 100);
   };
 
   disposeRealTimeUpdate = () => {
@@ -518,42 +517,39 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   }
 
   selectNode(nodeId: string) {
-    setTimeout(() => {
-      let instanceList = this.designRenderRef.current?.getInstancesById(nodeId) || [];
-      instanceList = instanceList.filter((el) => el?._STATUS !== 'DESTROY');
-      if (!instanceList.length) {
-        this.setState({
-          currentSelectId: '',
-          currentSelectInstance: null,
-          selectComponentInstances: [],
-          hoverComponentInstances: [],
-        });
-        return;
-      }
-      const instance = instanceList[0];
-      const dom = ReactDOM.findDOMNode(instance) as Element;
-      if (dom) {
-        dom.scrollIntoView?.({
-          behavior: 'smooth',
-          block: 'center',
-        });
-      }
+    let instanceList = this.designRenderRef.current?.getInstancesById(nodeId) || [];
+    instanceList = instanceList.filter((el) => el?._STATUS !== 'DESTROY');
+    if (!instanceList.length) {
       this.setState({
-        currentSelectId: instance._NODE_ID,
-        currentSelectInstance: instance,
-        selectComponentInstances: [...instanceList].filter((el) => {
-          let res: boolean | undefined;
-          const ins = this.designRenderRef.current?.renderRef?.current?.dynamicComponentInstanceMap.get(el._NODE_ID);
-
-          if (ins) {
-            res = ins._CONDITION;
-          }
-          return res !== false;
-        }),
+        currentSelectId: '',
+        currentSelectInstance: null,
+        selectComponentInstances: [],
         hoverComponentInstances: [],
       });
-      this.props.onSelectNode?.(instance?._NODE_MODEL as CNode);
-    }, 100);
+      return;
+    }
+    const instance = instanceList[0];
+    const dom = ReactDOM.findDOMNode(instance) as Element;
+    if (dom) {
+      dom.scrollIntoView?.({
+        block: 'center',
+      });
+    }
+    this.setState({
+      currentSelectId: instance._NODE_ID,
+      currentSelectInstance: instance,
+      selectComponentInstances: [...instanceList].filter((el) => {
+        let res: boolean | undefined;
+        const ins = this.designRenderRef.current?.renderRef?.current?.dynamicComponentInstanceMap.get(el._NODE_ID);
+
+        if (ins) {
+          res = ins._CONDITION;
+        }
+        return res !== false;
+      }),
+      hoverComponentInstances: [],
+    });
+    this.props.onSelectNode?.(instance?._NODE_MODEL as CNode);
   }
 
   clearSelectNode() {

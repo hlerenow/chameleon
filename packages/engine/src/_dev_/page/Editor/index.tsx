@@ -73,7 +73,6 @@ export const App = () => {
   }, []);
   const onReady = useCallback(async (ctx: EnginContext) => {
     const designer = await ctx.pluginManager.onPluginReadyOk('Designer');
-    await ctx.pluginManager.onPluginReadyOk('Designer');
 
     setTimeout(() => {
       const designerExports = designer?.exports as DesignerExports;
