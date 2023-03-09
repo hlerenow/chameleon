@@ -30,16 +30,25 @@ const htmlNativeComponents = HTMl_TAGS.reduce((res, tag) => {
   return res;
 }, {} as Record<string, (props: any) => React.ReactNode>);
 
-const CBlock = ({ children, $$attributes = [], ...props }: any) => {
+const CBlock = ({ children, width, height, $$attributes = [], ...props }: any) => {
   let child = children;
   if (!Array.isArray(children)) {
     child = [children];
   }
+  child = child.filter((el: any) => el !== undefined);
+  const { style = {}, ...attributes } = transformListToObj($$attributes);
+  const finalStyle = {
+    height,
+    width,
+    ...style,
+    ...(props.style || {}),
+  };
   return React.createElement(
     'div',
     {
       ...props,
-      ...transformListToObj($$attributes),
+      ...attributes,
+      style: finalStyle,
     },
     ...child
   );
@@ -120,13 +129,7 @@ const CText = ({ children, $$attributes = [], content, ...props }: any) => {
   );
 };
 
-const CContainer = ({
-  children,
-  $$attributes = [],
-  afterMount,
-  beforeDestroy,
-  ...props
-}: any) => {
+const CContainer = ({ children, $$attributes = [], afterMount, beforeDestroy, ...props }: any) => {
   let child = children;
   if (!Array.isArray(children)) {
     child = [children];
@@ -149,12 +152,7 @@ const CContainer = ({
   );
 };
 
-const CNativeTag = ({
-  children,
-  $$attributes = [],
-  htmlTag = 'div',
-  ...props
-}: any) => {
+const CNativeTag = ({ children, $$attributes = [], htmlTag = 'div', ...props }: any) => {
   let child = children;
   if (!Array.isArray(children)) {
     child = [children];

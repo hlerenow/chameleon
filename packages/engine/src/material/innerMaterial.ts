@@ -25,13 +25,7 @@ const customAttributesMeta: CMaterialPropsType[number] = {
                     name: 'value',
                     title: '值',
                     valueType: 'string',
-                    setters: [
-                      'StringSetter',
-                      'NumberSetter',
-                      'JSONSetter',
-                      'FunctionSetter',
-                      'ExpressionSetter',
-                    ],
+                    setters: ['StringSetter', 'NumberSetter', 'JSONSetter', 'FunctionSetter', 'ExpressionSetter'],
                   },
                 ],
                 collapse: false,
@@ -96,7 +90,7 @@ const BaseComponentMeta: CMaterialType[] = [
         category: '基础组件',
         schema: {
           props: {
-            width: '100px',
+            width: '100%',
             height: '100px',
           },
         },
@@ -133,7 +127,7 @@ const BaseComponentMeta: CMaterialType[] = [
         category: '基础组件',
         schema: {
           props: {
-            width: '100px',
+            width: '100%',
             height: '100px',
           },
         },
@@ -163,8 +157,8 @@ const BaseComponentMeta: CMaterialType[] = [
         category: '基础组件',
         schema: {
           props: {
-            width: '100px',
-            height: '100px',
+            width: '300px',
+            height: '150px',
           },
         },
       },
@@ -210,6 +204,7 @@ const BaseComponentMeta: CMaterialType[] = [
           props: {
             width: '300px',
             height: '150px',
+            src: 'https://vjs.zencdn.net/v/oceans.mp4',
           },
         },
       },
@@ -248,7 +243,11 @@ const BaseComponentMeta: CMaterialType[] = [
         title: '音频',
         snapshotText: 'Audio',
         category: '基础组件',
-        schema: {},
+        schema: {
+          props: {
+            src: 'https://vjs.zencdn.net/v/oceans.mp4',
+          },
+        },
       },
     ],
   },
@@ -292,8 +291,8 @@ const BaseComponentMeta: CMaterialType[] = [
         category: '基础组件',
         schema: {
           props: {
-            width: '100px',
-            height: '100px',
+            width: '300px',
+            height: '150px',
           },
         },
       },
@@ -341,7 +340,4 @@ const BaseComponentMeta: CMaterialType[] = [
   },
 ];
 
-export const InnerComponentMeta = [
-  ...BaseComponentMeta,
-  ...htmlNativeComponentMeta,
-];
+export const InnerComponentMeta = [...BaseComponentMeta, ...htmlNativeComponentMeta];

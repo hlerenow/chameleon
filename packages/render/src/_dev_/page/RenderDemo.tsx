@@ -14,7 +14,7 @@ export function RenderDemo() {
   SamplePage;
   BasePage;
   const [page] = useState(
-    new CPage(PageData, {
+    new CPage(BasePage, {
       materials: Material,
     })
   );
@@ -55,12 +55,7 @@ export function RenderDemo() {
 
   return (
     <div className="App">
-      <Render
-        pageModel={page}
-        components={components}
-        render={renderHandle as any}
-        adapter={ReactAdapter}
-      />
+      <Render pageModel={page} components={components} render={renderHandle as any} adapter={ReactAdapter} />
     </div>
   );
 }

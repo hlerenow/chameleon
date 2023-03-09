@@ -1,24 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import {
-  CMaterialPropsType,
-  CNode,
-  CNodePropsTypeEnum,
-  CProp,
-  isExpression,
-} from '@chameleon/model';
+import { CMaterialPropsType, CNode, CNodePropsTypeEnum, CProp, isExpression } from '@chameleon/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';
 
 import styles from './style.module.scss';
-import {
-  CSSPropertiesEditor,
-  CSSPropertiesEditorRef,
-} from '../../component/CSSPropertiesEditor';
+import { CSSPropertiesEditor, CSSPropertiesEditorRef } from '../../component/CSSPropertiesEditor';
 import { Collapse } from 'antd';
-import {
-  CustomSchemaForm,
-  CustomSchemaFormInstance,
-} from '../../component/CustomSchemaForm';
+import { CustomSchemaForm, CustomSchemaFormInstance } from '../../component/CustomSchemaForm';
 
 type styleArr = {
   key: string;
@@ -121,7 +109,6 @@ export const VisualPanel = (props: { node: CNode; pluginCtx: CPluginCtx }) => {
   const formatStyle = useMemo(() => {
     return formatProperty(style);
   }, [style]);
-
   useEffect(() => {
     const handel = () => {
       const newStyle = node.getPlainProps?.()['style'] || {};
@@ -194,7 +181,5 @@ export const VisualPanel = (props: { node: CNode; pluginCtx: CPluginCtx }) => {
 export const VisualPanelConfig: CRightPanelItem = {
   key: 'Visual',
   name: 'Visual',
-  view: ({ node, pluginCtx }) => (
-    <VisualPanel node={node} pluginCtx={pluginCtx} />
-  ),
+  view: ({ node, pluginCtx }) => <VisualPanel node={node} pluginCtx={pluginCtx} />,
 };

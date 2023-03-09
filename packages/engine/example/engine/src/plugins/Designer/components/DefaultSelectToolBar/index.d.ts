@@ -7,4 +7,4 @@ export declare type DefaultSelectToolBarProps = {
     toCopy: (idd: string) => void;
     toHidden: (idd: string) => void;
 };
-export declare const DefaultSelectToolBar: ({ nodeList, toSelectNode, toDelete, toCopy, toHidden, }: DefaultSelectToolBarProps) => JSX.Element;
+export declare const DefaultSelectToolBar: ({ nodeList, toSelectNode, toDelete, toCopy, toHidden }: DefaultSelectToolBarProps) => JSX.Element;
