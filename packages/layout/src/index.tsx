@@ -125,7 +125,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             }
             return res !== false;
           }),
-          hoverComponentInstances: [],
         });
       }
     }, 100);
