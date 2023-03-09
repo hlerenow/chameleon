@@ -19,10 +19,7 @@ import { isPlainObject } from 'lodash-es';
 import { TreeNodeData } from './components/TreeView/dataStruct';
 import { ShapeSetterObjType } from '@chameleon/model/src/types/material';
 
-export const getTargetMNodeKeyVal = (
-  dom: HTMLElement | null,
-  key: string
-): null | string => {
+export const getTargetMNodeKeyVal = (dom: HTMLElement | null, key: string): null | string => {
   if (!dom) {
     return null;
   }
@@ -39,10 +36,7 @@ export const transformNodeSchemaToTreeData = (
   parent: TreeNodeData,
   pageModel: CPage
 ): TreeNodeData | TreeNodeData[] => {
-  const tb = (
-    node: CNodeDataType,
-    parent?: TreeNodeData | null
-  ): TreeNodeData => {
+  const tb = (node: CNodeDataType, parent?: TreeNodeData | null): TreeNodeData => {
     let nodeChild: any[] = node.children || [];
     if (!Array.isArray(nodeChild)) {
       // TODO: 暂时不处理字符串的情况
@@ -50,8 +44,9 @@ export const transformNodeSchemaToTreeData = (
     }
     // 过滤掉字符串的情况
     nodeChild = nodeChild.filter((el) => typeof el !== 'string');
+    const nodeMeta = pageModel.materialsModel.findByComponentName(node.componentName)?.value.title;
     const newCurrentNode: TreeNodeData = {
-      title: node.title || node.componentName,
+      title: node.title || nodeMeta || node.componentName,
       key: node.id,
       children: [],
       parent: parent,
@@ -90,10 +85,7 @@ export const transformNodeSchemaToTreeData = (
         const pageModeNode = pageModel.getNode(node.id!);
         let propsTitle = '';
         if (pageModeNode) {
-          const tempTitle = getPropsLabel(pageModeNode as CNode, [
-            ...keys,
-            key,
-          ]);
+          const tempTitle = getPropsLabel(pageModeNode as CNode, [...keys, key]);
           propsTitle = getMTitle(tempTitle);
         }
         let plainTitle = key;
@@ -117,11 +109,7 @@ export const transformNodeSchemaToTreeData = (
           propValue = tempVal.value;
         }
 
-        tempNode.children = transformNodeSchemaToTreeData(
-          propValue,
-          tempNode,
-          pageModel
-        ) as TreeNodeData[];
+        tempNode.children = transformNodeSchemaToTreeData(propValue, tempNode, pageModel) as TreeNodeData[];
         propsNodeList.push(tempNode);
         return;
       }
@@ -172,10 +160,7 @@ export const transformNodeSchemaToTreeData = (
   }
 };
 
-export const transformPageSchemaToTreeData = (
-  pageSchema: CPageDataType,
-  pageModel: CPage
-): TreeNodeData[] => {
+export const transformPageSchemaToTreeData = (pageSchema: CPageDataType, pageModel: CPage): TreeNodeData[] => {
   const tree = pageSchema.componentsTree;
   let child = (tree.children || []) as CNodeDataType[];
   if (!Array.isArray(child)) {
@@ -188,18 +173,11 @@ export const transformPageSchemaToTreeData = (
     rootNode: true,
     children: [],
   };
-  rootNode.children = transformNodeSchemaToTreeData(
-    child,
-    rootNode,
-    pageModel
-  ) as TreeNodeData[];
+  rootNode.children = transformNodeSchemaToTreeData(child, rootNode, pageModel) as TreeNodeData[];
   return [rootNode];
 };
 
-export const traverseTree = (
-  tree: TreeNodeData | TreeNodeData[],
-  handler: (node: TreeNodeData) => boolean
-) => {
+export const traverseTree = (tree: TreeNodeData | TreeNodeData[], handler: (node: TreeNodeData) => boolean) => {
   let tempTree: TreeNodeData[] = [];
   if (Array.isArray(tree)) {
     tempTree = tree;
@@ -209,10 +187,7 @@ export const traverseTree = (
 
   let stop = false;
 
-  const traverseCb = (
-    node: TreeNodeData,
-    conditionCb: (node: TreeNodeData) => boolean
-  ) => {
+  const traverseCb = (node: TreeNodeData, conditionCb: (node: TreeNodeData) => boolean) => {
     if (stop) {
       return;
     }
@@ -230,10 +205,7 @@ export const traverseTree = (
   });
 };
 
-export function calculateDropPosInfo(params: {
-  point: { x: number; y: number };
-  dom: HTMLElement;
-}): DropPosType {
+export function calculateDropPosInfo(params: { point: { x: number; y: number }; dom: HTMLElement }): DropPosType {
   const { point, dom } = params;
   let pos: DropPosType['pos'];
 
