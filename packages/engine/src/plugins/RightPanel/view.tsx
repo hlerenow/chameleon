@@ -28,10 +28,7 @@ interface RightPanelState {
   displayPanels: CRightPanelItem[];
 }
 
-export class RightPanel extends React.Component<
-  RightPanelProps,
-  RightPanelState
-> {
+export class RightPanel extends React.Component<RightPanelProps, RightPanelState> {
   constructor(props: RightPanelProps) {
     super(props);
     this.state = {
@@ -104,8 +101,7 @@ export class RightPanel extends React.Component<
           return panel.show(panelParams);
         }
       });
-      const firstPanelKey =
-        displayPanels.find((_, index) => index === 0)?.key || '';
+      const firstPanelKey = displayPanels.find((_, index) => index === 0)?.key || '';
       const isExitsCurrent = displayPanels.find((el) => el.key === activeKey);
       if (!isExitsCurrent) {
         this.setState({
@@ -121,11 +117,8 @@ export class RightPanel extends React.Component<
       }
     });
     const { displayPanels } = this.updatePanels();
-    const firstPanelKey =
-      displayPanels.find((_, index) => index === 0)?.key || '';
-    const isExitsCurrent = displayPanels.find(
-      (el) => el.key === this.state.activeKey
-    );
+    const firstPanelKey = displayPanels.find((_, index) => index === 0)?.key || '';
+    const isExitsCurrent = displayPanels.find((el) => el.key === this.state.activeKey);
 
     if (!isExitsCurrent) {
       this.setState({
@@ -140,10 +133,7 @@ export class RightPanel extends React.Component<
     if (!node) {
       return (
         <div style={{ overflow: 'hidden' }}>
-          <Empty
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-            description={'Please select a node from left view'}
-          />
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={'Please select a node from left view'} />
         </div>
       );
     }
@@ -165,11 +155,7 @@ export class RightPanel extends React.Component<
           }}
           items={displayPanels.map((p) => {
             return {
-              label: (
-                <div style={{ padding: '0 10px' }}>
-                  {typeof p.name === 'string' ? p.name : p.name?.(panelParams)}
-                </div>
-              ),
+              label: <div style={{ padding: '0 10px' }}>{typeof p.name === 'string' ? p.name : p.name?.(panelParams)}</div>,
               key: p.key,
               children: p.view(panelParams),
             };

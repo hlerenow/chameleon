@@ -150,7 +150,7 @@ export const VisualPanel = (props: { node: CNode; pluginCtx: CPluginCtx }) => {
           marginBottom: '10px',
         }}
       >
-        <Collapse.Panel header="CSS Source" key="origin-css-edit">
+        <Collapse.Panel header={<span className={styles.header}>CSS Source</span>} key="origin-css-edit">
           <CSSPropertiesEditor
             key={node.id}
             ref={cssEditorRef}

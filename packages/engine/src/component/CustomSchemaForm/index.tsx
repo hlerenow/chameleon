@@ -21,18 +21,8 @@ export type CustomSchemaFormProps = {
   defaultSetterConfig: Record<string, { name: string; setter: string }>;
 };
 
-const CustomSchemaFormCore = (
-  props: CustomSchemaFormProps,
-  ref: Ref<CustomSchemaFormInstance | CForm>
-) => {
-  const {
-    properties,
-    initialValue,
-    onValueChange,
-    onSetterChange,
-    defaultSetterConfig,
-    pluginCtx,
-  } = props;
+const CustomSchemaFormCore = (props: CustomSchemaFormProps, ref: Ref<CustomSchemaFormInstance | CForm>) => {
+  const { properties, initialValue, onValueChange, onSetterChange, defaultSetterConfig, pluginCtx } = props;
 
   return (
     <CCustomSchemaFormContext.Provider
@@ -53,7 +43,6 @@ const CustomSchemaFormCore = (
         <div
           className={styles.CFromRenderBox}
           style={{
-            padding: '0 10px',
             overflow: 'auto',
             height: '100%',
           }}
