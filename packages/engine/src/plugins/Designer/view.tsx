@@ -53,7 +53,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     });
   }
 
-  reloadRender({ assets }: { assets: AssetPackage[] }) {
+  reloadRender({ assets }: { assets?: AssetPackage[] }) {
     this.layoutRef.current?.reload({ assets });
   }
 

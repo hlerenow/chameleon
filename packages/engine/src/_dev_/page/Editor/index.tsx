@@ -1,5 +1,5 @@
 import { BasePage, EmptyPage, Material } from '@chameleon/demo-page';
-import { Button, message } from 'antd';
+import { Button, message, Modal } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';
@@ -73,14 +73,17 @@ export const App = () => {
   }, []);
   const onReady = useCallback(async (ctx: EnginContext) => {
     const designer = await ctx.pluginManager.onPluginReadyOk('Designer');
+    const reloadPage = async () => {
+      setTimeout(() => {
+        const designerExports = designer?.exports as DesignerExports;
+        console.log('to reload');
+        designerExports.reload({
+          assets,
+        });
+      }, 0);
+    };
 
-    setTimeout(() => {
-      const designerExports = designer?.exports as DesignerExports;
-      console.log('to reload');
-      designerExports.reload({
-        assets,
-      });
-    }, 0);
+    reloadPage();
 
     // designer?.ctx.emitter.on('onDrop', (e) => {
     //   console.log('out onDrop', e);
@@ -98,25 +101,56 @@ export const App = () => {
           paddingRight: '10px',
         }}
       >
-        <a
-          target="_blank"
-          href="https://github.com/hlerenow/chameleon"
-          rel="noreferrer"
-        >
+        <a target="_blank" href="https://github.com/hlerenow/chameleon" rel="noreferrer">
           <Button style={{ marginRight: '10px' }}>Github </Button>
         </a>
 
         <DisplaySourceSchema pageModel={ctx.engine.pageModel} engineCtx={ctx}>
           <Button style={{ marginRight: '10px' }}>Source Code</Button>
         </DisplaySourceSchema>
+
         <Button
           style={{ marginRight: '10px' }}
           onClick={() => {
+            reloadPage();
+          }}
+        >
+          Refresh Page
+        </Button>
+        <Button
+          style={{ marginRight: '10px' }}
+          onClick={() => {
+            let src = '/#/preview';
             if (location.href.includes('hlerenow')) {
-              window.open('/chameleon/#/preview');
-            } else {
-              window.open('/#/preview');
+              src = '/chameleon/#/preview';
             }
+
+            Modal.info({
+              closable: true,
+              width: 'calc(100vw - 100px)',
+              centered: true,
+              title: '预览',
+              content: (
+                <div
+                  style={{
+                    width: '100%',
+                    height: 'calc(100vh - 200px)',
+                  }}
+                >
+                  <iframe
+                    style={{
+                      border: '1px solid #e7e7e7',
+                      width: '100%',
+                      height: '100%',
+                      borderRadius: '4px',
+                      overflow: 'hidden',
+                    }}
+                    src={src}
+                  />
+                </div>
+              ),
+              footer: null,
+            });
           }}
         >
           Preview

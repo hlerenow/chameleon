@@ -138,8 +138,10 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     }
   };
 
-  reload({ assets }: { assets: AssetPackage[] }) {
-    this.assets = assets;
+  reload({ assets }: { assets?: AssetPackage[] }) {
+    if (assets) {
+      this.assets = assets;
+    }
     return this.init();
   }
 

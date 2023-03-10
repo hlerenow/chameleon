@@ -7,6 +7,7 @@ export type ContextType = {
   params?: Record<any, any>;
   globalState?: Record<any, any>;
   updateGlobalState?: (newState: any) => void;
+  staticState: Record<string | number, any>;
   state?: Record<any, any>;
   updateState?: (newState: any) => void;
   refs?: RefManager;
@@ -34,20 +35,10 @@ export type AdapterOptionType = {
   libs: Record<string, any>;
   components: ComponentsType;
   $$context: ContextType;
-  onGetRef?: (
-    ref: React.RefObject<React.ReactInstance>,
-    nodeMode: CNode | CRootNode,
-    instance: RenderInstance
-  ) => void;
-  onGetComponent?: (
-    component: (...args: any) => any,
-    currentNode: CNode | CRootNode
-  ) => void;
+  onGetRef?: (ref: React.RefObject<React.ReactInstance>, nodeMode: CNode | CRootNode, instance: RenderInstance) => void;
+  onGetComponent?: (component: (...args: any) => any, currentNode: CNode | CRootNode) => void;
   onComponentMount?: (instance: ReactInstance, node: CNode | CRootNode) => void;
-  onComponentDestroy?: (
-    instance: ReactInstance,
-    node: CNode | CRootNode
-  ) => void;
+  onComponentDestroy?: (instance: ReactInstance, node: CNode | CRootNode) => void;
   processNodeConfigHook?: (
     config: {
       condition: boolean;
@@ -77,25 +68,15 @@ export interface AdapterType {
     } & AdapterOptionType
   ) => any;
   // 渲染一个组件
-  render: (
-    originalComponent: any,
-    props?: Record<any, any>,
-    ...children: any[]
-  ) => any;
+  render: (originalComponent: any, props?: Record<any, any>, ...children: any[]) => any;
   // find target component render function
-  getComponent: (
-    currentNode: CNode | CRootNode,
-    components: ComponentsType
-  ) => void;
+  getComponent: (currentNode: CNode | CRootNode, components: ComponentsType) => void;
   getContext: (data: Record<any, any>, ctx: ContextType | null) => ContextType;
   getUtils: () => void;
   // 获取数据域链
   getDataLink: () => void;
   createDataLink: () => void;
-  transformProps: (
-    originalProps: Record<any, any>,
-    options: { $$context: Record<any, any> }
-  ) => Record<any, any>;
+  transformProps: (originalProps: Record<any, any>, options: { $$context: Record<any, any> }) => Record<any, any>;
   transformData: () => void;
   transformGlobalData: () => void;
   errorCatch: () => void;
@@ -136,16 +117,10 @@ type CustomAdvanceAdapterMethodListType = typeof CustomAdvanceAdapter[number];
 // 必须实现的方法
 type AdapterMethodListType = typeof AdapterMethodList[number];
 
-export const getAdapter = (
-  defineAdapter: Partial<AdapterType>
-): AdapterType => {
-  const adapter: AdapterType = [
-    ...AdapterMethodList,
-    ...CustomAdvanceAdapter,
-  ].reduce<Record<AdapterMethodListType, any>>((res, funcName) => {
+export const getAdapter = (defineAdapter: Partial<AdapterType>): AdapterType => {
+  const adapter: AdapterType = [...AdapterMethodList, ...CustomAdvanceAdapter].reduce<Record<AdapterMethodListType, any>>((res, funcName) => {
     if (defineAdapter?.[funcName]) {
-      res[funcName as AdapterMethodListType] =
-        defineAdapter[funcName]?.bind(defineAdapter);
+      res[funcName as AdapterMethodListType] = defineAdapter[funcName]?.bind(defineAdapter);
     } else {
       if (AdapterMethodList.includes(funcName as AdapterMethodListType)) {
         res[funcName as AdapterMethodListType] = notImplements;

@@ -261,6 +261,8 @@ export class DefineReactAdapter {
       targetComponentRef: React.MutableRefObject<any>;
       listenerHandle: (() => void)[] = [];
       storeState: StoreApi<any>;
+      // not react data
+      staticState: Record<string, any> = {};
 
       constructor(props: PropsType) {
         super(props);
@@ -367,6 +369,7 @@ export class DefineReactAdapter {
         const tempContext: ContextType = {
           state: this.state || {},
           updateState: this.updateState,
+          staticState: this.staticState,
         };
 
         if (nodeModel.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER) {
@@ -399,6 +402,7 @@ export class DefineReactAdapter {
             const loopContext = that.getContext(
               {
                 [loopDataName]: loopData,
+                staticState: this.staticState,
               },
               newContext
             );

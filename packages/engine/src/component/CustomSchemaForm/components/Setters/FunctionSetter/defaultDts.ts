@@ -8,6 +8,8 @@ type ContextType = {
   updateGlobalState?: (newState: any) => void;
   /** 当前节点状态 **/
   state?: Record<any, any>;
+  /** 存储当前节点的数据，不具有响应性 **/
+  staticState?: Record<any, any>;
   /** 更新当前节点状态 */
   updateState?: (newState: any) => void;
   /** 所有节点的索引 */
@@ -17,7 +19,7 @@ type ContextType = {
   /**  用于访访问和管理页面被注册为全局的局部 state */
   stateManager?: Record<string, {
     state: any,
-    updateState: (newState) => void
+    updateState: (newState: Record<string, any>) => void
   }>;
 };
 
