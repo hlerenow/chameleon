@@ -19,7 +19,7 @@ export declare class Designer extends React.Component<DesignerPropsType, Designe
     componentDidMount(): void;
     updateAssets(assets: AssetPackage[]): void;
     reloadRender({ assets }: {
-        assets: AssetPackage[];
+        assets?: AssetPackage[];
     }): void;
     init(): Promise<void>;
     onSelectNode: (node: CNode | CRootNode | null) => void;
