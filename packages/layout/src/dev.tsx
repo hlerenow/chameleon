@@ -16,7 +16,7 @@ const assets: AssetPackage[] = [
   {
     package: 'antd',
     globalName: 'antd',
-    assets: [
+    resources: [
       {
         src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/reset.css',
       },
@@ -35,10 +35,10 @@ const components = {
 };
 
 const App = () => {
-  const [page] = useState<any>(EmptyPage);
+  const [page] = useState<any>(BasePage);
   const [ghostView, setGhostView] = useState(<div>213</div>);
   const [pageModel] = useState<any>(
-    new CPage(EmptyPage, {
+    new CPage(BasePage, {
       materials: Material,
     })
   );
@@ -89,13 +89,8 @@ const App = () => {
       });
 
       boxSensor.emitter.on('dragStart', (eventObj) => {
-        console.log(
-          '🚀 ~ file: dev.tsx:92 ~ boxSensor.emitter.on ~ eventObj',
-          eventObj.extraData?.startNode.value.componentName
-        );
-        setGhostView(
-          <div>{eventObj.extraData?.startNode.value.componentName}</div>
-        );
+        console.log('🚀 ~ file: dev.tsx:92 ~ boxSensor.emitter.on ~ eventObj', eventObj.extraData?.startNode.value.componentName);
+        setGhostView(<div>{eventObj.extraData?.startNode.value.componentName}</div>);
         if (eventObj.currentSensor === boxSensor) {
           layoutRef.current?.clearSelectNode();
         }
@@ -114,35 +109,18 @@ const App = () => {
           return;
         }
         if (extraData.type === 'NEW_ADD') {
-          pageModel?.addNode(
-            extraData.startNode as CNode,
-            extraData.dropNode,
-            'BEFORE'
-          );
+          pageModel?.addNode(extraData.startNode as CNode, extraData.dropNode, 'BEFORE');
         } else {
           if (extraData.dropNode?.id === extraData.startNode?.id) {
             return;
           }
           if (extraData.dropPosInfo?.pos === 'before') {
-            pageModel?.moveNodeById(
-              extraData.startNode?.id || '',
-              extraData?.dropNode?.id || '',
-              'BEFORE'
-            );
+            pageModel?.moveNodeById(extraData.startNode?.id || '', extraData?.dropNode?.id || '', 'BEFORE');
           } else {
-            pageModel?.moveNodeById(
-              extraData.startNode?.id || '',
-              extraData?.dropNode?.id || '',
-              'AFTER'
-            );
+            pageModel?.moveNodeById(extraData.startNode?.id || '', extraData?.dropNode?.id || '', 'AFTER');
           }
         }
-        console.log(
-          '选中元素',
-          extraData.startNode?.id || '',
-          extraData?.dropNode?.id,
-          extraData
-        );
+        console.log('选中元素', extraData.startNode?.id || '', extraData?.dropNode?.id, extraData);
         layoutRef.current?.selectNode(extraData.startNode?.id || '');
 
         console.log(pageModel?.export());
@@ -183,7 +161,7 @@ const App = () => {
           // page={page}
           pageModel={pageModel}
           components={components}
-          selectToolBar={<div>123</div>}
+          // selectToolBar={<div>123</div>}
           assets={assets}
           ghostView={ghostView}
         />
@@ -192,6 +170,4 @@ const App = () => {
   );
 };
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <App />
-);
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<App />);

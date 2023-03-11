@@ -127,9 +127,26 @@ export const App = () => {
 
             Modal.info({
               closable: true,
+              icon: null,
               width: 'calc(100vw - 100px)',
               centered: true,
-              title: '预览',
+              title: (
+                <div>
+                  Preview
+                  <Button
+                    size="small"
+                    style={{
+                      float: 'right',
+                      marginRight: '30px',
+                    }}
+                    onClick={() => {
+                      window.open(src);
+                    }}
+                  >
+                    Open in new window
+                  </Button>
+                </div>
+              ),
               content: (
                 <div
                   style={{

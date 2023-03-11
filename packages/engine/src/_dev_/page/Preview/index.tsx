@@ -14,16 +14,11 @@ export const Preview = () => {
     }
   }, []);
   if (loading) {
-    return <>not found page</>;
+    return <>Not find page info on local, please ensure you save it on editor</>;
   }
   return (
     <div className="App" style={{ overflow: 'auto', height: '100%' }}>
-      <Render
-        page={page}
-        components={components}
-        render={renderHandle as any}
-        adapter={ReactAdapter}
-      />
+      <Render page={page} components={components} render={renderHandle as any} adapter={ReactAdapter} />
     </div>
   );
 };
