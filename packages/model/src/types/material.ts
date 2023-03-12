@@ -18,7 +18,7 @@ import {
   dynamic,
   assign,
 } from 'superstruct';
-import { LibMetaType, LibMetaTypeDescribe } from './base';
+import { ComplexSetterTypeEnum, LibMetaType, LibMetaTypeDescribe, SetterBasicType, SetterTypeEnum } from './base';
 import { CNodeDataStructDescribe, CNodeDataType } from './node';
 
 export enum BaseDataType {
@@ -40,8 +40,6 @@ export enum SpecialDataType {
   EXPRESSION = 'expression',
   FUNCTION = 'function',
 }
-
-export type SetterBasicType = string;
 
 export type MTitle =
   | string
@@ -148,24 +146,7 @@ export const PropsValueTypeDescribe: any = union([
   UnionDataTypeDescribe,
 ]);
 
-export enum SetterTypeEnum {
-  STRING_SETTER = 'StringSetter',
-  BOOLEAN_SETTER = 'BooleanSetter',
-  JSON_SETTER = 'JSONSetter',
-  SElECT_SETTER = 'SelectSetter',
-  NUMBER_SETTER = 'NumberSetter',
-  EXPRESSION_SETTER = 'ExpressionSetter',
-  FUNCTION_SETTER = 'FunctionSetter',
-  COMPONENT_SETTER = 'ComponentSetter',
-  TEXT_AREA_SETTER = 'TextAreaSetter',
-}
-
-export enum ComplexSetterTypeEnum {
-  SHAPE_SETTER = 'ShapeSetter',
-  ARRAY_SETTER = 'ArraySetter',
-}
-
-export type SetterType<T extends SetterBasicType = any> =
+export type SetterType<T extends SetterBasicType = ''> =
   | SetterTypeEnum
   | `${SetterTypeEnum}`
   | ComplexSetterTypeEnum
@@ -174,7 +155,7 @@ export type SetterType<T extends SetterBasicType = any> =
   | T
   | `${T}`;
 
-export type BasicSetterObjType<T extends SetterBasicType = any> = {
+export type BasicSetterObjType<T extends SetterBasicType = ''> = {
   componentName: SetterTypeEnum | `${SetterTypeEnum}` | T | `${T}`;
   props?: Record<any, any>;
   /** 被设置属性的初始值 */
@@ -183,7 +164,7 @@ export type BasicSetterObjType<T extends SetterBasicType = any> = {
   component?: (props: any) => React.ReactNode;
 };
 
-export type ShapeSetterObjType<T extends SetterBasicType = any> = {
+export type ShapeSetterObjType<T extends SetterBasicType = ''> = {
   componentName: ComplexSetterTypeEnum.SHAPE_SETTER | `${ComplexSetterTypeEnum.SHAPE_SETTER}` | T | `${T}`;
   props?: {
     elements: MaterialPropType<T>[];
@@ -195,7 +176,7 @@ export type ShapeSetterObjType<T extends SetterBasicType = any> = {
   component?: (props: any) => React.ReactNode;
 };
 
-export type ArraySetterObjType<T extends SetterBasicType = any> = {
+export type ArraySetterObjType<T extends SetterBasicType = ''> = {
   componentName: ComplexSetterTypeEnum.ARRAY_SETTER | `${ComplexSetterTypeEnum.ARRAY_SETTER}` | T | `${T}`;
   props?: {
     item: {
@@ -208,10 +189,10 @@ export type ArraySetterObjType<T extends SetterBasicType = any> = {
   component?: (props: any) => React.ReactNode;
 };
 
-export type SetterObjType<T extends SetterBasicType = any> =
-  | BasicSetterObjType
-  | ShapeSetterObjType
-  | ArraySetterObjType;
+export type SetterObjType<T extends SetterBasicType = ''> =
+  | BasicSetterObjType<T>
+  | ShapeSetterObjType<T>
+  | ArraySetterObjType<T>;
 
 export const SetterTypeDescribe = union([
   string(),
@@ -224,7 +205,7 @@ export const SetterTypeDescribe = union([
   }),
 ]);
 
-export type MaterialPropType<CustomSetter extends SetterBasicType = any> = {
+export type MaterialPropType<CustomSetter extends SetterBasicType = ''> = {
   name: string;
   title: MTitle;
   valueType: PropsValueType;
@@ -255,7 +236,7 @@ export enum PropsUIType {
   GROUP = 'group',
 }
 
-export type SpecialMaterialPropType<CustomSetter extends SetterBasicType = any> =
+export type SpecialMaterialPropType<CustomSetter extends SetterBasicType = ''> =
   | {
       title: MTitle;
       type: PropsUIType.SINGLE | `${PropsUIType.SINGLE}`;
@@ -267,12 +248,12 @@ export type SpecialMaterialPropType<CustomSetter extends SetterBasicType = any> 
       content: MaterialPropType<CustomSetter>[];
     };
 
-export type CMaterialPropsType<CustomSetter extends SetterBasicType = any> = (
+export type CMaterialPropsType<CustomSetter extends SetterBasicType = ''> = (
   | MaterialPropType<CustomSetter>
   | SpecialMaterialPropType<CustomSetter>
 )[];
 
-export const isSpecialMaterialPropType = <CustomSetter extends SetterBasicType = any>(
+export const isSpecialMaterialPropType = <CustomSetter extends SetterBasicType = ''>(
   val: any
 ): val is SpecialMaterialPropType<CustomSetter> => {
   if (val.type && [PropsUIType.GROUP, PropsUIType.SINGLE].includes(val.type)) {

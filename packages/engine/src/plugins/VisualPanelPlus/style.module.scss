@@ -1,0 +1,17 @@
+.visualPanelBox {
+  padding: 0 15px;
+  :global {
+    .ant-collapse > .ant-collapse-item:last-child > .ant-collapse-header {
+      padding: 5px 5px 5px 10px;
+      align-items: center;
+      .ant-collapse-expand-icon {
+        padding-inline-end: 4px;
+      }
+    }
+  }
+  .header {
+    color: $fontColor;
+    display: flex;
+    font-size: 12px;
+  }
+}

@@ -1,26 +1,7 @@
-import {
-  any,
-  array,
-  assign,
-  literal,
-  object,
-  optional,
-  string,
-  union,
-} from 'superstruct';
-import {
-  LibMetaType,
-  ThirdLibTypeDescribe,
-  LibMetaTypeDescribe,
-  AssetPackage,
-  CSSType,
-} from './base';
+import { any, array, assign, literal, object, optional, string, union } from 'superstruct';
+import { LibMetaType, ThirdLibTypeDescribe, LibMetaTypeDescribe, AssetPackage, CSSType } from './base';
 import { FunctionPropType } from './node';
-import {
-  CRootNodeDataType,
-  CRootNodeDataTypeDescribe,
-  FunctionPropertyTypeDescribe,
-} from './rootNode';
+import { CRootNodeDataType, CRootNodeDataTypeDescribe, FunctionPropertyTypeDescribe } from './rootNode';
 
 export type ComponentMetaType = {
   componentName: string;
@@ -48,9 +29,7 @@ export const CPageDataTypeDescribe = object({
   version: string(),
   name: string(),
   css: optional(string()),
-  renderType: optional(
-    union([literal(RenderType.COMPONENT), literal(RenderType.PAGE)])
-  ),
+  renderType: optional(union([literal(RenderType.COMPONENT), literal(RenderType.PAGE)])),
   methods: optional(array(FunctionPropertyTypeDescribe)),
   componentsMeta: array(
     assign(

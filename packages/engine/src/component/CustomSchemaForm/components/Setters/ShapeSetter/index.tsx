@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { ConfigProvider } from 'antd';
 import { CSetter, CSetterProps } from '../type';
 import { CForm } from '../../Form';
@@ -12,17 +12,13 @@ export type CShapeSetterProps = {
   value: Record<string, any>;
 };
 
-export const ShapeSetter: CSetter<CShapeSetterProps> = ({
-  onValueChange,
-  elements,
-  value,
-  setterContext,
-}: CSetterProps<CShapeSetterProps>) => {
+export const ShapeSetter: CSetter<CShapeSetterProps> = ({ onValueChange, elements, value, setterContext }: CSetterProps<CShapeSetterProps>) => {
   const { keyPaths } = setterContext;
   const formRef = useRef<CForm>(null);
   useEffect(() => {
     formRef.current?.setFields(value || {});
   }, [value]);
+
   return (
     <ConfigProvider
       theme={{
@@ -39,20 +35,13 @@ export const ShapeSetter: CSetter<CShapeSetterProps> = ({
           onValueChange?.(val);
         }}
       >
-        {elements.map((el) => {
+        {elements.map((el, index) => {
           const setters = getSetterList(el.setters);
           const title = getMTitle(el.title);
           const tip = getMTitleTip(el.title);
           return (
-            <div key={el.name}>
-              <SetterSwitcher
-                name={el.name}
-                label={title}
-                tips={tip}
-                condition={el.condition}
-                keyPaths={[...keyPaths, el.name]}
-                setters={setters}
-              />
+            <div key={index}>
+              <SetterSwitcher name={el.name} label={title} tips={tip} condition={el.condition} keyPaths={[...keyPaths, el.name]} setters={setters} />
             </div>
           );
         })}

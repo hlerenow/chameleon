@@ -15,15 +15,15 @@ export type CustomSchemaFormInstance = CForm;
 export type CustomSchemaFormProps = {
   pluginCtx?: CPluginCtx;
   initialValue: Record<string, any>;
-  properties: CMaterialPropsType;
+  properties: CMaterialPropsType<any>;
   onValueChange?: (val: any) => void;
   onSetterChange: (keyPaths: string[], setterName: string) => void;
   defaultSetterConfig: Record<string, { name: string; setter: string }>;
 };
 
 const CustomSchemaFormCore = (props: CustomSchemaFormProps, ref: Ref<CustomSchemaFormInstance | CForm>) => {
-  const { properties, initialValue, onValueChange, onSetterChange, defaultSetterConfig, pluginCtx } = props;
-
+  const { properties: originProperties, initialValue, onValueChange, onSetterChange, defaultSetterConfig, pluginCtx } = props;
+  const properties: CMaterialPropsType = originProperties;
   return (
     <CCustomSchemaFormContext.Provider
       value={{

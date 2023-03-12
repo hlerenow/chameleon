@@ -1,15 +1,5 @@
-import React, {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
-import {
-  CSSProperties,
-  CSSPropertiesKey,
-  CSSPropertyList,
-} from './cssProperties';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { CSSProperties, CSSPropertiesKey, CSSPropertyList } from './cssProperties';
 
 import styles from './style.module.scss';
 
@@ -32,10 +22,7 @@ export type SinglePropertyEditorProps = {
     value: string;
   };
   onValueChange: (value: { key: string; value: string }) => void;
-  onEnter?: (parameters: {
-    pos: 'left' | 'right';
-    value: { key: string; value: string };
-  }) => void;
+  onEnter?: (parameters: { pos: 'left' | 'right'; value: { key: string; value: string } }) => void;
   onDelete?: () => void;
 };
 
@@ -43,10 +30,7 @@ type SinglePropertyEditorRef = {
   reset: () => void;
 };
 
-export const SinglePropertyEditor = forwardRef<
-  SinglePropertyEditorRef,
-  SinglePropertyEditorProps
->(function SinglePropertyEditorCore(props, ref) {
+export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePropertyEditorProps>(function SinglePropertyEditorCore(props, ref) {
   const [innerValue, setInnerVal] = useState({
     key: props.value.key,
     value: props.value.value,
@@ -56,19 +40,13 @@ export const SinglePropertyEditor = forwardRef<
     setInnerVal(props.value);
   }, [props.value]);
 
-  const [propertyOptions, setPropertyOptions] = useState(
-    defaultPropertyOptions
-  );
+  const [propertyOptions, setPropertyOptions] = useState(defaultPropertyOptions);
 
   const [valueOptions, setValueOptions] = useState<{ value: string }[]>([]);
-  const [allValueOptions, setAllValueOptions] = useState<{ value: string }[]>(
-    []
-  );
+  const [allValueOptions, setAllValueOptions] = useState<{ value: string }[]>([]);
 
   const onSearch = (searchText: string) => {
-    const newOptions = defaultPropertyOptions.filter((el) =>
-      el.value.includes(searchText)
-    );
+    const newOptions = defaultPropertyOptions.filter((el) => el.value.includes(searchText));
     if (!searchText) {
       setPropertyOptions(defaultPropertyOptions);
     } else {
@@ -78,8 +56,7 @@ export const SinglePropertyEditor = forwardRef<
 
   const updateValueOptions = () => {
     let res: any[] = [];
-    const tempProperty =
-      CSSProperties[innerValue.key as unknown as CSSPropertiesKey];
+    const tempProperty = CSSProperties[innerValue.key as unknown as CSSPropertiesKey];
 
     if (tempProperty) {
       res =
@@ -95,9 +72,7 @@ export const SinglePropertyEditor = forwardRef<
   };
 
   const onValueSearch = (searchText: string) => {
-    const newOptions = allValueOptions.filter((el) =>
-      el.value.includes(searchText)
-    );
+    const newOptions = allValueOptions.filter((el) => el.value.includes(searchText));
     if (!searchText) {
       setValueOptions(allValueOptions);
     } else {
@@ -217,7 +192,6 @@ export const SinglePropertyEditor = forwardRef<
         onSearch={onValueSearch}
         options={valueOptions}
         onKeyDown={(e) => {
-          console.log(e);
           if (e.code === 'Enter') {
             props.onEnter?.({
               value: innerValue,
@@ -256,13 +230,8 @@ export type CSSPropertiesEditorRef = {
   setValue: (val: { key: string; value: string }[]) => void;
 };
 
-export const CSSPropertiesEditor = forwardRef<
-  CSSPropertiesEditorRef,
-  CSSPropertiesEditorProps
->(function CSSPropertiesEditorCore(props, ref) {
-  const [propertyList, setPropertyList] = useState<
-    { key: string; value: any }[]
-  >([]);
+export const CSSPropertiesEditor = forwardRef<CSSPropertiesEditorRef, CSSPropertiesEditorProps>(function CSSPropertiesEditorCore(props, ref) {
+  const [propertyList, setPropertyList] = useState<{ key: string; value: any }[]>([]);
 
   useImperativeHandle(
     ref,
@@ -333,9 +302,7 @@ export const CSSPropertiesEditor = forwardRef<
               return;
             }
             if (newVal.key && newVal.value) {
-              const newList = propertyList.filter(
-                (el) => el.key !== newVal.key
-              );
+              const newList = propertyList.filter((el) => el.key !== newVal.key);
               newList.push(newVal);
               setPropertyList(newList);
               innerOnValueChange(newList);

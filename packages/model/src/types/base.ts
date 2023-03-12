@@ -3,6 +3,25 @@ import { htmlTagNames } from 'html-tag-names';
 
 export const HTMl_TAGS = htmlTagNames;
 
+export enum SetterTypeEnum {
+  STRING_SETTER = 'StringSetter',
+  BOOLEAN_SETTER = 'BooleanSetter',
+  JSON_SETTER = 'JSONSetter',
+  SElECT_SETTER = 'SelectSetter',
+  NUMBER_SETTER = 'NumberSetter',
+  EXPRESSION_SETTER = 'ExpressionSetter',
+  FUNCTION_SETTER = 'FunctionSetter',
+  COMPONENT_SETTER = 'ComponentSetter',
+  TEXT_AREA_SETTER = 'TextAreaSetter',
+}
+
+export type SetterBasicType = string;
+
+export enum ComplexSetterTypeEnum {
+  SHAPE_SETTER = 'ShapeSetter',
+  ARRAY_SETTER = 'ArraySetter',
+}
+
 export type AssetItem = {
   id?: string;
   type?: 'CSS' | 'JS';
@@ -48,16 +67,15 @@ export type MaterialAssetPackage = {
 };
 
 export type PseudoCSS = {
-  state: 'hover' | 'active' | 'focus';
+  state: 'normal' | 'hover' | 'active' | 'focus' | 'first' | 'last' | 'even' | 'odd';
+  media: {
+    type: 'max-width';
+    value: string;
+  }[];
   style: Record<string, string>;
 };
 
-export type MediaCSS = {
-  size: number;
-  style: Record<string, string>;
-};
-
-export type CSSValue = PseudoCSS | MediaCSS;
+export type CSSValue = PseudoCSS;
 
 export type CSSType = {
   class: string;

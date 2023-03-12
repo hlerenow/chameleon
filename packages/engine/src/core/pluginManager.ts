@@ -57,7 +57,7 @@ export class PluginManager {
     this.assets = assets;
   }
 
-  async add(plugin: CPlugin) {
+  createPluginCtx = () => {
     const workbench = this.getWorkbench();
     const ctx: CPluginCtx = {
       globalEmitter: this.emitter,
@@ -71,10 +71,14 @@ export class PluginManager {
       getActiveNode: () => {
         return workbench.currentSelectNode;
       },
-      pluginReadyOk: () => {
-        this.emitter.emit(`${innerPlugin.name}:ready`);
-      },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      pluginReadyOk: () => {},
     };
+    return ctx;
+  };
+
+  async add(plugin: CPlugin) {
+    const ctx = this.createPluginCtx();
 
     let innerPlugin: PluginObj;
     if (typeof plugin === 'function') {
@@ -82,6 +86,9 @@ export class PluginManager {
     } else {
       innerPlugin = plugin;
     }
+    ctx.pluginReadyOk = () => {
+      this.emitter.emit(`${innerPlugin.name}:ready`);
+    };
     this.plugins.set(innerPlugin.name, {
       source: innerPlugin,
       ctx: ctx,

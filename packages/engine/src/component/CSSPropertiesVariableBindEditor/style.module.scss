@@ -1,0 +1,48 @@
+.cssFieldBox {
+  display: flex;
+  color: $textColor !important;
+  :global {
+    .ant-select-selector input {
+      color: $textColor !important;
+    }
+  }
+  .row {
+    display: flex;
+    padding-bottom: 6px;
+    align-items: center;
+  }
+
+  .fieldLabel {
+    display: inline-block;
+    width: 70px;
+    flex-shrink: 0;
+    font-size: 12px;
+  }
+
+  .leftBox {
+    flex: 1;
+  }
+
+  .rightBox {
+    padding-left: 10px;
+  }
+  .inputBox {
+    flex: 1;
+  }
+}
+
+.cssBox {
+  overflow-x: hidden;
+  :global {
+    .ant-collapse-borderless > .ant-collapse-item {
+      border-bottom: 1px solid #e4e4e4;
+    }
+
+    .ant-collapse-borderless > .ant-collapse-item:last-child {
+      border-bottom: none;
+    }
+    .ant-collapse-content-box {
+      padding-bottom: 30px !important;
+    }
+  }
+}

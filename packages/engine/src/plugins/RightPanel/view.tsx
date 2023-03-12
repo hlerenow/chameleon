@@ -7,6 +7,7 @@ import { ComponentStatePanelConfig } from '../ComponentStatePanel';
 import { AdvancePanelConfig } from '../AdvancePanel';
 import styles from './style.module.scss';
 import { VisualPanelConfig } from '../VisualPanel';
+import { VisualPanelPlusConfig } from '../VisualPanelPlus';
 
 export type RightPanelOptions = { node: CNode; pluginCtx: CPluginCtx };
 
@@ -38,6 +39,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
         // AdvancePanelConfig,
         PropertyPanelConfig,
         VisualPanelConfig,
+        VisualPanelPlusConfig,
         ComponentStatePanelConfig,
         // {
         //   key: 'Actions',

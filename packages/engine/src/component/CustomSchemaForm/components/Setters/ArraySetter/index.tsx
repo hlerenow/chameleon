@@ -23,12 +23,7 @@ function formatValue(value: unknown) {
   }
 }
 
-export const ArraySetter = ({
-  onValueChange,
-  setterContext,
-  item: { setters, initialValue },
-  ...props
-}: CSetterProps<CArraySetterProps>) => {
+export const ArraySetter = ({ onValueChange, setterContext, item: { setters, initialValue }, ...props }: CSetterProps<CArraySetterProps>) => {
   const { keyPaths, label } = setterContext;
   const listValue: any[] = useMemo(() => {
     return formatValue(props.value);
@@ -79,7 +74,7 @@ export const ArraySetter = ({
             style={{ paddingBottom: '10px' }}
             index={index}
             keyPaths={keyPaths}
-            value={listValue?.[index]}
+            value={val}
             onValueChange={(val) => {
               listValue[index] = val[index];
               onValueChange?.([...listValue]);

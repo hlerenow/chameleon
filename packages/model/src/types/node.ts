@@ -15,7 +15,6 @@ import {
   enums,
 } from 'superstruct';
 import { CNodePropsTypeEnum, SlotRenderType } from '../const/schema';
-import { CPage } from '../Page';
 import { isPlainObject } from '../util/lodash';
 import { CSSType, CSSValue } from './base';
 import { CPageDataType } from './page';
@@ -42,18 +41,12 @@ export type FunctionPropType = {
   value: string;
 };
 
-export type SpecialProp =
-  | RenderPropType
-  | JSExpressionPropType
-  | FunctionPropType;
+export type SpecialProp = RenderPropType | JSExpressionPropType | FunctionPropType;
 
 export type CPropDataType = NormalPropType | SpecialProp | CPropObjDataType;
 
 export type CPropObjDataType = {
-  [key: string]:
-    | CPropDataType
-    | CPropDataType[]
-    | Record<string, CPropDataType>;
+  [key: string]: CPropDataType | CPropDataType[] | Record<string, CPropDataType>;
 };
 
 const normalObj = () =>
@@ -61,13 +54,7 @@ const normalObj = () =>
     if (!isPlainObject(value)) {
       return false;
     }
-    if (
-      [
-        CNodePropsTypeEnum.SLOT,
-        CNodePropsTypeEnum.EXPRESSION,
-        CNodePropsTypeEnum.FUNCTION,
-      ].includes(value?.type)
-    ) {
+    if ([CNodePropsTypeEnum.SLOT, CNodePropsTypeEnum.EXPRESSION, CNodePropsTypeEnum.FUNCTION].includes(value?.type)) {
       return false;
     }
     validate(value, record(string(), PropsDataStructDescribe));
@@ -106,6 +93,8 @@ export const PropsDataStructDescribe: any = union([
 
 // 开发模式使用的 key,导出为生产模式时，需要移除
 export const DevKey = ['configure'];
+
+export type ClassNameType = string | JSExpressionPropType;
 
 export type CNodeDataType = {
   id?: string;
@@ -147,8 +136,8 @@ export type CNodeDataType = {
       props?: CPropObjDataType;
     };
   };
-  className?: string[];
-  css?: CSSValue[];
+  className?: ClassNameType[];
+  css?: CSSType[];
   refId?: string;
   // 逻辑编排使用
   onEvents?: Record<
