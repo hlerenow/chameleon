@@ -6,7 +6,7 @@ export declare type CustomSchemaFormInstance = CForm;
 export declare type CustomSchemaFormProps = {
     pluginCtx?: CPluginCtx;
     initialValue: Record<string, any>;
-    properties: CMaterialPropsType;
+    properties: CMaterialPropsType<any>;
     onValueChange?: (val: any) => void;
     onSetterChange: (keyPaths: string[], setterName: string) => void;
     defaultSetterConfig: Record<string, {

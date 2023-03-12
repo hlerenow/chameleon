@@ -19,7 +19,7 @@ export const ClassNameEditor = forwardRef<ClassNameEditorRef, ClassNameEditorPro
         },
       }}
     >
-      <div>123</div>
+      <div></div>
     </ConfigProvider>
   );
 });

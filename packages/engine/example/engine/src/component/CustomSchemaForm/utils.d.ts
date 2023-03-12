@@ -1,2 +1,2 @@
 import { SetterObjType, SetterType } from '@chameleon/model';
-export declare const getSetterList: <T extends string = any>(setters?: SetterType<T>[]) => SetterObjType[];
+export declare const getSetterList: <T extends string = "">(setters?: SetterType<T>[]) => SetterObjType<T>[];

@@ -1,14 +1,15 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { CSSProperties, CSSPropertiesKey, CSSPropertyList } from './cssProperties';
 
 import styles from './style.module.scss';
 
-import { AutoComplete, ConfigProvider } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
+import { AutoComplete, Button, ConfigProvider, message } from 'antd';
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { getTextWidth } from './util';
 import { BaseSelectRef } from 'rc-select';
 import { useDebounceFn } from 'ahooks';
 import clsx from 'clsx';
+import { InputStatus } from 'antd/es/_util/statusUtils';
 
 const defaultPropertyOptions = CSSPropertyList.map((el) => {
   return {
@@ -17,12 +18,17 @@ const defaultPropertyOptions = CSSPropertyList.map((el) => {
 });
 
 export type SinglePropertyEditorProps = {
+  mode: 'create' | 'edit';
   value: {
     key: string;
     value: string;
   };
+  allValues: {
+    key: string;
+    value: string;
+  }[];
   onValueChange: (value: { key: string; value: string }) => void;
-  onEnter?: (parameters: { pos: 'left' | 'right'; value: { key: string; value: string } }) => void;
+  onCreate?: (value: { key: string; value: string }) => void;
   onDelete?: () => void;
 };
 
@@ -31,6 +37,12 @@ type SinglePropertyEditorRef = {
 };
 
 export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePropertyEditorProps>(function SinglePropertyEditorCore(props, ref) {
+  const [keyFormatStatus, setKeyFormatStatus] = useState<InputStatus>('');
+  const [valueFormatStatus, setValueFormatStatus] = useState<InputStatus>('');
+  const { mode = 'edit' } = props;
+  const isCreate = useMemo(() => {
+    return mode === 'create';
+  }, [mode]);
   const [innerValue, setInnerVal] = useState({
     key: props.value.key,
     value: props.value.value,
@@ -80,7 +92,31 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
     }
   };
 
+  const updateKeyValue = () => {
+    if (props.allValues.find((el) => el.key === innerValue.key)) {
+      message.error(`${innerValue.key} is exits`);
+      setKeyFormatStatus('error');
+      return false;
+    }
+    return true;
+  };
+
+  const updateValValue = () => {
+    if (isCreate) {
+      if (innerValue.value) {
+        props.onCreate?.(innerValue);
+      } else {
+        setValueFormatStatus('error');
+      }
+    } else {
+      updateOuterValueDebounce();
+    }
+  };
+
   const updateOuterValue = () => {
+    setKeyFormatStatus('');
+    setValueFormatStatus('');
+
     props.onValueChange({
       ...innerValue,
     });
@@ -129,7 +165,9 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
       <AutoComplete
         ref={propertyKeyRef}
         bordered={false}
+        disabled={!isCreate}
         onSearch={onSearch}
+        status={keyFormatStatus}
         dropdownMatchSelectWidth={200}
         value={innerValue.key}
         onChange={(val) => {
@@ -137,12 +175,12 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
             ...innerValue,
             key: val,
           });
-          updateOuterValueDebounce();
+          setKeyFormatStatus('');
         }}
         style={{
           width: `${keyInputWidth}px`,
         }}
-        className={clsx([styles.inputAuto, focusState.key && styles.active])}
+        className={clsx([styles.cssKeyLabel, isCreate && styles.inputAuto, isCreate && focusState.key && styles.active])}
         onFocus={() => {
           setFocusState({
             key: true,
@@ -154,15 +192,25 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
             key: false,
             value: false,
           });
+          updateKeyValue();
+        }}
+        onKeyDown={(e) => {
+          if (e.code === 'Enter') {
+            const res = updateKeyValue();
+            if (res) {
+              propertyValueRef.current?.focus();
+            }
+          }
         }}
         placeholder="property"
         options={propertyOptions}
       />
       <span>:</span>
       <AutoComplete
-        ref={propertyValueRef}
-        dropdownMatchSelectWidth={200}
         bordered={false}
+        ref={propertyValueRef}
+        status={valueFormatStatus}
+        dropdownMatchSelectWidth={200}
         value={innerValue.value}
         onChange={(val) => {
           updateValueOptions();
@@ -170,7 +218,11 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
             ...innerValue,
             value: val,
           });
-          updateOuterValueDebounce();
+          setValueFormatStatus('');
+          if (!isCreate) {
+            props.onCreate?.(innerValue);
+            updateOuterValueDebounce();
+          }
         }}
         style={{
           flex: 1,
@@ -186,6 +238,7 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
             key: false,
             value: false,
           });
+          updateOuterValueDebounce();
         }}
         className={clsx([styles.inputAuto, focusState.value && styles.active])}
         placeholder="value"
@@ -193,30 +246,43 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
         options={valueOptions}
         onKeyDown={(e) => {
           if (e.code === 'Enter') {
-            props.onEnter?.({
-              value: innerValue,
-              pos: 'right',
-            });
+            updateValValue();
           }
         }}
       ></AutoComplete>
-      {props.onDelete && (
-        <CloseOutlined
+
+      {props.onDelete && mode === 'edit' && (
+        <Button
+          size="small"
+          type="text"
           onClick={() => {
             props.onDelete?.();
           }}
-          style={{
-            display: 'block',
-            fontSize: '12px',
-            cursor: 'pointer',
-            marginLeft: '10px',
-            borderRadius: '10px',
-            overflow: 'hidden',
-            border: '1px solid gray',
-            padding: '2px',
-            transform: 'scale(0.6)',
-          }}
-        />
+        >
+          <MinusOutlined
+            style={{
+              display: 'inline-flex',
+              fontSize: '12px',
+            }}
+          />
+        </Button>
+      )}
+      {props.onCreate && mode === 'create' && (
+        <div>
+          <Button
+            size="small"
+            type="text"
+            icon={
+              <PlusOutlined
+                style={{
+                  fontSize: '12px',
+                  display: 'inline-flex',
+                }}
+              />
+            }
+            onClick={updateValValue}
+          ></Button>
+        </div>
       )}
     </div>
   );
@@ -274,13 +340,11 @@ export const CSSPropertiesEditor = forwardRef<CSSPropertiesEditorRef, CSSPropert
           return (
             <div key={index}>
               <SinglePropertyEditor
+                mode="edit"
+                allValues={propertyList}
                 value={el}
                 onValueChange={(newVal) => {
-                  if (newVal.key === '') {
-                    propertyList.splice(index, 1);
-                    setPropertyList([...propertyList]);
-                    return;
-                  }
+                  console.log('🚀 ~ file: in~ {propertyList.map ~ newVal:', newVal, Math.random());
                   propertyList[index] = newVal;
                   setPropertyList([...propertyList]);
                   innerOnValueChange(propertyList);
@@ -295,12 +359,11 @@ export const CSSPropertiesEditor = forwardRef<CSSPropertiesEditorRef, CSSPropert
           );
         })}
         <SinglePropertyEditor
+          allValues={propertyList}
+          mode="create"
           value={newProperty}
           ref={createPropertyRef}
-          onEnter={({ pos, value: newVal }) => {
-            if (pos !== 'right') {
-              return;
-            }
+          onCreate={(newVal) => {
             if (newVal.key && newVal.value) {
               const newList = propertyList.filter((el) => el.key !== newVal.key);
               newList.push(newVal);

@@ -37,8 +37,8 @@ type SinglePropertyEditorRef = {
 
 const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePropertyEditorProps>(function SinglePropertyEditorCore(props, ref) {
   const [keyFormatStatus, setKeyFormatStatus] = useState<InputStatus>('');
-
   const [valueFormatStatus, setValueFormatStatus] = useState<InputStatus>('');
+
   const { mod = 'create' } = props;
   const [innerValue, setInnerVal] = useState<{
     key: string;

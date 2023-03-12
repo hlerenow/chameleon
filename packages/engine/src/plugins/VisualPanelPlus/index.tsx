@@ -88,7 +88,17 @@ export const VisualPanelPlus = (props: { node: CNode; pluginCtx: CPluginCtx }) =
 
   return (
     <div className={styles.visualPanelBox}>
-      <ClassNameEditor />
+      <Collapse
+        defaultActiveKey={['origin-css-edit']}
+        bordered={false}
+        style={{
+          marginBottom: '10px',
+        }}
+      >
+        <Collapse.Panel header={<span className={styles.header}>Class</span>} key="origin-css-edit">
+          <ClassNameEditor />
+        </Collapse.Panel>
+      </Collapse>
       <Collapse
         defaultActiveKey={['origin-css-edit']}
         bordered={false}

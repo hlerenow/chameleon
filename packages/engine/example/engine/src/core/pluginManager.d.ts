@@ -42,6 +42,7 @@ export declare class PluginManager {
     i18n: CustomI18n;
     assets: AssetPackage[];
     constructor({ getWorkbench, emitter, pageModel, i18n, assets }: PluginManagerOptions);
+    createPluginCtx: () => CPluginCtx<any>;
     add(plugin: CPlugin): Promise<void>;
     get(pluginName: string): Promise<PluginInstance | undefined>;
     remove(name: string): Promise<void>;

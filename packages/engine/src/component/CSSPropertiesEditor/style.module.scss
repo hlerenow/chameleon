@@ -15,6 +15,9 @@
     .ant-select-selector input {
       color: $textColor !important;
     }
+    .ant-select-status-error {
+      border-bottom: 1px solid red !important;
+    }
   }
 
   .inputAuto {
