@@ -1,4 +1,4 @@
-import { BasePage, EmptyPage, Material } from '@chameleon/demo-page';
+import { BasePage, BasePageBClient, EmptyPage, Material } from '@chameleon/demo-page';
 import { Button, message, Modal } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
@@ -193,7 +193,7 @@ export const App = () => {
     <Engine
       plugins={DEFAULT_PLUGIN_LIST}
       schema={page as any}
-      material={[...InnerComponentMeta]}
+      material={[...InnerComponentMeta, ...Material]}
       assets={[]}
       assetPackagesList={assetPackagesList}
       onReady={onReady}

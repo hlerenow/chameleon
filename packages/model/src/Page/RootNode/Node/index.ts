@@ -5,10 +5,7 @@ import { CMaterials } from '../../../Material';
 import { CNodeDataStructDescribe, CNodeDataType } from '../../../types/node';
 import { getRandomStr, clearSchema, getNode } from '../../../util';
 import { checkComplexData } from '../../../util/dataCheck';
-import {
-  DataModelEmitter,
-  DataModelEventType,
-} from '../../../util/modelEmitter';
+import { DataModelEmitter, DataModelEventType } from '../../../util/modelEmitter';
 import { CProp } from './prop';
 import { CSlot } from './slot';
 
@@ -110,10 +107,7 @@ export class CNode {
   listenerHandle: (() => void)[];
   onChangeCbQueue: OnNodeChangeType[];
 
-  constructor(
-    data: CNodeDataType,
-    options?: { parent?: ParentType; materials: CMaterials | null }
-  ) {
+  constructor(data: CNodeDataType, options?: { parent?: ParentType; materials: CMaterials | null }) {
     this.rawData = JSON.parse(JSON.stringify(data));
     checkNode(data);
     const materials = options?.materials || new CMaterials([]);

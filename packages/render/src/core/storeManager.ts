@@ -23,15 +23,14 @@ export class StoreManager {
     return this.storeMap.get(storeName);
   }
 
-  connect<T extends Record<any, any> = any>(
-    name: string,
-    cb: (newState: T) => void
-  ) {
+  connect<T extends Record<any, any> = any>(name: string, cb: (newState: T) => void) {
     const store = this.storeMap.get(name);
     if (store) {
-      store.subscribe(cb);
+      return store.subscribe(cb);
     } else {
       console.warn('store not exits');
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      return () => {};
     }
   }
 

@@ -39,12 +39,8 @@ export class Sensor extends DEmitter<SensorEventType> {
   container: HTMLElement;
   offsetDom?: HTMLElement | null;
 
-  canDrag: (
-    params: SensorEventObjType
-  ) => SensorEventObjType | null | undefined = (params) => params;
-  canDrop: (
-    params: SensorEventObjType
-  ) => SensorEventObjType | null | undefined = (params) => params;
+  canDrag: (params: SensorEventObjType) => SensorEventObjType | null | undefined = (params) => params;
+  canDrop: (params: SensorEventObjType) => SensorEventObjType | null | undefined = (params) => params;
 
   private eventDisposeQueue: (() => void)[] = [];
   name: string;
@@ -74,7 +70,7 @@ export class Sensor extends DEmitter<SensorEventType> {
     if (!container) {
       return;
     }
-    const handle = setInterval(() => {
+    const handle = window.setInterval(() => {
       const rect = container.getBoundingClientRect();
       this.offset = {
         x: rect.x,

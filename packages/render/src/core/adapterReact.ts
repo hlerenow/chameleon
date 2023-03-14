@@ -263,6 +263,7 @@ export class DefineReactAdapter {
       storeState: StoreApi<any>;
       // not react data
       staticState: Record<string, any> = {};
+      storeListenDisposeLint: (() => void)[] = [];
 
       constructor(props: PropsType) {
         super(props);
@@ -324,6 +325,10 @@ export class DefineReactAdapter {
           }
         );
 
+        console.log('cssAndClassExpressionList', expressionList, cssAndClassExpressionList, {
+          css: nodeModel.value.css,
+          class: nodeModel.value.classNames,
+        });
         // get all stateManager nameList
         const list = [...expressionList, ...cssAndClassExpressionList]
           .map((el) => {
@@ -338,20 +343,27 @@ export class DefineReactAdapter {
           })
           .filter(Boolean);
         const uniqueList = Array.from(new Set(list));
+        console.log('🚀 ~ file: adapterReact.ts:345 ~ DynamicComponent ~ connectStore ~ uniqueList:', uniqueList, nodeModel.id);
         // TODO: list need now repeat
+        const disposeList: (() => void)[] = [];
         if (uniqueList.length) {
+          debugger;
           uniqueList.forEach((storeName) => {
             const store = that.storeManager.getStore(storeName);
             if (!store) {
               that.storeManager.addStore(storeName, () => {
                 return {};
               });
+              console.log(that.storeManager, storeName, 'not exits');
             }
-            that.storeManager.connect(storeName, () => {
+            const handle = that.storeManager.connect(storeName, () => {
+              console.log('forceupdate', storeName, nodeModel.id);
               this.forceUpdate();
             });
+            disposeList.push(handle);
           });
         }
+        this.storeListenDisposeLint = disposeList;
       }
 
       componentDidMount(): void {
@@ -372,6 +384,8 @@ export class DefineReactAdapter {
       }
 
       componentWillUnmount(): void {
+        console.log(`${nodeModel.id} will unmout`);
+        this.storeListenDisposeLint.forEach((el) => el());
         that.onComponentDestroy?.(this, nodeModel);
       }
 
@@ -565,7 +579,7 @@ export class DefineReactAdapter {
   buildComponent(
     node: CNode | CRootNode | string,
     {
-      $$context,
+      $$context = {},
     }: {
       $$context: ContextType;
       idx?: number;

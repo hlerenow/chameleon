@@ -98,7 +98,7 @@ const columns = [
   },
 ];
 
-export const BasePage: CPageDataType = {
+export const BasePageBClient: CPageDataType = {
   version: '1.0.0',
   name: 'BaseDemoPage',
   componentsMeta: [],
