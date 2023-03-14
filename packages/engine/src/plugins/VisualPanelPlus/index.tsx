@@ -99,6 +99,7 @@ export const VisualPanelPlus = (props: { node: CNode; pluginCtx: CPluginCtx }) =
         <ClassNameEditor
           onValueChange={(newVal) => {
             node.value.classNames = newVal;
+            node.updateValue();
           }}
         />
       </div>

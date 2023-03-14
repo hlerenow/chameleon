@@ -300,7 +300,6 @@ export class DefineReactAdapter {
       };
 
       connectStore() {
-        console.log('node id', nodeModel.id);
         // props
         const expressionList = that.collectSpecialProps(nodeModel.props, (val) => {
           if (isExpression(val)) {
@@ -311,7 +310,6 @@ export class DefineReactAdapter {
         });
 
         // TODO: css props、classNames props
-
         const cssAndClassExpressionList = that.collectSpecialProps(
           {
             css: nodeModel.value.css,
@@ -567,7 +565,7 @@ export class DefineReactAdapter {
   buildComponent(
     node: CNode | CRootNode | string,
     {
-      $$context = { staticState: {} },
+      $$context,
     }: {
       $$context: ContextType;
       idx?: number;

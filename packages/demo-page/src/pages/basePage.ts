@@ -59,12 +59,12 @@ export const BasePage: CPageDataType = {
                   afterMount: {
                     type: 'FUNCTION',
                     value:
-                      "function didRender() {\n  const timer = setInterval(() => {\n    $$context.stateManager.bannerState.updateState((oldState) => {\n      const newPage = (oldState.currentPage + 1) % 3;\n      console.log('newPage', newPage, oldState)\n      return {\n        ...oldState,\n        currentPage: newPage\n      };\n    })\n  }, 2 * 1000);\n  window.timer = timer;\n  console.log(11111, timer, window)\n}",
+                      "function didRender() {\n  const timer = setInterval(() => {\n    $$context.stateManager.bannerState.updateState((oldState) => {\n      const newPage = (oldState.currentPage + 1) % 3;\n      console.log('newPage', newPage, oldState)\n      return {\n        ...oldState,\n        currentPage: newPage\n      };\n    })\n  }, 2 * 1000);\n  $$context.staticState.timer = timer;\n  console.log(11111, timer, window)\n}",
                   },
                   beforeDestroy: {
                     type: 'FUNCTION',
                     value:
-                      "function beforeDestory() {\n  console.log('clear timer 1111');\n  if (window.timer) {\n    console.log('clear timer');\n    clearInterval(window.timer);\n  }  \n}",
+                      "function beforeDestroy() {\n  console.log('clear timer 1111');\n  if ($$context.staticState.timer) {\n    console.log('clear timer');\n    clearInterval($$context.staticState.timer);\n  }  \n}",
                   },
                 },
                 componentName: 'CContainer',

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ReactAdapter, Render, useRender } from '@chameleon/render';
 import * as components from 'antd';
 
