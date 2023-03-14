@@ -4,6 +4,7 @@ export declare type SortItemOrderProps = {
     list: any[];
     keyPaths: string[];
     label: string;
+    sortLabelKey?: string;
     onValueChange?: (newList: any[]) => void;
 } & ModalProps;
-export declare const SortItemOrderModal: ({ list, onValueChange, keyPaths, label, ...modalProps }: SortItemOrderProps) => JSX.Element;
+export declare const SortItemOrderModal: ({ list, onValueChange, keyPaths, label, sortLabelKey, ...modalProps }: SortItemOrderProps) => JSX.Element;

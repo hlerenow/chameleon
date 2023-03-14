@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  BasePage,
-  SamplePage,
-  Material,
-  EmptyPage,
-} from '@chameleon/demo-page';
+import { BasePage, SamplePage, Material, EmptyPage } from '@chameleon/demo-page';
 import { ReactAdapter } from '../../index';
 import '../index.css';
 import { DesignRender, useDesignRender } from '../../core/designReactRender';
@@ -38,20 +33,11 @@ export function DesignerRenderDemo() {
       (e) => {
         const eventTargetDom = e.target;
         const instance = renderHandle.getInstanceByDom(eventTargetDom as any);
-        console.log(
-          '🚀 ~ file: dev.tsx ~ line 50 ~ useEffect ~ instance',
-          instance
-        );
+        console.log('🚀 ~ file: dev.tsx ~ line 50 ~ useEffect ~ instance', instance);
         const targetDom = renderHandle.getDomsById(instance?._NODE_ID || '');
-        const targetDomRectList = renderHandle.getDomRectById(
-          instance?._NODE_ID || ''
-        );
+        const targetDomRectList = renderHandle.getDomRectById(instance?._NODE_ID || '');
 
-        console.log(
-          '🚀 ~ file: dev.tsx ~ line 51 ~ useEffect ~ targetDom',
-          targetDom,
-          targetDomRectList
-        );
+        console.log('🚀 ~ file: dev.tsx ~ line 51 ~ useEffect ~ targetDom', targetDom, targetDomRectList);
       },
       true
     );
@@ -75,12 +61,7 @@ export function DesignerRenderDemo() {
 
   return (
     <div className="App">
-      <DesignRender
-        pageModel={page}
-        components={components}
-        render={renderHandle}
-        adapter={ReactAdapter}
-      />
+      <DesignRender pageModel={page} components={components} render={renderHandle} adapter={ReactAdapter} />
     </div>
   );
 }

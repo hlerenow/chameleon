@@ -94,7 +94,10 @@ export const PropsDataStructDescribe: any = union([
 // 开发模式使用的 key,导出为生产模式时，需要移除
 export const DevKey = ['configure'];
 
-export type ClassNameType = string | JSExpressionPropType;
+export type ClassNameType = {
+  name: string;
+  status?: JSExpressionPropType;
+};
 
 export type CNodeDataType = {
   id?: string;
@@ -136,7 +139,7 @@ export type CNodeDataType = {
       props?: CPropObjDataType;
     };
   };
-  className?: ClassNameType[];
+  classNames?: ClassNameType[];
   css?: CSSType[];
   refId?: string;
   // 逻辑编排使用
@@ -183,7 +186,7 @@ export const CNodeDataStructDescribe: any = object({
   }),
   configure: optional(any()),
   css: optional(any()),
-  className: optional(array(string())),
+  classNames: optional(array(any())),
   refId: optional(string()),
   extra: optional(record(any(), any())),
   condition: optional(union([boolean(), JSExpressionDescribe])),

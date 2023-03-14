@@ -5,7 +5,10 @@ import { CRightPanelItem } from '../RightPanel/view';
 
 import styles from './style.module.scss';
 import { CSSPropertiesEditor, CSSPropertiesEditorRef } from '../../component/CSSPropertiesEditor';
-import { CSSPropertiesVariableBindEditor, CSSPropertiesVariableBindEditorRef } from '../../component/CSSPropertiesVariableBindEditor';
+import {
+  CSSPropertiesVariableBindEditor,
+  CSSPropertiesVariableBindEditorRef,
+} from '../../component/CSSPropertiesVariableBindEditor';
 import { Collapse } from 'antd';
 import { CustomSchemaForm, CustomSchemaFormInstance } from '../../component/CustomSchemaForm';
 import { ClassNameEditor } from '@/component/ClassNameEditor';
@@ -88,17 +91,17 @@ export const VisualPanelPlus = (props: { node: CNode; pluginCtx: CPluginCtx }) =
 
   return (
     <div className={styles.visualPanelBox}>
-      <Collapse
-        defaultActiveKey={['origin-css-edit']}
-        bordered={false}
+      <div
         style={{
           marginBottom: '10px',
         }}
       >
-        <Collapse.Panel header={<span className={styles.header}>Class</span>} key="origin-css-edit">
-          <ClassNameEditor />
-        </Collapse.Panel>
-      </Collapse>
+        <ClassNameEditor
+          onValueChange={(newVal) => {
+            node.value.classNames = newVal;
+          }}
+        />
+      </div>
       <Collapse
         defaultActiveKey={['origin-css-edit']}
         bordered={false}

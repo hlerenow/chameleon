@@ -1,16 +1,71 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef } from 'react';
 import { ConfigProvider } from 'antd';
+import { CustomSchemaForm } from '../CustomSchemaForm';
+import { ClassNameType, CMaterialPropsType, CNodePropsTypeEnum } from '@chameleon/model';
+
 import styles from './style.module.scss';
 
 export type ClassNameEditorProps = {
   initialValue?: { key: string; value: string }[];
-  onValueChange?: (val: { key: string; value: string }[]) => void;
+  onValueChange?: (val: ClassNameType[]) => void;
 };
 export type ClassNameEditorRef = {
   setValue: (val: { key: string; value: string }[]) => void;
 };
 
-export const ClassNameEditor = forwardRef<ClassNameEditorRef, ClassNameEditorProps>(function CSSPropertiesEditorCore(props, ref) {
+const properties: CMaterialPropsType = [
+  {
+    title: 'Class Names',
+    name: 'className',
+    valueType: 'array',
+    setters: [
+      {
+        componentName: 'ArraySetter',
+        props: {
+          sortLabelKey: 'name',
+          item: {
+            setters: [
+              {
+                componentName: 'ShapeSetter',
+                props: {
+                  collapse: false,
+                  elements: [
+                    {
+                      name: 'name',
+                      title: '类名',
+                      valueType: 'string',
+                      setters: ['StringSetter'],
+                    },
+                    {
+                      name: 'status',
+                      title: '启用',
+                      valueType: 'boolean',
+                      setters: ['ExpressionSetter'],
+                    },
+                  ],
+                },
+                initialValue: {},
+              },
+            ],
+            initialValue: {
+              name: '',
+              status: {
+                type: CNodePropsTypeEnum.EXPRESSION,
+                value: true,
+              },
+            },
+          },
+        },
+        initialValue: [],
+      },
+    ],
+  },
+];
+
+export const ClassNameEditor = forwardRef<ClassNameEditorRef, ClassNameEditorProps>(function CSSPropertiesEditorCore(
+  props,
+  ref
+) {
   return (
     <ConfigProvider
       theme={{
@@ -19,7 +74,18 @@ export const ClassNameEditor = forwardRef<ClassNameEditorRef, ClassNameEditorPro
         },
       }}
     >
-      <div></div>
+      <div>
+        <CustomSchemaForm
+          initialValue={[]}
+          properties={properties}
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          onSetterChange={function () {}}
+          onValueChange={(newVal) => {
+            props.onValueChange?.(newVal.className || []);
+          }}
+          defaultSetterConfig={{}}
+        ></CustomSchemaForm>
+      </div>
     </ConfigProvider>
   );
 });

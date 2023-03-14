@@ -7,7 +7,7 @@ export type ContextType = {
   params?: Record<any, any>;
   globalState?: Record<any, any>;
   updateGlobalState?: (newState: any) => void;
-  staticState: Record<string | number, any>;
+  staticState?: Record<string | number, any>;
   state?: Record<any, any>;
   updateState?: (newState: any) => void;
   refs?: RefManager;

@@ -170,7 +170,7 @@ export type ShapeSetterObjType<T extends SetterBasicType = ''> = {
     elements: MaterialPropType<T>[];
     /** 是否可以收缩，默认： true  */
     collapse?: boolean;
-  };
+  } & {};
   initialValue: any;
   /** props reference CSetterProps<T> from engine */
   component?: (props: any) => React.ReactNode;
@@ -183,6 +183,7 @@ export type ArraySetterObjType<T extends SetterBasicType = ''> = {
       setters: SetterType<T>[];
       initialValue: any;
     };
+    sortLabelKey?: any;
   };
   initialValue: any;
   /** props reference CSetterProps<T> from engine */

@@ -6,8 +6,9 @@ export declare type CArraySetterProps = {
         setters: SetterType[];
         initialValue?: any;
     };
+    sortLabelKey?: string;
 };
 export declare const ArraySetter: {
-    ({ onValueChange, setterContext, item: { setters, initialValue }, ...props }: CSetterProps<CArraySetterProps>): JSX.Element;
+    ({ onValueChange, setterContext, item: { setters, initialValue }, sortLabelKey, ...props }: CSetterProps<CArraySetterProps>): JSX.Element;
     setterName: string;
 };

@@ -13,6 +13,7 @@ export type CArraySetterProps = {
     setters: SetterType[];
     initialValue?: any;
   };
+  sortLabelKey?: string;
 };
 
 function formatValue(value: unknown) {
@@ -23,7 +24,13 @@ function formatValue(value: unknown) {
   }
 }
 
-export const ArraySetter = ({ onValueChange, setterContext, item: { setters, initialValue }, ...props }: CSetterProps<CArraySetterProps>) => {
+export const ArraySetter = ({
+  onValueChange,
+  setterContext,
+  item: { setters, initialValue },
+  sortLabelKey,
+  ...props
+}: CSetterProps<CArraySetterProps>) => {
   const { keyPaths, label } = setterContext;
   const listValue: any[] = useMemo(() => {
     return formatValue(props.value);
@@ -101,6 +108,7 @@ export const ArraySetter = ({ onValueChange, setterContext, item: { setters, ini
       </Button>
       <SortItemOrderModal
         label={label}
+        sortLabelKey={sortLabelKey}
         onValueChange={(newVal) => {
           onValueChange?.([...newVal]);
         }}

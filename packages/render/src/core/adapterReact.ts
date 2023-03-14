@@ -300,6 +300,8 @@ export class DefineReactAdapter {
       };
 
       connectStore() {
+        console.log('node id', nodeModel.id);
+        // props
         const expressionList = that.collectSpecialProps(nodeModel.props, (val) => {
           if (isExpression(val)) {
             return true;
@@ -308,8 +310,24 @@ export class DefineReactAdapter {
           }
         });
 
+        // TODO: css props、classNames props
+
+        const cssAndClassExpressionList = that.collectSpecialProps(
+          {
+            css: nodeModel.value.css,
+            class: nodeModel.value.classNames,
+          },
+          (val) => {
+            if (isExpression(val)) {
+              return true;
+            } else {
+              return false;
+            }
+          }
+        );
+
         // get all stateManager nameList
-        const list = expressionList
+        const list = [...expressionList, ...cssAndClassExpressionList]
           .map((el) => {
             const targetVal: JSExpressionPropType = el.val;
             const reg = /\$\$context.stateManager\.(.+?)\./gim;
@@ -321,10 +339,10 @@ export class DefineReactAdapter {
             }
           })
           .filter(Boolean);
-
+        const uniqueList = Array.from(new Set(list));
         // TODO: list need now repeat
-        if (list.length) {
-          list.forEach((storeName) => {
+        if (uniqueList.length) {
+          uniqueList.forEach((storeName) => {
             const store = that.storeManager.getStore(storeName);
             if (!store) {
               that.storeManager.addStore(storeName, () => {
@@ -410,6 +428,19 @@ export class DefineReactAdapter {
             const newProps: Record<string, any> = that.transformProps(newOriginalProps, {
               $$context: loopContext,
             });
+            // 处理 className
+            const classNames =
+              nodeModel.value.classNames?.map((it) => {
+                const name = it.name;
+                const status = isExpression(it.status) ? runExpression(String(it.status?.value || ''), loopContext) : false;
+                if (status) {
+                  return name;
+                }
+                return '';
+              }) || [];
+            const finalClsx = `${newProps.className ?? ''} ${classNames.join(' ')}`.trim();
+            newProps.className = finalClsx;
+
             // font-size to fontSize
             if (newProps.style) {
               newProps.style = formatSourceStyle(newProps.style);
@@ -476,7 +507,18 @@ export class DefineReactAdapter {
         }
 
         newProps.ref = this.targetComponentRef;
-
+        // 处理 className
+        const classNames =
+          nodeModel.value.classNames?.map((it) => {
+            const name = it.name;
+            const status = isExpression(it.status) ? runExpression(it.status?.value || '', newContext) : false;
+            if (status) {
+              return name;
+            }
+            return '';
+          }) || [];
+        const finalClsx = `${newProps.className ?? ''} ${classNames.join(' ')}`.trim();
+        newProps.className = finalClsx;
         // font-size to fontSize
         if (newProps.style) {
           newProps.style = formatSourceStyle(newProps.style);
@@ -525,7 +567,7 @@ export class DefineReactAdapter {
   buildComponent(
     node: CNode | CRootNode | string,
     {
-      $$context = {},
+      $$context = { staticState: {} },
     }: {
       $$context: ContextType;
       idx?: number;

@@ -10,12 +10,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-} from '@dnd-kit/sortable';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { getRandomStr } from '@chameleon/model';
 import styles from './style.module.scss';
@@ -24,6 +19,7 @@ export type SortItemOrderProps = {
   list: any[];
   keyPaths: string[];
   label: string;
+  sortLabelKey?: string;
   onValueChange?: (newList: any[]) => void;
 } & ModalProps;
 
@@ -32,6 +28,7 @@ export const SortItemOrderModal = ({
   onValueChange,
   keyPaths,
   label,
+  sortLabelKey,
   ...modalProps
 }: SortItemOrderProps) => {
   const [listValue, setListValue] = useState<{ val: any; id: string }[]>([]);
@@ -103,14 +100,10 @@ export const SortItemOrderModal = ({
       }}
     >
       <div className={styles.sortModalBox}>
-        <DndContext
-          sensors={sensors}
-          onDragEnd={handleDragEnd}
-          modifiers={[restrictToVerticalAxis]}
-        >
+        <DndContext sensors={sensors} onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
           <SortableContext items={listValue}>
-            {listValue.map(({ id }, index) => {
-              return <SortableItem key={id} id={id} index={index} />;
+            {listValue.map(({ id, val }, index) => {
+              return <SortableItem key={id} id={id} index={index} label={val[sortLabelKey || '']} />;
             })}
           </SortableContext>
         </DndContext>
@@ -119,13 +112,7 @@ export const SortItemOrderModal = ({
   );
 };
 
-const ModalDragView = ({
-  modal,
-  transform,
-}: {
-  modal: React.ReactNode;
-  transform: Transform;
-}) => {
+const ModalDragView = ({ modal, transform }: { modal: React.ReactNode; transform: Transform }) => {
   const id = useRef(getRandomStr());
   const {
     setNodeRef,
@@ -158,22 +145,16 @@ const ModalDragView = ({
   );
 };
 
-const SortableItem = (props: { id: string; index: string | number }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: props.id });
+const SortableItem = (props: { id: string; index: string | number; label?: string }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: props.id });
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
   };
+  const labelText = props.label || `Ele ${props.index}`;
   return (
-    <div
-      className={styles.dragItem}
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-    >
-      Ele {props.index}
+    <div className={styles.dragItem} ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      {labelText}
     </div>
   );
 };

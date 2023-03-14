@@ -136,6 +136,23 @@ export const BasePage: CPageDataType = {
                           name: '',
                         },
                         condition: true,
+                        classNames: [
+                          {
+                            name: '123',
+                            status: {
+                              type: 'EXPRESSION',
+                              value:
+                                '$$context.stateManager.bannerState.state.currentPage',
+                            },
+                          },
+                          {
+                            name: 'leftBox',
+                            status: {
+                              type: 'EXPRESSION',
+                              value: 'true',
+                            },
+                          },
+                        ],
                       },
                     ],
                     configure: {
@@ -514,6 +531,16 @@ export const BasePage: CPageDataType = {
           advanceSetter: {},
         },
         title: 'bg-CContainer',
+        classNames: [
+          {
+            name: 'qwerty',
+            status: {
+              type: 'EXPRESSION',
+              value:
+                '$$context.stateManager.bannerState.state.currentPage === 1',
+            },
+          },
+        ],
       },
     ],
   },
