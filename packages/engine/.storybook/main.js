@@ -1,6 +1,5 @@
 const { mergeConfig } = require('vite');
 const viteConfig = require('../build.config').vite;
-console.log('🚀 ~ file: main.js:2 ~ viteConfig:', viteConfig.resolve);
 module.exports = {
   stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
   addons: ['@storybook/addon-links', '@storybook/addon-essentials', '@storybook/addon-interactions'],

@@ -96,10 +96,7 @@ export class DragAndDrop {
     });
   }
 
-  batchSensorEmit(
-    eventName: keyof SensorEventType,
-    eventObj: SensorEventType[keyof SensorEventType]
-  ) {
+  batchSensorEmit(eventName: keyof SensorEventType, eventObj: SensorEventType[keyof SensorEventType]) {
     const senors = this.senors;
     senors.forEach((sn) => {
       sn.emitter.emit(eventName, eventObj);
@@ -147,6 +144,10 @@ export class DragAndDrop {
       this.emitter.emit('onMouseMove', mouseMoveEventObj);
 
       const { sensor, pointer, event } = mouseMoveEventObj;
+      // 没有任何按键按下的 鼠标移动，直接返回
+      if (event.buttons === 0) {
+        return;
+      }
       if (this.currentState !== 'DRAGGING') {
         if (this.dragStartObj === null) {
           return;
@@ -157,10 +158,7 @@ export class DragAndDrop {
         const pointer1 = pointer;
         const pointer2 = this.dragStartObj.pointer;
         const SHAKE_DISTANCE = this.shakeDistance;
-        const isShaken =
-          Math.pow(pointer1.y - pointer2.y, 2) +
-            Math.pow(pointer1.x - pointer2.x, 2) >
-          SHAKE_DISTANCE;
+        const isShaken = Math.pow(pointer1.y - pointer2.y, 2) + Math.pow(pointer1.x - pointer2.x, 2) > SHAKE_DISTANCE;
         // 小于抖动距离，不是拖拽
         if (!isShaken) {
           return;
@@ -217,18 +215,14 @@ export class DragAndDrop {
     });
 
     // mouseup
-    const onMouseUp = ({
-      sensor,
-      event,
-      pointer,
-    }: SensorEventType['onMouseUp']) => {
+    const onMouseUp = ({ sensor, event, pointer }: SensorEventType['onMouseUp']) => {
       if (this.currentState === 'DRAGGING') {
         this.canTriggerClick = false;
         setTimeout(() => {
           this.canTriggerClick = true;
         }, 100);
-        this.currentState = 'NORMAL';
         const dragEndEventName = 'dragEnd';
+        this.currentState = 'NORMAL';
         const dragEndEventObj = {
           from: this.dragStartObj!.event,
           fromSensor: this.dragStartObj!.sensor,

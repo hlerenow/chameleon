@@ -343,11 +343,9 @@ export class DefineReactAdapter {
           })
           .filter(Boolean);
         const uniqueList = Array.from(new Set(list));
-        console.log('🚀 ~ file: adapterReact.ts:345 ~ DynamicComponent ~ connectStore ~ uniqueList:', uniqueList, nodeModel.id);
         // TODO: list need now repeat
         const disposeList: (() => void)[] = [];
         if (uniqueList.length) {
-          debugger;
           uniqueList.forEach((storeName) => {
             const store = that.storeManager.getStore(storeName);
             if (!store) {
