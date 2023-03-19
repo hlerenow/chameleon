@@ -67,11 +67,12 @@ export type MaterialAssetPackage = {
 };
 
 export type CSSValue = {
-  state: 'normal' | 'hover' | 'active' | 'focus' | 'first' | 'last' | 'even' | 'odd';
+  /**  'normal' | 'hover' | 'active' | 'focus' etc */
+  state: string;
   media: {
     type: 'max-width';
     value: string;
-    css: Record<string, string>;
+    style: Record<string, string>;
   }[];
   style: Record<string, string>;
 };

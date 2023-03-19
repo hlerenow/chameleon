@@ -1,7 +1,12 @@
-export const waitReactUpdate = () => {
+/**
+ *
+ * @param time 毫秒
+ * @returns
+ */
+export const waitReactUpdate = (time?: number) => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve('ok');
-    }, 50);
+    }, time ?? 16);
   });
 };

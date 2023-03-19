@@ -1,35 +1,43 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { CMaterialPropsType, CNode, CNodePropsTypeEnum, CProp, isExpression } from '@chameleon/model';
+import { CNode } from '@chameleon/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';
 
 import styles from './style.module.scss';
-import { CSSPropertiesEditor, CSSPropertiesEditorRef } from '../../component/CSSPropertiesEditor';
+import { CSSPropertiesEditorRef } from '../../component/CSSPropertiesEditor';
 import {
   CSSPropertiesVariableBindEditor,
   CSSPropertiesVariableBindEditorRef,
 } from '../../component/CSSPropertiesVariableBindEditor';
 import { Collapse } from 'antd';
 import { ClassNameEditor } from '@/component/ClassNameEditor';
-import { CSSEditor } from '@/component/CSSEditor';
-import { formatCSSProperty, StyleArr, styleArr2Obj } from '@/utils/css';
+import { CSSEditor, CSSEditorRef, CSSVal } from '@/component/CSSEditor';
+import { formatCSSProperty, formatCssToNodeVal, formatNodeValToEditor, StyleArr, styleArr2Obj } from '@/utils/css';
 
 export const VisualPanelPlus = (props: { node: CNode; pluginCtx: CPluginCtx }) => {
   const formRef = useRef<CSSPropertiesVariableBindEditorRef>(null);
   const { node } = props;
-  const cssEditorRef = useRef<CSSPropertiesEditorRef>(null);
-  const [style, setStyle] = useState<Record<string, string>>({});
+  const cssPropertyEditorRef = useRef<CSSPropertiesEditorRef>(null);
+  const cssEditorRef = useRef<CSSEditorRef>(null);
+  const [style, setStyle] = useState<Record<string, any>>({});
   const formatStyle = useMemo(() => {
     return formatCSSProperty(style);
   }, [style]);
 
+  const lastNode = useRef<CNode>();
   useEffect(() => {
     const handel = () => {
-      const newStyle = node.getPlainProps?.()['style'] || {};
+      if (lastNode.current?.id === node.id) {
+        return;
+      }
+      lastNode.current = node;
+      const newStyle = node.value.style || {};
       setStyle(newStyle);
       const { normalProperty, expressionProperty } = formatCSSProperty(newStyle);
-      cssEditorRef.current?.setValue(normalProperty);
+      cssPropertyEditorRef.current?.setValue(normalProperty);
       formRef.current?.setValue(expressionProperty);
+      const fCss = formatNodeValToEditor(node.value.css);
+      cssEditorRef.current?.setValue(fCss);
     };
     handel();
     node.emitter.on('onNodeChange', handel);
@@ -42,15 +50,13 @@ export const VisualPanelPlus = (props: { node: CNode; pluginCtx: CPluginCtx }) =
     // merge style
     const newStyle = styleArr2Obj([...styleArr]);
     setStyle(newStyle);
-    if (node.value.props.style) {
-      node.value.props.style.updateValue(newStyle);
-    } else {
-      node.value.props.style = new CProp('style', newStyle, {
-        parent: node,
-        materials: node.materialsModel,
-      });
-      node.updateValue();
-    }
+    node.value.style = newStyle;
+    node.updateValue();
+  };
+
+  const onUpdateCss = (val: CSSVal) => {
+    node.value.css = formatCssToNodeVal(node.id, val);
+    node.updateValue();
   };
 
   return (
@@ -80,31 +86,12 @@ export const VisualPanelPlus = (props: { node: CNode; pluginCtx: CPluginCtx }) =
             ref={formRef}
             initialValue={formatStyle.expressionProperty}
             onValueChange={(val) => {
-              console.log('🚀 ~ file: index.tsx:128 ~ VisualPanelPlus ~ val:', val);
               onUpdateStyle([...formatStyle.normalProperty, ...val]);
             }}
           />
         </Collapse.Panel>
       </Collapse>
-      <CSSEditor />
-      <Collapse
-        defaultActiveKey={['origin-css-edit']}
-        bordered={false}
-        style={{
-          marginBottom: '10px',
-        }}
-      >
-        <Collapse.Panel header={<span className={styles.header}>CSS Source</span>} key="origin-css-edit">
-          <CSSPropertiesEditor
-            key={node.id}
-            ref={cssEditorRef}
-            onValueChange={(val) => {
-              onUpdateStyle([...val, ...formatStyle.expressionProperty]);
-            }}
-            initialValue={formatStyle.normalProperty}
-          />
-        </Collapse.Panel>
-      </Collapse>
+      <CSSEditor handler={cssEditorRef} onValueChange={onUpdateCss} />
     </div>
   );
 };

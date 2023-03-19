@@ -89,7 +89,6 @@ const App = () => {
       });
 
       boxSensor.emitter.on('dragStart', (eventObj) => {
-        console.log('🚀 ~ file: dev.tsx:92 ~ boxSensor.emitter.on ~ eventObj', eventObj.extraData?.startNode.value.componentName);
         setGhostView(<div>{eventObj.extraData?.startNode.value.componentName}</div>);
         if (eventObj.currentSensor === boxSensor) {
           layoutRef.current?.clearSelectNode();

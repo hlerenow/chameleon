@@ -140,7 +140,8 @@ export type CNodeDataType = {
     };
   };
   classNames?: ClassNameType[];
-  css?: CSSType[];
+  css?: CSSType;
+  style?: Record<string, string | JSExpressionPropType>;
   refId?: string;
   // 逻辑编排使用
   onEvents?: Record<
@@ -186,6 +187,7 @@ export const CNodeDataStructDescribe: any = object({
   }),
   configure: optional(any()),
   css: optional(any()),
+  style: optional(any()),
   classNames: optional(array(any())),
   refId: optional(string()),
   extra: optional(record(any(), any())),

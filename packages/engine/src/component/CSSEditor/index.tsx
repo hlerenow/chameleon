@@ -1,14 +1,9 @@
+import { waitReactUpdate } from '@/utils';
 import { formatCSSProperty, StyleArr, styleArr2Obj } from '@/utils/css';
-import {
-  CloseCircleOutlined,
-  CloseOutlined,
-  MinusCircleOutlined,
-  MinusOutlined,
-  PlusOutlined,
-} from '@ant-design/icons';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Card, Collapse, Dropdown, Segmented, Space } from 'antd';
 import CheckableTag from 'antd/es/tag/CheckableTag';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { MutableRefObject, Ref, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CSSPropertiesEditor, CSSPropertiesEditorRef } from '../CSSPropertiesEditor';
 import styles from './style.module.scss';
 // state: 'normal' | 'hover' | 'active' | 'focus' | 'first' | 'last' | 'even' | 'odd';
@@ -39,7 +34,7 @@ type MediaQueryItem = {
   label: string;
 };
 
-type CSSVal = Partial<
+export type CSSVal = Partial<
   Record<
     DomCSSStatusType,
     Record<
@@ -50,7 +45,17 @@ type CSSVal = Partial<
   >
 >;
 
-export const CSSEditor = () => {
+export type CSSEditorRef = {
+  setValue: (val: CSSVal) => void;
+};
+
+export type CSSEditorProps = {
+  onValueChange?: (val: CSSVal) => void;
+  initialValue?: CSSVal;
+  handler?: MutableRefObject<CSSEditorRef | null>;
+};
+
+export const CSSEditor = (props: CSSEditorProps) => {
   const [selectedStateTag, setSelectedStateTag] = useState<DomCSSStatusType>('normal');
   const [mediaQueryList] = useState<MediaQueryItem[]>([
     {
@@ -86,13 +91,7 @@ export const CSSEditor = () => {
     });
   }, [domStatusList]);
 
-  const [cssVal, setCssVal] = useState<CSSVal>({
-    normal: {
-      normal: {
-        border: '1px solid red',
-      },
-    },
-  });
+  const [cssVal, setCssVal] = useState<CSSVal>(props.initialValue ?? {});
 
   const currentCssStateVal = useMemo(() => {
     const res = cssVal?.[selectedStateTag];
@@ -104,9 +103,9 @@ export const CSSEditor = () => {
       newVal[key] = formatCSSProperty(res[key] || {}).normalProperty;
     });
     return newVal;
-  }, [selectedStateTag]);
+  }, [selectedStateTag, cssVal]);
 
-  const initVal = () => {
+  const initVal = useCallback(() => {
     Object.keys(cssPropertyRefMap.current).forEach((key) => {
       const ref = cssPropertyRefMap.current?.[key];
       const cssVal = currentCssStateVal[key] || [];
@@ -114,20 +113,36 @@ export const CSSEditor = () => {
         ref.setValue(cssVal);
       }
     });
-  };
+  }, [currentCssStateVal]);
+  const initRef = useRef<() => void>();
+  initRef.current = initVal;
+
+  if (props.handler) {
+    props.handler.current = {
+      setValue: async (newVal) => {
+        setCssVal(newVal);
+        await waitReactUpdate();
+        initRef.current?.();
+      },
+    };
+  }
+
   // 初始化赋值
   useEffect(() => {
     initVal();
-  }, []);
+  }, [selectedStateTag]);
 
   const updateCssVal = useCallback(
     (mediaKey: string, val: StyleArr) => {
       console.log(cssVal, selectedStateTag, mediaKey, val);
       const newVal = {
         ...cssVal,
-        [mediaKey]: styleArr2Obj(val),
+        [selectedStateTag]: {
+          ...(cssVal[selectedStateTag] || {}),
+          [mediaKey]: styleArr2Obj(val),
+        },
       };
-      console.log('🚀 ~ file: index.tsx:127 ~ CSSEditor ~ newVal:', newVal);
+      props.onValueChange?.(newVal);
     },
     [cssVal, selectedStateTag]
   );
@@ -137,7 +152,7 @@ export const CSSEditor = () => {
       <Card
         size="small"
         type="inner"
-        title="Element State"
+        title={<span style={{ fontSize: '12px' }}>Element State</span>}
         extra={
           <Dropdown
             menu={{
