@@ -66,16 +66,15 @@ export type MaterialAssetPackage = {
   version?: string;
 };
 
-export type PseudoCSS = {
+export type CSSValue = {
   state: 'normal' | 'hover' | 'active' | 'focus' | 'first' | 'last' | 'even' | 'odd';
   media: {
     type: 'max-width';
     value: string;
+    css: Record<string, string>;
   }[];
   style: Record<string, string>;
 };
-
-export type CSSValue = PseudoCSS;
 
 export type CSSType = {
   class: string;

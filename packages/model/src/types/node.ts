@@ -16,7 +16,7 @@ import {
 } from 'superstruct';
 import { CNodePropsTypeEnum, SlotRenderType } from '../const/schema';
 import { isPlainObject } from '../util/lodash';
-import { CSSType, CSSValue } from './base';
+import { CSSType } from './base';
 import { CPageDataType } from './page';
 
 export type NormalPropType = string | boolean | number | Record<string, any>;

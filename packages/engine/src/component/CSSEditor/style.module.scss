@@ -1,0 +1,22 @@
+.stateTag {
+  position: relative;
+  .stateTagClose {
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    background-color: white;
+    color: #4d4d4d;
+    opacity: 0;
+    font-size: 20px;
+    transform: scale(0.6);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+  &:hover {
+    .stateTagClose {
+      opacity: 1;
+    }
+  }
+}
