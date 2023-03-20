@@ -93,6 +93,11 @@ export const CSSEditor = (props: CSSEditorProps) => {
 
   const [cssVal, setCssVal] = useState<CSSVal>(props.initialValue ?? {});
 
+  useEffect(() => {
+    const list = Object.keys(cssVal);
+    setDomStatusList(list);
+  }, [cssVal]);
+
   const currentCssStateVal = useMemo(() => {
     const res = cssVal?.[selectedStateTag];
     if (!res) {
@@ -152,7 +157,7 @@ export const CSSEditor = (props: CSSEditorProps) => {
       <Card
         size="small"
         type="inner"
-        title={<span style={{ fontSize: '12px' }}>Element State</span>}
+        title={<span style={{ fontSize: '12px' }}>CSS</span>}
         extra={
           <Dropdown
             menu={{
@@ -215,7 +220,7 @@ export const CSSEditor = (props: CSSEditorProps) => {
             marginBottom: '10px',
           }}
         >
-          <Collapse.Panel header={<span className={styles.header}>CSS</span>} key="normal">
+          <Collapse.Panel header={<span className={styles.header}>Normal</span>} key="normal">
             <CSSPropertiesEditor
               ref={(ref) => {
                 cssPropertyRefMap.current['normal'] = ref;

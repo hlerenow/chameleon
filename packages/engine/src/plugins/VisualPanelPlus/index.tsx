@@ -4,7 +4,7 @@ import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';
 
 import styles from './style.module.scss';
-import { CSSPropertiesEditorRef } from '../../component/CSSPropertiesEditor';
+import { CSSPropertiesEditor, CSSPropertiesEditorRef } from '../../component/CSSPropertiesEditor';
 import {
   CSSPropertiesVariableBindEditor,
   CSSPropertiesVariableBindEditorRef,
@@ -73,7 +73,6 @@ export const VisualPanelPlus = (props: { node: CNode; pluginCtx: CPluginCtx }) =
           }}
         />
       </div>
-
       <Collapse
         defaultActiveKey={['origin-css-edit']}
         bordered={false}
@@ -81,7 +80,25 @@ export const VisualPanelPlus = (props: { node: CNode; pluginCtx: CPluginCtx }) =
           marginBottom: '10px',
         }}
       >
-        <Collapse.Panel header={<span className={styles.header}>CSS Variable Bind</span>} key="origin-css-edit">
+        <Collapse.Panel header={<span className={styles.header}>Style</span>} key="origin-css-edit">
+          <CSSPropertiesEditor
+            key={node.id}
+            ref={cssPropertyEditorRef}
+            onValueChange={(val) => {
+              onUpdateStyle([...val, ...formatStyle.expressionProperty]);
+            }}
+            initialValue={formatStyle.normalProperty}
+          />
+        </Collapse.Panel>
+      </Collapse>
+      <Collapse
+        defaultActiveKey={['origin-css-edit']}
+        bordered={false}
+        style={{
+          marginBottom: '10px',
+        }}
+      >
+        <Collapse.Panel header={<span className={styles.header}>Style Variable Bind</span>} key="origin-css-edit">
           <CSSPropertiesVariableBindEditor
             ref={formRef}
             initialValue={formatStyle.expressionProperty}

@@ -38,7 +38,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
       panels: [
         // AdvancePanelConfig,
         PropertyPanelConfig,
-        VisualPanelConfig,
+        // VisualPanelConfig,
         VisualPanelPlusConfig,
         ComponentStatePanelConfig,
         // {
@@ -157,7 +157,9 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
           }}
           items={displayPanels.map((p) => {
             return {
-              label: <div style={{ padding: '0 10px' }}>{typeof p.name === 'string' ? p.name : p.name?.(panelParams)}</div>,
+              label: (
+                <div style={{ padding: '0 10px' }}>{typeof p.name === 'string' ? p.name : p.name?.(panelParams)}</div>
+              ),
               key: p.key,
               children: p.view(panelParams),
             };
