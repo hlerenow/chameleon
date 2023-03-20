@@ -21,7 +21,7 @@ import {
   canAcceptsRef,
   compWrapper,
   convertCodeStringToFunction,
-  formatSourceStyle,
+  formatSourceStylePropertyName,
   getObjFromArrayMap,
   runExpression,
   shouldConstruct,
@@ -451,9 +451,13 @@ export class DefineReactAdapter {
             const finalClsx = `${newProps.className ?? ''} ${classNames.join(' ')}`.trim();
             newProps.className = finalClsx;
 
+            // 处理 style
+            const newStyle: Record<string, any> = that.transformProps(nodeModel.value.style, {
+              $$context: loopContext,
+            });
             // font-size to fontSize
-            if (newProps.style) {
-              newProps.style = formatSourceStyle(newProps.style);
+            if (nodeModel.value.style) {
+              newProps.style = formatSourceStylePropertyName(newStyle || {});
             }
 
             const { children } = newProps;
@@ -530,8 +534,14 @@ export class DefineReactAdapter {
         const finalClsx = `${newProps.className ?? ''} ${classNames.join(' ')}`.trim();
         newProps.className = finalClsx;
         // font-size to fontSize
-        if (newProps.style) {
-          newProps.style = formatSourceStyle(newProps.style);
+
+        // 处理 style
+        const newStyle: Record<string, any> = that.transformProps(nodeModel.value.style, {
+          $$context: newContext,
+        });
+        // font-size to fontSize
+        if (nodeModel.value.style) {
+          newProps.style = formatSourceStylePropertyName(newStyle || {});
         }
 
         // handle children

@@ -96,7 +96,7 @@ export const getObjFromArrayMap = (args: any[], argsName: string[]) => {
   return params;
 };
 
-export const formatSourceStyle = (style: Record<string, string>) => {
+export const formatSourceStylePropertyName = (style: Record<string, string>) => {
   const newStyle: Record<string, string> = {};
   Object.keys(style).forEach((key) => {
     // 处理 css 前缀
