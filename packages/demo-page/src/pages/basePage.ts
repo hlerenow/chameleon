@@ -199,21 +199,22 @@ export const BasePage: CPageDataType = {
                     refId: 'bannerBox',
                   },
                   {
+                    style: {
+                      width: '50px',
+                      height: '50px',
+                      'background-color': 'rgba(0,0,0,0.5)',
+                      position: 'absolute',
+                      'z-index': '999',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      cursor: 'pointer',
+                      'border-radius': '4px',
+                      left: '10px',
+                    },
                     props: {
                       width: '100px',
                       height: '100px',
-                      style: {
-                        width: '50px',
-                        height: '50px',
-                        'background-color': 'rgba(0,0,0,0.5)',
-                        position: 'absolute',
-                        'z-index': '999',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        cursor: 'pointer',
-                        'border-radius': '4px',
-                        left: '10px',
-                      },
+
                       $$attributes: [
                         {
                           key: 'onClick',
@@ -247,21 +248,22 @@ export const BasePage: CPageDataType = {
                     title: 'array-left',
                   },
                   {
+                    style: {
+                      width: '50px',
+                      height: '50px',
+                      'background-color': 'rgba(0,0,0,0.5)',
+                      position: 'absolute',
+                      'z-index': '999',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      right: '10px',
+                      cursor: 'pointer',
+                      'border-radius': '4px',
+                    },
                     props: {
                       width: '100px',
                       height: '100px',
-                      style: {
-                        width: '50px',
-                        height: '50px',
-                        'background-color': 'rgba(0,0,0,0.5)',
-                        position: 'absolute',
-                        'z-index': '999',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        right: '10px',
-                        cursor: 'pointer',
-                        'border-radius': '4px',
-                      },
+
                       $$attributes: [
                         {
                           key: 'onClick',
@@ -287,37 +289,38 @@ export const BasePage: CPageDataType = {
                     id: 'je9fi5',
                   },
                   {
+                    style: {
+                      position: 'absolute',
+                      bottom: '10px',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      height: '20px',
+                      display: 'flex',
+                      'align-items': 'center',
+                      'background-color': 'rgba(0,0,0,0.5)',
+                      'border-radius': '10px',
+                      padding: '0 10px',
+                      'justify-content': 'space-around',
+                      width: '80px',
+                    },
                     props: {
                       width: '100px',
                       height: '100px',
-                      style: {
-                        position: 'absolute',
-                        bottom: '10px',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        height: '20px',
-                        display: 'flex',
-                        'align-items': 'center',
-                        'background-color': 'rgba(0,0,0,0.5)',
-                        'border-radius': '10px',
-                        padding: '0 10px',
-                        'justify-content': 'space-around',
-                        width: '80px',
-                      },
                     },
                     componentName: 'CContainer',
                     id: 'bl87pg',
                     children: [
                       {
+                        style: {
+                          width: '10px',
+                          height: '10px',
+                          background: 'rgba(200,200,200,0.5)',
+                          'border-radius': '4px',
+                        },
                         props: {
                           width: '100px',
                           height: '100px',
-                          style: {
-                            width: '10px',
-                            height: '10px',
-                            background: 'rgba(200,200,200,0.5)',
-                            'border-radius': '4px',
-                          },
+
                           $$attributes: [
                             {
                               key: 'onClick',
@@ -364,19 +367,20 @@ export const BasePage: CPageDataType = {
                         condition: true,
                         children: [
                           {
+                            style: {
+                              width: '10px',
+                              height: '10px',
+                              'border-radius': '4px',
+                              background: {
+                                type: 'EXPRESSION',
+                                value:
+                                  "$$context.stateManager.bannerState.state.currentPage === $$context.loopData.index ? 'white' : 'rgba(0,0,0,0.3)'",
+                              },
+                            },
                             props: {
                               width: '100px',
                               height: '100px',
-                              style: {
-                                width: '10px',
-                                height: '10px',
-                                'border-radius': '4px',
-                                background: {
-                                  type: 'EXPRESSION',
-                                  value:
-                                    "$$context.stateManager.bannerState.state.currentPage === $$context.loopData.index ? 'white' : 'rgba(0,0,0,0.3)'",
-                                },
-                              },
+
                               $$attributes: [
                                 {
                                   key: 'onClick',
@@ -511,31 +515,32 @@ export const BasePage: CPageDataType = {
             ],
           },
           {
+            style: {
+              margin: '20px 40px',
+              'border-radius': '20px',
+              overflow: 'hidden',
+              'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
+              'Webkit-backface-visibility': 'hidden',
+            },
             props: {
               width: '100px',
               height: '100px',
-              style: {
-                margin: '20px 40px',
-                'border-radius': '20px',
-                overflow: 'hidden',
-                'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
-                'Webkit-backface-visibility': 'hidden',
-              },
             },
             componentName: 'CContainer',
             id: 'ekv045',
             children: [
               {
+                style: {
+                  margin: '0 auto',
+                  display: 'block',
+                },
                 props: {
                   width: '100%',
                   height: '',
                   src: 'https://vjs.zencdn.net/v/oceans.mp4',
                   autoPlay: '',
                   controls: true,
-                  style: {
-                    margin: '0 auto',
-                    display: 'block',
-                  },
+
                   $$attributes: [],
                 },
                 componentName: 'CVideo',
