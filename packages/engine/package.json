@@ -4,7 +4,7 @@
   "scripts": {
     "start": "build-script",
     "build": "build-script --build",
-    "build:app": "export NODE_OPTIONS=--max-old-space-size=32768 && cross-env BUILD_TYPE=APP build-script --build",
+    "build:app": "npx lerna run build & export NODE_OPTIONS=--max-old-space-size=32768 && cross-env BUILD_TYPE=APP build-script --build",
     "build:app:analyze": "cross-env BUILD_TYPE=APP ANALYZE=1 build-script --build",
     "copyAssets": "sh ./scripts/copyAssets.sh",
     "prestart": "yarn copyAssets",
