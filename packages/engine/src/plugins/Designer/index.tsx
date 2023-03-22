@@ -29,14 +29,16 @@ export const DesignerPlugin: CPlugin = (ctx) => {
         updatePage: (page: CPageDataType | CPage) => {
           designerRef.current?.layoutRef.current?.designRenderRef?.current?.rerender(page);
         },
-        reload: ({ assets }) => {
+        reload: ({ assets } = {}) => {
           designerRef.current?.reloadRender({ assets });
         },
         getComponentInstances: (id: string) => {
           return designerRef.current?.layoutRef.current?.designRenderRef.current?.getInstancesById(id) || [];
         },
         getDynamicComponentInstances: (id: string) => {
-          const map = designerRef.current?.layoutRef.current?.designRenderRef.current?.renderRef.current?.dynamicComponentInstanceMap;
+          const map =
+            designerRef.current?.layoutRef.current?.designRenderRef.current?.renderRef.current
+              ?.dynamicComponentInstanceMap;
           return map?.get(id) || [];
         },
       } as DesignerExports;
@@ -50,7 +52,7 @@ export const DesignerPlugin: CPlugin = (ctx) => {
 };
 
 export type DesignerExports = {
-  reload: (params: { assets: AssetPackage[] }) => void;
+  reload: (params?: { assets?: AssetPackage[] }) => void;
   getDnd: () => DragAndDrop;
   selectNode: (nodeId: string) => void;
   updatePage: (page: CPageDataType) => void;

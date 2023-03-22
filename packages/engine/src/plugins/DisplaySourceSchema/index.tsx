@@ -1,10 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Modal } from 'antd';
-import {
-  MonacoEditor,
-  MonacoEditorInstance,
-} from '../../component/MonacoEditor';
-import { CNode, CPage } from '@chameleon/model';
+import { MonacoEditor, MonacoEditorInstance } from '../../component/MonacoEditor';
+import { CPage } from '@chameleon/model';
 import { waitReactUpdate } from '../../utils';
 import { EnginContext } from '../../Engine';
 import { DesignerExports } from '../Designer';
@@ -45,18 +42,14 @@ export const DisplaySourceSchema = (props: DisplaySourceSchemaProps) => {
           await waitReactUpdate();
           const workbench = engineCtx.engine.getWorkbench();
           const currentSelectNode = workbench?.currentSelectNode;
-          const designerPluginInstance = await engineCtx.pluginManager.get(
-            'Designer'
-          );
+          const designerPluginInstance = await engineCtx.pluginManager.get('Designer');
           const nodeId = currentSelectNode?.id || '';
           designerPluginInstance?.ctx.emitter.on('ready', () => {
-            const designerExports: DesignerExports =
-              designerPluginInstance.exports;
+            const designerExports: DesignerExports = designerPluginInstance.exports;
             designerExports.selectNode(nodeId);
           });
           if (designerPluginInstance) {
-            const designerExports: DesignerExports =
-              designerPluginInstance.exports;
+            const designerExports: DesignerExports = designerPluginInstance.exports;
             designerExports.selectNode(nodeId);
           }
         }}

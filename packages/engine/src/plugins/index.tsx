@@ -4,6 +4,7 @@ import { DesignerPlugin } from './Designer';
 import { OutlineTreePlugin } from './OutlineTree';
 import { RightPanelPlugin } from './RightPanel';
 import { GlobalStatePanelPlugin } from './GlobalStatePanel';
+import { HistoryPlugin } from './History';
 
 export const DEFAULT_PLUGIN_LIST: CPlugin[] = [
   DesignerPlugin,
@@ -11,6 +12,7 @@ export const DEFAULT_PLUGIN_LIST: CPlugin[] = [
   ComponentLibPlugin,
   GlobalStatePanelPlugin,
   RightPanelPlugin,
+  HistoryPlugin,
 ];
 
 export default {
@@ -18,4 +20,5 @@ export default {
   ComponentLibPlugin,
   RightPanelPlugin,
   GlobalStatePanelPlugin,
+  HistoryPlugin,
 };

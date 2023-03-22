@@ -10,6 +10,7 @@ import { DesignerExports } from '../../../plugins/Designer';
 import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 import { AssetPackage } from '@chameleon/model';
 import { InnerComponentMeta } from '../../../material/innerMaterial';
+import { RollbackOutlined } from '@ant-design/icons';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOM;
@@ -85,9 +86,6 @@ export const App = () => {
 
     reloadPage();
 
-    // designer?.ctx.emitter.on('onDrop', (e) => {
-    //   console.log('out onDrop', e);
-    // });
     const workbench = ctx.engine.getWorkbench();
 
     workbench?.replaceTopBarView(
@@ -104,6 +102,29 @@ export const App = () => {
         <a target="_blank" href="https://github.com/hlerenow/chameleon" rel="noreferrer">
           <Button style={{ marginRight: '10px' }}>Github </Button>
         </a>
+
+        <Button
+          style={{ marginRight: '10px' }}
+          onClick={async () => {
+            const res = await ctx.pluginManager.get('History');
+            res?.exports.preStep();
+          }}
+        >
+          <RollbackOutlined />
+        </Button>
+        <Button
+          style={{ marginRight: '10px' }}
+          onClick={async () => {
+            const res = await ctx.pluginManager.get('History');
+            res?.exports.nextStep();
+          }}
+        >
+          <RollbackOutlined
+            style={{
+              transform: 'rotateY(180deg)',
+            }}
+          />
+        </Button>
 
         <DisplaySourceSchema pageModel={ctx.engine.pageModel} engineCtx={ctx}>
           <Button style={{ marginRight: '10px' }}>Source Code</Button>

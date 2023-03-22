@@ -1,3 +1,4 @@
+import Engine from '@/Engine';
 import { AssetPackage, CNode, CPage } from '@chameleon/model';
 import { i18n } from 'i18next';
 import mitt, { Emitter } from 'mitt';
@@ -24,13 +25,13 @@ type PluginManagerOptions = {
   pageModel: CPage;
   i18n: CustomI18n;
   assets: AssetPackage[];
+  engine: Engine;
 };
 
 export type CPluginCtx<C = any> = {
   globalEmitter: Emitter<any>;
   config: C;
   pluginManager: PluginManager;
-  getActiveNode: () => CNode | null;
   pluginReadyOk: () => void;
 } & PluginManagerOptions;
 
@@ -48,17 +49,18 @@ export class PluginManager {
   pageModel!: CPage;
   i18n: CustomI18n;
   assets: AssetPackage[];
+  engine: Engine;
 
-  constructor({ getWorkbench, emitter, pageModel, i18n, assets }: PluginManagerOptions) {
+  constructor({ getWorkbench, emitter, pageModel, i18n, assets, engine }: PluginManagerOptions) {
     this.getWorkbench = getWorkbench;
     this.emitter = emitter;
     this.pageModel = pageModel;
     this.i18n = i18n;
     this.assets = assets;
+    this.engine = engine;
   }
 
   createPluginCtx = () => {
-    const workbench = this.getWorkbench();
     const ctx: CPluginCtx = {
       globalEmitter: this.emitter,
       emitter: mitt(),
@@ -68,9 +70,7 @@ export class PluginManager {
       pageModel: this.pageModel,
       i18n: this.i18n,
       assets: this.assets,
-      getActiveNode: () => {
-        return workbench.currentSelectNode;
-      },
+      engine: this.engine,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       pluginReadyOk: () => {},
     };
@@ -86,15 +86,17 @@ export class PluginManager {
     } else {
       innerPlugin = plugin;
     }
-    ctx.pluginReadyOk = () => {
-      this.emitter.emit(`${innerPlugin.name}:ready`);
-    };
-    this.plugins.set(innerPlugin.name, {
+    const pluginCtx = {
       source: innerPlugin,
       ctx: ctx,
       exports: innerPlugin.exports?.(ctx) || {},
       ready: false,
-    });
+    };
+    ctx.pluginReadyOk = () => {
+      this.emitter.emit(`${innerPlugin.name}:ready`);
+      pluginCtx.ready = true;
+    };
+    this.plugins.set(innerPlugin.name, pluginCtx);
     await innerPlugin.init(ctx);
   }
 

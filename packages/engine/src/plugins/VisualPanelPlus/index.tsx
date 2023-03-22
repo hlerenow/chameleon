@@ -115,6 +115,6 @@ export const VisualPanelPlus = (props: { node: CNode; pluginCtx: CPluginCtx }) =
 
 export const VisualPanelPlusConfig: CRightPanelItem = {
   key: 'VisualPanelPlus',
-  name: 'VisualPanelPlus',
+  name: 'VisualPanel',
   view: ({ node, pluginCtx }) => <VisualPanelPlus node={node} pluginCtx={pluginCtx} />,
 };

@@ -105,8 +105,6 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       UIInstance: this,
     });
 
-    pluginCtx.pluginReadyOk();
-
     layoutInstance.dnd.emitter.on('click', ({ event }) => {
       const workbench = pluginCtx.getWorkbench();
       workbench.onGlobalClick(event);
@@ -115,6 +113,12 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     this.props.pluginCtx.pageModel.emitter.on('onPageChange', ({ node }) => {
       layoutRef.current?.designRenderRef?.current?.rerender(node);
     });
+
+    this.props.pluginCtx.pageModel.emitter.on('onReloadPage', ({ node }) => {
+      layoutRef.current?.designRenderRef?.current?.rerender(node);
+    });
+
+    pluginCtx.pluginReadyOk();
   }
 
   onSelectNode = (node: CNode | CRootNode | null) => {
@@ -122,9 +126,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       return;
     }
     const { pluginCtx } = this.props;
-    const workbench = pluginCtx.getWorkbench();
-
-    workbench.updateCurrentSelectNode(node as CNode);
+    pluginCtx.engine.updateCurrentSelectNode(node);
     const pageModel = this.props.pluginCtx.pageModel;
     const list = getCloseNodeList(node, 5);
     const { layoutRef } = this;

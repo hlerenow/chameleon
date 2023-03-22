@@ -156,7 +156,9 @@ export class CNode {
       ...this.export('design'),
       id: id || getRandomStr(),
     };
-    return new CNode(newData);
+    return new CNode(newData, {
+      materials: this.materialsModel,
+    });
   }
 
   updateValue(val?: Partial<CNodeModelDataType>) {

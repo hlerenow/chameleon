@@ -2,11 +2,7 @@ import React from 'react';
 import { Resizable, ResizeCallback } from 're-resizable';
 import styles from './style.module.scss';
 import { Button } from 'antd';
-import {
-  CloseOutlined,
-  DoubleRightOutlined,
-  PushpinOutlined,
-} from '@ant-design/icons';
+import { CloseOutlined, DoubleRightOutlined, PushpinOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
 import mitt, { Emitter } from 'mitt';
 import { CNode } from '@chameleon/model';
@@ -49,16 +45,11 @@ export type WorkbenchPropsType = {
   emitter: Emitter<any>;
 };
 
-export class Workbench extends React.Component<
-  WorkbenchPropsType,
-  WorkbenchStateType
-> {
+export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStateType> {
   emitter: Emitter<any>;
-  currentSelectNode: CNode | null;
   leftPanelContentRef: React.RefObject<HTMLDivElement>;
   constructor(props: WorkbenchPropsType) {
     super(props);
-    this.currentSelectNode = null;
     this.emitter = props.emitter || mitt();
     this.leftPanelContentRef = React.createRef<HTMLDivElement>();
     this.state = {
@@ -88,16 +79,8 @@ export class Workbench extends React.Component<
     });
   };
 
-  updateCurrentSelectNode(node: CNode) {
-    this.currentSelectNode = node;
-    this.emitter.emit('onSelectNodeChange', {
-      node,
-    });
-  }
-
   openLeftPanel = async (currentActiveLeftPanel?: string) => {
-    const newActive =
-      currentActiveLeftPanel || this.state.currentActiveLeftPanel;
+    const newActive = currentActiveLeftPanel || this.state.currentActiveLeftPanel;
     this.setState({
       leftBoxVisible: true,
       leftBoxSize: {
@@ -211,10 +194,7 @@ export class Workbench extends React.Component<
   };
 
   onGlobalClick = (e: MouseEvent) => {
-    if (
-      e.target &&
-      this.leftPanelContentRef.current?.contains(e.target as any)
-    ) {
+    if (e.target && this.leftPanelContentRef.current?.contains(e.target as any)) {
       return;
     }
 
@@ -247,17 +227,10 @@ export class Workbench extends React.Component<
       leftBoContentStyle.top = 0;
     }
 
-    const currentActivePluginObj = leftPanels.find(
-      (el) => el.name === currentActiveLeftPanel
-    );
+    const currentActivePluginObj = leftPanels.find((el) => el.name === currentActiveLeftPanel);
 
     const CurrentPluginRenderView = currentActivePluginObj?.render || null;
-    const {
-      onPluginIconClick,
-      toggleRightPanel,
-      toggleLeftPanel,
-      onLeftBoxResizeStop,
-    } = this;
+    const { onPluginIconClick, toggleRightPanel, toggleLeftPanel, onLeftBoxResizeStop } = this;
     return (
       <div className={styles.workbenchContainer}>
         <div className={styles.topToolBarBox}>
@@ -272,10 +245,7 @@ export class Workbench extends React.Component<
                   <div
                     key={pl.name}
                     onClick={() => onPluginIconClick(pl)}
-                    className={clsx([
-                      styles.pluginIconItem,
-                      currentActivePluginObj?.name === pl.name && styles.active,
-                    ])}
+                    className={clsx([styles.pluginIconItem, currentActivePluginObj?.name === pl.name && styles.active])}
                   >
                     {pl.icon}
                   </div>
@@ -296,8 +266,7 @@ export class Workbench extends React.Component<
               >
                 <div className={styles.pluginHeader}>
                   <span className={styles.pluginNameText}>
-                    {currentActivePluginObj?.title ||
-                      currentActivePluginObj?.name}
+                    {currentActivePluginObj?.title || currentActivePluginObj?.name}
                   </span>
                   <Button
                     className={clsx([styles.fixedBtn])}
@@ -309,22 +278,13 @@ export class Workbench extends React.Component<
                       });
                     }}
                   >
-                    <PushpinOutlined
-                      className={clsx([leftBoxFixed && styles.active])}
-                    />
+                    <PushpinOutlined className={clsx([leftBoxFixed && styles.active])} />
                   </Button>
-                  <Button
-                    className={styles.closeBtn}
-                    type="text"
-                    size="small"
-                    onClick={toggleLeftPanel}
-                  >
+                  <Button className={styles.closeBtn} type="text" size="small" onClick={toggleLeftPanel}>
                     <CloseOutlined />
                   </Button>
                 </div>
-                <div className={styles.pluginPanelBox}>
-                  {CurrentPluginRenderView}
-                </div>
+                <div className={styles.pluginPanelBox}>{CurrentPluginRenderView}</div>
               </Resizable>
             )}
           </div>
@@ -336,9 +296,7 @@ export class Workbench extends React.Component<
           </div>
           <div className={styles.rightResizeBox}>
             <div className={styles.arrowCursor} onClick={toggleRightPanel}>
-              <DoubleRightOutlined
-                className={clsx([!rightBoxVisible && styles.active])}
-              />
+              <DoubleRightOutlined className={clsx([!rightBoxVisible && styles.active])} />
             </div>
             <div
               style={{

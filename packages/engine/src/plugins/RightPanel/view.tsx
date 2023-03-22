@@ -1,4 +1,4 @@
-import { CNode } from '@chameleon/model';
+import { CNode, CRootNode } from '@chameleon/model';
 import { Empty, Tabs } from 'antd';
 import React from 'react';
 import { CPluginCtx } from '../../core/pluginManager';
@@ -6,10 +6,9 @@ import { PropertyPanelConfig } from '../PropertyPanel';
 import { ComponentStatePanelConfig } from '../ComponentStatePanel';
 import { AdvancePanelConfig } from '../AdvancePanel';
 import styles from './style.module.scss';
-import { VisualPanelConfig } from '../VisualPanel';
 import { VisualPanelPlusConfig } from '../VisualPanelPlus';
 
-export type RightPanelOptions = { node: CNode; pluginCtx: CPluginCtx };
+export type RightPanelOptions = { node: CNode | CRootNode; pluginCtx: CPluginCtx };
 
 export type CRightPanelItem = {
   key: string;
@@ -23,7 +22,7 @@ interface RightPanelProps {
 }
 
 interface RightPanelState {
-  node: CNode | null;
+  node: CNode | CRootNode | null;
   activeKey: string;
   panels: CRightPanelItem[];
   displayPanels: CRightPanelItem[];
@@ -33,7 +32,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
   constructor(props: RightPanelProps) {
     super(props);
     this.state = {
-      node: props.pluginCtx.getActiveNode(),
+      node: props.pluginCtx.engine.getActiveNode(),
       activeKey: 'Visual',
       panels: [
         // AdvancePanelConfig,
@@ -91,32 +90,45 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
     return val;
   };
 
+  onNodeChange = ({ node }: any) => {
+    console.log('🚀 ~ file: view.tsx:179 ~ RightPanel ~ node:', node);
+    const { pluginCtx } = this.props;
+    const { panels, activeKey } = this.state;
+    const panelParams = { node: node, pluginCtx };
+    const displayPanels = panels.filter((panel) => {
+      if (panel.show === undefined) {
+        return true;
+      } else {
+        return panel.show(panelParams);
+      }
+    });
+    const firstPanelKey = displayPanels.find((_, index) => index === 0)?.key || '';
+    const isExitsCurrent = displayPanels.find((el) => el.key === activeKey);
+    if (!isExitsCurrent) {
+      this.setState({
+        activeKey: firstPanelKey,
+        node,
+        displayPanels,
+      });
+    } else {
+      this.setState({
+        node,
+        displayPanels,
+      });
+    }
+  };
+
   componentDidMount(): void {
     const { pluginCtx } = this.props;
-    pluginCtx.globalEmitter.on('onSelectNodeChange', ({ node }: any) => {
-      const { panels, activeKey } = this.state;
-      const panelParams = { node: node, pluginCtx };
-      const displayPanels = panels.filter((panel) => {
-        if (panel.show === undefined) {
-          return true;
-        } else {
-          return panel.show(panelParams);
-        }
-      });
-      const firstPanelKey = displayPanels.find((_, index) => index === 0)?.key || '';
-      const isExitsCurrent = displayPanels.find((el) => el.key === activeKey);
-      if (!isExitsCurrent) {
-        this.setState({
-          activeKey: firstPanelKey,
-          node,
-          displayPanels,
-        });
-      } else {
-        this.setState({
-          node,
-          displayPanels,
-        });
-      }
+    pluginCtx.globalEmitter.on('onSelectNodeChange', this.onNodeChange);
+    pluginCtx.pageModel.emitter.on('*', () => {
+      const currentSelectNode = pluginCtx.engine.getActiveNode();
+
+      console.log(
+        '🚀 ~ file: view.tsx:126 ~ RightPanel ~ pluginCtx.pageModel.emitter.on ~ currentSelectNode:',
+        currentSelectNode
+      );
+      this.onNodeChange({ node: currentSelectNode });
     });
     const { displayPanels } = this.updatePanels();
     const firstPanelKey = displayPanels.find((_, index) => index === 0)?.key || '';

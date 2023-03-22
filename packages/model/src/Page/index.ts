@@ -80,6 +80,17 @@ export class CPage {
     });
   }
 
+  reloadPage(data: CPageDataType) {
+    const oldData = this.data;
+    this.rawData = JSON.parse(JSON.stringify(data));
+    this.data = parsePage(data, this, this.materialsModel);
+    this.emitter.emit('onReloadPage', {
+      value: this.data,
+      preValue: oldData,
+      node: this,
+    });
+  }
+
   get value() {
     return this.data;
   }

@@ -2,11 +2,7 @@ import { merge, omit } from 'lodash-es';
 import { CPage } from '..';
 import { ExportType, ExportTypeEnum } from '../../const/schema';
 import { CMaterials } from '../../Material';
-import {
-  CRootNodeDataType,
-  CRootNodeDataTypeDescribe,
-  InnerComponentNameEnum,
-} from '../../types/rootNode';
+import { CRootNodeDataType, CRootNodeDataTypeDescribe, InnerComponentNameEnum } from '../../types/rootNode';
 import { clearSchema, getNode, getRandomStr } from '../../util';
 import { checkComplexData } from '../../util/dataCheck';
 import { isArray, isPlainObject } from '../../util/lodash';
@@ -97,11 +93,8 @@ export class CRootNode {
   materialsModel: CMaterials;
   listenerHandle: (() => void)[];
   onChangeCbQueue: OnNodeChangeType[];
-  parent: CPage;
-  constructor(
-    data: any,
-    { parent, materials }: { parent: CPage; materials: CMaterials }
-  ) {
+  parent: CPage | null;
+  constructor(data: any, { parent, materials }: { parent: CPage | null; materials: CMaterials }) {
     this.materialsModel = materials;
     this.rawData = JSON.parse(JSON.stringify(data));
     this.data = parseSchema(data, this, materials);
@@ -186,5 +179,29 @@ export class CRootNode {
     finalRes = clearSchema(finalRes);
 
     return finalRes;
+  }
+
+  getPlainProps() {
+    const data = this.data;
+    const props: any = {};
+    Object.keys(data.props || {}).forEach((key) => {
+      props[key] = data.props[key].export('design');
+    });
+    return props;
+  }
+
+  destroy() {
+    this.listenerHandle.forEach((it) => it());
+  }
+
+  clone(id?: string) {
+    const newData = {
+      ...this.export('design'),
+      id: id || getRandomStr(),
+    };
+    return new CRootNode(newData, {
+      materials: this.materialsModel,
+      parent: null,
+    });
   }
 }

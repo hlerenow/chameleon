@@ -1,6 +1,6 @@
 import { LayoutDragAndDropExtraDataType, Sensor, SensorEventObjType } from '@chameleon/layout';
 import { DropPosType } from '@chameleon/layout/dist/components/DropAnchor/util';
-import { CNode, ExportTypeEnum } from '@chameleon/model';
+import { CNode, CRootNode, ExportTypeEnum } from '@chameleon/model';
 import React from 'react';
 import { WithTranslation } from 'react-i18next';
 import { CPluginCtx } from '../../../../core/pluginManager';
@@ -111,14 +111,14 @@ export class TreeView extends React.Component<
     workbench.emitter.on('leftPanelVisible', ({ visible, panelName }) => {
       if (visible && panelName === 'OutlineTree') {
         console.log('visible, panelName', visible, panelName);
-        const currentSelectNode = workbench.currentSelectNode;
+        const currentSelectNode = pluginCtx.engine.getActiveNode();
         if (currentSelectNode) {
           this.toSelectTreeNode(currentSelectNode);
         }
       }
     });
 
-    const currentSelectNode = workbench.currentSelectNode;
+    const currentSelectNode = pluginCtx.engine.getActiveNode();
     if (currentSelectNode) {
       this.toSelectTreeNode(currentSelectNode);
     }
@@ -127,7 +127,7 @@ export class TreeView extends React.Component<
     this.registerDragEvent();
   }
 
-  toSelectTreeNode = (node: CNode) => {
+  toSelectTreeNode = (node: CNode | CRootNode) => {
     const parentPaths = this.getParentKeyPaths(node.id);
     LOGGER.debug('onSelectNodeChange parent path', parentPaths, node);
     const newExpandKeys = Array.from(new Set([...this.state.expandKeys, ...parentPaths]));
@@ -339,11 +339,10 @@ export class TreeView extends React.Component<
             }
             const nodeId = sk?.[0] || '';
             const nn = pluginCtx.pageModel.getNode(nodeId);
-            const workbench = pluginCtx.getWorkbench();
             const designerExports: DesignerExports = designer.exports;
             designerExports.selectNode(nodeId);
             if (nn) {
-              workbench.updateCurrentSelectNode(nn as CNode);
+              pluginCtx.engine.updateCurrentSelectNode(nn);
             }
           },
           updateState: (newVal) => {

@@ -99,13 +99,6 @@ export class Render extends React.Component<
         }),
       });
     }
-
-    // 触发 model 变化
-    this.state.pageModel?.emitter.emit('onNodeChange', {
-      value: newPage as any,
-      preValue: this.state.pageModel as any,
-      node: this.state.pageModel as any,
-    });
   };
 }
 

@@ -4,13 +4,7 @@ import styles from './Engine.module.scss';
 import i18n from './i18n/index';
 import { CPlugin, PluginManager } from './core/pluginManager';
 import mitt, { Emitter } from 'mitt';
-import {
-  AssetPackage,
-  CMaterialType,
-  CPage,
-  CPageDataType,
-  EmptyPage,
-} from '@chameleon/model';
+import { AssetPackage, CMaterialType, CNode, CPage, CPageDataType, CRootNode, EmptyPage } from '@chameleon/model';
 
 export type EnginContext = {
   pluginManager: PluginManager;
@@ -27,6 +21,8 @@ export type EngineProps = {
 };
 
 class Engine extends React.Component<EngineProps> {
+  currentSelectNode: CNode | CRootNode | null;
+
   pluginManager!: PluginManager;
   workbenchRef = React.createRef<Workbench>();
   pageSchema: CPageDataType | undefined;
@@ -38,6 +34,8 @@ class Engine extends React.Component<EngineProps> {
     super(props);
     this.pageSchema = props.schema;
     this.material = props.material;
+    this.currentSelectNode = null;
+    (window as any).__CHAMELEON_ENG__ = this;
 
     try {
       this.pageModel = new CPage(this.pageSchema, {
@@ -52,11 +50,18 @@ class Engine extends React.Component<EngineProps> {
     this.emitter = mitt();
   }
 
+  updateCurrentSelectNode(node: CNode | CRootNode) {
+    this.currentSelectNode = node;
+    this.emitter.emit('onSelectNodeChange', {
+      node,
+    });
+  }
+
   async componentDidMount() {
     (window as any).__C_ENGINE__ = this;
-
     const plugins = this.props.plugins;
     this.pluginManager = new PluginManager({
+      engine: this,
       getWorkbench: () => this.workbenchRef.current!,
       emitter: this.emitter,
       pageModel: this.pageModel,
@@ -70,10 +75,29 @@ class Engine extends React.Component<EngineProps> {
 
     await Promise.all(pList);
 
+    this.pageModel.emitter.on('onReloadPage', () => {
+      if (!this.currentSelectNode) {
+        return;
+      }
+      const newSelectNode = this.pageModel.getNode(this.currentSelectNode?.id);
+      if (newSelectNode) {
+        this.updateCurrentSelectNode(newSelectNode);
+      }
+    });
+
     this.props.onReady?.({
       pluginManager: this.pluginManager,
       engine: this,
     });
+  }
+
+  getActiveNode() {
+    if (!this.currentSelectNode?.id) {
+      return null;
+    }
+    const node = this.pageModel.getNode(this.currentSelectNode.id);
+    this.currentSelectNode = node;
+    return node;
   }
 
   updatePage = (page: CPageDataType) => {
