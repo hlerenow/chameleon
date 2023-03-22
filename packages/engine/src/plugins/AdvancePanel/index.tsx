@@ -1,16 +1,12 @@
-import React, { useEffect, useRef } from 'react';
-import { CMaterialPropsType, CNode } from '@chameleon/model';
-import {
-  CustomSchemaForm,
-  CustomSchemaFormInstance,
-  CustomSchemaFormProps,
-} from '../../component/CustomSchemaForm';
+import { useEffect, useRef } from 'react';
+import { CMaterialPropsType, CNode, CRootNode } from '@chameleon/model';
+import { CustomSchemaForm, CustomSchemaFormInstance, CustomSchemaFormProps } from '../../component/CustomSchemaForm';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';
 import styles from './style.module.scss';
 
 export type AdvancePanelProps = {
-  node: CNode;
+  node: CNode | CRootNode;
   pluginCtx: CPluginCtx;
 };
 
@@ -136,13 +132,9 @@ const properties: CMaterialPropsType = [
 
 export const AdvancePanel = (props: AdvancePanelProps) => {
   const { node } = props;
-  const onSetterChange: CustomSchemaFormProps['onSetterChange'] = (
-    keyPaths,
-    setterName
-  ) => {
+  const onSetterChange: CustomSchemaFormProps['onSetterChange'] = (keyPaths, setterName) => {
     node.value.configure = node.value.configure || {};
-    node.value.configure.advanceSetter =
-      node.value.configure.advanceSetter || {};
+    node.value.configure.advanceSetter = node.value.configure.advanceSetter || {};
     node.value.configure.advanceSetter[keyPaths.join('.')] = {
       name: keyPaths.join('.'),
       setter: setterName,
@@ -169,12 +161,7 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
     formRef.current?.setFields(newValue);
   }, [node]);
 
-  const onValueChange = (newVal: {
-    refId: string;
-    loop: any;
-    condition: any;
-    stateName: any;
-  }) => {
+  const onValueChange = (newVal: { refId: string; loop: any; condition: any; stateName: any }) => {
     node.value.loop = newVal.loop;
     node.value.condition = newVal.condition;
     node.value.refId = newVal.refId;
@@ -200,7 +187,5 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
 export const AdvancePanelConfig: CRightPanelItem = {
   key: 'Advance',
   name: 'Advance',
-  view: ({ node, pluginCtx }) => (
-    <AdvancePanel node={node} pluginCtx={pluginCtx} />
-  ),
+  view: ({ node, pluginCtx }) => <AdvancePanel node={node} pluginCtx={pluginCtx} />,
 };

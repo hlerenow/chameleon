@@ -5,5 +5,6 @@ declare const _default: {
     ComponentLibPlugin: CPlugin;
     RightPanelPlugin: CPlugin;
     GlobalStatePanelPlugin: CPlugin;
+    HistoryPlugin: CPlugin;
 };
 export default _default;

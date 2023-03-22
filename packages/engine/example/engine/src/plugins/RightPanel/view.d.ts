@@ -1,8 +1,8 @@
-import { CNode } from '@chameleon/model';
+import { CNode, CRootNode } from '@chameleon/model';
 import React from 'react';
 import { CPluginCtx } from '../../core/pluginManager';
 export declare type RightPanelOptions = {
-    node: CNode;
+    node: CNode | CRootNode;
     pluginCtx: CPluginCtx;
 };
 export declare type CRightPanelItem = {
@@ -15,7 +15,7 @@ interface RightPanelProps {
     pluginCtx: CPluginCtx;
 }
 interface RightPanelState {
-    node: CNode | null;
+    node: CNode | CRootNode | null;
     activeKey: string;
     panels: CRightPanelItem[];
     displayPanels: CRightPanelItem[];
@@ -27,6 +27,7 @@ export declare class RightPanel extends React.Component<RightPanelProps, RightPa
         panels: CRightPanelItem[];
         displayPanels: CRightPanelItem[];
     };
+    onNodeChange: ({ node }: any) => void;
     componentDidMount(): void;
     render(): JSX.Element;
 }

@@ -1,19 +1,12 @@
 import React, { useEffect, useRef } from 'react';
-import { CNode } from '@chameleon/model';
+import { CNode, CRootNode } from '@chameleon/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';
 
 import styles from './style.module.scss';
-import {
-  CustomSchemaForm,
-  CustomSchemaFormInstance,
-  CustomSchemaFormProps,
-} from '../../component/CustomSchemaForm';
+import { CustomSchemaForm, CustomSchemaFormInstance, CustomSchemaFormProps } from '../../component/CustomSchemaForm';
 
-export const PropertyPanel = (props: {
-  node: CNode;
-  pluginCtx: CPluginCtx;
-}) => {
+export const PropertyPanel = (props: { node: CNode | CRootNode; pluginCtx: CPluginCtx }) => {
   const { node } = props;
   const properties = node.material?.value.props || [];
   const formRef = useRef<CustomSchemaFormInstance>(null);
@@ -38,10 +31,7 @@ export const PropertyPanel = (props: {
     });
   };
 
-  const onSetterChange: CustomSchemaFormProps['onSetterChange'] = (
-    keyPaths,
-    setterName
-  ) => {
+  const onSetterChange: CustomSchemaFormProps['onSetterChange'] = (keyPaths, setterName) => {
     node.value.configure = node.value.configure || {};
     node.value.configure.propsSetter = node.value.configure.propsSetter || {};
     node.value.configure.propsSetter[keyPaths.join('.')] = {
@@ -69,7 +59,5 @@ export const PropertyPanel = (props: {
 export const PropertyPanelConfig: CRightPanelItem = {
   key: 'Property',
   name: 'Property',
-  view: ({ node, pluginCtx }) => (
-    <PropertyPanel node={node} pluginCtx={pluginCtx} />
-  ),
+  view: ({ node, pluginCtx }) => <PropertyPanel node={node} pluginCtx={pluginCtx} />,
 };

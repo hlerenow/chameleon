@@ -40,8 +40,7 @@ export const DisplaySourceSchema = (props: DisplaySourceSchemaProps) => {
           const newPageJSON = JSON.parse(newPage);
           props.pageModel.updatePage(newPageJSON);
           await waitReactUpdate();
-          const workbench = engineCtx.engine.getWorkbench();
-          const currentSelectNode = workbench?.currentSelectNode;
+          const currentSelectNode = engineCtx.engine.getActiveNode();
           const designerPluginInstance = await engineCtx.pluginManager.get('Designer');
           const nodeId = currentSelectNode?.id || '';
           designerPluginInstance?.ctx.emitter.on('ready', () => {

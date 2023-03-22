@@ -1,7 +1,6 @@
 import React from 'react';
 import { ResizeCallback } from 're-resizable';
 import { Emitter } from 'mitt';
-import { CNode } from '@chameleon/model';
 export interface PluginContext {
     openPanel: () => void;
     closePanel: () => void;
@@ -37,11 +36,9 @@ export declare type WorkbenchPropsType = {
 };
 export declare class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStateType> {
     emitter: Emitter<any>;
-    currentSelectNode: CNode | null;
     leftPanelContentRef: React.RefObject<HTMLDivElement>;
     constructor(props: WorkbenchPropsType);
     addLeftPanel: (panel: PanelItem) => void;
-    updateCurrentSelectNode(node: CNode): void;
     openLeftPanel: (currentActiveLeftPanel?: string) => Promise<void>;
     closeLeftPanel: () => Promise<void>;
     toggleLeftPanel: () => void;

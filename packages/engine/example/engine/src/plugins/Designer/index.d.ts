@@ -4,8 +4,8 @@ import { AssetPackage, CPageDataType } from '@chameleon/model';
 import { RenderInstance } from '@chameleon/render';
 export declare const DesignerPlugin: CPlugin;
 export declare type DesignerExports = {
-    reload: (params: {
-        assets: AssetPackage[];
+    reload: (params?: {
+        assets?: AssetPackage[];
     }) => void;
     getDnd: () => DragAndDrop;
     selectNode: (nodeId: string) => void;

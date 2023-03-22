@@ -14,6 +14,7 @@ export type CRootNodeModelDataType = Omit<CRootNodeDataType, 'children'> & {
   id: string;
   children: CNode[];
   props: Record<string, CProp>;
+  configure: Required<CRootNodeDataType>['configure'];
 };
 
 export const checkRootNode = (data: any): CRootNodeDataType => {
@@ -141,7 +142,7 @@ export class CRootNode {
     return materialModel?.findByComponentName(this.data.componentName);
   }
 
-  updateValue(val?: CRootNodeModelDataType) {
+  updateValue(val?: Partial<CRootNodeModelDataType>) {
     const oldData = this.data;
     const newVal = {
       ...this.data,

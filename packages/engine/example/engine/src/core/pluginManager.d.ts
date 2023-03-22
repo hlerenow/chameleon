@@ -1,4 +1,5 @@
-import { AssetPackage, CNode, CPage } from '@chameleon/model';
+import Engine from '../Engine';
+import { AssetPackage, CPage } from '@chameleon/model';
 import { Emitter } from 'mitt';
 import { Workbench } from '../component/Workbench';
 import { CustomI18n } from '../i18n';
@@ -20,12 +21,12 @@ declare type PluginManagerOptions = {
     pageModel: CPage;
     i18n: CustomI18n;
     assets: AssetPackage[];
+    engine: Engine;
 };
 export declare type CPluginCtx<C = any> = {
     globalEmitter: Emitter<any>;
     config: C;
     pluginManager: PluginManager;
-    getActiveNode: () => CNode | null;
     pluginReadyOk: () => void;
 } & PluginManagerOptions;
 export declare type PluginInstance = {
@@ -41,7 +42,8 @@ export declare class PluginManager {
     pageModel: CPage;
     i18n: CustomI18n;
     assets: AssetPackage[];
-    constructor({ getWorkbench, emitter, pageModel, i18n, assets }: PluginManagerOptions);
+    engine: Engine;
+    constructor({ getWorkbench, emitter, pageModel, i18n, assets, engine }: PluginManagerOptions);
     createPluginCtx: () => CPluginCtx<any>;
     add(plugin: CPlugin): Promise<void>;
     get(pluginName: string): Promise<PluginInstance | undefined>;

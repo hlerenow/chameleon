@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { CNode } from '@chameleon/model';
+import { CNode, CRootNode } from '@chameleon/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';
 
@@ -14,7 +14,7 @@ import { ClassNameEditor } from '@/component/ClassNameEditor';
 import { CSSEditor, CSSEditorRef, CSSVal } from '@/component/CSSEditor';
 import { formatCSSProperty, formatCssToNodeVal, formatNodeValToEditor, StyleArr, styleArr2Obj } from '@/utils/css';
 
-export const VisualPanelPlus = (props: { node: CNode; pluginCtx: CPluginCtx }) => {
+export const VisualPanelPlus = (props: { node: CNode | CRootNode; pluginCtx: CPluginCtx }) => {
   const formRef = useRef<CSSPropertiesVariableBindEditorRef>(null);
   const { node } = props;
   const cssPropertyEditorRef = useRef<CSSPropertiesEditorRef>(null);
@@ -24,7 +24,7 @@ export const VisualPanelPlus = (props: { node: CNode; pluginCtx: CPluginCtx }) =
     return formatCSSProperty(style);
   }, [style]);
 
-  const lastNode = useRef<CNode>();
+  const lastNode = useRef<CNode | CRootNode>();
   useEffect(() => {
     const handel = () => {
       if (lastNode.current?.id === node.id) {

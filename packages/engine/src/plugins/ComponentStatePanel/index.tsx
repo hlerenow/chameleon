@@ -1,14 +1,11 @@
-import React, { useEffect, useRef } from 'react';
-import { CNode } from '@chameleon/model';
+import { useEffect, useRef } from 'react';
+import { CNode, CRootNode } from '@chameleon/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';
-import {
-  MonacoEditor,
-  MonacoEditorInstance,
-} from '../../component/MonacoEditor';
+import { MonacoEditor, MonacoEditorInstance } from '../../component/MonacoEditor';
 
 export type ComponentStatePanelProps = {
-  node: CNode;
+  node: CNode | CRootNode;
   pluginCtx: CPluginCtx;
 };
 
@@ -58,7 +55,5 @@ export const ComponentStatePanel = (props: ComponentStatePanelProps) => {
 export const ComponentStatePanelConfig: CRightPanelItem = {
   key: 'State',
   name: 'State',
-  view: ({ node, pluginCtx }) => (
-    <ComponentStatePanel node={node} pluginCtx={pluginCtx} />
-  ),
+  view: ({ node, pluginCtx }) => <ComponentStatePanel node={node} pluginCtx={pluginCtx} />,
 };

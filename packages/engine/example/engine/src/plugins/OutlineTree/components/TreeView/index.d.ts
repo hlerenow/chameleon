@@ -1,5 +1,5 @@
 import { Sensor } from '@chameleon/layout';
-import { CNode } from '@chameleon/model';
+import { CNode, CRootNode } from '@chameleon/model';
 import React from 'react';
 import { WithTranslation } from 'react-i18next';
 import { CPluginCtx } from '../../../../core/pluginManager';
@@ -25,7 +25,7 @@ export declare class TreeView extends React.Component<TreeViewProps, ContextStat
     getParentKeyPaths: (targetKey: string) => string[];
     scrollNodeToView: (key: string) => void;
     componentDidMount(): Promise<void>;
-    toSelectTreeNode: (node: CNode) => void;
+    toSelectTreeNode: (node: CNode | CRootNode) => void;
     containNode: (parentNode: TreeNodeData, targetNode: TreeNodeData) => null;
     getTreeNodeByKey: (key: string) => TreeNodeData | null;
     registerDragEvent: () => Promise<void>;
