@@ -90,7 +90,6 @@ export const HistoryPlugin: CPlugin = (ctx) => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     async init(ctx) {
       ctx.pageModel.emitter.on('onNodeChange', () => {
-        console.log('🚀 ~ file: index.tsx:96 ~ ctx.pageModel.emitter.on ~ onNodeChange:');
         resObj.addStep();
       });
       ctx.pageModel.emitter.on('onPageChange', () => {

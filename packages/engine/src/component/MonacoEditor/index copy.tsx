@@ -51,7 +51,7 @@ export type MonacoEditorProps = {
   onDidMount?: (editor: MonacoEditorInstance) => void;
   options?: monaco.editor.IStandaloneEditorConstructionOptions;
   override?: monaco.editor.IEditorOverrideServices;
-  onChange?: (val: string, e: monaco.editor.IModelContentChangedEvent) => void;
+  onChange?: (val: string) => void;
   onDidChangeMarkers?: (markers: monaco.editor.IMarker[]) => void;
   initialValue?: string;
   language?: 'json' | 'javascript' | 'typescript';
@@ -82,10 +82,8 @@ export const MonacoEditor = (props: MonacoEditorProps) => {
 
     editorInstance.current = editor;
     props.onDidMount?.(editor);
-    const subscription = editor?.onDidChangeModelContent((event) => {
-      if (!event.isFlush) {
-        onChangeRef.current?.(editor.getValue(), event);
-      }
+    const subscription = editor.getModel()?.onDidChangeContent(() => {
+      onChangeRef.current?.(editor.getValue());
     });
 
     monaco.editor.onDidChangeMarkers((uris) => {

@@ -1,12 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { DatabaseOutlined } from '@ant-design/icons';
 import { CPlugin, CPluginCtx } from '../../core/pluginManager';
 import { withTranslation } from 'react-i18next';
 import localize from './localize';
-import {
-  MonacoEditor,
-  MonacoEditorInstance,
-} from '../../component/MonacoEditor';
+import { MonacoEditor, MonacoEditorInstance } from '../../component/MonacoEditor';
 import styles from './style.module.scss';
 
 export const PLUGIN_NAME = 'GlobalState';
@@ -19,16 +16,26 @@ type GlobalStatePanelProps = {
 const GlobalStatePanel = (props: GlobalStatePanelProps) => {
   const { pluginCtx } = props;
   const rootState = pluginCtx.pageModel.value.componentsTree.value.state || {};
-
+  // 表示是不是自己触发的值更新
+  let triggerChangeBySelf = false;
   const editorRef = useRef<MonacoEditorInstance | null>(null);
   useEffect(() => {
     editorRef?.current?.setValue(JSON.stringify(rootState, null, 2));
+    pluginCtx.pageModel.emitter.on('*', (e) => {
+      console.log(e);
+      if (triggerChangeBySelf) {
+        triggerChangeBySelf = false;
+        return;
+      }
+      editorRef.current?.setValue(JSON.stringify(pluginCtx.pageModel.value.componentsTree.value.state, null, 2));
+    });
   }, []);
 
   const onValueChange = (newValStr: string) => {
     try {
       const newVal = JSON.parse(newValStr);
       pluginCtx.pageModel.value.componentsTree.value.state = newVal;
+      triggerChangeBySelf = true;
       pluginCtx.pageModel.value.componentsTree.updateValue();
     } catch (e) {
       console.warn(e);
@@ -38,7 +45,6 @@ const GlobalStatePanel = (props: GlobalStatePanelProps) => {
   return (
     <div className={styles.box}>
       <MonacoEditor
-        initialValue={JSON.stringify(rootState, null, 2)}
         language={'json'}
         options={{
           automaticLayout: true,
@@ -65,11 +71,8 @@ export const GlobalStatePanelPlugin: CPlugin = {
       i18n.addResourceBundle(lng, i18nNamespace, localize[lng], true, true);
     });
 
-    const GlobalStatePanelWithLocalize =
-      withTranslation(i18nNamespace)(GlobalStatePanel);
-    const Title = withTranslation(i18nNamespace)(({ t }) => (
-      <>{t('pluginName')}</>
-    ));
+    const GlobalStatePanelWithLocalize = withTranslation(i18nNamespace)(GlobalStatePanel);
+    const Title = withTranslation(i18nNamespace)(({ t }) => <>{t('pluginName')}</>);
     const workbench = ctx.getWorkbench();
     workbench.addLeftPanel({
       title: <Title />,

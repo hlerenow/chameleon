@@ -91,7 +91,6 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
   };
 
   onNodeChange = ({ node }: any) => {
-    console.log('🚀 ~ file: view.tsx:179 ~ RightPanel ~ node:', node);
     const { pluginCtx } = this.props;
     const { panels, activeKey } = this.state;
     const panelParams = { node: node, pluginCtx };
@@ -123,11 +122,6 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
     pluginCtx.globalEmitter.on('onSelectNodeChange', this.onNodeChange);
     pluginCtx.pageModel.emitter.on('*', () => {
       const currentSelectNode = pluginCtx.engine.getActiveNode();
-
-      console.log(
-        '🚀 ~ file: view.tsx:126 ~ RightPanel ~ pluginCtx.pageModel.emitter.on ~ currentSelectNode:',
-        currentSelectNode
-      );
       this.onNodeChange({ node: currentSelectNode });
     });
     const { displayPanels } = this.updatePanels();
