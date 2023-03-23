@@ -112,7 +112,7 @@ export class CMaterials {
       res.push(...el.snippets);
       return res;
     }, [] as SnippetsType[]);
-    const groups: string[] = ['default'];
+    const groups: string[] = [];
     const groupRes: Record<string, SnippetsType[]> = {
       default: [],
     };
@@ -130,6 +130,7 @@ export class CMaterials {
       }
       groupRes[groupName].push(el);
     });
+
     const res: SnippetsCollection = [];
     groups.forEach((groupName) => {
       const categories: string[] = ['default'];

@@ -22,6 +22,7 @@ import {
   compWrapper,
   convertCodeStringToFunction,
   formatSourceStylePropertyName,
+  getCSSTextValue,
   getObjFromArrayMap,
   runExpression,
   shouldConstruct,
@@ -264,6 +265,9 @@ export class DefineReactAdapter {
       // not react data
       staticState: Record<string, any> = {};
       storeListenDisposeLint: (() => void)[] = [];
+      // save dom and media css
+      domHeader: HTMLHeadElement | undefined;
+      mediaStyleDomMap: Record<string, HTMLStyleElement> = {};
 
       constructor(props: PropsType) {
         super(props);
@@ -325,11 +329,6 @@ export class DefineReactAdapter {
           }
         );
 
-        console.log('cssAndClassExpressionList', expressionList, cssAndClassExpressionList, {
-          css: nodeModel.value.css,
-          class: nodeModel.value.classNames,
-        });
-        // get all stateManager nameList
         const list = [...expressionList, ...cssAndClassExpressionList]
           .map((el) => {
             const targetVal: JSExpressionPropType = el.val;
@@ -355,7 +354,6 @@ export class DefineReactAdapter {
               console.log(that.storeManager, storeName, 'not exits');
             }
             const handle = that.storeManager.connect(storeName, () => {
-              console.log('forceupdate', storeName, nodeModel.id);
               this.forceUpdate();
             });
             disposeList.push(handle);
@@ -364,7 +362,66 @@ export class DefineReactAdapter {
         this.storeListenDisposeLint = disposeList;
       }
 
+      getStyleDomById = (id: string) => {
+        const mediaStyleDomMap = this.mediaStyleDomMap;
+        let styleEl = mediaStyleDomMap[id];
+        if (!styleEl) {
+          styleEl = document.createElement('style');
+          styleEl.type = 'text/css';
+          mediaStyleDomMap[id] = styleEl;
+        }
+        styleEl.id = id;
+        return styleEl;
+      };
+
+      addMediaCSS = () => {
+        let header = this.domHeader;
+        if (!header) {
+          header = document.getElementsByTagName('head')?.[0];
+          this.domHeader = header;
+        }
+
+        if (!this.domHeader) {
+          return;
+        }
+        const css = this._NODE_MODEL.value.css;
+        if (!css) {
+          return;
+        }
+        css.value.forEach((el) => {
+          const normalId = `${this.UNIQUE_ID}_${el.state}`;
+          let className = `.${css.class}`;
+          if (el.state !== 'normal') {
+            className = `${className}:${el.state}`;
+          }
+          if (Object.keys(el.style).length !== 0) {
+            const styleEl = this.getStyleDomById(normalId);
+            styleEl.innerText = `${className} { ${getCSSTextValue(el.style)} }`;
+            header?.appendChild(styleEl);
+          }
+
+          if (el.media?.length) {
+            el.media.forEach((it) => {
+              const mediaId = `${normalId}_${it.type}_${it.value}`;
+              const styleDom = this.getStyleDomById(mediaId);
+              styleDom.media = `screen and (${it.type}:${it.value}px)`;
+              styleDom.innerHTML = `${className} { ${getCSSTextValue(it.style)} }`;
+              header?.appendChild(styleDom);
+            });
+          }
+        });
+      };
+
+      removeMediaCSS = () => {
+        console.log('remove css');
+        const mediaStyleDomMap = this.mediaStyleDomMap;
+        Object.keys(mediaStyleDomMap).forEach((key) => {
+          this.domHeader?.removeChild(mediaStyleDomMap[key]);
+        });
+      };
+
       componentDidMount(): void {
+        this.addMediaCSS();
         if (that.onGetRef) {
           that.onGetRef(this.targetComponentRef, nodeModel, this as any);
         }
@@ -381,9 +438,16 @@ export class DefineReactAdapter {
         nodeModel.onChange(forceUpdate);
       }
 
-      componentWillUnmount(): void {
-        console.log(`${nodeModel.id} will unmout`);
+      rebuildNode = () => {
         this.storeListenDisposeLint.forEach((el) => el());
+        this.removeMediaCSS();
+        this.connectStore();
+        this.addMediaCSS();
+      };
+
+      componentWillUnmount(): void {
+        this.storeListenDisposeLint.forEach((el) => el());
+        this.removeMediaCSS();
         that.onComponentDestroy?.(this, nodeModel);
       }
 
@@ -448,7 +512,12 @@ export class DefineReactAdapter {
                 }
                 return '';
               }) || [];
-            const finalClsx = `${newProps.className ?? ''} ${classNames.join(' ')}`.trim();
+            let finalClsx = `${newProps.className ?? ''} ${classNames.join(' ')}`.trim();
+            if (nodeModel.value.css) {
+              // 每个节点添加一个 表示节点唯一的 className, 使用 node.id
+              const className = `${nodeModel.value.css.class} ${finalClsx}`.trim();
+              finalClsx = className;
+            }
             newProps.className = finalClsx;
 
             // 处理 style
@@ -531,9 +600,15 @@ export class DefineReactAdapter {
             }
             return '';
           }) || [];
-        const finalClsx = `${newProps.className ?? ''} ${classNames.join(' ')}`.trim();
+
+        let finalClsx = `${newProps.className ?? ''} ${classNames.join(' ')}`.trim();
+        if (nodeModel.value.css) {
+          // 每个节点添加一个 表示节点唯一的 className, 使用 node.id
+          const className = `${nodeModel.value.css.class} ${finalClsx}`.trim();
+          finalClsx = className;
+        }
+
         newProps.className = finalClsx;
-        // font-size to fontSize
 
         // 处理 style
         const newStyle: Record<string, any> = that.transformProps(nodeModel.value.style, {

@@ -214,7 +214,6 @@ export const BasePage: CPageDataType = {
                     props: {
                       width: '100px',
                       height: '100px',
-
                       $$attributes: [
                         {
                           key: 'onClick',
@@ -263,7 +262,6 @@ export const BasePage: CPageDataType = {
                     props: {
                       width: '100px',
                       height: '100px',
-
                       $$attributes: [
                         {
                           key: 'onClick',
@@ -320,7 +318,6 @@ export const BasePage: CPageDataType = {
                         props: {
                           width: '100px',
                           height: '100px',
-
                           $$attributes: [
                             {
                               key: 'onClick',
@@ -380,7 +377,6 @@ export const BasePage: CPageDataType = {
                             props: {
                               width: '100px',
                               height: '100px',
-
                               $$attributes: [
                                 {
                                   key: 'onClick',
@@ -513,6 +509,24 @@ export const BasePage: CPageDataType = {
                 },
               },
             ],
+            css: {
+              class: 'qpbnqn',
+              value: [
+                {
+                  state: 'normal',
+                  media: [
+                    {
+                      type: 'max-width',
+                      value: '991',
+                      style: {
+                        color: 'red',
+                      },
+                    },
+                  ],
+                  style: {},
+                },
+              ],
+            },
           },
           {
             style: {
@@ -540,7 +554,6 @@ export const BasePage: CPageDataType = {
                   src: 'https://vjs.zencdn.net/v/oceans.mp4',
                   autoPlay: '',
                   controls: true,
-
                   $$attributes: [],
                 },
                 componentName: 'CVideo',

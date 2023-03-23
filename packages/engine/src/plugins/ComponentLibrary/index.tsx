@@ -1,7 +1,7 @@
+import React from 'react';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 import { LayoutDragAndDropExtraDataType, Sensor, SensorEventObjType } from '@chameleon/layout';
 import { Tabs } from 'antd';
-import React from 'react';
 import { CPlugin, CPluginCtx } from '../../core/pluginManager';
 import { DesignerExports } from '../Designer';
 import localize from './localize';
