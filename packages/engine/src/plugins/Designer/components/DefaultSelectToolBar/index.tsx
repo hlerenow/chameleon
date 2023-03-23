@@ -40,13 +40,22 @@ const LayoutSelect = ({
   );
 };
 
-export const DefaultSelectToolBar = ({ nodeList, toSelectNode, toDelete, toCopy, toHidden }: DefaultSelectToolBarProps) => {
+export const DefaultSelectToolBar = ({
+  nodeList,
+  toSelectNode,
+  toDelete,
+  toCopy,
+  toHidden,
+}: DefaultSelectToolBarProps) => {
   const tempList = [...nodeList];
   const currentNode = tempList.shift();
   const parentNodeItems = tempList.map((el) => {
+    const node = el;
+    const nodeMeta = node.materialsModel.findByComponentName(node.value.componentName)?.value.title;
+    const label = node.value.title || nodeMeta || node.value.componentName || '';
     return {
       key: el.id,
-      label: String(el.material?.value.title || 'Empty'),
+      label: label || 'Empty',
     };
   });
 
