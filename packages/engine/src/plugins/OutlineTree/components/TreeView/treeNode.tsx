@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { CopyOutlined, DeleteOutlined, EyeInvisibleOutlined, EyeOutlined, RightOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
 import { CTreeContext, DragState } from './context';
@@ -21,9 +21,17 @@ export const TreeNode = (props: TreeNodeProps) => {
   });
   const { level = 0, item, paths = ['0'] } = props;
   const [nodeVisible, setNodeVisible] = useState(true);
-  const { state: ctxState, updateState, onSelectNode, onDeleteNode, getDesignerHandler, onCopyNode } = useContext(CTreeContext);
+  const {
+    state: ctxState,
+    updateState,
+    onSelectNode,
+    onDeleteNode,
+    getDesignerHandler,
+    onCopyNode,
+  } = useContext(CTreeContext);
 
   const [titleEditable, setTitleEditable] = useState(allStateRef.current?.titleEditable);
+  const [editInputValue, setEditInputValue] = useState('');
   allStateRef.current.titleEditable = titleEditable;
   const expanded = ctxState.expandKeys.find((el) => el === item.key);
   const toggleExpandNode = () => {
@@ -122,9 +130,7 @@ export const TreeNode = (props: TreeNodeProps) => {
     };
   }, []);
 
-  const targetNodeModel = useMemo(() => {
-    return ctxState.pageModel?.getNode(item.key || '') as CNode;
-  }, [item.key]);
+  const targetNodeModel = ctxState.pageModel?.getNode(item.key || '') as CNode;
 
   const toggleNodeVisible = () => {
     const newVisible = !nodeVisible;
@@ -179,10 +185,14 @@ export const TreeNode = (props: TreeNodeProps) => {
             if (!targetNodeModel) {
               return;
             }
+            const node = targetNodeModel;
+            const nodeMeta = node.materialsModel.findByComponentName(node.value.componentName)?.value.title;
+            const inputValue = node.value.title || nodeMeta || node.value.componentName || '';
+            setEditInputValue(inputValue);
             setTitleEditable(true);
             setTimeout(() => {
               titleEditInputRef.current?.focus();
-            });
+            }, 100);
           }}
         >
           {!titleEditable && titleView}
@@ -195,14 +205,15 @@ export const TreeNode = (props: TreeNodeProps) => {
               <Input
                 size="small"
                 maxLength={20}
-                defaultValue={titleText}
                 ref={titleEditInputRef}
+                value={editInputValue}
                 onPressEnter={() => {
                   setTitleEditable(false);
                   targetNodeModel.updateValue();
                 }}
                 onChange={(e) => {
                   targetNodeModel.value.title = e.target.value;
+                  setEditInputValue(e.target.value);
                 }}
               />
             </div>

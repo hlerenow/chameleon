@@ -1,4 +1,3 @@
-import React from 'react';
 import { ApartmentOutlined } from '@ant-design/icons';
 import { CPlugin } from '../../core/pluginManager';
 import { withTranslation } from 'react-i18next';
@@ -17,9 +16,7 @@ export const OutlineTreePlugin: CPlugin = {
     });
 
     const TreeViewWithLocalize = withTranslation(i18nNamespace)(TreeView);
-    const Title = withTranslation(i18nNamespace)(({ t }) => (
-      <>{t('pluginName')}</>
-    ));
+    const Title = withTranslation(i18nNamespace)(({ t }) => <>{t('pluginName')}</>);
     const workbench = ctx.getWorkbench();
     workbench.addLeftPanel({
       title: <Title />,

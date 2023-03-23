@@ -23,7 +23,6 @@ export const HistoryPlugin: CPlugin = (ctx) => {
     }
     CTX.pageModel.reloadPage(page);
     await waitReactUpdate();
-    console.log('🚀 ~ file: index.tsx:32 node-change ~ ctx.pageModel.emitter.on  ~ currentStepIndex:', dataStore);
   };
 
   const resObj = {
@@ -59,7 +58,6 @@ export const HistoryPlugin: CPlugin = (ctx) => {
       loadPage(page);
     },
     nextStep: () => {
-      debugger;
       if (!resObj.canGoNextStep()) {
         return;
       }

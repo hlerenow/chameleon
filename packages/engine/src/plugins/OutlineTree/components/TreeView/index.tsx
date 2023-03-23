@@ -1,6 +1,6 @@
 import { LayoutDragAndDropExtraDataType, Sensor, SensorEventObjType } from '@chameleon/layout';
 import { DropPosType } from '@chameleon/layout/dist/components/DropAnchor/util';
-import { CNode, CRootNode, ExportTypeEnum } from '@chameleon/model';
+import { CNode, CRootNode } from '@chameleon/model';
 import React from 'react';
 import { WithTranslation } from 'react-i18next';
 import { CPluginCtx } from '../../../../core/pluginManager';
@@ -98,7 +98,7 @@ export class TreeView extends React.Component<
     const { pluginCtx } = this.props;
     const { pageModel } = pluginCtx;
 
-    pageModel.emitter.on('onNodeChange', () => {
+    pageModel.emitter.on('*', () => {
       this.updateTreeDataFromNode();
     });
 

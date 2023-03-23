@@ -413,7 +413,6 @@ export class DefineReactAdapter {
       };
 
       removeMediaCSS = () => {
-        console.log('remove css');
         const mediaStyleDomMap = this.mediaStyleDomMap;
         Object.keys(mediaStyleDomMap).forEach((key) => {
           this.domHeader?.removeChild(mediaStyleDomMap[key]);

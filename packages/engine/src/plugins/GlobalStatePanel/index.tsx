@@ -21,7 +21,8 @@ const GlobalStatePanel = (props: GlobalStatePanelProps) => {
   const editorRef = useRef<MonacoEditorInstance | null>(null);
   useEffect(() => {
     editorRef?.current?.setValue(JSON.stringify(rootState, null, 2));
-    pluginCtx.pageModel.emitter.on('*', (e) => {
+    // 正常情况下, 只有 reloadPage  才需要同步数据
+    pluginCtx.pageModel.emitter.on('onReloadPage', (e) => {
       console.log(e);
       if (triggerChangeBySelf) {
         triggerChangeBySelf = false;
