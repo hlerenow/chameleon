@@ -7,7 +7,7 @@ export declare type MonacoEditorProps = {
     onDidMount?: (editor: MonacoEditorInstance) => void;
     options?: monaco.editor.IStandaloneEditorConstructionOptions;
     override?: monaco.editor.IEditorOverrideServices;
-    onChange?: (val: string) => void;
+    onChange?: (val: string, e: monaco.editor.IModelContentChangedEvent) => void;
     onDidChangeMarkers?: (markers: monaco.editor.IMarker[]) => void;
     initialValue?: string;
     language?: 'json' | 'javascript' | 'typescript';
