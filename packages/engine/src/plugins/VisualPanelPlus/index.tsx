@@ -16,7 +16,7 @@ import { formatCSSProperty, formatCssToNodeVal, formatNodeValToEditor, StyleArr,
 
 export const VisualPanelPlus = (props: { node: CNode | CRootNode; pluginCtx: CPluginCtx }) => {
   const formRef = useRef<CSSPropertiesVariableBindEditorRef>(null);
-  const { node } = props;
+  const node = props.pluginCtx.pageModel.getNode(props.node.id)!;
   const cssPropertyEditorRef = useRef<CSSPropertiesEditorRef>(null);
   const cssEditorRef = useRef<CSSEditorRef>(null);
   const [style, setStyle] = useState<Record<string, any>>({});
@@ -27,9 +27,6 @@ export const VisualPanelPlus = (props: { node: CNode | CRootNode; pluginCtx: CPl
   const lastNode = useRef<CNode | CRootNode>();
   useEffect(() => {
     const handel = () => {
-      if (lastNode.current?.id === node.id) {
-        return;
-      }
       lastNode.current = node;
       const newStyle = node.value.style || {};
       setStyle(newStyle);
@@ -41,8 +38,10 @@ export const VisualPanelPlus = (props: { node: CNode | CRootNode; pluginCtx: CPl
     };
     handel();
     node.emitter.on('onNodeChange', handel);
+    node.emitter.on('onReloadPage', handel);
     () => {
       node.emitter.off('onNodeChange', handel);
+      node.emitter.off('onReloadPage', handel);
     };
   }, [node]);
 

@@ -432,7 +432,7 @@ export class DefineReactAdapter {
             ...this.state,
             ...(nodeModel.value.state || {}),
           });
-          this.forceUpdate();
+          this.rebuildNode();
         };
         nodeModel.onChange(forceUpdate);
       }
@@ -442,6 +442,7 @@ export class DefineReactAdapter {
         this.removeMediaCSS();
         this.connectStore();
         this.addMediaCSS();
+        this.forceUpdate();
       };
 
       componentWillUnmount(): void {
