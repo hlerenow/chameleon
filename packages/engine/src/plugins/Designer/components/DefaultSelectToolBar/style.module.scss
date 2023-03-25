@@ -47,9 +47,13 @@
     }
   }
   .placeholder {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     background-color: $baseColor;
     color: white;
     padding: 2px 5px;
     font-size: 12px;
+    max-width: 100px;
   }
 }
