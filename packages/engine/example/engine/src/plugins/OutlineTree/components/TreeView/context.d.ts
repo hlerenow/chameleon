@@ -7,7 +7,7 @@ export declare enum DragState {
     DRAGGING = "DRAGGING",
     NORMAL = "NORMAL"
 }
-export declare type ContextState = {
+export type ContextState = {
     treeData: TreeNodeData[];
     currentSelectNodeKeys: string[];
     expandKeys: string[];
@@ -15,7 +15,7 @@ export declare type ContextState = {
     dragState: DragState;
     pageModel: CPage | null;
 };
-export declare type CTreeContextData = {
+export type CTreeContextData = {
     sensor?: Sensor;
     state: ContextState;
     updateState: (state: Partial<ContextState>) => void;

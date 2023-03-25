@@ -1,6 +1,6 @@
 import { CSSVal } from '../component/CSSEditor';
 import { CSSType } from '@chameleon/model';
-export declare type StyleArr = {
+export type StyleArr = {
     key: string;
     value: any;
 }[];

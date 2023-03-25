@@ -1,5 +1,5 @@
 import React from 'react';
-export declare type TreeNodeData = {
+export type TreeNodeData = {
     containerRender?: (params: {
         item: TreeNodeData;
         treeNodeView: JSX.Element;

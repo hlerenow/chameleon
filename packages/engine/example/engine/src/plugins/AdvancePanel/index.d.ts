@@ -2,7 +2,7 @@
 import { CNode, CRootNode } from '@chameleon/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';
-export declare type AdvancePanelProps = {
+export type AdvancePanelProps = {
     node: CNode | CRootNode;
     pluginCtx: CPluginCtx;
 };

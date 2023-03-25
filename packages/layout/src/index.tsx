@@ -349,7 +349,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         return null;
       }
 
-      const isContainDragStartEl = this.state.currentSelectInstance?._NODE_MODEL?.contains(startInstance?._NODE_ID || '');
+      const isContainDragStartEl = this.state.currentSelectInstance?._NODE_MODEL?.contains(
+        startInstance?._NODE_ID || ''
+      );
       let startNode = startInstance?._NODE_MODEL;
       if (isContainDragStartEl && this.state.currentSelectInstance) {
         startNode = this.state.currentSelectInstance?._NODE_MODEL;
@@ -373,14 +375,17 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         return;
       }
       // TODO: 如果落点元素是拖动元素的子元素则不允许放置
-      const isContainDragStartEl = this.state.currentSelectInstance?._NODE_MODEL?.contains(dropInstance?._NODE_ID || '');
+      const isContainDragStartEl = this.state.currentSelectInstance?._NODE_MODEL?.contains(
+        dropInstance?._NODE_ID || ''
+      );
 
       if (isContainDragStartEl) {
         return;
       }
       const dropNode = dropInstance._NODE_MODEL;
       const isContainer =
-        (dropNode.material?.value.isContainer || dropNode.value?.componentName === InnerComponentNameEnum.ROOT_CONTAINER) &&
+        (dropNode.material?.value.isContainer ||
+          dropNode.value?.componentName === InnerComponentNameEnum.ROOT_CONTAINER) &&
         dropNode.value.children.length === 0;
       const originalEvent = eventObj.event;
 
@@ -412,7 +417,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       const { currentSelectInstance } = this.state;
       const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
       const dragStartNode = extraData.startNode!;
-      const startInstance: RenderInstance | undefined = (this.designRenderRef.current?.getInstancesById(dragStartNode.id) || []).shift();
+      const startInstance: RenderInstance | undefined = (
+        this.designRenderRef.current?.getInstancesById(dragStartNode.id) || []
+      ).shift();
       this.dragStartNode = dragStartNode;
       this.props.onDragStart?.(this.dragStartNode);
 
@@ -437,7 +444,8 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           this.setState({
             currentSelectId: startInstance._NODE_ID,
             currentSelectInstance: startInstance,
-            selectComponentInstances: this.designRenderRef.current?.getInstancesById(startInstance?._NODE_ID || '') || [],
+            selectComponentInstances:
+              this.designRenderRef.current?.getInstancesById(startInstance?._NODE_ID || '') || [],
             hoverComponentInstances: [],
           });
           onSelectNode?.(startInstance?._NODE_MODEL || null);
@@ -469,7 +477,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       }
 
       const extraData = e.extraData as LayoutDragAndDropExtraDataType;
-      const componentInstance = (this.designRenderRef.current.getInstancesById(extraData.dropNode?.id || '', extraData.dropNodeUid) || []).shift();
+      const componentInstance = (
+        this.designRenderRef.current.getInstancesById(extraData.dropNode?.id || '', extraData.dropNodeUid) || []
+      ).shift();
 
       if (!componentInstance) {
         this.setState({

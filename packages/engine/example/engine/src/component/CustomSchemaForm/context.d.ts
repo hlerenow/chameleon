@@ -2,8 +2,8 @@ import React, { Ref } from 'react';
 import { CustomSchemaFormInstance } from '.';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CForm } from './components/Form';
-export declare type ContextState = Record<string, any>;
-export declare type CCustomSchemaFormContextData = {
+export type ContextState = Record<string, any>;
+export type CCustomSchemaFormContextData = {
     onSetterChange: (keyPaths: string[], setterName: string) => void;
     defaultSetterConfig: Record<string, {
         name: string;

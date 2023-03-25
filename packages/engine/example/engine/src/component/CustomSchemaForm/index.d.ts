@@ -2,8 +2,8 @@ import React from 'react';
 import { CMaterialPropsType } from '@chameleon/model';
 import { CForm } from './components/Form';
 import { CPluginCtx } from '../../core/pluginManager';
-export declare type CustomSchemaFormInstance = CForm;
-export declare type CustomSchemaFormProps = {
+export type CustomSchemaFormInstance = CForm;
+export type CustomSchemaFormProps = {
     pluginCtx?: CPluginCtx;
     initialValue: Record<string, any>;
     properties: CMaterialPropsType<any>;

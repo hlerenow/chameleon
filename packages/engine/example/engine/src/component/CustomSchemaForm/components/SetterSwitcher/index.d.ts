@@ -1,7 +1,7 @@
 import React from 'react';
 import { SetterObjType } from '@chameleon/model';
 import { CFieldProps } from '../Form/Field';
-export declare type SetterSwitcherProps = {
+export type SetterSwitcherProps = {
     setters: SetterObjType[];
     keyPaths: string[];
     prefix?: React.ReactNode;

@@ -3,10 +3,10 @@ import { Layout } from '@chameleon/layout';
 import { CNode, CPage, CRootNode } from '@chameleon/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import { AssetPackage } from '@chameleon/model';
-export declare type DesignerPropsType = {
+export type DesignerPropsType = {
     pluginCtx: CPluginCtx;
 };
-declare type DesignerStateType = {
+type DesignerStateType = {
     pageModel: CPage;
     hoverToolBar: React.ReactNode;
     selectToolBar: React.ReactNode;

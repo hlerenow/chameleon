@@ -82,7 +82,7 @@ const BaseComponentMeta: CMaterialType[] = [
       },
       customAttributesMeta,
     ],
-    groupName: '元子组件',
+    groupName: '原子组件',
     snippets: [
       {
         title: '块',
@@ -119,7 +119,7 @@ const BaseComponentMeta: CMaterialType[] = [
       },
       customAttributesMeta,
     ],
-    groupName: '元子组件',
+    groupName: '原子组件',
     snippets: [
       {
         title: '容器',
@@ -149,7 +149,7 @@ const BaseComponentMeta: CMaterialType[] = [
       heightPropsMeta,
       customAttributesMeta,
     ],
-    groupName: '元子组件',
+    groupName: '原子组件',
     snippets: [
       {
         title: '图片',
@@ -194,7 +194,7 @@ const BaseComponentMeta: CMaterialType[] = [
     fixedProps: {
       autoPlay: false,
     },
-    groupName: '元子组件',
+    groupName: '原子组件',
     snippets: [
       {
         title: '视频',
@@ -212,7 +212,7 @@ const BaseComponentMeta: CMaterialType[] = [
   },
   {
     title: '音频',
-    groupName: '元子组件',
+    groupName: '原子组件',
     componentName: 'CAudio',
     isSupportStyle: true,
     props: [
@@ -254,7 +254,7 @@ const BaseComponentMeta: CMaterialType[] = [
   {
     title: '文本',
     componentName: 'CText',
-    groupName: '元子组件',
+    groupName: '原子组件',
     isSupportStyle: true,
     props: [
       {
@@ -283,7 +283,7 @@ const BaseComponentMeta: CMaterialType[] = [
     componentName: 'CCanvas',
     isSupportStyle: true,
     props: [widthPropsMeta, heightPropsMeta, customAttributesMeta],
-    groupName: '元子组件',
+    groupName: '原子组件',
     snippets: [
       {
         title: '画布',
@@ -323,7 +323,7 @@ const BaseComponentMeta: CMaterialType[] = [
       },
       customAttributesMeta,
     ],
-    groupName: '元子组件',
+    groupName: '原子组件',
     snippets: [
       {
         title: 'HTML',

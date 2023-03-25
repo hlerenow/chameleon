@@ -1,20 +1,11 @@
-import React, {
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { AutoComplete, ConfigProvider, Input, InputProps } from 'antd';
 import { CSetter, CSetterProps } from '../type';
 import { BaseSelectRef } from 'rc-select';
 import { useDebounceFn } from 'ahooks';
 import clsx from 'clsx';
 import styles from './style.module.scss';
-import {
-  CSSProperties,
-  CSSPropertiesKey,
-} from '../../../../CSSPropertiesEditor/cssProperties';
+import { CSSProperties, CSSPropertiesKey } from '../../../../CSSPropertiesEditor/cssProperties';
 
 type CSSValueSetterProps = {
   propertyKey: string;
@@ -42,8 +33,7 @@ export const CSSValueSetter: CSetter<CSSValueSetterProps> = ({
   });
 
   const optionsValue = useMemo(() => {
-    const list =
-      CSSProperties[propertyKey as unknown as CSSPropertiesKey]?.values || [];
+    const list = CSSProperties[propertyKey as unknown as CSSPropertiesKey]?.values || [];
     return list.map((el) => {
       return {
         value: el,

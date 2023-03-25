@@ -1,11 +1,11 @@
 import { CNode, CRootNode } from '@chameleon/model';
 import React from 'react';
 import { CPluginCtx } from '../../core/pluginManager';
-export declare type RightPanelOptions = {
+export type RightPanelOptions = {
     node: CNode | CRootNode;
     pluginCtx: CPluginCtx;
 };
-export declare type CRightPanelItem = {
+export type CRightPanelItem = {
     key: string;
     name: string | ((props: RightPanelOptions) => React.ReactNode);
     view: (props: RightPanelOptions) => React.ReactNode;

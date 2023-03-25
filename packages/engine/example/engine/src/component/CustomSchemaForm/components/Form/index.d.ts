@@ -1,7 +1,7 @@
 import React from 'react';
 import { ReactNode } from 'react';
 import { CFormContextData, ContextState } from './context';
-export declare type CFormProps = {
+export type CFormProps = {
     name: string;
     children?: ReactNode | ReactNode[];
     initialValue?: Record<string, any>;

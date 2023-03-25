@@ -1,7 +1,7 @@
 /// <reference types="react" />
 import { CSetterProps } from '../type';
 import { SetterType } from '@chameleon/model';
-export declare type CArraySetterProps = {
+export type CArraySetterProps = {
     item: {
         setters: SetterType[];
         initialValue?: any;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { CPage } from '@chameleon/model';
 import { EnginContext } from '../../Engine';
-export declare type DisplaySourceSchemaProps = {
+export type DisplaySourceSchemaProps = {
     pageModel: CPage;
     engineCtx: EnginContext;
     children: React.ReactNode;

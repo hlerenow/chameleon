@@ -1,7 +1,7 @@
 /// <reference types="react" />
 import { TreeNodeData } from './dataStruct';
 export declare const DRAG_ITEM_KEY = "data-drag-key";
-export declare type TreeNodeProps = {
+export type TreeNodeProps = {
     item: TreeNodeData;
     level?: number;
     paths?: (string | number)[];

@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-export declare type CFieldProps = {
+export type CFieldProps = {
     children: React.ReactNode;
     label?: string;
     tips?: ReactNode | (() => ReactNode);

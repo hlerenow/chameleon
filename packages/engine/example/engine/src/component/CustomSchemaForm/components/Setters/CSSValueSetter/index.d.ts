@@ -1,5 +1,5 @@
 import { CSetter } from '../type';
-declare type CSSValueSetterProps = {
+type CSSValueSetterProps = {
     propertyKey: string;
 };
 export declare const CSSValueSetter: CSetter<CSSValueSetterProps>;

@@ -3,7 +3,7 @@ import { CPlugin } from '../../core/pluginManager';
 import { AssetPackage, CPageDataType } from '@chameleon/model';
 import { RenderInstance } from '@chameleon/render';
 export declare const DesignerPlugin: CPlugin;
-export declare type DesignerExports = {
+export type DesignerExports = {
     reload: (params?: {
         assets?: AssetPackage[];
     }) => void;

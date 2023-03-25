@@ -894,5 +894,5 @@ export declare const CSSColors: {
     yellow: string;
     yellowgreen: string;
 };
-export declare type CSSPropertiesKey = keyof typeof CSSProperties;
+export type CSSPropertiesKey = keyof typeof CSSProperties;
 export declare const CSSPropertyList: string[];

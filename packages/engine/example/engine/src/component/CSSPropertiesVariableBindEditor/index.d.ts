@@ -1,6 +1,6 @@
 /// <reference types="react" />
 import { JSExpressionPropType } from '@chameleon/model';
-export declare type SinglePropertyEditorProps = {
+export type SinglePropertyEditorProps = {
     value?: {
         key: string;
         value: JSExpressionPropType;
@@ -18,7 +18,7 @@ export declare type SinglePropertyEditorProps = {
     } | void;
     mod?: 'create' | 'edit';
 };
-export declare type CSSPropertiesVariableBindEditorProps = {
+export type CSSPropertiesVariableBindEditorProps = {
     initialValue?: {
         key: string;
         value: string;
@@ -28,7 +28,7 @@ export declare type CSSPropertiesVariableBindEditorProps = {
         value: string;
     }[]) => void;
 };
-export declare type CSSPropertiesVariableBindEditorRef = {
+export type CSSPropertiesVariableBindEditorRef = {
     setValue: (val: {
         key: string;
         value: string;

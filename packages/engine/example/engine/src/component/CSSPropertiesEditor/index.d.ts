@@ -1,5 +1,5 @@
 /// <reference types="react" />
-export declare type SinglePropertyEditorProps = {
+export type SinglePropertyEditorProps = {
     mode: 'create' | 'edit';
     value: {
         key: string;
@@ -19,11 +19,11 @@ export declare type SinglePropertyEditorProps = {
     }) => void;
     onDelete?: () => void;
 };
-declare type SinglePropertyEditorRef = {
+type SinglePropertyEditorRef = {
     reset: () => void;
 };
 export declare const SinglePropertyEditor: import("react").ForwardRefExoticComponent<SinglePropertyEditorProps & import("react").RefAttributes<SinglePropertyEditorRef>>;
-export declare type CSSPropertiesEditorProps = {
+export type CSSPropertiesEditorProps = {
     initialValue?: {
         key: string;
         value: string;
@@ -33,7 +33,7 @@ export declare type CSSPropertiesEditorProps = {
         value: string;
     }[]) => void;
 };
-export declare type CSSPropertiesEditorRef = {
+export type CSSPropertiesEditorRef = {
     setValue: (val: {
         key: string;
         value: string;

@@ -1,6 +1,6 @@
 /// <reference types="react" />
 import { ModalProps } from 'antd';
-export declare type SortItemOrderProps = {
+export type SortItemOrderProps = {
     list: any[];
     keyPaths: string[];
     label: string;

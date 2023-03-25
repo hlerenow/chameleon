@@ -1,6 +1,6 @@
 import { CSetter } from '../type';
 import { MaterialPropType } from '@chameleon/model';
-export declare type CShapeSetterProps = {
+export type CShapeSetterProps = {
     elements: MaterialPropType[];
     initialValue?: Record<string, any>;
     value: Record<string, any>;

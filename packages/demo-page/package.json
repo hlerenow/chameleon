@@ -19,14 +19,10 @@
     "sass": "^1.54.0"
   },
   "devDependencies": {
-    "@chameleon/build-script": "*",
-    "@chameleon/model": "*",
+    "@chameleon/build-script": "workspace:*",
+    "@chameleon/model": "workspace:*",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6"
   },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/@chameleon/cz-lerna-changelog"
-    }
-  }
+  "config": {}
 }

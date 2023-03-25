@@ -3,7 +3,7 @@ import { AssetPackage, CPage } from '@chameleon/model';
 import { Emitter } from 'mitt';
 import { Workbench } from '../component/Workbench';
 import { CustomI18n } from '../i18n';
-export declare type PluginObj = {
+export type PluginObj = {
     name: string;
     init: (ctx: CPluginCtx) => Promise<void>;
     destroy: (ctx: CPluginCtx) => Promise<void>;
@@ -14,8 +14,8 @@ export declare type PluginObj = {
         };
     };
 };
-export declare type CPlugin = PluginObj | ((ctx: CPluginCtx) => PluginObj);
-declare type PluginManagerOptions = {
+export type CPlugin = PluginObj | ((ctx: CPluginCtx) => PluginObj);
+type PluginManagerOptions = {
     getWorkbench: () => Workbench;
     emitter: Emitter<any>;
     pageModel: CPage;
@@ -23,13 +23,13 @@ declare type PluginManagerOptions = {
     assets: AssetPackage[];
     engine: Engine;
 };
-export declare type CPluginCtx<C = any> = {
+export type CPluginCtx<C = any> = {
     globalEmitter: Emitter<any>;
     config: C;
     pluginManager: PluginManager;
     pluginReadyOk: () => void;
 } & PluginManagerOptions;
-export declare type PluginInstance = {
+export type PluginInstance = {
     ctx: CPluginCtx;
     exports: any;
     source: PluginObj;

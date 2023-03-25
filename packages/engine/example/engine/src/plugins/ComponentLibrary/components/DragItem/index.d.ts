@@ -1,5 +1,5 @@
 import React from 'react';
-export declare type DragComponentItemProps = {
+export type DragComponentItemProps = {
     id: string;
     name: string;
     description?: any;

@@ -1,6 +1,6 @@
 import React from 'react';
-export declare type ContextState = Record<string, any>;
-export declare type CFormContextData = {
+export type ContextState = Record<string, any>;
+export type CFormContextData = {
     formName: string;
     formState: ContextState;
     conditionConfig: Record<string, (state: ContextState) => boolean>;

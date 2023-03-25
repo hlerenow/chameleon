@@ -1,6 +1,6 @@
 /// <reference types="react" />
 import { CNode } from '@chameleon/model';
-export declare type DefaultSelectToolBarProps = {
+export type DefaultSelectToolBarProps = {
     nodeList: CNode[];
     toSelectNode: (id: string) => void;
     toDelete: (id: string) => void;

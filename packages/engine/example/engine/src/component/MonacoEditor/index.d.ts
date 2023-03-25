@@ -1,8 +1,8 @@
 /// <reference types="react" />
 import * as monaco from 'monaco-editor';
 import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api';
-export declare type MonacoEditorInstance = monacoEditor.editor.IStandaloneCodeEditor;
-export declare type MonacoEditorProps = {
+export type MonacoEditorInstance = monacoEditor.editor.IStandaloneCodeEditor;
+export type MonacoEditorProps = {
     beforeMount?: (monaco: typeof monacoEditor) => void;
     onDidMount?: (editor: MonacoEditorInstance) => void;
     options?: monaco.editor.IStandaloneEditorConstructionOptions;

@@ -3,11 +3,11 @@ import { Workbench } from './component/Workbench';
 import { CPlugin, PluginManager } from './core/pluginManager';
 import { Emitter } from 'mitt';
 import { AssetPackage, CMaterialType, CNode, CPage, CPageDataType, CRootNode } from '@chameleon/model';
-export declare type EnginContext = {
+export type EnginContext = {
     pluginManager: PluginManager;
     engine: Engine;
 };
-export declare type EngineProps = {
+export type EngineProps = {
     plugins: CPlugin[];
     schema: CPageDataType;
     material?: CMaterialType[];

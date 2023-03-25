@@ -7,13 +7,13 @@ export interface PluginContext {
     getPlugin: (pluginName: string) => any;
     emitter: Emitter<any>;
 }
-declare type PanelItem = {
+type PanelItem = {
     name: string;
     title: string | React.ReactNode;
     icon: React.ReactNode;
     render: React.ReactNode;
 };
-declare type WorkbenchStateType = {
+type WorkbenchStateType = {
     leftBoxVisible: boolean;
     leftBoxSize: {
         width: number;
@@ -31,7 +31,7 @@ declare type WorkbenchStateType = {
     rightView: React.ReactNode | null;
     topToolBarView: React.ReactNode | null;
 };
-export declare type WorkbenchPropsType = {
+export type WorkbenchPropsType = {
     emitter: Emitter<any>;
 };
 export declare class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStateType> {
