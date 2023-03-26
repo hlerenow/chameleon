@@ -13,6 +13,9 @@ export type EngineProps = {
     material?: CMaterialType[];
     assets?: AssetPackage[];
     assetPackagesList?: AssetPackage[];
+    beforePluginRun?: (options: {
+        pluginManager: PluginManager;
+    }) => void;
     onReady?: (ctx: EnginContext) => void;
 };
 declare class Engine extends React.Component<EngineProps> {

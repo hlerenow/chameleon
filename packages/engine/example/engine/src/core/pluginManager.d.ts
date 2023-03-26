@@ -35,6 +35,7 @@ export type PluginInstance = {
     source: PluginObj;
     ready: boolean;
 };
+export type CustomPluginHook = (pluginInstance: PluginInstance) => PluginInstance;
 export declare class PluginManager {
     plugins: Map<string, PluginInstance>;
     emitter: Emitter<any>;
@@ -43,7 +44,9 @@ export declare class PluginManager {
     i18n: CustomI18n;
     assets: AssetPackage[];
     engine: Engine;
+    customPluginHooks: Record<string, CustomPluginHook[]>;
     constructor({ getWorkbench, emitter, pageModel, i18n, assets, engine }: PluginManagerOptions);
+    customPlugin: (pluginName: string, customPluginHook: CustomPluginHook) => void;
     createPluginCtx: () => CPluginCtx<any>;
     add(plugin: CPlugin): Promise<void>;
     get(pluginName: string): Promise<PluginInstance | undefined>;

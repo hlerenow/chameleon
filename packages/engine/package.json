@@ -4,7 +4,7 @@
   "scripts": {
     "start": "npm run build:render && build-script",
     "build": "build-script --build",
-    "build:app": "export NODE_OPTIONS=--max-old-space-size=32768 && cross-env BUILD_TYPE=APP build-script --build",
+    "build:app": "npm run build:render && export NODE_OPTIONS=--max-old-space-size=32768 && cross-env BUILD_TYPE=APP build-script --build",
     "build:render": "cross-env BUILD_TYPE=Render build-script --build",
     "build:app:analyze": "cross-env BUILD_TYPE=APP ANALYZE=1 build-script --build",
     "lint": "eslint --ext .tsx,.ts src/",
