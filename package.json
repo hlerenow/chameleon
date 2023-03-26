@@ -9,8 +9,8 @@
     "clear": "rm -rf ./node_modules",
     "lint": "lerna run lint",
     "build": "lerna run build",
-    "version": "lerna version",
-    "toPublish": "lerna publish from-package",
+    "version": "lerna version --conventional-commits",
+    "toPublish": "lerna publish from-package --conventional-commits",
     "run-tests": "lerna run test"
   },
   "lint-staged": {
@@ -20,13 +20,13 @@
     "packages/*/src/**/*": "prettier --write --ignore-unknown"
   },
   "devDependencies": {
-    "@instructure/cz-lerna-changelog": "8.25.0",
     "@lerna-lite/cli": "^1.17.0",
     "@lerna-lite/list": "^1.17.0",
     "@lerna-lite/run": "^1.17.0",
     "@lerna-lite/watch": "^1.17.0",
     "@storybook/preset-scss": "^1.0.3",
     "commitizen": "^4.2.4",
+    "conventional-changelog-conventionalcommits": "^5.0.0",
     "css-loader": "5.2.7",
     "lint-staged": "^13.0.3",
     "prettier": "2.7.1",

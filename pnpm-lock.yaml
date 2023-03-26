@@ -12,6 +12,7 @@ importers:
       '@storybook/preset-scss': ^1.0.3
       clsx: ^1.1.1
       commitizen: ^4.2.4
+      conventional-changelog-conventionalcommits: ^5.0.0
       css-loader: 5.2.7
       git-cz: ^4.9.0
       husky: ^8.0.1
@@ -32,6 +33,7 @@ importers:
       '@lerna-lite/watch': registry.npmmirror.com/@lerna-lite/watch/1.17.0
       '@storybook/preset-scss': registry.npmmirror.com/@storybook/preset-scss/1.0.3_4qjrhw6ivtbeahu3qiaajvcgam
       commitizen: registry.npmmirror.com/commitizen/4.3.0
+      conventional-changelog-conventionalcommits: registry.npmmirror.com/conventional-changelog-conventionalcommits/5.0.0
       css-loader: registry.npmmirror.com/css-loader/5.2.7
       lint-staged: registry.npmmirror.com/lint-staged/13.2.0
       prettier: registry.npmmirror.com/prettier/2.7.1
@@ -9042,6 +9044,17 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       compare-func: registry.npmmirror.com/compare-func/2.0.0
+      q: registry.npmmirror.com/q/1.5.1
+    dev: true
+
+  registry.npmmirror.com/conventional-changelog-conventionalcommits/5.0.0:
+    resolution: {integrity: sha512-lCDbA+ZqVFQGUj7h9QBKoIpLhl8iihkO0nCTyRNzuXtcd7ubODpYB04IFy31JloiJgG0Uovu8ot8oxRzn7Nwtw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/conventional-changelog-conventionalcommits/-/conventional-changelog-conventionalcommits-5.0.0.tgz}
+    name: conventional-changelog-conventionalcommits
+    version: 5.0.0
+    engines: {node: '>=10'}
+    dependencies:
+      compare-func: registry.npmmirror.com/compare-func/2.0.0
+      lodash: registry.npmmirror.com/lodash/4.17.21
       q: registry.npmmirror.com/q/1.5.1
     dev: true
 
