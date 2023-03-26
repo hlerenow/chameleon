@@ -33,13 +33,12 @@
     "prettier": "2.7.1",
     "sass": "^1.53.0",
     "sass-loader": "10.1.1",
-    "style-loader": "2.0.0"
-  },
-  "dependencies": {
+    "@hlerenow/git-cz": "^4.9.3",
     "clsx": "^1.1.1",
     "cross-env": "^7.0.3",
-    "git-cz": "^4.9.0",
-    "husky": "^8.0.1"
+    "husky": "^8.0.1",
+    "style-loader": "2.0.0"
   },
+  "dependencies": {},
   "config": {}
 }
