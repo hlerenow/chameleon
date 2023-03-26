@@ -2,28 +2,11 @@
 /* eslint-disable no-undef */
 
 const path = require('path');
-const { viteStaticCopy } = require('vite-plugin-static-copy');
 const { visualizer } = require('rollup-plugin-visualizer');
-const rootPackagePath = path.resolve(__dirname, '../');
 
 // 开发模式默认读取 index.html 作为开发模式入口
 // entry 作为打包库入口
-const plugins = [
-  viteStaticCopy({
-    targets: [
-      {
-        src: path.resolve(rootPackagePath, './layout/dist/index.umd.js'),
-        dest: path.resolve(__dirname, './dist/'),
-        rename: 'render.umd.js',
-      },
-      {
-        src: path.resolve(rootPackagePath, './layout/dist/index.umd.js.map'),
-        dest: path.resolve(__dirname, './dist/'),
-        rename: 'render.umd.js.map',
-      },
-    ],
-  }),
-];
+const plugins = [];
 
 if (process.env.ANALYZE) {
   plugins.push(
@@ -36,7 +19,7 @@ if (process.env.ANALYZE) {
   );
 }
 
-module.exports = {
+const mainConfig = {
   libMode: process.env.BUILD_TYPE !== 'APP',
   entry: './src/Engine.tsx',
   libName: 'CEngine',
@@ -49,6 +32,7 @@ module.exports = {
     base: process.env.BUILD_TYPE === 'APP' ? '/chameleon/' : '',
     build: {
       outDir: process.env.BUILD_TYPE === 'APP' ? './example' : './dist',
+      copyPublicDir: process.env.BUILD_TYPE === 'APP',
     },
     plugins: plugins,
     resolve: {
@@ -63,3 +47,26 @@ module.exports = {
     },
   },
 };
+
+const renderConfig = {
+  entry: './src/_dev_/render.ts',
+  formats: ['umd'],
+  libName: 'CRender',
+  fileName: 'render',
+  external: ['react', 'react-dom'],
+  global: {
+    react: 'React',
+    'react-dom': 'ReactDOM',
+  },
+  // 额外的 vite 配置
+  vite: {
+    build: {
+      copyPublicDir: false,
+      outDir: './public',
+    },
+    define: { 'process.env': {} },
+  },
+};
+
+const config = process.env.BUILD_TYPE === 'Render' ? renderConfig : mainConfig;
+module.exports = config;

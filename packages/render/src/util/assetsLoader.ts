@@ -6,11 +6,20 @@ export type Asset = AssetPackage;
 export class AssetLoader {
   assets: Asset[];
   loadStatus: 'INIT' | 'SUCCESS' | 'ERROR';
+  win: Window = window;
   private _onSuccessList: (() => void)[] = [];
   private _onErrorList: ((depsNotFound: string[]) => void)[] = [];
-  constructor(assets: Asset[]) {
+  constructor(
+    assets: Asset[],
+    options?: {
+      window?: Window;
+    }
+  ) {
     this.assets = assets;
     this.loadStatus = 'INIT';
+    if (options?.window) {
+      this.win = options.window;
+    }
   }
 
   load() {
@@ -25,6 +34,11 @@ export class AssetLoader {
       const srcList = item.resources.map((el) => el.src);
       loadjs(srcList, item.id, {
         async: false,
+        before: (_path, scriptEl) => {
+          this.win.document.body.appendChild(scriptEl);
+          /* return `false` to bypass default DOM insertion mechanism */
+          return false;
+        },
       });
     }
     if (assets.length === 0) {

@@ -17,6 +17,7 @@ export type EngineProps = {
   material?: CMaterialType[];
   assets?: AssetPackage[];
   assetPackagesList?: AssetPackage[];
+  beforePluginRun?: (options: { pluginManager: PluginManager }) => void;
   onReady?: (ctx: EnginContext) => void;
 };
 
@@ -46,7 +47,6 @@ class Engine extends React.Component<EngineProps> {
       console.error(e);
       this.pageModel = new CPage(EmptyPage);
     }
-
     this.emitter = mitt();
   }
 
@@ -67,6 +67,10 @@ class Engine extends React.Component<EngineProps> {
       pageModel: this.pageModel,
       i18n,
       assets: this.props.assets || [],
+    });
+
+    this.props.beforePluginRun?.({
+      pluginManager: this.pluginManager,
     });
 
     const pList = plugins.map((p) => {

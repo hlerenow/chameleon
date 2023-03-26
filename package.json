@@ -11,7 +11,8 @@
     "build": "lerna run build",
     "version": "lerna version --conventional-commits",
     "toPublish": "lerna publish from-package --conventional-commits",
-    "run-tests": "lerna run test"
+    "run-tests": "lerna run test",
+    "cz": "git-cz"
   },
   "lint-staged": {
     "packages/*/src/**/*.{js,jsx,ts,tsx}": [
@@ -36,6 +37,7 @@
   },
   "dependencies": {
     "clsx": "^1.1.1",
+    "cross-env": "^7.0.3",
     "git-cz": "^4.9.0",
     "husky": "^8.0.1"
   },

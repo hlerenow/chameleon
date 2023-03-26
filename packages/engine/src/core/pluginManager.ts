@@ -1,5 +1,5 @@
 import Engine from '@/Engine';
-import { AssetPackage, CNode, CPage } from '@chameleon/model';
+import { AssetPackage, CPage } from '@chameleon/model';
 import { i18n } from 'i18next';
 import mitt, { Emitter } from 'mitt';
 import { Workbench } from '../component/Workbench';
@@ -42,6 +42,8 @@ export type PluginInstance = {
   ready: boolean;
 };
 
+export type CustomPluginHook = (pluginInstance: PluginInstance) => PluginInstance;
+
 export class PluginManager {
   plugins: Map<string, PluginInstance> = new Map();
   emitter: Emitter<any> = mitt();
@@ -50,6 +52,7 @@ export class PluginManager {
   i18n: CustomI18n;
   assets: AssetPackage[];
   engine: Engine;
+  customPluginHooks: Record<string, CustomPluginHook[]> = {};
 
   constructor({ getWorkbench, emitter, pageModel, i18n, assets, engine }: PluginManagerOptions) {
     this.getWorkbench = getWorkbench;
@@ -59,6 +62,14 @@ export class PluginManager {
     this.assets = assets;
     this.engine = engine;
   }
+
+  customPlugin = (pluginName: string, customPluginHook: CustomPluginHook) => {
+    const customPluginHooks = this.customPluginHooks;
+    const hookList = customPluginHooks[pluginName] || [];
+    hookList.push(customPluginHook);
+    customPluginHooks[pluginName] = hookList;
+    this.customPluginHooks = customPluginHooks;
+  };
 
   createPluginCtx = () => {
     const ctx: CPluginCtx = {
@@ -86,12 +97,16 @@ export class PluginManager {
     } else {
       innerPlugin = plugin;
     }
-    const pluginCtx = {
+    let pluginCtx: PluginInstance = {
       source: innerPlugin,
       ctx: ctx,
       exports: innerPlugin.exports?.(ctx) || {},
       ready: false,
     };
+    const customHookList = this.customPluginHooks[innerPlugin.name] || [];
+    customHookList.forEach((cb) => {
+      pluginCtx = cb(pluginCtx);
+    });
     ctx.pluginReadyOk = () => {
       this.emitter.emit(`${innerPlugin.name}:ready`);
       pluginCtx.ready = true;

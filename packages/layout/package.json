@@ -5,14 +5,13 @@
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "start": "build-script",
+    "start": "npm run build:render && build-script",
     "build": "build-script --build",
+    "build:render": "cross-env BUILD_TYPE=Render build-script --build",
     "build:w": "build-script --build --watch",
     "lint": "eslint --ext .tsx,.ts src/",
     "prettier": "prettier --write ./src",
-    "test": "jest",
-    "copyAssets": "sh ./scripts/copyAssets.sh",
-    "prestart": "yarn copyAssets"
+    "test": "jest"
   },
   "dependencies": {
     "@chameleon/model": "workspace:*",
@@ -29,8 +28,7 @@
     "@types/lodash-es": "^4.17.6",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
-    "antd": "^5.0.0",
-    "vite-plugin-static-copy": "^0.12.0"
+    "antd": "^5.0.0"
   },
   "config": {}
 }

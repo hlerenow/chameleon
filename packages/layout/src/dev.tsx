@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import ReactDOMAll from 'react-dom';
-import { BasePage, EmptyPage, Material } from '@chameleon/demo-page';
-import { Layout, LayoutDragAndDropExtraDataType } from '.';
+import { BasePage, Material } from '@chameleon/demo-page';
+import { Layout, LayoutDragAndDropExtraDataType, LayoutPropsType } from '.';
 import * as antD from 'antd';
 import './dev.css';
 import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
 import { AssetPackage, CNode, CPage } from '@chameleon/model';
+import { collectVariable, flatObject } from './utils';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOMAll;
@@ -32,6 +33,60 @@ const assets: AssetPackage[] = [
 
 const components = {
   ...antD,
+};
+
+const beforeInitRender: LayoutPropsType['beforeInitRender'] = async ({ iframe }) => {
+  const subWin = iframe.getWindow();
+  if (!subWin) {
+    return;
+  }
+  subWin.React = React;
+  (subWin as any).ReactDOM = ReactDOMAll;
+  (subWin as any).ReactDOMClient = ReactDOM;
+  //   iframe.injectJsText(`
+  //   window.React = window.parent.React;
+  //   window.ReactDOM = window.parent.ReactDOM;
+  //   window.ReactDOMClient = window.parent.ReactDOMClient;
+  // `);
+};
+
+const customRender: LayoutPropsType['customRender'] = async ({
+  iframe: iframeContainer,
+  assets,
+  page,
+  pageModel,
+  ready,
+}) => {
+  await iframeContainer.injectJS('./render.umd.js');
+  const iframeWindow = iframeContainer.getWindow()!;
+  const iframeDoc = iframeContainer.getDocument()!;
+  const IframeReact = iframeWindow.React!;
+  const IframeReactDOM = iframeWindow.ReactDOMClient!;
+  const CRender = iframeWindow.CRender!;
+  // 注入组件物料资源
+  const assetLoader = new CRender.AssetLoader(assets);
+  assetLoader
+    .onSuccess(() => {
+      // 从子窗口获取物料对象
+      const componentCollection = collectVariable(assets, iframeWindow);
+      const components = flatObject(componentCollection);
+
+      const App = IframeReact?.createElement(CRender.DesignRender, {
+        adapter: CRender?.ReactAdapter,
+        page: page,
+        pageModel: pageModel,
+        components,
+        onMount: (designRenderInstance) => {
+          ready(designRenderInstance);
+        },
+      });
+
+      IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
+    })
+    .onError(() => {
+      console.log('资源加载出粗');
+    })
+    .load();
 };
 
 const App = () => {
@@ -133,26 +188,25 @@ const App = () => {
       style={{
         width: '100%',
         height: '100%',
-        padding: '50px',
+        padding: '20px',
         display: 'flex',
       }}
     >
       <div
         ref={leftBoxRef}
-        style={{ border: '1px solid red', width: '300px' }}
+        style={{ border: '1px solid rgba(0,0,0, 0.3)', padding: '10px', borderRadius: '2px', width: '300px' }}
         onClick={() => {
           layoutRef.current?.selectNode('32');
         }}
       >
-        left
+        Tool Box
       </div>
       <div
         style={{
-          width: '800px',
+          width: '100%',
           height: '100%',
           margin: '0 auto',
           overflow: 'hidden',
-          padding: '10px',
         }}
       >
         <Layout
@@ -163,6 +217,8 @@ const App = () => {
           // selectToolBar={<div>123</div>}
           assets={assets}
           ghostView={ghostView}
+          beforeInitRender={beforeInitRender}
+          customRender={customRender}
         />
       </div>
     </div>

@@ -11,19 +11,64 @@ import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 import { AssetPackage } from '@chameleon/model';
 import { InnerComponentMeta } from '../../../material/innerMaterial';
 import { RollbackOutlined } from '@ant-design/icons';
+import { collectVariable, flatObject, LayoutPropsType } from '@chameleon/layout';
 
-(window as any).React = React;
-(window as any).ReactDOM = ReactDOM;
-(window as any).ReactDOMClient = ReactDOMClient;
-// {
-//   src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/reset.css',
-// },
-// {
-//   src: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.6/dayjs.min.js',
-// },
-// {
-//   src: 'https://cdn.jsdelivr.net/npm/antd@5.0.1/dist/antd.min.js',
-// },
+const win = window as any;
+win.React = React;
+win.ReactDOM = ReactDOM;
+win.ReactDOMClient = ReactDOMClient;
+
+const beforeInitRender: LayoutPropsType['beforeInitRender'] = async ({ iframe }) => {
+  const subWin = iframe.getWindow();
+  if (!subWin) {
+    return;
+  }
+  subWin.React = React;
+  (subWin as any).ReactDOM = ReactDOM;
+  (subWin as any).ReactDOMClient = ReactDOMClient;
+};
+
+const customRender: LayoutPropsType['customRender'] = async ({
+  iframe: iframeContainer,
+  assets,
+  page,
+  pageModel,
+  ready,
+}) => {
+  await iframeContainer.injectJS('./render.umd.js');
+  const iframeWindow = iframeContainer.getWindow()!;
+  const iframeDoc = iframeContainer.getDocument()!;
+  const IframeReact = iframeWindow.React!;
+  const IframeReactDOM = iframeWindow.ReactDOMClient!;
+  const CRender = iframeWindow.CRender!;
+
+  // 注入组件物料资源
+  const assetLoader = new CRender.AssetLoader(assets, {
+    window: iframeContainer.getWindow()!,
+  });
+  assetLoader
+    .onSuccess(() => {
+      // 从子窗口获取物料对象
+      const componentCollection = collectVariable(assets, iframeWindow);
+      const components = flatObject(componentCollection);
+
+      const App = IframeReact?.createElement(CRender.DesignRender, {
+        adapter: CRender?.ReactAdapter,
+        page: page,
+        pageModel: pageModel,
+        components,
+        onMount: (designRenderInstance) => {
+          ready(designRenderInstance);
+        },
+      });
+
+      IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
+    })
+    .onError(() => {
+      console.log('资源加载出粗');
+    })
+    .load();
+};
 
 const assets: AssetPackage[] = [
   {
@@ -218,6 +263,13 @@ export const App = () => {
       assets={[]}
       assetPackagesList={assetPackagesList}
       onReady={onReady}
+      beforePluginRun={({ pluginManager }) => {
+        pluginManager.customPlugin('Designer', (pluginInstance) => {
+          pluginInstance.ctx.config.beforeInitRender = beforeInitRender;
+          pluginInstance.ctx.config.customRender = customRender;
+          return pluginInstance;
+        });
+      }}
     />
   );
 };

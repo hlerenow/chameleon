@@ -9,7 +9,7 @@ import { HighlightCanvas, HighlightCanvasRefType } from './components/HighlightB
 import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
 import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
 import { DropAnchorCanvas } from './components/DropAnchor';
-import { AssetPackage, CNode, CRootNode, InnerComponentNameEnum } from '@chameleon/model';
+import { AssetPackage, CNode, CPage, CPageDataType, CRootNode, InnerComponentNameEnum } from '@chameleon/model';
 import { Pointer } from './core/dragAndDrop/common';
 import { calculateDropPosInfo, DropPosType } from './components/DropAnchor/util';
 import ReactDOM from 'react-dom';
@@ -34,6 +34,21 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   hoverBoxStyle?: React.CSSProperties;
   hoverToolBar?: React.ReactNode;
   ghostView?: React.ReactNode;
+  /** 在 iframe 渲染 render 之前做一些事*/
+  beforeInitRender?: (options: {
+    iframe: IFrameContainer;
+    pageModel?: CPage;
+    page?: CPageDataType;
+    assets: AssetPackage[];
+  }) => Promise<any>;
+  // 自定义 render
+  customRender?: (options: {
+    iframe: IFrameContainer;
+    pageModel?: CPage;
+    page?: CPageDataType;
+    assets: AssetPackage[];
+    ready: (designRender: DesignRender) => void;
+  }) => void;
 };
 
 export type LayoutStateType = {
@@ -131,7 +146,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   };
 
   disposeRealTimeUpdate = () => {
-    console.log('realTimeSelectNodeInstanceTimer unmout');
     if (this.realTimeSelectNodeInstanceTimer) {
       clearInterval(this.realTimeSelectNodeInstanceTimer);
       this.realTimeSelectNodeInstanceTimer = 0;
@@ -146,7 +160,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   }
 
   init() {
-    const { renderScriptPath } = this.props;
     this.iframeContainer.destroy();
     this.iframeContainer = new IFrameContainer();
 
@@ -157,13 +170,38 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       console.error(e);
     });
     iframeContainer.ready(async () => {
-      iframeContainer.injectJsText(`
+      if (this.props.beforeInitRender) {
+        await this.props.beforeInitRender({
+          pageModel: this.props.pageModel,
+          page: this.props.page,
+          assets: this.props.assets || [],
+          iframe: iframeContainer,
+        });
+      } else {
+        iframeContainer.injectJsText(`
         window.React = window.parent.React;
         window.ReactDOM = window.parent.ReactDOM;
         window.ReactDOMClient = window.parent.ReactDOMClient;
       `);
-      await iframeContainer.injectJS(renderScriptPath || './render.umd.js');
-      this.initIframeLogic();
+      }
+
+      if (this.props.customRender) {
+        this.props.customRender({
+          pageModel: this.props.pageModel,
+          page: this.props.page,
+          assets: this.props.assets || [],
+          iframe: iframeContainer,
+          ready: (designRenderInstance) => {
+            this.designRenderRef.current = designRenderInstance;
+            this.registerDragAndDropEvent();
+            this.registerSelectEvent();
+            this.registerHoverEvent();
+            this.readyOk();
+          },
+        });
+      } else {
+        throw new Error('Must pass customRender methods');
+      }
     });
   }
 
@@ -194,7 +232,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             this.readyOk();
           },
         });
-
         IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
       })
       .onError(() => {
@@ -658,3 +695,4 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
 export * from './core/dragAndDrop';
 export * from './core/iframeContainer';
+export * from './utils';

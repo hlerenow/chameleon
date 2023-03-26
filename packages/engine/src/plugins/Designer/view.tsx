@@ -200,9 +200,10 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
   render() {
     const { layoutRef, props, onSelectNode, onDragStart, onHoverNode } = this;
     const { pageModel, hoverToolBar, selectToolBar, ghostView, assets } = this.state;
-
     return (
       <Layout
+        beforeInitRender={props.pluginCtx.config.beforeInitRender}
+        customRender={props.pluginCtx.config.customRender}
         ref={layoutRef}
         pageModel={pageModel}
         renderScriptPath={'./render.umd.js'}
