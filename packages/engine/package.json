@@ -1,6 +1,6 @@
 {
   "name": "@chameleon/engine",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "scripts": {
     "start": "build-script",
     "build": "build-script --build",
