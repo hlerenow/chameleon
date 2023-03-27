@@ -1,10 +1,10 @@
-import { CMaterialType } from '@chameleon/model';
+import { CMaterialType } from '@chamn/model';
 
 export const TableMeta: CMaterialType = {
   title: 'Table',
   componentName: 'Table',
   npm: {
-    package: '@chameleon/mock-material',
+    package: '@chamn/mock-material',
     exportName: 'Table',
     version: '1.0.0',
   },

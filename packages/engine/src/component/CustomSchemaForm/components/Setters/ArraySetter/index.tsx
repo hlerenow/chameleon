@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Button, ConfigProvider } from 'antd';
 import { CSetterProps } from '../type';
 import { getSetterList } from '../../../utils';
-import { SetterType } from '@chameleon/model';
+import { SetterType } from '@chamn/model';
 
 import { ArrayItem } from './ArrayItem';
 import { SortItemOrderModal } from './SortItemOrderModal';

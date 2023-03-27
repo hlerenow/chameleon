@@ -1,5 +1,5 @@
 import React from 'react';
-import { CNode, CRootNode } from '@chameleon/model';
+import { CNode, CRootNode } from '@chamn/model';
 
 export const GhostView = ({ node }: { node: CNode | CRootNode }) => {
   return (

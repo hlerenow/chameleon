@@ -1,4 +1,4 @@
-import { CPageDataType } from '@chameleon/model';
+import { CPageDataType } from '@chamn/model';
 const data = [
   {
     key: '1',

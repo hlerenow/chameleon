@@ -1,6 +1,6 @@
 import { ConfigProvider, Input, InputProps } from 'antd';
 import { CSetter, CSetterProps } from '../type';
-import { CNodePropsTypeEnum } from '@chameleon/model';
+import { CNodePropsTypeEnum } from '@chamn/model';
 
 export const ExpressionSetter: CSetter<
   InputProps & {

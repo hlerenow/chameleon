@@ -4,7 +4,7 @@ import { CSetter, CSetterProps } from '../type';
 import { CForm } from '../../Form';
 import { SetterSwitcher } from '../../SetterSwitcher';
 import { getSetterList } from '../../../utils';
-import { getMTitle, getMTitleTip, MaterialPropType } from '@chameleon/model';
+import { getMTitle, getMTitleTip, MaterialPropType } from '@chamn/model';
 
 export type CShapeSetterProps = {
   elements: MaterialPropType[];
@@ -12,7 +12,12 @@ export type CShapeSetterProps = {
   value: Record<string, any>;
 };
 
-export const ShapeSetter: CSetter<CShapeSetterProps> = ({ onValueChange, elements, value, setterContext }: CSetterProps<CShapeSetterProps>) => {
+export const ShapeSetter: CSetter<CShapeSetterProps> = ({
+  onValueChange,
+  elements,
+  value,
+  setterContext,
+}: CSetterProps<CShapeSetterProps>) => {
   const { keyPaths } = setterContext;
   const formRef = useRef<CForm>(null);
   useEffect(() => {
@@ -41,7 +46,14 @@ export const ShapeSetter: CSetter<CShapeSetterProps> = ({ onValueChange, element
           const tip = getMTitleTip(el.title);
           return (
             <div key={index}>
-              <SetterSwitcher name={el.name} label={title} tips={tip} condition={el.condition} keyPaths={[...keyPaths, el.name]} setters={setters} />
+              <SetterSwitcher
+                name={el.name}
+                label={title}
+                tips={tip}
+                condition={el.condition}
+                keyPaths={[...keyPaths, el.name]}
+                setters={setters}
+              />
             </div>
           );
         })}

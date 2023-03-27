@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Modal } from 'antd';
 import { MonacoEditor, MonacoEditorInstance } from '../../component/MonacoEditor';
-import { CPage } from '@chameleon/model';
+import { CPage } from '@chamn/model';
 import { waitReactUpdate } from '../../utils';
 import { EnginContext } from '../../Engine';
 import { DesignerExports } from '../Designer';

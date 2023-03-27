@@ -1,15 +1,15 @@
 /* eslint-disable react/no-find-dom-node */
 import React from 'react';
 import styles from './index.module.scss';
-import { RenderInstance } from '@chameleon/render';
-import { DesignRender, DesignRenderProp } from '@chameleon/render';
+import { RenderInstance } from '@chamn/render';
+import { DesignRender, DesignRenderProp } from '@chamn/render';
 import { IFrameContainer } from './core/iframeContainer';
 import { addEventListenerReturnCancel, animationFrame, collectVariable, flatObject } from './utils';
 import { HighlightCanvas, HighlightCanvasRefType } from './components/HighlightBox';
 import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
 import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
 import { DropAnchorCanvas } from './components/DropAnchor';
-import { AssetPackage, CNode, CPage, CPageDataType, CRootNode, InnerComponentNameEnum } from '@chameleon/model';
+import { AssetPackage, CNode, CPage, CPageDataType, CRootNode, InnerComponentNameEnum } from '@chamn/model';
 import { Pointer } from './core/dragAndDrop/common';
 import { calculateDropPosInfo, DropPosType } from './components/DropAnchor/util';
 import ReactDOM from 'react-dom';

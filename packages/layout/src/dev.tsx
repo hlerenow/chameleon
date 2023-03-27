@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import ReactDOMAll from 'react-dom';
-import { BasePage, Material } from '@chameleon/demo-page';
+import { BasePage, Material } from '@chamn/demo-page';
 import { Layout, LayoutDragAndDropExtraDataType, LayoutPropsType } from '.';
 import * as antD from 'antd';
 import './dev.css';
 import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
-import { AssetPackage, CNode, CPage } from '@chameleon/model';
+import { AssetPackage, CNode, CPage } from '@chamn/model';
 import { collectVariable, flatObject } from './utils';
 
 (window as any).React = React;

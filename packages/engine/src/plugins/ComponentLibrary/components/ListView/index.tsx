@@ -1,5 +1,5 @@
 import React from 'react';
-import { SnippetsType } from '@chameleon/model';
+import { SnippetsType } from '@chamn/model';
 import { Collapse } from 'antd';
 import { DragComponentItem } from '../DragItem';
 import styles from './style.module.scss';

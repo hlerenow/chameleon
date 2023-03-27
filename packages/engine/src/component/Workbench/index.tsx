@@ -5,7 +5,7 @@ import { Button } from 'antd';
 import { CloseOutlined, DoubleRightOutlined, PushpinOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
 import mitt, { Emitter } from 'mitt';
-import { CNode } from '@chameleon/model';
+import { CNode } from '@chamn/model';
 import { waitReactUpdate } from '../../utils';
 
 export interface PluginContext {

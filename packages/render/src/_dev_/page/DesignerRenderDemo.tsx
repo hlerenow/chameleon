@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { BasePage, SamplePage, Material, EmptyPage } from '@chameleon/demo-page';
+import { BasePage, SamplePage, Material, EmptyPage } from '@chamn/demo-page';
 import { ReactAdapter } from '../../index';
 import '../index.css';
 import { DesignRender, useDesignRender } from '../../core/designReactRender';
-import { CPage } from '@chameleon/model';
+import { CPage } from '@chamn/model';
 import { components } from '../components';
 
 export type AppProp = {

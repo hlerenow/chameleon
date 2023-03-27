@@ -1,5 +1,5 @@
 import { waitReactUpdate } from '@/utils';
-import { CPageDataType } from '@chameleon/model';
+import { CPageDataType } from '@chamn/model';
 import { cloneDeep } from 'lodash-es';
 import { CPlugin, CPluginCtx } from '../../core/pluginManager';
 

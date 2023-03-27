@@ -1,11 +1,4 @@
-import {
-  CNode,
-  CPage,
-  CProp,
-  CRootNode,
-  CSlot,
-  isNodeModel,
-} from '@chameleon/model';
+import { CNode, CPage, CProp, CRootNode, CSlot, isNodeModel } from '@chamn/model';
 
 export const getCloseNodeList = (node: CNode | CRootNode, level = 5) => {
   const res = [];

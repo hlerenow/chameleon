@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { CMaterialPropsType, CNode, CNodePropsTypeEnum, CProp, isExpression } from '@chameleon/model';
+import { CMaterialPropsType, CNode, CNodePropsTypeEnum, CProp, isExpression } from '@chamn/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';
 

@@ -1,4 +1,4 @@
-import { CPageDataType, InnerComponentNameEnum } from '@chameleon/model';
+import { CPageDataType, InnerComponentNameEnum } from '@chamn/model';
 
 export const EmptyPage: CPageDataType = {
   version: '1.0.0',

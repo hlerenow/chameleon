@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { SetterObjType } from '@chameleon/model';
+import { SetterObjType } from '@chamn/model';
 import Setters from '../Setters/index';
 import { CField, CFieldProps } from '../Form/Field';
 import { Collapse, Dropdown, MenuProps } from 'antd';
@@ -16,27 +16,14 @@ export type SetterSwitcherProps = {
   useField?: boolean;
 } & Omit<CFieldProps, 'children'>;
 
-export const SetterSwitcher = ({
-  setters,
-  keyPaths,
-  condition,
-  useField = true,
-  ...props
-}: SetterSwitcherProps) => {
+export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, ...props }: SetterSwitcherProps) => {
   const [visible, setVisible] = useState(true);
-  const { onSetterChange, defaultSetterConfig, formRef, pluginCtx } =
-    useContext(CCustomSchemaFormContext);
+  const { onSetterChange, defaultSetterConfig, formRef, pluginCtx } = useContext(CCustomSchemaFormContext);
 
-  const [currentSetter, setCurrentSetter] = useState<SetterObjType | null>(
-    () => {
-      const currentSetterName =
-        defaultSetterConfig[keyPaths.join('.')]?.setter || '';
-      return (
-        setters.find((el) => el.componentName === currentSetterName) ||
-        setters[0]
-      );
-    }
-  );
+  const [currentSetter, setCurrentSetter] = useState<SetterObjType | null>(() => {
+    const currentSetterName = defaultSetterConfig[keyPaths.join('.')]?.setter || '';
+    return setters.find((el) => el.componentName === currentSetterName) || setters[0];
+  });
 
   let CurrentSetterComp = null;
   if (currentSetter?.componentName) {
@@ -105,9 +92,7 @@ export const SetterSwitcher = ({
     let newProps = {
       ...(currentSetter?.props || {}),
     };
-    const target = setters.find(
-      (el) => el.componentName === currentSetter?.componentName
-    );
+    const target = setters.find((el) => el.componentName === currentSetter?.componentName);
     if (target) {
       newProps = {
         ...newProps,
@@ -249,9 +234,7 @@ export const SetterSwitcher = ({
     );
   } else {
     bodyView = (
-      <div
-        style={{ display: 'flex', alignItems: 'center', paddingBottom: '8px' }}
-      >
+      <div style={{ display: 'flex', alignItems: 'center', paddingBottom: '8px' }}>
         {props.prefix ?? null}
         {useField && (
           <CField
@@ -286,9 +269,5 @@ export const SetterSwitcher = ({
     );
   }
 
-  return (
-    <div style={{ display: visible ? 'block' : 'none', overflow: 'auto' }}>
-      {bodyView}
-    </div>
-  );
+  return <div style={{ display: visible ? 'block' : 'none', overflow: 'auto' }}>{bodyView}</div>;
 };

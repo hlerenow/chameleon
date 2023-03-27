@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { ConfigProvider } from 'antd';
 import { CustomSchemaForm } from '../CustomSchemaForm';
-import { ClassNameType, CMaterialPropsType, CNodePropsTypeEnum } from '@chameleon/model';
+import { ClassNameType, CMaterialPropsType, CNodePropsTypeEnum } from '@chamn/model';
 
 import styles from './style.module.scss';
 

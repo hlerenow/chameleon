@@ -1,5 +1,5 @@
 {
-  "name": "@chameleon/demo-page",
+  "name": "@chamn/demo-page",
   "private": false,
   "publishConfig": {
     "access": "public"
@@ -22,8 +22,8 @@
     "sass": "^1.54.0"
   },
   "devDependencies": {
-    "@chameleon/build-script": "workspace:*",
-    "@chameleon/model": "workspace:*",
+    "@chamn/build-script": "workspace:*",
+    "@chamn/model": "workspace:*",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6"
   },

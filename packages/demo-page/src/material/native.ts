@@ -1,4 +1,4 @@
-import { CMaterialType } from '@chameleon/model';
+import { CMaterialType } from '@chamn/model';
 
 export const DivMeta: CMaterialType = {
   title: 'Div',

@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppstoreAddOutlined } from '@ant-design/icons';
-import { LayoutDragAndDropExtraDataType, Sensor, SensorEventObjType } from '@chameleon/layout';
+import { LayoutDragAndDropExtraDataType, Sensor, SensorEventObjType } from '@chamn/layout';
 import { Tabs } from 'antd';
 import { CPlugin, CPluginCtx } from '../../core/pluginManager';
 import { DesignerExports } from '../Designer';
@@ -10,7 +10,7 @@ import { withTranslation, WithTranslation } from 'react-i18next';
 import { ListView } from './components/ListView';
 import { getTargetMNodeKeyVal } from './util';
 import { DRAG_ITEM_KEY } from './components/DragItem';
-import { SnippetsCollection } from '@chameleon/model';
+import { SnippetsCollection } from '@chamn/model';
 import { capitalize } from 'lodash-es';
 
 interface ComponentLibViewProps extends WithTranslation {

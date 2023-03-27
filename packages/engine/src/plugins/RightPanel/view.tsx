@@ -1,4 +1,4 @@
-import { CNode, CRootNode } from '@chameleon/model';
+import { CNode, CRootNode } from '@chamn/model';
 import { Empty, Tabs } from 'antd';
 import React from 'react';
 import { CPluginCtx } from '../../core/pluginManager';

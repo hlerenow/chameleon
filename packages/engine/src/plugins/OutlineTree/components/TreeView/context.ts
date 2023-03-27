@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { Sensor } from '@chameleon/layout';
-import { CPage } from '@chameleon/model';
+import { Sensor } from '@chamn/layout';
+import { CPage } from '@chamn/model';
 import React from 'react';
 import { DesignerExports } from '../../../Designer';
 import { TreeNodeData } from './dataStruct';

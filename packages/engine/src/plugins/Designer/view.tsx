@@ -1,6 +1,6 @@
 import React from 'react';
-import { Layout, LayoutDragAndDropExtraDataType } from '@chameleon/layout';
-import { CNode, CPage, CRootNode, InsertNodePosType } from '@chameleon/model';
+import { Layout, LayoutDragAndDropExtraDataType } from '@chamn/layout';
+import { CNode, CPage, CRootNode, InsertNodePosType } from '@chamn/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import localize from './localize';
 import { PLUGIN_NAME } from './config';
@@ -9,8 +9,8 @@ import { getCloseNodeList } from './util';
 import { GhostView } from './components/GhostView';
 
 import styles from './style.module.scss';
-import '@chameleon/layout/dist/style.css';
-import { AssetPackage } from '@chameleon/model';
+import '@chamn/layout/dist/style.css';
+import { AssetPackage } from '@chamn/model';
 
 export type DesignerPropsType = {
   pluginCtx: CPluginCtx;

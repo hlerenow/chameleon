@@ -1,8 +1,6 @@
-import { AssetPackage } from '@chameleon/model';
+import { AssetPackage } from '@chamn/model';
 
-export function addEventListenerReturnCancel<
-  K extends keyof HTMLElementEventMap
->(
+export function addEventListenerReturnCancel<K extends keyof HTMLElementEventMap>(
   dom: HTMLElement,
   type: K,
   listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any,
@@ -22,12 +20,7 @@ export const isDOM = (dom: unknown) => {
     };
   } else {
     cb = function (obj: any) {
-      return (
-        obj &&
-        typeof obj === 'object' &&
-        obj.nodeType === 1 &&
-        typeof obj.nodeName === 'string'
-      );
+      return obj && typeof obj === 'object' && obj.nodeType === 1 && typeof obj.nodeName === 'string';
     };
   }
   return cb(dom);

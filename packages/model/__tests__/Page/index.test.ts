@@ -2,7 +2,7 @@ import { CPage } from '../../src/Page/index';
 import { CMaterialType } from '../../src/types/material';
 import { CNodeDataType } from '../../src/types/node';
 import { CPageDataType } from '../../src/types/page';
-import { BasePage } from '@chameleon/demo-page';
+import { BasePage } from '@chamn/demo-page';
 import { InnerComponentNameEnum } from '../../src/types/schema';
 
 const mockMaterial: CMaterialType[] = [
@@ -127,9 +127,7 @@ describe('test page model', () => {
     });
     expect(page).not.toBeNull();
     expect(page.emitter).not.toBeUndefined();
-    expect(
-      page.value.componentsTree.value.children[0].material
-    ).not.toBeUndefined();
+    expect(page.value.componentsTree.value.children[0].material).not.toBeUndefined();
     expect(page.export()).toMatchSnapshot();
   });
 
@@ -139,8 +137,6 @@ describe('test page model', () => {
     });
     expect(page).not.toBeNull();
     expect(page.emitter).not.toBeUndefined();
-    expect(
-      page.value.componentsTree.value.children[0].material
-    ).not.toBeUndefined();
+    expect(page.value.componentsTree.value.children[0].material).not.toBeUndefined();
   });
 });

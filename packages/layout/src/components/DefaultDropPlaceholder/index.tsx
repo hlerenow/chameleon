@@ -1,4 +1,4 @@
-import { CNode, CRootNode } from '@chameleon/model';
+import { CNode, CRootNode } from '@chamn/model';
 import React from 'react';
 
 export const DefaultDropPlaceholder = (props: {
@@ -7,11 +7,7 @@ export const DefaultDropPlaceholder = (props: {
   width?: number;
   height?: number;
 }) => {
-  const {
-    placeholder = 'Drag the component to place it',
-    width = 300,
-    height = 50,
-  } = props;
+  const { placeholder = 'Drag the component to place it', width = 300, height = 50 } = props;
   return (
     <span
       style={{

@@ -1,4 +1,4 @@
-import { BasePage, BasePageBClient, EmptyPage, Material } from '@chameleon/demo-page';
+import { BasePage, BasePageBClient, EmptyPage, Material } from '@chamn/demo-page';
 import { Button, message, Modal } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
@@ -8,10 +8,10 @@ import '../../index.css';
 import { DEFAULT_PLUGIN_LIST } from '../../../plugins';
 import { DesignerExports } from '../../../plugins/Designer';
 import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
-import { AssetPackage } from '@chameleon/model';
+import { AssetPackage } from '@chamn/model';
 import { InnerComponentMeta } from '../../../material/innerMaterial';
 import { RollbackOutlined } from '@ant-design/icons';
-import { collectVariable, flatObject, LayoutPropsType } from '@chameleon/layout';
+import { collectVariable, flatObject, LayoutPropsType } from '@chamn/layout';
 
 const win = window as any;
 win.React = React;
@@ -90,7 +90,7 @@ const assets: AssetPackage[] = [
 
 const assetPackagesList = [
   {
-    package: '@chameleon/mock-material',
+    package: '@chamn/mock-material',
     globalName: 'antd',
     resources: [
       {

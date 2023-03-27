@@ -1,11 +1,11 @@
 import React from 'react';
-import { DragAndDrop } from '@chameleon/layout';
-import '@chameleon/layout/dist/style.css';
+import { DragAndDrop } from '@chamn/layout';
+import '@chamn/layout/dist/style.css';
 import { CPlugin } from '../../core/pluginManager';
 import { PLUGIN_NAME } from './config';
 import { Designer } from './view';
-import { AssetPackage, CPage, CPageDataType } from '@chameleon/model';
-import { RenderInstance } from '@chameleon/render';
+import { AssetPackage, CPage, CPageDataType } from '@chamn/model';
+import { RenderInstance } from '@chamn/render';
 
 export const DesignerPlugin: CPlugin = (ctx) => {
   const designerRef = React.createRef<Designer>();

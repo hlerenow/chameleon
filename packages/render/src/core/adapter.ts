@@ -1,4 +1,4 @@
-import { CPage, CNode, CRootNode } from '@chameleon/model';
+import { CPage, CNode, CRootNode } from '@chamn/model';
 import { ReactInstance } from 'react';
 import { RefManager } from './refManager';
 import { RenderInstance } from './type';

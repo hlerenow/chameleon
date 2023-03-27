@@ -1,5 +1,5 @@
 {
-  "name": "@chameleon/engine",
+  "name": "@chamn/engine",
   "version": "0.0.0",
   "publishConfig": {
     "access": "public"
@@ -18,9 +18,9 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.8.0",
-    "@chameleon/layout": "workspace:*",
-    "@chameleon/model": "workspace:*",
-    "@chameleon/render": "workspace:*",
+    "@chamn/layout": "workspace:*",
+    "@chamn/model": "workspace:*",
+    "@chamn/render": "workspace:*",
     "@dnd-kit/core": "^6.0.7",
     "@dnd-kit/modifiers": "^6.0.1",
     "@dnd-kit/sortable": "^7.0.2",
@@ -40,8 +40,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",
-    "@chameleon/build-script": "workspace:*",
-    "@chameleon/demo-page": "workspace:*",
+    "@chamn/build-script": "workspace:*",
+    "@chamn/demo-page": "workspace:*",
     "@storybook/addon-actions": "^6.5.16",
     "@storybook/addon-essentials": "^6.5.16",
     "@storybook/addon-interactions": "^6.5.16",

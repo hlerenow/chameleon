@@ -1,6 +1,6 @@
-import { LayoutDragAndDropExtraDataType, Sensor, SensorEventObjType } from '@chameleon/layout';
-import { DropPosType } from '@chameleon/layout/dist/components/DropAnchor/util';
-import { CNode, CRootNode } from '@chameleon/model';
+import { LayoutDragAndDropExtraDataType, Sensor, SensorEventObjType } from '@chamn/layout';
+import { DropPosType } from '@chamn/layout/dist/components/DropAnchor/util';
+import { CNode, CRootNode } from '@chamn/model';
 import React from 'react';
 import { WithTranslation } from 'react-i18next';
 import { CPluginCtx } from '../../../../core/pluginManager';

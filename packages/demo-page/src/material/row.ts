@@ -1,10 +1,10 @@
-import { CMaterialType } from '@chameleon/model';
+import { CMaterialType } from '@chamn/model';
 
 export const RowMeta: CMaterialType = {
   title: 'Row',
   componentName: 'Row',
   npm: {
-    package: '@chameleon/mock-material',
+    package: '@chamn/mock-material',
     exportName: 'Row',
     version: '1.0.0',
   },

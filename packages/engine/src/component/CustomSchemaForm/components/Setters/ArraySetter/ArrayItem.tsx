@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { CForm } from '../../Form';
 import { SetterSwitcher } from '../../SetterSwitcher';
 import { DeleteOutlined } from '@ant-design/icons';
-import { SetterObjType } from '@chameleon/model';
+import { SetterObjType } from '@chamn/model';
 
 export function ArrayItem(props: {
   index: number;
@@ -30,12 +30,7 @@ export function ArrayItem(props: {
 
   return (
     <div style={style}>
-      <CForm
-        ref={formRef}
-        name={String(index)}
-        initialValue={objectValue || {}}
-        onValueChange={props.onValueChange}
-      >
+      <CForm ref={formRef} name={String(index)} initialValue={objectValue || {}} onValueChange={props.onValueChange}>
         <SetterSwitcher
           suffix={
             <div

@@ -1,5 +1,5 @@
 import Engine from '@/Engine';
-import { AssetPackage, CPage } from '@chameleon/model';
+import { AssetPackage, CPage } from '@chamn/model';
 import { i18n } from 'i18next';
 import mitt, { Emitter } from 'mitt';
 import { Workbench } from '../component/Workbench';

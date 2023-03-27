@@ -1,10 +1,10 @@
-import { CMaterialType } from '@chameleon/model';
+import { CMaterialType } from '@chamn/model';
 
 export const ButtonMeta: CMaterialType = {
   title: 'Button',
   componentName: 'Button',
   npm: {
-    package: '@chameleon/mock-material',
+    package: '@chamn/mock-material',
     exportName: 'Button',
     version: '1.0.0',
   },

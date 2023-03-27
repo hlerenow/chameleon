@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { CNode, CRootNode } from '@chameleon/model';
+import { CNode, CRootNode } from '@chamn/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';
 import { MonacoEditor, MonacoEditorInstance } from '../../component/MonacoEditor';

@@ -3,13 +3,9 @@ import { Button, ConfigProvider, Modal } from 'antd';
 import { CSetter, CSetterProps } from '../type';
 import { MonacoEditor, MonacoEditorInstance } from '../../../../MonacoEditor';
 import { DefaultTslibSource } from './defaultDts';
-import { CNodePropsTypeEnum } from '@chameleon/model';
+import { CNodePropsTypeEnum } from '@chamn/model';
 
-export const FunctionSetter: CSetter<any> = ({
-  onValueChange,
-  setterContext,
-  ...props
-}: CSetterProps<any>) => {
+export const FunctionSetter: CSetter<any> = ({ onValueChange, setterContext, ...props }: CSetterProps<any>) => {
   const editorRef = useRef<MonacoEditorInstance | null>(null);
   const [open, setOpen] = useState(false);
   const onInnerValueChange = () => {
@@ -57,35 +53,24 @@ export const FunctionSetter: CSetter<any> = ({
           {open && (
             <MonacoEditor
               beforeMount={(monaco) => {
-                monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions(
-                  {
-                    noSemanticValidation: true,
-                    noSyntaxValidation: false,
-                  }
-                );
+                monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+                  noSemanticValidation: true,
+                  noSyntaxValidation: false,
+                });
 
                 // compiler options
-                monaco.languages.typescript.javascriptDefaults.setCompilerOptions(
-                  {
-                    target: monaco.languages.typescript.ScriptTarget.ES5,
-                    allowNonTsExtensions: true,
-                  }
-                );
+                monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+                  target: monaco.languages.typescript.ScriptTarget.ES5,
+                  allowNonTsExtensions: true,
+                });
 
                 const libUri = 'ts:filename/chameleon.default.variable.d.ts';
-                monaco.languages.typescript.javascriptDefaults.addExtraLib(
-                  DefaultTslibSource,
-                  libUri
-                );
+                monaco.languages.typescript.javascriptDefaults.addExtraLib(DefaultTslibSource, libUri);
                 // When resolving definitions and references, the editor will try to use created models.
                 // Creating a model for the library allows "peek definition/references" commands to work with the library.
                 const model = monaco.editor.getModel(monaco.Uri.parse(libUri));
                 if (!model) {
-                  monaco.editor.createModel(
-                    DefaultTslibSource,
-                    'typescript',
-                    monaco.Uri.parse(libUri)
-                  );
+                  monaco.editor.createModel(DefaultTslibSource, 'typescript', monaco.Uri.parse(libUri));
                 }
               }}
               onDidMount={(editor) => {

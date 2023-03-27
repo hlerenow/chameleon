@@ -1,5 +1,5 @@
 /* eslint-disable quotes */
-import { CPageDataType } from '@chameleon/model';
+import { CPageDataType } from '@chamn/model';
 
 export const BasePage: CPageDataType = {
   version: '1.0.0',

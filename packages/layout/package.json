@@ -1,5 +1,5 @@
 {
-  "name": "@chameleon/layout",
+  "name": "@chamn/layout",
   "version": "0.0.0",
   "publishConfig": {
     "access": "public"
@@ -17,8 +17,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@chameleon/model": "workspace:*",
-    "@chameleon/render": "workspace:*",
+    "@chamn/model": "workspace:*",
+    "@chamn/render": "workspace:*",
     "lodash-es": "^4.17.21",
     "mitt": "^3.0.0",
     "react": "^18.2.0",
@@ -26,8 +26,8 @@
     "sass": "^1.54.0"
   },
   "devDependencies": {
-    "@chameleon/build-script": "workspace:*",
-    "@chameleon/demo-page": "workspace:*",
+    "@chamn/build-script": "workspace:*",
+    "@chamn/demo-page": "workspace:*",
     "@types/lodash-es": "^4.17.6",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",

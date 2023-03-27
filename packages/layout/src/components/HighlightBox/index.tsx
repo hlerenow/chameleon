@@ -1,14 +1,8 @@
-import React, {
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import styles from './style.module.scss';
 import ReactDOM from 'react-dom';
 import { animationFrame, isDOM } from '../../utils';
-import { RenderInstance } from '@chameleon/render';
+import { RenderInstance } from '@chamn/render';
 
 export type HighlightCanvasRefType = {
   update: () => void;
@@ -22,13 +16,7 @@ export type HighlightBoxPropsType = {
   onRefDestroy?: (ref: React.RefObject<HighlightCanvasRefType>) => void;
 };
 
-export const HighlightBox = ({
-  instance,
-  toolRender,
-  getRef,
-  onRefDestroy,
-  style,
-}: HighlightBoxPropsType) => {
+export const HighlightBox = ({ instance, toolRender, getRef, onRefDestroy, style }: HighlightBoxPropsType) => {
   const [styleObj, setStyleObj] = useState<Record<string, string>>({});
   const [rect, setRect] = useState<DOMRect>();
   const ref = useRef<HighlightCanvasRefType>(null);

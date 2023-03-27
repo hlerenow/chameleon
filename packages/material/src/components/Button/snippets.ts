@@ -1,3 +1,3 @@
-import { SnippetsType } from '@chameleon/model';
+import { SnippetsType } from '@chamn/model';
 
 export const snippets: SnippetsType[] = [];

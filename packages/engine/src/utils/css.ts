@@ -1,5 +1,5 @@
 import { CSSVal } from '@/component/CSSEditor';
-import { CSSType, CSSValue, isExpression } from '@chameleon/model';
+import { CSSType, CSSValue, isExpression } from '@chamn/model';
 
 export type StyleArr = {
   key: string;

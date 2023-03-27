@@ -1,4 +1,4 @@
-import { SetterObjType, SetterType } from '@chameleon/model';
+import { SetterObjType, SetterType } from '@chamn/model';
 
 export const getSetterList = (setters: SetterType[] = []): SetterObjType[] => {
   return setters.map((setter) => {

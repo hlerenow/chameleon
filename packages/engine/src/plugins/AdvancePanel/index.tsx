@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { CMaterialPropsType, CNode, CRootNode } from '@chameleon/model';
+import { CMaterialPropsType, CNode, CRootNode } from '@chamn/model';
 import { CustomSchemaForm, CustomSchemaFormInstance, CustomSchemaFormProps } from '../../component/CustomSchemaForm';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';

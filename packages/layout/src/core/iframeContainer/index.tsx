@@ -1,4 +1,4 @@
-import * as CRender from '@chameleon/render';
+import * as CRender from '@chamn/render';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';

@@ -1,3 +1,3 @@
-import * as CRender from '@chameleon/render';
+import * as CRender from '@chamn/render';
 
 export default CRender;

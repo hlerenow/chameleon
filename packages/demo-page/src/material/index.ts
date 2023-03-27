@@ -1,4 +1,4 @@
-import { CMaterialType } from '@chameleon/model';
+import { CMaterialType } from '@chamn/model';
 import { ButtonMeta } from './button';
 import { ColMeta } from './col';
 import { InputMeta } from './input';

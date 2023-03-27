@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ReactAdapter, Render, useRender } from '@chameleon/render';
+import { ReactAdapter, Render, useRender } from '@chamn/render';
 import * as components from 'antd';
 
 export const Preview = () => {

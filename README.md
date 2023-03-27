@@ -7,7 +7,7 @@ A streamlined low-code engine, all modules support custom extensions, which can 
 ## Install
 
 ```shell
-npm i @chameleon
+npm i @chamn
 ```
 
 ## Demo

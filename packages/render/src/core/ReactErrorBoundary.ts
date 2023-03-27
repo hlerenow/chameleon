@@ -1,4 +1,4 @@
-import { CNode, CRootNode } from '@chameleon/model';
+import { CNode, CRootNode } from '@chamn/model';
 import React from 'react';
 
 type Props = {
@@ -81,11 +81,7 @@ class ErrorBoundary extends React.Component<
         })
       );
       // return errorView; onlyRenderChild from  errorView
-      return React.createElement(
-        this.props.targetComponent,
-        { onlyRenderChild: true },
-        errorView
-      );
+      return React.createElement(this.props.targetComponent, { onlyRenderChild: true }, errorView);
     }
 
     return this.props.children;

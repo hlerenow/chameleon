@@ -1,14 +1,8 @@
-import React, {
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import styles from './style.module.scss';
 import ReactDOM from 'react-dom';
 import { animationFrame, isDOM } from '../../utils';
-import { RenderInstance } from '@chameleon/render';
+import { RenderInstance } from '@chamn/render';
 import { DragAndDropEventType } from '../../core/dragAndDrop';
 import clsx from 'clsx';
 import { DropPosType } from './util';
@@ -123,9 +117,7 @@ export const DropAnchor = ({
       });
     } else {
       const space = 2;
-      const transformStr = `translate3d(${tempRect?.left - space}px, ${
-        tempRect.top - space
-      }px, 0)`;
+      const transformStr = `translate3d(${tempRect?.left - space}px, ${tempRect.top - space}px, 0)`;
       const tempObj = {
         width: tempRect?.width + space * 2 + 'px',
         height: tempRect?.height + space * 2 + 'px',
@@ -147,10 +139,7 @@ export const DropAnchor = ({
       after: styles.after,
       current: styles.current,
     };
-    const classList = [
-      classNameMap[dropInfo.direction],
-      classNameMap[dropInfo.pos],
-    ];
+    const classList = [classNameMap[dropInfo.direction], classNameMap[dropInfo.pos]];
     setPosClassName(classList);
 
     if (mouseEvent?.extraData.dropInfo) {

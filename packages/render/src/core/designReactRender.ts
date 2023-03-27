@@ -1,5 +1,5 @@
 /* eslint-disable react/no-find-dom-node */
-import { CNode, ContainerConfig, CPage, CPageDataType, CRootNode, getRandomStr, InnerComponentNameEnum } from '@chameleon/model';
+import { CNode, ContainerConfig, CPage, CPageDataType, CRootNode, getRandomStr, InnerComponentNameEnum } from '@chamn/model';
 import { isArray, isPlainObject, merge } from 'lodash-es';
 import React, { useMemo, useRef } from 'react';
 import { RenderPropsType, Render, UseRenderReturnType } from './render';

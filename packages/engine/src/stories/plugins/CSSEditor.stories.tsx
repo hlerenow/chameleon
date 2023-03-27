@@ -2,11 +2,11 @@
 
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { VisualPanelPlus } from '@/plugins/VisualPanelPlus';
-import { CNode, CPage } from '@chameleon/model';
+import { CNode, CPage } from '@chamn/model';
 import { PluginManager } from '@/core/pluginManager';
 import mitt from 'mitt';
 import customI18n from '@/i18n';
-import { BasePage } from '@chameleon/demo-page';
+import { BasePage } from '@chamn/demo-page';
 import { CSSEditor } from '@/component/CSSEditor';
 
 const TargetComponent = CSSEditor;

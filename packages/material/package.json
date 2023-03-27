@@ -1,5 +1,5 @@
 {
-  "name": "@chameleon/material",
+  "name": "@chamn/material",
   "private": false,
   "publishConfig": {
     "access": "public"
@@ -23,8 +23,8 @@
     "sass": "^1.54.0"
   },
   "devDependencies": {
-    "@chameleon/build-script": "*",
-    "@chameleon/model": "*",
+    "@chamn/build-script": "*",
+    "@chamn/model": "*",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6"
   },

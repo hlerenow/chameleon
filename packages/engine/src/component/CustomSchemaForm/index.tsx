@@ -1,8 +1,8 @@
 import React, { Ref } from 'react';
-import { CMaterialPropsType, getMTitleTip } from '@chameleon/model';
+import { CMaterialPropsType, getMTitleTip } from '@chamn/model';
 import { CForm } from './components/Form';
-import { isSpecialMaterialPropType } from '@chameleon/model';
-import { getMTitle } from '@chameleon/model/src/types/material';
+import { isSpecialMaterialPropType } from '@chamn/model';
+import { getMTitle } from '@chamn/model/src/types/material';
 import { SetterSwitcher } from './components/SetterSwitcher';
 import { getSetterList } from './utils';
 import styles from './style.module.scss';
@@ -22,7 +22,14 @@ export type CustomSchemaFormProps = {
 };
 
 const CustomSchemaFormCore = (props: CustomSchemaFormProps, ref: Ref<CustomSchemaFormInstance | CForm>) => {
-  const { properties: originProperties, initialValue, onValueChange, onSetterChange, defaultSetterConfig, pluginCtx } = props;
+  const {
+    properties: originProperties,
+    initialValue,
+    onValueChange,
+    onSetterChange,
+    defaultSetterConfig,
+    pluginCtx,
+  } = props;
   const properties: CMaterialPropsType = originProperties;
   return (
     <CCustomSchemaFormContext.Provider

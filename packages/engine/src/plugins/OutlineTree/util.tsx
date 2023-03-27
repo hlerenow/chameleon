@@ -1,5 +1,5 @@
 import React from 'react';
-import { DropPosType } from '@chameleon/layout/dist/components/DropAnchor/util';
+import { DropPosType } from '@chamn/layout/dist/components/DropAnchor/util';
 import {
   ArraySetterObjType,
   CNode,
@@ -14,10 +14,10 @@ import {
   RenderPropType,
   SetterObjType,
   SetterType,
-} from '@chameleon/model';
+} from '@chamn/model';
 import { isPlainObject } from 'lodash-es';
 import { TreeNodeData } from './components/TreeView/dataStruct';
-import { ShapeSetterObjType } from '@chameleon/model/src/types/material';
+import { ShapeSetterObjType } from '@chamn/model/src/types/material';
 
 export const getTargetMNodeKeyVal = (dom: HTMLElement | null, key: string): null | string => {
   if (!dom) {

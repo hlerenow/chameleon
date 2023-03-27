@@ -5,7 +5,7 @@ import { CTreeContext, DragState } from './context';
 import { TreeNodeData } from './dataStruct';
 import styles from './style.module.scss';
 import { LOGGER } from '../../../../utils/logger';
-import { CNode } from '@chameleon/model';
+import { CNode } from '@chamn/model';
 import { Input, InputRef } from 'antd';
 
 export const DRAG_ITEM_KEY = 'data-drag-key';

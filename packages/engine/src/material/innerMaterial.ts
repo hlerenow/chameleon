@@ -1,4 +1,4 @@
-import { CMaterialPropsType, CMaterialType, HTMl_TAGS } from '@chameleon/model';
+import { CMaterialPropsType, CMaterialType, HTMl_TAGS } from '@chamn/model';
 import { capitalize } from 'lodash-es';
 
 const customAttributesMeta: CMaterialPropsType[number] = {

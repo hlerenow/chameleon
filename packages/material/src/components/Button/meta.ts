@@ -1,4 +1,4 @@
-import { CMaterialType } from '@chameleon/model';
+import { CMaterialType } from '@chamn/model';
 import { snippets } from './snippets';
 
 export const meta: CMaterialType = {
@@ -6,7 +6,7 @@ export const meta: CMaterialType = {
   title: '按钮',
   props: [],
   npm: {
-    package: '@chameleon/material',
+    package: '@chamn/material',
     version: '0.0.1',
     destructuring: true,
     exportName: 'Button',

@@ -1,4 +1,4 @@
-import { CNode, CRootNode } from '@chameleon/model';
+import { CNode, CRootNode } from '@chamn/model';
 
 export type RenderInstance = React.ReactInstance & {
   _DESIGN_BOX: boolean;

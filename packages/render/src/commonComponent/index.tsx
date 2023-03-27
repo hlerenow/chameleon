@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { htmlTagNames } from 'html-tag-names';
-import { BaseComponentTagList } from '@chameleon/model';
+import { BaseComponentTagList } from '@chamn/model';
 
 const transformListToObj = (list: { key: string; value: any }[]) => {
   const res: Record<string, any> = {};

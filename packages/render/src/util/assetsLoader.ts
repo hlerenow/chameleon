@@ -1,4 +1,4 @@
-import { AssetPackage, getRandomStr } from '@chameleon/model';
+import { AssetPackage, getRandomStr } from '@chamn/model';
 import loadjs from 'loadjs';
 
 export type Asset = AssetPackage;

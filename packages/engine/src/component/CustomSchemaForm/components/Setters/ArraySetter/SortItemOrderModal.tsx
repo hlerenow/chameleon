@@ -12,7 +12,7 @@ import {
 } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
-import { getRandomStr } from '@chameleon/model';
+import { getRandomStr } from '@chamn/model';
 import styles from './style.module.scss';
 
 export type SortItemOrderProps = {
