@@ -23,6 +23,7 @@ const mainConfig = {
   libMode: process.env.BUILD_TYPE !== 'APP',
   entry: './src/Engine.tsx',
   libName: 'CEngine',
+  fileName: 'index',
   external: ['react', 'react-dom'],
   global: {
     react: 'React',

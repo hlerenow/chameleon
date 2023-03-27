@@ -9,9 +9,9 @@
     "clear": "rm -rf ./node_modules",
     "lint": "lerna run lint",
     "build": "lerna run build",
-    "changeVersion": "lerna version --preid beta",
-    "toPublish": "npm run build && lerna publish from-package --conventional-commits",
-    "toPublishBeta": "npm run build && lerna publish from-package --conventional-commits --dist-tag beta",
+    "changeVersion": "lerna version --force-publish --preid beta",
+    "toPublish": "npm run build && lerna publish from-git --conventional-commits",
+    "toPublishBeta": "npm run build && lerna publish from-git --conventional-commits --dist-tag beta",
     "run-tests": "lerna run test",
     "cz": "git-cz"
   },
