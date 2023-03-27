@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "0.0.0",
+  "version": "0.0.1-beta.0",
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
@@ -23,8 +23,8 @@
     "sass": "^1.54.0"
   },
   "devDependencies": {
-    "@chamn/build-script": "*",
-    "@chamn/model": "*",
+    "@chamn/build-script": "^0.0.1-beta.0",
+    "@chamn/model": "^0.0.1-beta.0",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6"
   },
