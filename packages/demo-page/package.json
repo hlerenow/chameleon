@@ -1,6 +1,9 @@
 {
   "name": "@chameleon/demo-page",
   "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "0.0.0",
   "scripts": {
     "start": "build-script",

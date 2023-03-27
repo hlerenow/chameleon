@@ -1,6 +1,9 @@
 {
   "name": "@chameleon/build-script",
   "version": "0.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "",
   "main": "index.js",
   "bin": {

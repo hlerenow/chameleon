@@ -1,6 +1,9 @@
 {
   "name": "@chameleon/engine",
   "version": "0.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "start": "npm run build:render && build-script",
     "build": "build-script --build",
