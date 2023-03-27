@@ -10,8 +10,8 @@
     "lint": "lerna run lint",
     "build": "lerna run build",
     "changeVersion": "lerna version --preid beta",
-    "toPublish": "lerna publish from-package --conventional-commits",
-    "toPublishBeta": "lerna publish from-package --conventional-commits --dist-tag beta",
+    "toPublish": "npm run build && lerna publish from-package --conventional-commits",
+    "toPublishBeta": "npm run build && lerna publish from-package --conventional-commits --dist-tag beta",
     "run-tests": "lerna run test",
     "cz": "git-cz"
   },
