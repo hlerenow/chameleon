@@ -1,6 +1,6 @@
 {
   "name": "@chamn/model",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
@@ -26,7 +26,7 @@
     "superstruct": "^0.16.0"
   },
   "devDependencies": {
-    "@chamn/build-script": "^0.0.5",
+    "@chamn/build-script": "^0.0.6",
     "@types/lodash-es": "^4.17.6",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6"
