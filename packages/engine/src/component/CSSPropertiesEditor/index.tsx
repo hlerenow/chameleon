@@ -181,11 +181,7 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
           style={{
             width: `${keyInputWidth}px`,
           }}
-          className={clsx([
-            styles.cssKeyLabel,
-            isCreate && styles.inputAuto,
-            isCreate && focusState.key && styles.active,
-          ])}
+          className={clsx([isCreate && styles.inputAuto, isCreate && focusState.key && styles.active])}
           onFocus={() => {
             setFocusState({
               key: true,

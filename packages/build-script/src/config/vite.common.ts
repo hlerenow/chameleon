@@ -3,6 +3,7 @@ import path from 'path';
 import react from '@vitejs/plugin-react';
 import eslint from 'vite-plugin-eslint';
 import dts from 'vite-plugin-dts';
+import sassDts from 'vite-plugin-sass-dts';
 import { PROJECT_ROOT, CUSTOM_CONFIG } from './base';
 
 // https://vitejs.dev/config/
@@ -30,11 +31,21 @@ export const commonConfig = () => {
       },
     },
     plugins: [
-      eslint(),
+      sassDts({
+        enabledMode: ['development', 'production'],
+        global: {
+          generate: true,
+          outFile: path.resolve(PROJECT_ROOT, './src/style.d.ts'),
+        },
+      }),
       dts({
-        skipDiagnostics: false,
+        entryRoot: path.resolve(PROJECT_ROOT, './src'),
+        compilerOptions: {
+          skipDefaultLibCheck: false,
+        },
       }),
       react(),
+      eslint(),
     ],
   }) as UserConfig;
   if (CUSTOM_CONFIG.libMode === false) {

@@ -1,4 +1,4 @@
-import Engine from '@/Engine';
+import { Engine } from '@/index';
 import { AssetPackage, CPage } from '@chamn/model';
 import { i18n } from 'i18next';
 import mitt, { Emitter } from 'mitt';

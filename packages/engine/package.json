@@ -7,6 +7,15 @@
   "publishConfig": {
     "access": "public"
   },
+  "homepage": "https://github.com/hlerenow/chameleon",
+  "keywords": [
+    "engine",
+    "lowcode",
+    "react",
+    "web-editor",
+    "visual-editor",
+    "vite"
+  ],
   "scripts": {
     "start": "npm run build:render && build-script",
     "build": "build-script --build",

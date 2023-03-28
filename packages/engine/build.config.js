@@ -22,7 +22,7 @@ if (process.env.ANALYZE) {
 const mainConfig = {
   libMode: process.env.BUILD_TYPE !== 'APP',
   entry: './src/index.tsx',
-  libName: 'CEngine',
+  // libName: 'CEngine',
   fileName: 'index',
   external: ['react', 'react-dom'],
   global: {

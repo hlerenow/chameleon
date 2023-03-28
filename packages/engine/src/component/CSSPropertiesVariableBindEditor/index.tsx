@@ -160,7 +160,7 @@ const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePropertyE
                 style={{
                   width: `${keyInputWidth}px`,
                 }}
-                className={clsx([styles.inputBox, focusState.key && styles.active])}
+                className={clsx([styles.inputBox])}
                 onFocus={() => {
                   setFocusState({
                     key: true,

@@ -21,7 +21,7 @@ export type EngineProps = {
   onReady?: (ctx: EnginContext) => void;
 };
 
-class Engine extends React.Component<EngineProps> {
+export class Engine extends React.Component<EngineProps> {
   currentSelectNode: CNode | CRootNode | null;
 
   pluginManager!: PluginManager;
@@ -136,4 +136,7 @@ class Engine extends React.Component<EngineProps> {
   }
 }
 
-export default Engine;
+export * as plugins from './plugins';
+export * from '@chamn/layout';
+
+export * from './material/innerMaterial';

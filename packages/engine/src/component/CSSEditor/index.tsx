@@ -1,9 +1,9 @@
 import { waitReactUpdate } from '@/utils';
 import { formatCSSProperty, StyleArr, styleArr2Obj } from '@/utils/css';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { Card, Collapse, Dropdown, Segmented, Space } from 'antd';
+import { Card, Collapse, Dropdown, Space } from 'antd';
 import CheckableTag from 'antd/es/tag/CheckableTag';
-import { MutableRefObject, Ref, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CSSPropertiesEditor, CSSPropertiesEditorRef } from '../CSSPropertiesEditor';
 import styles from './style.module.scss';
 // state: 'normal' | 'hover' | 'active' | 'focus' | 'first' | 'last' | 'even' | 'odd';
@@ -220,7 +220,7 @@ export const CSSEditor = (props: CSSEditorProps) => {
             marginBottom: '10px',
           }}
         >
-          <Collapse.Panel header={<span className={styles.header}>Normal</span>} key="normal">
+          <Collapse.Panel header={<span>Normal</span>} key="normal">
             <CSSPropertiesEditor
               ref={(ref) => {
                 cssPropertyRefMap.current['normal'] = ref;
@@ -231,7 +231,7 @@ export const CSSEditor = (props: CSSEditorProps) => {
           </Collapse.Panel>
           {mediaQueryList.map((el) => {
             return (
-              <Collapse.Panel header={<span className={styles.header}>{el.label}</span>} key={el.key}>
+              <Collapse.Panel header={<span>{el.label}</span>} key={el.key}>
                 <CSSPropertiesEditor
                   ref={(ref) => {
                     cssPropertyRefMap.current[el.key] = ref;
