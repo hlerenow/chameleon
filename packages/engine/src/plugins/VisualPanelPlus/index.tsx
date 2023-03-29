@@ -54,7 +54,9 @@ export const VisualPanelPlus = (props: { node: CNode | CRootNode; pluginCtx: CPl
   };
 
   const onUpdateCss = (val: CSSVal) => {
-    node.value.css = formatCssToNodeVal(node.id, val);
+    // class name 不能以数字开头，这里使用c_前缀
+    node.value.css = formatCssToNodeVal(`c_${node.id}`, val);
+    console.log(' node.value.css', node.value.css);
     node.updateValue();
   };
 
@@ -72,24 +74,6 @@ export const VisualPanelPlus = (props: { node: CNode | CRootNode; pluginCtx: CPl
           }}
         />
       </div>
-      <Collapse
-        defaultActiveKey={['origin-css-edit']}
-        bordered={false}
-        style={{
-          marginBottom: '10px',
-        }}
-      >
-        <Collapse.Panel header={<span className={styles.header}>Style</span>} key="origin-css-edit">
-          <CSSPropertiesEditor
-            key={node.id}
-            ref={cssPropertyEditorRef}
-            onValueChange={(val) => {
-              onUpdateStyle([...val, ...formatStyle.expressionProperty]);
-            }}
-            initialValue={formatStyle.normalProperty}
-          />
-        </Collapse.Panel>
-      </Collapse>
       <Collapse
         defaultActiveKey={['origin-css-edit']}
         bordered={false}

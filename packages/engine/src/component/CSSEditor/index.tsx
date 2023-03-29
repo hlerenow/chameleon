@@ -139,7 +139,6 @@ export const CSSEditor = (props: CSSEditorProps) => {
 
   const updateCssVal = useCallback(
     (mediaKey: string, val: StyleArr) => {
-      console.log(cssVal, selectedStateTag, mediaKey, val);
       const newVal = {
         ...cssVal,
         [selectedStateTag]: {

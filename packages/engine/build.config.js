@@ -3,10 +3,11 @@
 
 const path = require('path');
 const { visualizer } = require('rollup-plugin-visualizer');
+const monacoEditorPlugin = require('vite-plugin-monaco-editor').default;
 
 // 开发模式默认读取 index.html 作为开发模式入口
 // entry 作为打包库入口
-const plugins = [];
+const plugins = [monacoEditorPlugin({})];
 
 if (process.env.ANALYZE) {
   plugins.push(
@@ -24,7 +25,7 @@ const mainConfig = {
   entry: './src/index.tsx',
   // libName: 'CEngine',
   fileName: 'index',
-  external: ['react', 'react-dom'],
+  external: process.env.BUILD_TYPE === 'APP' ? ['react', 'react-dom'] : ['react', 'react-dom', 'monaco-editor'],
   global: {
     react: 'React',
     'react-dom': 'ReactDOM',

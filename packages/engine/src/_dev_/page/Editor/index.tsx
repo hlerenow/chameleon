@@ -3,7 +3,7 @@ import { Button, message, Modal } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';
-import Engine, { EnginContext } from '../../..';
+import { Engine, EnginContext } from '../../..';
 import '../../index.css';
 import { DEFAULT_PLUGIN_LIST } from '../../../plugins';
 import { DesignerExports } from '../../../plugins/Designer';

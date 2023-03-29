@@ -2,12 +2,42 @@
 <html lang="en">
 
 <head>
+  <script>self["MonacoEnvironment"] = (function (paths) {
+          return {
+            globalAPI: false,
+            getWorkerUrl : function (moduleId, label) {
+              var result =  paths[label];
+              if (/^((http:)|(https:)|(file:)|(\/\/))/.test(result)) {
+                var currentUrl = String(window.location);
+                var currentOrigin = currentUrl.substr(0, currentUrl.length - window.location.hash.length - window.location.search.length - window.location.pathname.length);
+                if (result.substring(0, currentOrigin.length) !== currentOrigin) {
+                  var js = '/*' + label + '*/importScripts("' + result + '");';
+                  var blob = new Blob([js], { type: 'application/javascript' });
+                  return URL.createObjectURL(blob);
+                }
+              }
+              return result;
+            }
+          };
+        })({
+  "editorWorkerService": "/chameleon/monacoeditorwork/editor.worker.bundle.js",
+  "css": "/chameleon/monacoeditorwork/css.worker.bundle.js",
+  "html": "/chameleon/monacoeditorwork/html.worker.bundle.js",
+  "json": "/chameleon/monacoeditorwork/json.worker.bundle.js",
+  "typescript": "/chameleon/monacoeditorwork/ts.worker.bundle.js",
+  "javascript": "/chameleon/monacoeditorwork/ts.worker.bundle.js",
+  "less": "/chameleon/monacoeditorwork/css.worker.bundle.js",
+  "scss": "/chameleon/monacoeditorwork/css.worker.bundle.js",
+  "handlebars": "/chameleon/monacoeditorwork/html.worker.bundle.js",
+  "razor": "/chameleon/monacoeditorwork/html.worker.bundle.js"
+});</script>
+
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chameleon Low-Code Engine</title>
-  <script type="module" crossorigin src="/chameleon/assets/index.edca1e64.js"></script>
-  <link rel="stylesheet" href="/chameleon/assets/index.c52d63b0.css">
+  <script type="module" crossorigin src="/chameleon/assets/index-1e3c3c9e.js"></script>
+  <link rel="stylesheet" href="/chameleon/assets/index-7ebe9f67.css">
 </head>
 
 <body>

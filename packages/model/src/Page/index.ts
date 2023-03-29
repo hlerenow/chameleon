@@ -6,7 +6,7 @@ import { ExportType, ExportTypeEnum } from '../const/schema';
 import { CMaterials } from '../Material';
 import { CNode } from './RootNode/Node';
 import { CNodeDataType } from '../types/node';
-import { cloneDeep, isPlainObject, merge, omit, unionBy } from 'lodash-es';
+import { cloneDeep, isPlainObject, omit, unionBy } from 'lodash-es';
 import { CProp } from './RootNode/Node/prop';
 import { CSlot } from './RootNode/Node/slot';
 import { clearSchema, getNode, getRandomStr } from '../util';
