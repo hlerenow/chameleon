@@ -38,7 +38,7 @@ jobs:
           version: 7
       - run: pnpm i 
       - run: cd packages/build-script 
-      - run: pnpm run build
+      - run: pwd && pnpm run build
       - run: pnpm link -g
       - run: cd ../../
       - run: pnpm run build
