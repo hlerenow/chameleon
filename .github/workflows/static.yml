@@ -4,7 +4,8 @@ name: Deploy static content to Pages
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ['*']
+    branches:
+      - feature/*
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -25,15 +26,15 @@ jobs:
     runs-on: ubuntu-latest
     environment: auto-deploy-test
     steps:
-    - uses: actions/checkout@master
-    - name: Use Node.js 16.x
-      uses: actions/setup-node@v3
-      with:
-        node-version: 16.16.0
-        cache: 'npm'
-    - run: npm install -g pnpm
-    - name: build app
-    - run: pnpm i && pnpm run build && cd packages/engine && pnpm run build:app
+      - uses: actions/checkout@master
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.16.0
+          cache: 'npm'
+      - run: npm install -g pnpm
+      - name: build app
+      - run: pnpm i && pnpm run build && cd packages/engine && pnpm run build:app
   # Single deploy job since we're just deploying
   deploy:
     environment:
@@ -43,6 +44,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - run: pwd
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
