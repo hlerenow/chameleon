@@ -11,6 +11,7 @@
   "scripts": {
     "start": "build-script",
     "build": "build-script --build",
+    "build:analyze": "build-script --build --analyze",
     "build:w": "build-script --build --watch",
     "lint": "eslint --ext .tsx,.ts src/",
     "prettier": "prettier --write ./src",
@@ -18,6 +19,7 @@
   },
   "dependencies": {
     "@chamn/model": "workspace:*",
+    "cross-env": "^7.0.3",
     "html-tag-names": "^2.0.1",
     "loadjs": "4.3.0-rc1",
     "lodash-es": "^4.17.21",

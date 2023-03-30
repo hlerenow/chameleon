@@ -7,6 +7,7 @@ const cliArgs: {
   dev: boolean;
   build: boolean;
   watch: boolean;
+  analyze: boolean;
 } = argv(process.argv.slice(2)) as any;
 
 export const CLI_ARGS_OBJ = cliArgs;

@@ -7,7 +7,7 @@ const monacoEditorPlugin = require('vite-plugin-monaco-editor').default;
 
 // 开发模式默认读取 index.html 作为开发模式入口
 // entry 作为打包库入口
-const plugins = [monacoEditorPlugin({})];
+const plugins = [];
 
 if (process.env.ANALYZE) {
   plugins.push(
@@ -20,12 +20,26 @@ if (process.env.ANALYZE) {
   );
 }
 
+if (process.env.BUILD_TYPE !== 'PKG') {
+  plugins.push(
+    monacoEditorPlugin({
+      customDistPath: (root, buildOutDir) => {
+        console.log(111, root, buildOutDir);
+        return path.resolve(__dirname, './example/monacoeditorwork');
+      },
+    })
+  );
+}
+
 const mainConfig = {
   libMode: process.env.BUILD_TYPE !== 'APP',
   entry: './src/index.tsx',
   // libName: 'CEngine',
   fileName: 'index',
-  external: process.env.BUILD_TYPE === 'APP' ? ['react', 'react-dom'] : ['react', 'react-dom', 'monaco-editor'],
+  external:
+    process.env.BUILD_TYPE === 'APP'
+      ? []
+      : ['react', 'react-dom', 'monaco-editor', 'antd', '@chamn/model', '@chamn/layout'],
   global: {
     react: 'React',
     'react-dom': 'ReactDOM',

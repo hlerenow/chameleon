@@ -18,10 +18,11 @@
   ],
   "scripts": {
     "start": "npm run build:render && build-script",
-    "build": "build-script --build",
+    "build": "cross-env BUILD_TYPE=PKG build-script --build",
+    "build:analyze": "cross-env BUILD_TYPE=PKG  build-script --build --analyze",
     "build:app": "npm run build:render && export NODE_OPTIONS=--max-old-space-size=32768 && cross-env BUILD_TYPE=APP build-script --build",
     "build:render": "cross-env BUILD_TYPE=Render build-script --build",
-    "build:app:analyze": "cross-env BUILD_TYPE=APP ANALYZE=1 build-script --build",
+    "build:app:analyze": "cross-env BUILD_TYPE=APP build-script --build --analyze",
     "lint": "eslint --ext .tsx,.ts src/",
     "prettier": "prettier --write ./src",
     "test": "jest",

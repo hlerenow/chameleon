@@ -5,3 +5,5 @@ temp
 *.js.map
 
 packages/build-script/lib/*
+stats.html
+example
