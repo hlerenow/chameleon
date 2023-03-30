@@ -31,11 +31,13 @@ jobs:
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
-          node-version: 16.16.0
-          cache: 'npm'
+          node-version: 16.14.0
       - run: npm install -g pnpm
-      - name: build app
-        run: pnpm i && pnpm run build && cd packages/engine && pnpm run build:app
+      - run: pnpm i 
+      - run: pnpm run build
+      - run: cd packages/engine 
+      - run: pwd
+      - run: pnpm run build:app
       - name: Checkout
         uses: actions/checkout@v3
       - name: current path
