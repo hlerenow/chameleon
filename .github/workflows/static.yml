@@ -36,15 +36,17 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: 7
-      - run: pnpm i 
-      - run: cd packages/build-script 
-      - run: pwd && pnpm run build
-      - run: pnpm link -g
-      - run: cd ../../
-      - run: pnpm run build
-      - run: cd packages/engine 
-      - run: pwd
-      - run: pnpm run build:app
+      - run: |
+          pnpm i 
+          cd packages/build-script
+          pwd
+          pnpm run build
+          pnpm link -g
+          cd ../../
+          pnpm run build
+          cd packages/engine 
+          pwd
+          pnpm run build:app
       - name: current path
         run: pwd
       - name: Setup Pages
