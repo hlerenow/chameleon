@@ -35,11 +35,11 @@ jobs:
           cache: 'npm'
       - run: npm install -g pnpm
       - name: build app
-      - run: pnpm i && pnpm run build && cd packages/engine && pnpm run build:app
+        run: pnpm i && pnpm run build && cd packages/engine && pnpm run build:app
       - name: Checkout
         uses: actions/checkout@v3
       - name: current path
-      - run: pwd
+        run: pwd
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
