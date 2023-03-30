@@ -27,19 +27,20 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}    
     steps:
-      - uses: actions/checkout@master
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
           node-version: 16.14.0
-      - run: npm install -g pnpm
+      - name: Checkout
+        uses: actions/checkout@v3          
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
       - run: pnpm i 
       - run: pnpm run build
       - run: cd packages/engine 
       - run: pwd
       - run: pnpm run build:app
-      - name: Checkout
-        uses: actions/checkout@v3
       - name: current path
         run: pwd
       - name: Setup Pages
