@@ -12,21 +12,21 @@ const FeatureList: FeatureItem[] = [
   {
     title: 'Easy to Use',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
-    description: <>Docusaurus was designed from the ground up to be easily installed and used to get your website up and running quickly.</>,
+    description: <>Chameleon engine 非常容易安装与使用，干净的包依赖让你在 5 分钟内就可以运行起来</>,
   },
   {
-    title: 'Focus on What Matters',
+    title: 'Freedom to customize as you like',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go ahead and move your docs into the <code>docs</code> directory.
+        基于灵活的插件机制，所有功能均可二次开发。<br></br> Do what you want
       </>
     ),
   },
   {
     title: 'Powered by React',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
-    description: <>Extend or customize your website layout by reusing React. Docusaurus can be extended while reusing the same header and footer.</>,
+    description: <>使用 React 作为基础运行时，丰富的第三方组件供您使用.</>,
   },
 ];
 

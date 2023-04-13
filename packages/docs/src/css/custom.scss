@@ -13,6 +13,7 @@
   --ifm-color-primary-light: #333333;
   --ifm-color-primary-lighter: #353535;
   --ifm-color-primary-lightest: #3c3c3c;
+  --docusaurus-highlighted-code-line-bg: rgb(255, 255, 255);
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -24,6 +25,7 @@
   --ifm-color-primary-light: #ffffff;
   --ifm-color-primary-lighter: #ffffff;
   --ifm-color-primary-lightest: #ffffff;
+  --docusaurus-highlighted-code-line-bg: rgb(40, 56, 61);
 }
 
 .navbar__logo img {
