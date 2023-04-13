@@ -15,7 +15,7 @@ const config = {
   url: 'https://your-docusaurus-test-site.com',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: '/documents/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -32,24 +32,28 @@ const config = {
     defaultLocale: 'zh',
     locales: ['zh', 'en'],
   },
-  plugins: ['docusaurus-plugin-sass'],
+  plugins: [
+    'docusaurus-plugin-sass',
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'schema',
+        path: 'schema',
+        routeBasePath: 'schema',
+        sidebarPath: require.resolve('./sidebars.js'),
+      },
+    ],
+  ],
   presets: [
     [
       'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
+          id: 'default',
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
           editUrl: 'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         },
-        // blog: {
-        //   showReadingTime: true,
-        //   // Please change this to your repo.
-        //   // Remove this to remove the "edit this page" links.
-        //   editUrl: 'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-        // },
         theme: {
           customCss: require.resolve('./src/css/custom.scss'),
         },
@@ -62,6 +66,11 @@ const config = {
     ({
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
+      docs: {
+        sidebar: {
+          hideable: true,
+        },
+      },
       navbar: {
         title: 'Chameleon Engine',
         logo: {
@@ -74,6 +83,11 @@ const config = {
             sidebarId: 'tutorialSidebar',
             position: 'left',
             label: '新手教程',
+          },
+          {
+            position: 'left',
+            label: 'Page Schema',
+            to: '/schema/tutorialBasics/create-a-page',
           },
           {
             type: 'localeDropdown',
@@ -111,10 +125,6 @@ const config = {
           {
             title: '更多',
             items: [
-              // {
-              //   label: 'Blog',
-              //   to: '/blog',
-              // },
               {
                 label: 'GitHub',
                 href: 'https://github.com/hlerenow/chameleon',
