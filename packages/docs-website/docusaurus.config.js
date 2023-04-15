@@ -107,6 +107,11 @@ const config = {
             to: 'docs/tutorial/quickStart',
           },
           {
+            position: 'left',
+            label: '在线演示',
+            href: 'https://hlerenow.github.io/chameleon/',
+          },
+          {
             type: 'localeDropdown',
             position: 'right',
           },

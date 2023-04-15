@@ -69,6 +69,9 @@ export const App = () => {
         }}
       >
         <div className="logo">Chameleon EG</div>
+        <a target="_blank" href="https://github.com/hlerenow/chameleon/documents" rel="noreferrer">
+          <Button style={{ marginRight: '10px' }}>Documents </Button>
+        </a>
         <a target="_blank" href="https://github.com/hlerenow/chameleon" rel="noreferrer">
           <Button style={{ marginRight: '10px' }}>Github </Button>
         </a>
@@ -190,7 +193,6 @@ export const App = () => {
       // 船队组件物料对应的 js 运行库，只能使用 umd 模式的 js
       assetPackagesList={assetPackagesList}
       onReady={onReady}
-      renderJSUrl=".////"
     />
   );
 };
