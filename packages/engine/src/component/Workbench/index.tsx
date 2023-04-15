@@ -5,7 +5,6 @@ import { Button } from 'antd';
 import { CloseOutlined, DoubleRightOutlined, PushpinOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
 import mitt, { Emitter } from 'mitt';
-import { CNode } from '@chamn/model';
 import { waitReactUpdate } from '../../utils';
 
 export interface PluginContext {
@@ -234,7 +233,6 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
     return (
       <div className={styles.workbenchContainer}>
         <div className={styles.topToolBarBox}>
-          <div className={styles.logo}>Chameleon EG</div>
           <div className={styles.topToolBarView}>{topToolBarView}</div>
         </div>
         <div className={styles.bodyContent}>

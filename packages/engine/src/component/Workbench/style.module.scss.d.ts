@@ -2,7 +2,6 @@ import globalClassNames from '../../style.d';
 declare const classNames: typeof globalClassNames & {
   readonly workbenchContainer: 'workbenchContainer';
   readonly topToolBarBox: 'topToolBarBox';
-  readonly logo: 'logo';
   readonly topToolBarView: 'topToolBarView';
   readonly bodyContent: 'bodyContent';
   readonly leftBox: 'leftBox';

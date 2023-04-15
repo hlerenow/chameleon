@@ -5,6 +5,7 @@ import i18n from './i18n/index';
 import { CPlugin, PluginManager } from './core/pluginManager';
 import mitt, { Emitter } from 'mitt';
 import { AssetPackage, CMaterialType, CNode, CPage, CPageDataType, CRootNode, EmptyPage } from '@chamn/model';
+import { defaultRender, beforeInitRender } from './utils/defaultEngineConfig';
 
 export type EnginContext = {
   pluginManager: PluginManager;
@@ -15,10 +16,11 @@ export type EngineProps = {
   plugins: CPlugin[];
   schema: CPageDataType;
   material?: CMaterialType[];
-  assets?: AssetPackage[];
   assetPackagesList?: AssetPackage[];
   beforePluginRun?: (options: { pluginManager: PluginManager }) => void;
   onReady?: (ctx: EnginContext) => void;
+  /** 渲染器 umd 格式 js 地址, 默认 ./render.umd.js */
+  renderJSUrl?: string;
 };
 
 export class Engine extends React.Component<EngineProps> {
@@ -60,15 +62,21 @@ export class Engine extends React.Component<EngineProps> {
   async componentDidMount() {
     (window as any).__C_ENGINE__ = this;
     const plugins = this.props.plugins;
-    this.pluginManager = new PluginManager({
+    const pluginManager = new PluginManager({
       engine: this,
       getWorkbench: () => this.workbenchRef.current!,
       emitter: this.emitter,
       pageModel: this.pageModel,
       i18n,
-      assets: this.props.assets || [],
+      assets: this.props.assetPackagesList || [],
     });
-
+    this.pluginManager = pluginManager;
+    // 使用默认的渲染策略
+    pluginManager.customPlugin('Designer', (pluginInstance) => {
+      pluginInstance.ctx.config.beforeInitRender = beforeInitRender;
+      pluginInstance.ctx.config.customRender = defaultRender;
+      return pluginInstance;
+    });
     this.props.beforePluginRun?.({
       pluginManager: this.pluginManager,
     });

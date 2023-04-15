@@ -53,6 +53,7 @@ const config = {
           id: 'default',
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: 'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          remarkPlugins: [[require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }]],
         },
         theme: {
           customCss: require.resolve('./src/css/custom.scss'),
@@ -82,11 +83,26 @@ const config = {
             type: 'docSidebar',
             sidebarId: 'tutorialSidebar',
             position: 'left',
-            label: '新手教程',
+            label: '文档',
           },
           {
             position: 'left',
-            label: 'Page Schema',
+            label: 'Schema',
+            to: '/schema/tutorialBasics/create-a-page',
+          },
+          {
+            position: 'left',
+            label: 'API',
+            to: '/schema/tutorialBasics/create-a-page',
+          },
+          {
+            position: 'left',
+            label: '插件',
+            to: '/schema/tutorialBasics/create-a-page',
+          },
+          {
+            position: 'left',
+            label: '物料',
             to: '/schema/tutorialBasics/create-a-page',
           },
           {

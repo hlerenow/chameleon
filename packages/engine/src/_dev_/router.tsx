@@ -1,4 +1,3 @@
-import React from 'react';
 import { createHashRouter } from 'react-router-dom';
 import { App } from './page/Editor';
 import { Preview } from './page/Preview';

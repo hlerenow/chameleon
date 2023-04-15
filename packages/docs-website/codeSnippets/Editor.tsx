@@ -3,19 +3,20 @@ import { Button, message, Modal } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';
-import { Engine, EnginContext } from '../../..';
-import '../../index.css';
-import { DEFAULT_PLUGIN_LIST } from '../../../plugins';
-import { DesignerExports } from '../../../plugins/Designer';
-import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
-import { InnerComponentMeta } from '../../../material/innerMaterial';
+import '@chamn/engine/dist/style.css';
+import { Engine, EnginContext, InnerComponentMeta, plugins } from '@chamn/engine';
 import { RollbackOutlined } from '@ant-design/icons';
+import { DesignerExports } from '@chamn/engine/dist/plugins/Designer';
+import './index.css';
+
+const { DisplaySourceSchema, DEFAULT_PLUGIN_LIST } = plugins;
 
 const win = window as any;
 win.React = React;
 win.ReactDOM = ReactDOM;
 win.ReactDOMClient = ReactDOMClient;
 
+// 你可以使用自定的物料组件库
 const assetPackagesList = [
   {
     package: '@chamn/mock-material',
@@ -39,24 +40,27 @@ export const App = () => {
   const [page, setPage] = useState(BasePage);
 
   useEffect(() => {
+    // 从本地获取 page schema
     const localPage = localStorage.getItem('pageSchema');
     if (localPage) {
       setPage(JSON.parse(localPage));
     }
     setReady(true);
   }, []);
+
   const onReady = useCallback(async (ctx: EnginContext) => {
     const designer = await ctx.pluginManager.onPluginReadyOk('Designer');
     const reloadPage = async () => {
       setTimeout(() => {
         const designerExports = designer?.exports as DesignerExports;
-        console.log('to reload');
         designerExports.reload();
       }, 0);
     };
 
+    // 获取 引擎 工作台对象
     const workbench = ctx.engine.getWorkbench();
 
+    // 自定义顶部 bar
     workbench?.replaceTopBarView(
       <div
         style={{
@@ -69,6 +73,7 @@ export const App = () => {
         }}
       >
         <div className="logo">Chameleon EG</div>
+
         <a target="_blank" href="https://github.com/hlerenow/chameleon" rel="noreferrer">
           <Button style={{ marginRight: '10px' }}>Github </Button>
         </a>
@@ -111,10 +116,7 @@ export const App = () => {
         <Button
           style={{ marginRight: '10px' }}
           onClick={() => {
-            let src = '/#/preview';
-            if (location.href.includes('hlerenow')) {
-              src = '/chameleon/#/preview';
-            }
+            const src = '/#/preview';
 
             Modal.info({
               closable: true,
@@ -185,9 +187,9 @@ export const App = () => {
     <Engine
       plugins={DEFAULT_PLUGIN_LIST}
       schema={page as any}
-      // 传入组件物料
+      // 传入组建物料
       material={[...InnerComponentMeta, ...Material]}
-      // 船队组件物料对应的 js 运行库，只能使用 umd 模式的 js
+      // 传入组件物料
       assetPackagesList={assetPackagesList}
       onReady={onReady}
     />

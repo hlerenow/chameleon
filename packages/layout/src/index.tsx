@@ -24,7 +24,7 @@ export type LayoutDragAndDropExtraDataType = {
 };
 
 export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
-  renderScriptPath?: string;
+  renderJSUrl?: string;
   assets?: AssetPackage[];
   onSelectNode?: (node: CNode | CRootNode | null) => void;
   onHoverNode?: (node: CNode | CRootNode | null, dragNode: CNode | CRootNode) => void;
@@ -47,6 +47,7 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
     pageModel?: CPage;
     page?: CPageDataType;
     assets: AssetPackage[];
+    renderJSUrl?: string;
     ready: (designRender: DesignRender) => void;
   }) => void;
 };
@@ -178,11 +179,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           iframe: iframeContainer,
         });
       } else {
-        iframeContainer.injectJsText(`
-        window.React = window.parent.React;
-        window.ReactDOM = window.parent.ReactDOM;
-        window.ReactDOMClient = window.parent.ReactDOMClient;
-      `);
+        throw new Error('Must pass beforeInitRender methods');
       }
 
       if (this.props.customRender) {
@@ -191,6 +188,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           page: this.props.page,
           assets: this.props.assets || [],
           iframe: iframeContainer,
+          renderJSUrl: this.props.renderJSUrl,
           ready: (designRenderInstance) => {
             this.designRenderRef.current = designRenderInstance;
             this.registerDragAndDropEvent();
