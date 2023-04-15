@@ -4,7 +4,12 @@ import React, { useCallback, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';
 import '@chamn/engine/dist/style.css';
-import { Engine, EnginContext, InnerComponentMeta, plugins } from '@chamn/engine';
+import {
+  Engine,
+  EnginContext,
+  InnerComponentMeta,
+  plugins,
+} from '@chamn/engine';
 import { RollbackOutlined } from '@ant-design/icons';
 import { DesignerExports } from '@chamn/engine/dist/plugins/Designer';
 import './index.css';
@@ -74,7 +79,11 @@ export const App = () => {
       >
         <div className="logo">Chameleon EG</div>
 
-        <a target="_blank" href="https://github.com/hlerenow/chameleon" rel="noreferrer">
+        <a
+          target="_blank"
+          href="https://github.com/hlerenow/chameleon"
+          rel="noreferrer"
+        >
           <Button style={{ marginRight: '10px' }}>Github </Button>
         </a>
 
@@ -186,11 +195,11 @@ export const App = () => {
   return (
     <Engine
       plugins={DEFAULT_PLUGIN_LIST}
-      schema={page as any}
-      // 传入组建物料
+      schema={page}
+      // 传入组件物料, 这里使用内置的基础物料以及 测试物料信
       material={[...InnerComponentMeta, ...Material]}
-      // 传入组件物料
-      assetPackagesList={assetPackagesList}
+      components={{}}
+      // 传入组件物料对应的 js 运行库，只能使用 umd 模式的 js
       onReady={onReady}
     />
   );

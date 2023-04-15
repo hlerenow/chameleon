@@ -20,7 +20,7 @@ export const defaultRender: LayoutPropsType['customRender'] = async ({
   ready,
   renderJSUrl,
 }) => {
-  await iframeContainer.injectJS('./render.umd.js');
+  await iframeContainer.injectJS(renderJSUrl || '');
   const iframeWindow = iframeContainer.getWindow()!;
   const iframeDoc = iframeContainer.getDocument()!;
   const IframeReact = iframeWindow.React!;

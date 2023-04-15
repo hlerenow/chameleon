@@ -190,6 +190,7 @@ export const App = () => {
       // 船队组件物料对应的 js 运行库，只能使用 umd 模式的 js
       assetPackagesList={assetPackagesList}
       onReady={onReady}
+      renderJSUrl=".////"
     />
   );
 };

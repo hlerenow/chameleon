@@ -11,12 +11,13 @@ export type EngineProps = {
     plugins: CPlugin[];
     schema: CPageDataType;
     material?: CMaterialType[];
-    assets?: AssetPackage[];
     assetPackagesList?: AssetPackage[];
     beforePluginRun?: (options: {
         pluginManager: PluginManager;
     }) => void;
     onReady?: (ctx: EnginContext) => void;
+    /** 渲染器 umd 格式 js 地址, 默认 ./render.umd.js */
+    renderJSUrl?: string;
 };
 export declare class Engine extends React.Component<EngineProps> {
     currentSelectNode: CNode | CRootNode | null;

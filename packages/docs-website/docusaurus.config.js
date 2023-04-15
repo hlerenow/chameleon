@@ -5,6 +5,8 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
+const isProd = process.env.NODE_ENV === 'production';
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Chameleon Engine',
@@ -15,7 +17,7 @@ const config = {
   url: 'https://your-docusaurus-test-site.com',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/documents/',
+  baseUrl: isProd ? '/chameleon/documents' : '/documents/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -30,7 +32,8 @@ const config = {
   // to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'zh',
-    locales: ['zh', 'en'],
+    locales: ['zh'],
+    // locales: ['zh', 'en'],
   },
   plugins: [
     'docusaurus-plugin-sass',
@@ -52,8 +55,11 @@ const config = {
         docs: {
           id: 'default',
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-          remarkPlugins: [[require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }]],
+          editUrl:
+            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          remarkPlugins: [
+            [require('@docusaurus/remark-plugin-npm2yarn'), { sync: true }],
+          ],
         },
         theme: {
           customCss: require.resolve('./src/css/custom.scss'),
@@ -69,7 +75,7 @@ const config = {
       image: 'img/docusaurus-social-card.jpg',
       docs: {
         sidebar: {
-          hideable: true,
+          // hideable: true,
         },
       },
       navbar: {
@@ -88,22 +94,17 @@ const config = {
           {
             position: 'left',
             label: 'Schema',
-            to: '/schema/tutorialBasics/create-a-page',
+            to: 'docs/tutorial/quickStart',
           },
           {
             position: 'left',
             label: 'API',
-            to: '/schema/tutorialBasics/create-a-page',
+            to: 'docs/tutorial/quickStart',
           },
           {
             position: 'left',
             label: '插件',
-            to: '/schema/tutorialBasics/create-a-page',
-          },
-          {
-            position: 'left',
-            label: '物料',
-            to: '/schema/tutorialBasics/create-a-page',
+            to: 'docs/tutorial/quickStart',
           },
           {
             type: 'localeDropdown',
@@ -125,7 +126,7 @@ const config = {
             items: [
               {
                 label: '教程',
-                to: '/docs/intro',
+                to: '/docs/tutorial/quickStart',
               },
             ],
           },

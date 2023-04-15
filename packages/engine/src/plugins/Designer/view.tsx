@@ -201,7 +201,8 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     const { layoutRef, props, onSelectNode, onDragStart, onHoverNode } = this;
     const { pageModel, hoverToolBar, selectToolBar, ghostView, assets } = this.state;
     const { pluginCtx } = props;
-    const renderJSUrl = pluginCtx.engine.props.renderJSUrl;
+    const renderJSUrl = pluginCtx.engine.props.renderJSUrl || './render.umd.js';
+    console.log('🚀 ~ file: view.tsx:205 ~ Designer ~ render ~ renderJSUrl:', renderJSUrl);
     return (
       <Layout
         beforeInitRender={props.pluginCtx.config.beforeInitRender}

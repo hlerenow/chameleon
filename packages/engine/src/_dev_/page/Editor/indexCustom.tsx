@@ -260,7 +260,6 @@ export const App = () => {
       plugins={DEFAULT_PLUGIN_LIST}
       schema={page as any}
       material={[...InnerComponentMeta, ...Material]}
-      assets={[]}
       assetPackagesList={assetPackagesList}
       onReady={onReady}
       beforePluginRun={({ pluginManager }) => {

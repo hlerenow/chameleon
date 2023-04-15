@@ -23,30 +23,32 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: 
+    environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}    
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
           node-version: 16.14.0
       - name: Checkout
-        uses: actions/checkout@v3          
+        uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
         with:
           version: 7
       - run: |
-          pnpm i 
+          pnpm i
           cd packages/build-script
           pwd
           pnpm run build
           pnpm link -g
           cd ../../
           pnpm run build
-          cd packages/engine 
+          cd packages/engine
           pwd
           pnpm run build:app
+          mkdir documents
+          cp -r  ../../docs-website/build/* ./documents
       - name: current path
         run: pwd
       - name: Setup Pages
