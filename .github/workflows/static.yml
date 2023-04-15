@@ -47,6 +47,7 @@ jobs:
           cd packages/engine
           pwd
           pnpm run build:app
+          cd example
           mkdir documents
           cp -r  ../../docs-website/build/* ./documents
       - name: current path
