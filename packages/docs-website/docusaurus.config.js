@@ -41,8 +41,26 @@ const config = {
       '@docusaurus/plugin-content-docs',
       {
         id: 'schema',
-        path: 'schema',
+        path: 'schemaDoc',
         routeBasePath: 'schema',
+        sidebarPath: require.resolve('./sidebars.js'),
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'plugin',
+        path: 'pluginDoc',
+        routeBasePath: 'plugin',
+        sidebarPath: require.resolve('./sidebars.js'),
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'api',
+        path: 'apiDoc',
+        routeBasePath: 'api',
         sidebarPath: require.resolve('./sidebars.js'),
       },
     ],
@@ -94,17 +112,17 @@ const config = {
           {
             position: 'left',
             label: 'Schema',
-            to: 'docs/tutorial/quickStart',
-          },
-          {
-            position: 'left',
-            label: 'API',
-            to: 'docs/tutorial/quickStart',
+            to: 'schema/page',
           },
           {
             position: 'left',
             label: '插件',
-            to: 'docs/tutorial/quickStart',
+            to: 'plugin/plugin-develop',
+          },
+          {
+            position: 'left',
+            label: 'API',
+            to: 'api/workbench',
           },
           {
             position: 'left',

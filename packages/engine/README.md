@@ -4,9 +4,9 @@
 
 A streamlined low-code engine, all modules support custom extensions, which can be used for web page generation and rendering. Applicable to a variety of business scenarios, PC Page, H5 Page etc
 
-## Online Demo
+## [Document](https://hlerenow.github.io/chameleon/documents/)
 
-[https://hlerenow.github.io/chameleon/](https://hlerenow.github.io/chameleon/)
+## [Demo](https://hlerenow.github.io/chameleon/)
 
 ## Install
 

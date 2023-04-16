@@ -1,6 +1,6 @@
 {
-  "position": 1,
-  "label": "新手教程",
+  "position": 4,
+  "label": "场景开发示例",
   "collapsible": true,
   "collapsed": false,
   "customProps": {

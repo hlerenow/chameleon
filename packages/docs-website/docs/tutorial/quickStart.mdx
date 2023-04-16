@@ -40,7 +40,7 @@ npm i antd @ant-design/icons @chamn/demo-page
 
 ## 拷贝 render.umd.js
 
-因为渲染画布是在 iframe 中运行，所以需使用 umd 模式的 js，然后让 iframe 加载，这里只需要将 `render.umd.js` 拷贝到公共资源目录下即可，一般是 `publish` 文件
+因为渲染画布是在 iframe 中运行，所以需使用 umd 模式的 js，然后让 iframe 加载，这里只需要将 `render.umd.js` 拷贝到公共资源目录下即可，一般是 `public` 文件
 
 ```bash
 cp -rf ./node_modules/@chamn/render/dist/index.umd.js ./public/render.umd.js
@@ -66,11 +66,36 @@ cp -rf ./node_modules/@chamn/render/dist/index.umd.js.map ./public/render.umd.js
 CDN 地址也可以使用, 如： https://www.xxx/com/xxx/render.umd.js
 :::
 
+## 配置 monaco-editor 构建
+
+因为引擎使用了 monaco-editor 代码编辑器所以需要配置相应的构建配置
+
+### Vite
+
+```ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import monacoEditorPlugin from 'vite-plugin-monaco-editor';
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react(), monacoEditorPlugin({})],
+});
+```
+
+### Webpack
+
+[Refenrence](https://www.npmjs.com/package/monaco-editor-webpack-plugin)
+
 ## 运行
 
 将 Editor.tsx 页面作为你项目中的一个页面，运行，打开对应的地址你将会得到一个编辑页面
 
-<img style={{ marginBottom: '20px', border: '1px solid #ededed' }} src={engImg} alt="Engine thumbail" />
+<img
+  style={{ marginBottom: '20px', border: '1px solid #ededed' }}
+  src={engImg}
+  alt="Engine thumbail"
+/>
 
 :::info
 Good Luck! :)

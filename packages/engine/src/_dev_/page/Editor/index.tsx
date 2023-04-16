@@ -69,7 +69,7 @@ export const App = () => {
         }}
       >
         <div className="logo">Chameleon EG</div>
-        <a target="_blank" href="https://github.com/hlerenow/chameleon/documents" rel="noreferrer">
+        <a target="_blank" href="https://hlerenow.github.io/chameleon/documents/" rel="noreferrer">
           <Button style={{ marginRight: '10px' }}>Documents </Button>
         </a>
         <a target="_blank" href="https://github.com/hlerenow/chameleon" rel="noreferrer">
