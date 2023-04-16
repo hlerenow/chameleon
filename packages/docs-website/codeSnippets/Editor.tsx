@@ -198,8 +198,6 @@ export const App = () => {
       schema={page}
       // 传入组件物料, 这里使用内置的基础物料以及 测试物料信
       material={[...InnerComponentMeta, ...Material]}
-      components={{}}
-      // 传入组件物料对应的 js 运行库，只能使用 umd 模式的 js
       onReady={onReady}
     />
   );
