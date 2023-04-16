@@ -5,7 +5,7 @@ import { CPluginCtx } from '../../core/pluginManager';
 import localize from './localize';
 import { PLUGIN_NAME } from './config';
 import { DefaultSelectToolBar } from './components/DefaultSelectToolBar';
-import { getCloseNodeList } from './util';
+import { getClosestNodeList } from './util';
 import { GhostView } from './components/GhostView';
 
 import styles from './style.module.scss';
@@ -128,7 +128,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     const { pluginCtx } = this.props;
     pluginCtx.engine.updateCurrentSelectNode(node);
     const pageModel = this.props.pluginCtx.pageModel;
-    const list = getCloseNodeList(node, 5);
+    const list = getClosestNodeList(node, 5);
     const { layoutRef } = this;
     this.setState({
       selectToolBar: (
