@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.8](https://github.com/ByteCrazy/chameleon/compare/v0.0.7...v0.0.8) (2023-04-16)
+
+### ✨ Features | 新功能
+
+* **build-script, engine, layout, model, render:** 🎸 optimize pack package ([78d99c5](https://github.com/ByteCrazy/chameleon/commit/78d99c507ad65ca39101f0239467737d2b445c87))
+* **docs-website, engine, layout:** 🎸 add defaultRender for engine, add some docs ([91f4257](https://github.com/ByteCrazy/chameleon/commit/91f4257e9f9b9391267e4b8d64e6ed811912381f))
+* **docs-website, engine:** 🎸 add docs ([0e6f605](https://github.com/ByteCrazy/chameleon/commit/0e6f6053fa3cd5e13b6a7a8258c27518c30470c5))
+* **docs:** 🎸 add doc home page ([29efec1](https://github.com/ByteCrazy/chameleon/commit/29efec168b71879ee58809d3be9e8f7084ca4d88))
+* **docs:** 🎸 init docs project ([3331cec](https://github.com/ByteCrazy/chameleon/commit/3331cec7c7ed664e21270b7b98d7dc5f32574da9))
+
+### 👷 Continuous Integration | CI 配置
+
+* 🎡 modify ci flow ([ab9c47e](https://github.com/ByteCrazy/chameleon/commit/ab9c47e2f0492e8db1fdf8dcbddbec2a1801e1dd))
+* 🎡 update ci ([085f0ba](https://github.com/ByteCrazy/chameleon/commit/085f0ba25586ba34cb3525edab488f30cd1ed790))
+* 🎡 update ci ([32a5110](https://github.com/ByteCrazy/chameleon/commit/32a511054c733e277112d37f3e3f146bab41c3c2))
+
+### 📝 Documentation | 文档
+
+* **build-script, docs-website:** ✏️ change quickStart md ([f43945f](https://github.com/ByteCrazy/chameleon/commit/f43945fdd7eaf03b4ad3099980d7f3fb0a949b4c))
+* **docs-website, engine:** ✏️ add doc ([2fb5cf5](https://github.com/ByteCrazy/chameleon/commit/2fb5cf5fd4dcb3859ecbdc8d42adf787d9e0255d))
+* **docs-website:** ✏️ add doc project directory structure ([cc175e0](https://github.com/ByteCrazy/chameleon/commit/cc175e0bbce602ecc20433517e4bef9c8184f18f))
+
 ## [0.0.7](https://github.com/ByteCrazy/chameleon/compare/v0.0.6...v0.0.7) (2023-03-29)
 
 ### ✨ Features | 新功能

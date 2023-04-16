@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.8](https://github.com/ByteCrazy/chameleon/compare/v0.0.7...v0.0.8) (2023-04-16)
+
+### ✨ Features | 新功能
+
+* **build-script, engine, layout, model, render:** 🎸 optimize pack package ([78d99c5](https://github.com/ByteCrazy/chameleon/commit/78d99c507ad65ca39101f0239467737d2b445c87))
+
+### 📝 Documentation | 文档
+
+* **build-script, docs-website:** ✏️ change quickStart md ([f43945f](https://github.com/ByteCrazy/chameleon/commit/f43945fdd7eaf03b4ad3099980d7f3fb0a949b4c))
+
 ## [0.0.7](https://github.com/ByteCrazy/chameleon/compare/v0.0.6...v0.0.7) (2023-03-29)
 
 ### ✨ Features | 新功能

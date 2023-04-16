@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.8](https://github.com/ByteCrazy/chameleon/compare/v0.0.7...v0.0.8) (2023-04-16)
+
+### ✨ Features | 新功能
+
+* **build-script, engine, layout, model, render:** 🎸 optimize pack package ([78d99c5](https://github.com/ByteCrazy/chameleon/commit/78d99c507ad65ca39101f0239467737d2b445c87))
+* **docs-website, engine, layout:** 🎸 add defaultRender for engine, add some docs ([91f4257](https://github.com/ByteCrazy/chameleon/commit/91f4257e9f9b9391267e4b8d64e6ed811912381f))
+
 ## [0.0.7](https://github.com/ByteCrazy/chameleon/compare/v0.0.6...v0.0.7) (2023-03-29)
 
 ### ✨ Features | 新功能
