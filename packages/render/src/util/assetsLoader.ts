@@ -45,19 +45,20 @@ export class AssetLoader {
       this._onSuccessList.forEach((el) => el());
       return;
     }
-    // 在下一个事件循环执行，确保 onSuccess 和 onError 被注册
-    setTimeout(() => {
+
+    return new Promise((resolve, reject) => {
+      // 在下一个事件循环执行，确保 onSuccess 和 onError 被注册
       loadjs.ready(ids, {
         success: () => {
           this._onSuccessList.forEach((el) => el());
+          resolve('');
         },
         error: (depsNotFound) => {
           this._onErrorList.forEach((el) => el(depsNotFound));
+          reject(depsNotFound);
         },
       });
-    }, 0);
-
-    return this;
+    });
   }
 
   onSuccess(cb: () => void) {

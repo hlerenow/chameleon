@@ -2,6 +2,7 @@ import { capitalize } from 'lodash-es';
 import { Component, createElement } from 'react';
 import { ContextType } from '../core/adapter';
 import { StoreManager } from '../core/storeManager';
+import { AssetPackage } from '@chamn/model';
 
 export const isClass = function (val: any) {
   if (!val) {
@@ -125,5 +126,39 @@ export const getCSSTextValue = (cssObj: Record<string, string>) => {
   Object.keys(cssObj).forEach((key) => {
     res += `${key}:${cssObj[key]};`;
   });
+  return res;
+};
+
+export const collectVariable = (assetPackages: AssetPackage[], win: Window) => {
+  const res: Record<string, any> = {};
+  assetPackages.forEach((el) => {
+    if (el.globalName) {
+      const target = (win as any)[el.globalName];
+      if (target) {
+        res[el.globalName] = target;
+      }
+    }
+  });
+  return res;
+};
+
+export const flatObject = (obj: Record<string, any>, level = 1) => {
+  let count = 0;
+  let currentObj = obj;
+  let newObj: Record<string, any> = {};
+  let res = {};
+  while (count < level) {
+    Object.keys(currentObj).forEach((key) => {
+      newObj = {
+        ...newObj,
+        ...currentObj[key],
+      };
+    });
+    res = newObj;
+    currentObj = newObj;
+    newObj = {};
+    count += 1;
+  }
+
   return res;
 };
