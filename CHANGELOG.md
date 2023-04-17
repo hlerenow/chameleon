@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.9](https://github.com/ByteCrazy/chameleon/compare/v0.0.8...v0.0.9) (2023-04-17)
+
+### ✨ Features | 新功能
+
+* **build-script:** 🎸 build.config supprot es module ([275c97d](https://github.com/ByteCrazy/chameleon/commit/275c97d861b6394fbdd13b92fd1049c208f72b39))
+* **docs-website, engine, render:** 🎸 render add collectVariable flatObject util method ([ae25160](https://github.com/ByteCrazy/chameleon/commit/ae25160b568c267041b3827e836c95f60ecaee59))
+
 ## [0.0.8](https://github.com/ByteCrazy/chameleon/compare/v0.0.7...v0.0.8) (2023-04-16)
 
 ### ✨ Features | 新功能
