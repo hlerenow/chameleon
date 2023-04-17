@@ -1,15 +1,18 @@
 import { mergeConfig } from 'vite';
-import { commonConfig } from './vite.common';
-import { CUSTOM_CONFIG } from './base';
+import { getCommonConfig } from './vite.common';
+import { getCustomConfig } from './base';
 
 // https://vitejs.dev/config/
-export const devConfig = () => {
-  const config = mergeConfig(commonConfig(), {
+export const devConfig = async () => {
+  const CUSTOM_CONFIG = await getCustomConfig();
+  const commonConfig = await getCommonConfig();
+
+  const config = mergeConfig(commonConfig, {
     mode: 'development',
     configFile: false,
     server: {
       port: 3000,
     },
   });
-  return mergeConfig(config, CUSTOM_CONFIG.vite || {});
+  return mergeConfig(config, CUSTOM_CONFIG?.vite || {});
 };

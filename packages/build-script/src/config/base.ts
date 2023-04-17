@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs-extra';
-import { LibraryOptions, UserConfig } from 'vite';
+import { LibraryOptions, UserConfig, loadConfigFromFile } from 'vite';
 import argv from 'yargs-parser';
 
 const cliArgs: {
@@ -14,12 +14,10 @@ export const CLI_ARGS_OBJ = cliArgs;
 
 export const PROJECT_ROOT = path.resolve(process.cwd());
 
-let customConfig: any = {};
+let customConfigPath = `${PROJECT_ROOT}/build.config.js`;
 
-const customConfigPath = `${PROJECT_ROOT}/build.config.js`;
-
-if (fs.pathExistsSync(customConfigPath)) {
-  customConfig = require(customConfigPath);
+if (!fs.pathExistsSync(customConfigPath)) {
+  customConfigPath = `${PROJECT_ROOT}/build.config.ts`;
 }
 
 export type BuildScriptConfig = {
@@ -33,4 +31,19 @@ export type BuildScriptConfig = {
   vite?: UserConfig;
 };
 
-export const CUSTOM_CONFIG: BuildScriptConfig = customConfig;
+export const CUSTOM_CONFIG: BuildScriptConfig = null as any;
+
+export const getCustomConfig = async () => {
+  if (CUSTOM_CONFIG) {
+    return CUSTOM_CONFIG;
+  }
+
+  if (fs.pathExistsSync(customConfigPath)) {
+    const customConfig = await loadConfigFromFile(
+      {} as any,
+      customConfigPath,
+      PROJECT_ROOT
+    );
+    return customConfig?.config as BuildScriptConfig;
+  }
+};
