@@ -148,3 +148,4 @@ export * as plugins from './plugins';
 export * from '@chamn/layout';
 
 export * from './material/innerMaterial';
+export * from './component/CustomSchemaForm/components/Setters/type';

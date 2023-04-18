@@ -1,12 +1,15 @@
 {
   "name": "@chamn/render",
   "private": false,
+  "files": [
+    "dist"
+  ],
   "version": "0.0.10",
   "publishConfig": {
     "access": "public"
   },
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.es.js",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
     "start": "build-script",

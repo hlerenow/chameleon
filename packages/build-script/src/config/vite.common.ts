@@ -21,8 +21,7 @@ export const getCommonConfig = async () => {
         name: CUSTOM_CONFIG.libName,
         entry: path.resolve(PROJECT_ROOT, CUSTOM_CONFIG.entry),
         formats: CUSTOM_CONFIG.formats || ['cjs', 'es'],
-        fileName: (format) =>
-          `${CUSTOM_CONFIG.fileName || CUSTOM_CONFIG.libName}.${format}.js`,
+        fileName: CUSTOM_CONFIG.fileName,
       },
       rollupOptions: {
         // 确保外部化处理那些你不想打包进库的依赖
@@ -51,6 +50,7 @@ export const getCommonConfig = async () => {
       eslint(),
     ],
   }) as UserConfig;
+
   if (CUSTOM_CONFIG.libMode === false) {
     delete commonConfigJson?.build?.lib;
     delete commonConfigJson?.build?.rollupOptions;

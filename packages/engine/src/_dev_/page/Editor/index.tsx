@@ -18,7 +18,7 @@ win.ReactDOMClient = ReactDOMClient;
 
 const assetPackagesList = [
   {
-    package: '@chamn/mock-material',
+    package: 'antd',
     globalName: 'antd',
     resources: [
       {
@@ -33,7 +33,6 @@ const assetPackagesList = [
     ],
   },
 ];
-
 export const App = () => {
   const [ready, setReady] = useState(false);
   const [page, setPage] = useState(BasePage);

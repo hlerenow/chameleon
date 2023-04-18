@@ -1,4 +1,5 @@
-/* eslint-disable no-undef */
+import dts from 'vite-plugin-dts';
+import path from 'path';
 // 开发模式默认读取 index.html 作为开发模式入口
 // entry 作为打包库入口
 export default {
@@ -16,5 +17,13 @@ export default {
     define: {
       // 'process.env.NODE_ENV': JSON.stringify('production'),
     },
+    plugins: [
+      dts({
+        entryRoot: path.resolve('./src'),
+        compilerOptions: {
+          skipDefaultLibCheck: false,
+        },
+      }),
+    ],
   },
 };

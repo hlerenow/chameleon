@@ -31,7 +31,8 @@ export type BuildScriptConfig = {
   vite?: UserConfig;
 };
 
-export const CUSTOM_CONFIG: BuildScriptConfig = null as any;
+export let CUSTOM_CONFIG: BuildScriptConfig = null as any;
+export const isBuild = !!process.env.VITE_TEST_BUILD;
 
 export const getCustomConfig = async () => {
   if (CUSTOM_CONFIG) {
@@ -44,6 +45,7 @@ export const getCustomConfig = async () => {
       customConfigPath,
       PROJECT_ROOT
     );
+    CUSTOM_CONFIG = customConfig?.config as BuildScriptConfig;
     return customConfig?.config as BuildScriptConfig;
   }
 };
