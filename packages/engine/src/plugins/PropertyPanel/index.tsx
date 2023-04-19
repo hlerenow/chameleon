@@ -40,6 +40,9 @@ export const PropertyPanel = (props: { node: CNode | CRootNode; pluginCtx: CPlug
     };
   };
 
+  const customSetterMap = props.pluginCtx.config?.customPropertySetterMap;
+  console.log('🚀 ~ file: index.tsx:44 ~ PropertyPanel ~ customSetterMap:', customSetterMap);
+
   return (
     <div className={styles.CFromRenderBox}>
       <CustomSchemaForm
@@ -50,6 +53,7 @@ export const PropertyPanel = (props: { node: CNode | CRootNode; pluginCtx: CPlug
         properties={properties}
         initialValue={value}
         ref={formRef}
+        customSetterMap={customSetterMap}
         onValueChange={onValueChange}
       />
     </div>

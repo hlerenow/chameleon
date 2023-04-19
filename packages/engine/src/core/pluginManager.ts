@@ -30,6 +30,7 @@ type PluginManagerOptions = {
 
 export type CPluginCtx<C = any> = {
   globalEmitter: Emitter<any>;
+  /** 当前插件外部传入的配置 **/
   config: C;
   pluginManager: PluginManager;
   pluginReadyOk: () => void;
@@ -63,6 +64,7 @@ export class PluginManager {
     this.engine = engine;
   }
 
+  /** 自定义插件, 可以修改插件的配置 */
   customPlugin = (pluginName: string, customPluginHook: CustomPluginHook) => {
     const customPluginHooks = this.customPluginHooks;
     const hookList = customPluginHooks[pluginName] || [];

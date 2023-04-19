@@ -24,7 +24,6 @@ if (process.env.BUILD_TYPE !== 'PKG') {
   plugins.push(
     monacoEditorPlugin({
       customDistPath: (root, buildOutDir) => {
-        console.log(111, root, buildOutDir);
         return path.resolve(__dirname, './example/monacoeditorwork');
       },
     })

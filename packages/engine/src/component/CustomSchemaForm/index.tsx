@@ -9,6 +9,7 @@ import styles from './style.module.scss';
 import { ConfigProvider } from 'antd';
 import { CCustomSchemaFormContext } from './context';
 import { CPluginCtx } from '../../core/pluginManager';
+import { CFormContextData } from './components/Form/context';
 
 export type CustomSchemaFormInstance = CForm;
 
@@ -18,7 +19,9 @@ export type CustomSchemaFormProps = {
   properties: CMaterialPropsType<any>;
   onValueChange?: (val: any) => void;
   onSetterChange: (keyPaths: string[], setterName: string) => void;
+  /** 存储每个字段上次使用的 setter */
   defaultSetterConfig: Record<string, { name: string; setter: string }>;
+  customSetterMap?: CFormContextData['customSetterMap'];
 };
 
 const CustomSchemaFormCore = (props: CustomSchemaFormProps, ref: Ref<CustomSchemaFormInstance | CForm>) => {
@@ -29,7 +32,9 @@ const CustomSchemaFormCore = (props: CustomSchemaFormProps, ref: Ref<CustomSchem
     onSetterChange,
     defaultSetterConfig,
     pluginCtx,
+    customSetterMap,
   } = props;
+  console.log('🚀 ~ file: index.tsx:37 ~ CustomSchemaFormCore ~ customSetterMap:', customSetterMap);
   const properties: CMaterialPropsType = originProperties;
   return (
     <CCustomSchemaFormContext.Provider
@@ -58,6 +63,7 @@ const CustomSchemaFormCore = (props: CustomSchemaFormProps, ref: Ref<CustomSchem
             ref={ref as any}
             name="root-form"
             initialValue={initialValue}
+            customSetterMap={customSetterMap}
             onValueChange={(val) => {
               onValueChange?.(val);
             }}

@@ -191,6 +191,16 @@ export const App = () => {
       material={[...InnerComponentMeta, ...Material]}
       // 船队组件物料对应的 js 运行库，只能使用 umd 模式的 js
       assetPackagesList={assetPackagesList}
+      beforePluginRun={({ pluginManager }) => {
+        pluginManager.customPlugin('RightPanel', (pluginInstance) => {
+          pluginInstance.ctx.config.customPropertySetterMap = {
+            TestSetter: () => {
+              return <div>123</div>;
+            },
+          };
+          return pluginInstance;
+        });
+      }}
       onReady={onReady}
     />
   );

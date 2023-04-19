@@ -6,6 +6,7 @@ export type CFormProps = {
   name: string;
   children?: ReactNode | ReactNode[];
   initialValue?: Record<string, any>;
+  customSetterMap: CFormContextData['customSetterMap'];
   onValueChange?: (formData: Record<string, any>) => void;
 };
 export class CForm extends React.Component<CFormProps, CFormContextData> {
@@ -23,11 +24,9 @@ export class CForm extends React.Component<CFormProps, CFormContextData> {
       formName: props.name,
       formState: props.initialValue ?? {},
       conditionConfig: {},
+      customSetterMap: props.customSetterMap || {},
       updateContext: this.updateContext,
-      updateConditionConfig: (
-        name: string,
-        cb: (state: Record<string, any>) => boolean
-      ) => {
+      updateConditionConfig: (name: string, cb: (state: Record<string, any>) => boolean) => {
         this.setState({
           conditionConfig: {
             ...this.state.conditionConfig,
@@ -64,8 +63,6 @@ export class CForm extends React.Component<CFormProps, CFormContextData> {
     const { state } = this;
     const { children } = this.props;
 
-    return (
-      <CFormContext.Provider value={state}>{children}</CFormContext.Provider>
-    );
+    return <CFormContext.Provider value={state}>{children}</CFormContext.Provider>;
   }
 }

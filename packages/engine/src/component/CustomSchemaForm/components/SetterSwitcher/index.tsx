@@ -1,14 +1,19 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { SetterObjType } from '@chamn/model';
-import Setters from '../Setters/index';
+import InnerSetters from '../Setters/index';
 import { CField, CFieldProps } from '../Form/Field';
 import { Collapse, Dropdown, MenuProps } from 'antd';
 import { SwapOutlined } from '@ant-design/icons';
 import styles from './style.module.scss';
 import { CCustomSchemaFormContext } from '../../context';
+import { CFormContext } from '../Form/context';
+import { CSetter } from '../Setters/type';
 
 export type SetterSwitcherProps = {
+  // 支持的 setter 列表
   setters: SetterObjType[];
+  // 自定义 setter 的具体实现，可以覆盖默认 setter
+  customSetterMap?: Record<string, CSetter>;
   keyPaths: string[];
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
@@ -18,21 +23,25 @@ export type SetterSwitcherProps = {
 
 export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, ...props }: SetterSwitcherProps) => {
   const [visible, setVisible] = useState(true);
+  const { customSetterMap } = useContext(CFormContext);
   const { onSetterChange, defaultSetterConfig, formRef, pluginCtx } = useContext(CCustomSchemaFormContext);
-
+  const allSetterMap = {
+    ...InnerSetters,
+    ...customSetterMap,
+  };
   const [currentSetter, setCurrentSetter] = useState<SetterObjType | null>(() => {
     const currentSetterName = defaultSetterConfig[keyPaths.join('.')]?.setter || '';
-    return setters.find((el) => el.componentName === currentSetterName) || setters[0];
+    return [...setters].find((el) => el.componentName === currentSetterName) || setters[0];
   });
 
   let CurrentSetterComp = null;
   if (currentSetter?.componentName) {
-    CurrentSetterComp = (Setters as any)[currentSetter?.componentName];
+    CurrentSetterComp = allSetterMap[currentSetter?.componentName];
   }
 
   if (!CurrentSetterComp) {
-    CurrentSetterComp = () =>
-      (
+    CurrentSetterComp = function EmptySetter() {
+      return (
         <div
           style={{
             backgroundColor: 'whitesmoke',
@@ -42,12 +51,13 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
             color: 'gray',
           }}
         >{`${currentSetter?.componentName} is not found.`}</div>
-      ) as any;
+      );
+    };
   }
 
   const menuItems = setters.map((setter) => {
     const setterName = setter?.componentName || '';
-    const setterRuntime = Setters[setterName];
+    const setterRuntime = allSetterMap[setterName];
     return {
       key: setter.componentName,
       label: setterRuntime?.setterName || setter.componentName,

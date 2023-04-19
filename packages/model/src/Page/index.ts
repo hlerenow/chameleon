@@ -289,14 +289,13 @@ export class CPage {
 
     const assetPackagesList = this.assetPackagesList;
 
-    const assets: AssetPackage[] = [];
-
+    const finalAssets: AssetPackage[] = [];
     const componentsMetaList: ComponentMetaType[] = this.materialsModel.usedMaterials.map((it) => {
       const asset = assetPackagesList.find((el) => {
         return el.package === it.value.npm?.package;
       });
       if (asset) {
-        assets.push(asset);
+        finalAssets.push(asset);
       }
       return {
         componentName: it.componentName,
@@ -318,16 +317,16 @@ export class CPage {
       assets: [],
     };
 
-    this.data.thirdLibs?.forEach((el) => {
+    this.data.thirdLibs?.forEach((thirdEl) => {
       const asset = assetPackagesList.find((el) => {
-        el.package === el.package;
+        thirdEl.package === el.package;
       });
       if (asset) {
-        assets.push(asset);
+        finalAssets.push(asset);
       }
     });
 
-    res.assets = unionBy(assets, (el) => el.package);
+    res.assets = unionBy(finalAssets, (el) => el.package);
     res = omit(res, ['id']) as any;
     return JSON.parse(JSON.stringify(res));
   }
