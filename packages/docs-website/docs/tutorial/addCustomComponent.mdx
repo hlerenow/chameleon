@@ -13,7 +13,8 @@ import RenderSourceCode from '!!raw-loader!../../codeSnippets/render.tsx';
 #### 导入组件物料以及组件库的
 
 ```tsx
-import CustomCompMeta from '@custom/xxxx/meta';
+import CustomCompMaterial from 'chamn-material-demo/dist/meta.js';
+
 import {
   Engine,
   EnginContext,
@@ -41,6 +42,15 @@ const assetPackagesList = [
       },
     ],
   },
+  {
+    package: 'customComponent',
+    globalName: 'ChameleonMaterialDemo',
+    resources: [
+      {
+        src: './customComp/index.umd.js',
+      },
+    ],
+  },
 ];
 
 // ...
@@ -48,12 +58,19 @@ const assetPackagesList = [
 <Engine
   plugins={DEFAULT_PLUGIN_LIST}
   schema={page as any}
-  material={[...InnerComponentMeta, ...CustomCompMeta]}
+  material={[...InnerComponentMeta, ...CustomCompMaterial.meta]}
   component
   onReady={onReady}
 />;
 
 //...
+```
+
+#### 拷贝物料组件 UI 库
+
+```bash
+cp -rf ./node_modules/@chamn/render/dist/index.umd.js ./public/customComp/index.umd.js
+
 ```
 
 ### 渲染页面配置
