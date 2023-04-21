@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.11](https://github.com/ByteCrazy/chameleon/compare/v0.0.10...v0.0.11) (2023-04-21)
+
+### ✨ Features | 新功能
+
+* **build-script, build-script-example, demo-page, engine, layout, material, model, render:** 🎸 optimize build-script output file format ([eda44d2](https://github.com/ByteCrazy/chameleon/commit/eda44d255bd3c5af19013bdd61342e1f0817413a))
+* **engine, model:** 🎸 support custom setter ([5236c54](https://github.com/ByteCrazy/chameleon/commit/5236c543559aac517e833741ffa8046bc1c7f1a3))
+
+### 📝 Documentation | 文档
+
+* **docs-website, model:** ✏️ add material setter doc ([c7490fb](https://github.com/ByteCrazy/chameleon/commit/c7490fb9c9e9ef4cba9e33c5270a035592e3c46e))
+
 ## [0.0.10](https://github.com/ByteCrazy/chameleon/compare/v0.0.9...v0.0.10) (2023-04-17)
 
 **Note:** Version bump only for package @chamn/model

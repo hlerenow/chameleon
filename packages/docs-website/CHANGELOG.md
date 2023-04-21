@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.11](https://github.com/ByteCrazy/chameleon/compare/v0.0.10...v0.0.11) (2023-04-21)
+
+### ✨ Features | 新功能
+
+* **build-script, docs-website, engine:** 🎸 add material develop doc ([0aacca0](https://github.com/ByteCrazy/chameleon/commit/0aacca0f726bc13606b814f8890b4e8ff8982142))
+
+### 📝 Documentation | 文档
+
+* **docs-website, engine:** ✏️ add plugin、setter develop doc ([288edc4](https://github.com/ByteCrazy/chameleon/commit/288edc4999f732ff2f27b1c6e50900b9b0094700))
+* **docs-website, model:** ✏️ add material setter doc ([c7490fb](https://github.com/ByteCrazy/chameleon/commit/c7490fb9c9e9ef4cba9e33c5270a035592e3c46e))
+
 ## [0.0.10](https://github.com/ByteCrazy/chameleon/compare/v0.0.9...v0.0.10) (2023-04-17)
 
 **Note:** Version bump only for package docs

@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.11](https://github.com/ByteCrazy/chameleon/compare/v0.0.10...v0.0.11) (2023-04-21)
+
+### ✨ Features | 新功能
+
+*  add reload method of plugin ([3b2cb2a](https://github.com/ByteCrazy/chameleon/commit/3b2cb2aa3804e250ed8ce37027168282f63db879))
+* add replaceSubTopBarView method ([da32d9c](https://github.com/ByteCrazy/chameleon/commit/da32d9c67a6fff1a562886c027c1604a54e19b7e))
+* **build-script, build-script-example, demo-page, engine, layout, material, model, render:** 🎸 optimize build-script output file format ([eda44d2](https://github.com/ByteCrazy/chameleon/commit/eda44d255bd3c5af19013bdd61342e1f0817413a))
+* **build-script, docs-website, engine:** 🎸 add material develop doc ([0aacca0](https://github.com/ByteCrazy/chameleon/commit/0aacca0f726bc13606b814f8890b4e8ff8982142))
+* **engine, model:** 🎸 support custom setter ([5236c54](https://github.com/ByteCrazy/chameleon/commit/5236c543559aac517e833741ffa8046bc1c7f1a3))
+* RightPanel add replacePanel、removePanel methods ([ee6c2e1](https://github.com/ByteCrazy/chameleon/commit/ee6c2e1b45bf93075342cee060fe3038ec7b8e53))
+
+### 📝 Documentation | 文档
+
+* **docs-website, engine:** ✏️ add plugin、setter develop doc ([288edc4](https://github.com/ByteCrazy/chameleon/commit/288edc4999f732ff2f27b1c6e50900b9b0094700))
+
 ## [0.0.10](https://github.com/ByteCrazy/chameleon/compare/v0.0.9...v0.0.10) (2023-04-17)
 
 **Note:** Version bump only for package @chamn/engine
