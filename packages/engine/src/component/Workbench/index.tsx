@@ -183,6 +183,12 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
       topToolBarView: newView,
     });
   };
+  
+  replaceSubTopBarView = (newView: React.ReactNode) => {
+    this.setState({
+      subTopToolBarView: newView,
+    });
+  };
 
   toggleRightPanel = () => {
     const { rightBoxVisible, rightBoxSize } = this.state;
