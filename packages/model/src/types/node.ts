@@ -109,7 +109,7 @@ export type CNodeDataType = {
   props?: CPropObjDataType;
   state?: Record<string, any>;
   stateName?: string;
-  // if type is low code, schema is required
+  // if type is lowcode, schema is required
   schema?: CPageDataType;
   children?: (string | CNodeDataType)[];
   /**
