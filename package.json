@@ -13,7 +13,7 @@
     "changeVersionPatch": "lerna version patch --force-publish --conventional-commits",
     "changeVersionMinor": "lerna version minor --force-publish --conventional-commits",
     "changeVersionMajor": "lerna version major --force-publish --conventional-commits",
-    "toPublish": "npm run build && lerna publish --force-publish --conventional-commits",
+    "toPublish": "npm run build && lerna publish from-package --force-publish --conventional-commits",
     "toPublishBeta": "npm run build && lerna publish --conventional-commits --dist-tag beta",
     "run-tests": "lerna run test",
     "cz": "git-cz"
