@@ -15,11 +15,7 @@ export const RightPanelPlugin: CPlugin = (ctx) => {
       console.log('destroy', ctx);
     },
     exports: (ctx) => {
-      return {
-        addPanel: (panel: CRightPanelItem) => {
-          uiHandle?.current?.addPanel(panel);
-        },
-      };
+      return uiHandle?.current;
     },
     meta: {
       engine: {
