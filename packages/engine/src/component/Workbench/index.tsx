@@ -38,6 +38,7 @@ type WorkbenchStateType = {
   bodyView: React.ReactNode | null;
   rightView: React.ReactNode | null;
   topToolBarView: React.ReactNode | null;
+  subTopToolbarBox: React.ReactNode | null;
 };
 
 export type WorkbenchPropsType = {
@@ -68,6 +69,7 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
       bodyView: null,
       rightView: null,
       topToolBarView: null,
+      subTopToolbarBox: null
     };
   }
 
@@ -77,6 +79,18 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
       leftPanels: [...this.state.leftPanels],
     });
   };
+
+  /** 替换对应的 panel */
+  replaceLeftPanel = (panelName: string, newPanel: PanelItem) => {
+    let targetIndex = this.state.leftPanels.findIndex(el => el.name === panelName);
+    if (targetIndex > -1) {
+      const newPanels = [...this.state.leftPanels];
+      newPanels[index] = newPanel
+      this.setState({
+        leftPanels: newPanels
+      })
+    }
+  }
 
   openLeftPanel = async (currentActiveLeftPanel?: string) => {
     const newActive = currentActiveLeftPanel || this.state.currentActiveLeftPanel;
@@ -218,6 +232,7 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
       bodyView,
       rightView,
       topToolBarView,
+      subTopToolbarBox
     } = this.state;
     const leftBoContentStyle: React.CSSProperties = {};
     if (!leftBoxFixed) {
@@ -287,7 +302,7 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
             )}
           </div>
           <div className={styles.centerBox}>
-            {/* <div className={styles.subTopToolbarBox}></div> */}
+           {subTopToolbarBox && <div className={styles.subTopToolbarBox}></div>}
             <div className={styles.canvasBox}>
               <div className={styles.scrollBox}>{bodyView}</div>
             </div>

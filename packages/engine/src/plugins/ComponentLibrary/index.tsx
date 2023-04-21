@@ -170,6 +170,9 @@ export const ComponentLibPlugin: CPlugin = {
       render: <ComponentLibViewWithLocalize pluginCtx={ctx} />,
     });
   },
+  reload: () => {
+    console.log(PLUGIN_NAME, 'not suooprt reload')
+  },
   async destroy(ctx) {
     console.log('destroy', ctx);
   },

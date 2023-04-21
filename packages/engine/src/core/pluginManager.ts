@@ -9,6 +9,9 @@ export type PluginObj = {
   name: string;
   init: (ctx: CPluginCtx) => Promise<void>;
   destroy: (ctx: CPluginCtx) => Promise<void>;
+  /** 用于暴露给外部重载插件 */
+  reload?: (ctx: CPluginCtx) => Promise<void>;
+  /** 插件暴露给外部可以调用的方法 */
   exports: (ctx: CPluginCtx) => any;
   meta: {
     engine: {
