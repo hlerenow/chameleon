@@ -32,3 +32,11 @@
   width: 32px;
   height: 32px;
 }
+
+.theme-doc-markdown.markdown {
+  a {
+    text-decoration: underline;
+    padding-bottom: 5px;
+    color: #038eff;
+  }
+}

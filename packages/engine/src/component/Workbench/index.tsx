@@ -69,7 +69,7 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
       bodyView: null,
       rightView: null,
       topToolBarView: null,
-      subTopToolbarBox: null
+      subTopToolbarBox: null,
     };
   }
 
@@ -82,15 +82,15 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
 
   /** 替换对应的 panel */
   replaceLeftPanel = (panelName: string, newPanel: PanelItem) => {
-    let targetIndex = this.state.leftPanels.findIndex(el => el.name === panelName);
+    const targetIndex = this.state.leftPanels.findIndex((el) => el.name === panelName);
     if (targetIndex > -1) {
       const newPanels = [...this.state.leftPanels];
-      newPanels[index] = newPanel
+      newPanels[targetIndex] = newPanel;
       this.setState({
-        leftPanels: newPanels
-      })
+        leftPanels: newPanels,
+      });
     }
-  }
+  };
 
   openLeftPanel = async (currentActiveLeftPanel?: string) => {
     const newActive = currentActiveLeftPanel || this.state.currentActiveLeftPanel;
@@ -183,7 +183,7 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
       topToolBarView: newView,
     });
   };
-  
+
   replaceSubTopBarView = (newView: React.ReactNode) => {
     this.setState({
       subTopToolBarView: newView,
@@ -238,7 +238,7 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
       bodyView,
       rightView,
       topToolBarView,
-      subTopToolbarBox
+      subTopToolbarBox,
     } = this.state;
     const leftBoContentStyle: React.CSSProperties = {};
     if (!leftBoxFixed) {
@@ -308,7 +308,7 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
             )}
           </div>
           <div className={styles.centerBox}>
-           {subTopToolbarBox && <div className={styles.subTopToolbarBox}></div>}
+            {subTopToolbarBox && <div className={styles.subTopToolbarBox}></div>}
             <div className={styles.canvasBox}>
               <div className={styles.scrollBox}>{bodyView}</div>
             </div>

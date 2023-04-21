@@ -5,6 +5,184 @@ title: 插件开发
 
 ### 命名规范
 
-### 模版项目
+插件命名都统一采用 `chamn-plugin-` 前缀, 如 `chan-plugin-test`
 
-[Template Project](https://github.com/ByteCrazy/chameleon-plugin-template)
+### 插件定义
+
+插件可以是个对象，也可以是一个返回插件定义的函数，具体定义如下:
+
+```tsx
+export type PluginObj = {
+  /** 必须要唯一 */
+  name: string;
+  init: (ctx: CPluginCtx) => Promise<void>;
+  destroy: (ctx: CPluginCtx) => Promise<void>;
+  /** 用于暴露给外部重载插件 */
+  reload?: (ctx: CPluginCtx) => Promise<void>;
+  /** 插件暴露给外部可以调用的方法 */
+  exports: (ctx: CPluginCtx) => any;
+  meta: {
+    engine: {
+      version: string;
+    };
+  };
+};
+
+export type CPlugin = PluginObj | ((ctx: CPluginCtx) => PluginObj);
+```
+
+#### Example
+
+一个历史记录插件，记录了页面的状态，并支持回退到上一个状态
+
+```tsx title="History.tsx"
+import { waitReactUpdate } from '@/utils';
+import { CPageDataType } from '@chamn/model';
+import { cloneDeep } from 'lodash-es';
+import { CPlugin, CPluginCtx } from '../../core/pluginManager';
+
+const PLUGIN_NAME = 'History';
+
+export const HistoryPlugin: CPlugin = (ctx) => {
+  const CTX: CPluginCtx | null = ctx;
+  const dataStore = {
+    historyRecords: [] as CPageDataType[],
+    currentStepIndex: 0,
+  };
+
+  let originalPageRecord: CPageDataType | null = null;
+  const pageSchema = ctx.pageModel.export();
+  originalPageRecord = pageSchema;
+  dataStore.historyRecords.push(pageSchema);
+
+  const loadPage = async (page: CPageDataType) => {
+    if (!CTX) {
+      return;
+    }
+    CTX.pageModel.reloadPage(page);
+    await waitReactUpdate();
+  };
+
+  const resObj = {
+    addStep: () => {
+      const { currentStepIndex, historyRecords } = dataStore;
+      const newPage = ctx.pageModel.export();
+      if (currentStepIndex !== historyRecords.length - 1) {
+        dataStore.historyRecords = historyRecords.slice(
+          0,
+          currentStepIndex + 1
+        );
+      }
+      dataStore.historyRecords.push(newPage);
+      dataStore.currentStepIndex = historyRecords.length - 1;
+    },
+    reset: async () => {
+      const ctx = CTX;
+      if (!ctx) {
+        console.warn('plugin ctx is null, pls check it');
+        return;
+      }
+      if (!originalPageRecord) {
+        return;
+      }
+      dataStore.historyRecords = [];
+      loadPage(originalPageRecord);
+    },
+    preStep: () => {
+      const { currentStepIndex, historyRecords } = dataStore;
+      if (!resObj.canGoPreStep()) {
+        return;
+      }
+      const newIndex = currentStepIndex - 1;
+      dataStore.currentStepIndex = newIndex;
+      const page = cloneDeep(historyRecords[newIndex]);
+      loadPage(page);
+    },
+    nextStep: () => {
+      if (!resObj.canGoNextStep()) {
+        return;
+      }
+      const { currentStepIndex, historyRecords } = dataStore;
+      const newIndex = currentStepIndex + 1;
+      dataStore.currentStepIndex = newIndex;
+      const page = cloneDeep(historyRecords[newIndex]);
+      return loadPage(page);
+    },
+    canGoPreStep: () => {
+      const { currentStepIndex } = dataStore;
+      if (currentStepIndex <= 0) {
+        return false;
+      }
+      return true;
+    },
+    canGoNextStep: () => {
+      const { currentStepIndex, historyRecords } = dataStore;
+      if (currentStepIndex >= historyRecords.length - 1) {
+        return false;
+      }
+      return true;
+    },
+  };
+
+  return {
+    name: PLUGIN_NAME,
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    async init(ctx) {
+      ctx.pageModel.emitter.on('onNodeChange', () => {
+        resObj.addStep();
+      });
+      ctx.pageModel.emitter.on('onPageChange', () => {
+        resObj.addStep();
+      });
+      // !!! 必须调用，通知 engine，插件初始化完成，可以被消费
+      ctx.pluginReadyOk();
+    },
+    async destroy(ctx) {
+      console.log('destroy', ctx);
+    },
+    // 提供给其他插件或者外部使用的方法
+    exports: () => {
+      return resObj;
+    },
+    // 插件元信息，引擎的最低版本要求
+    meta: {
+      engine: {
+        version: '0.0.1',
+      },
+    },
+  };
+};
+```
+
+### 加载插件
+
+```tsx
+import {
+  Engine,
+  EnginContext,
+  InnerComponentMeta,
+  plugins,
+} from '@chamn/engine';
+const { DisplaySourceSchema, DEFAULT_PLUGIN_LIST } = plugins;
+export const App = () => {
+  // ...
+  const onReady = useCallback(async (ctx: EnginContext) => {
+    const designer = await ctx.pluginManager.onPluginReadyOk('Designer');
+
+    const workbench = ctx.engine.getWorkbench();
+  }, []);
+
+  //...
+
+  return (
+    <Engine
+      // highlight-start
+      plugins={[...DEFAULT_PLUGIN_LIST, History]}
+      // highlight-end
+
+      // ...
+      onReady={onReady}
+    />
+  );
+};
+```

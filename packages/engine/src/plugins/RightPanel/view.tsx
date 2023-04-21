@@ -60,15 +60,15 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
   };
 
   removePanel = (panelName: string) => {
-    const newPanels = this.state.panels.filter(el => el.name !== panelName);
+    const newPanels = this.state.panels.filter((el) => el.name !== panelName);
     this.setState({
       panels: newPanels,
     });
     this.updatePanels();
-  };  
+  };
 
   replacePanel = (panelName: string, newPanel: CRightPanelItem) => {
-    const targetIndex = this.state.panels.findIndex(el => el.name === panelName);
+    const targetIndex = this.state.panels.findIndex((el) => el.name === panelName);
     const newPanels = [...this.state.panels];
     if (targetIndex > -1) {
       newPanels[targetIndex] = newPanel;
@@ -77,14 +77,14 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
       panels: newPanels,
     });
     this.updatePanels();
-  }
+  };
 
   choosePanel = (panelName: string) => {
     this.setState({
-      activeKey: panelName
-    })
+      activeKey: panelName,
+    });
     this.updatePanels();
-  }  
+  };
 
   /** 更新被展示的 panel, 根据 panel 的 show 方法 */
   updatePanels = () => {
