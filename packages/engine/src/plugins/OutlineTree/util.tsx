@@ -50,6 +50,7 @@ export const transformNodeSchemaToTreeData = (
       key: node.id,
       children: [],
       parent: parent,
+      canDrop: pageModel.getNode(node.id || '')?.isContainer() ? undefined : ['after', 'before'],
     };
     // 还需要处理 props 中的节点
     const propsNodeList: TreeNodeData[] = [];

@@ -3,7 +3,6 @@ import { CMaterialType } from '@chamn/model';
 export const ButtonMeta: CMaterialType = {
   title: 'Button',
   componentName: 'Button',
-  isSupportStyle: true,
   npm: {
     package: '@chamn/mock-material',
     exportName: 'Button',

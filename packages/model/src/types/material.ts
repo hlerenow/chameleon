@@ -342,7 +342,7 @@ export type AdvanceCustomFuncParam = {
   context: any;
 };
 
-export type CMaterialType = {
+export type CMaterialType<PropsSetter extends string = ''> = {
   componentName: string;
   title: string;
   screenshot?: string;
@@ -357,7 +357,7 @@ export type CMaterialType = {
   priority?: number;
   npm?: LibMetaType;
   snippets: SnippetsType[];
-  props: CMaterialPropsType;
+  props: CMaterialPropsType<PropsSetter>;
   /** 固定的props, 不被 setter 的值覆盖 */
   fixedProps?: Record<string, any> | ((props: Record<string, any>) => Record<string, any>);
   /** 可以拖入组件 */

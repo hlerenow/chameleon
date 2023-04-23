@@ -133,7 +133,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
         }
 
         const hasChildren = Boolean(newChildren.filter(Boolean).length);
-        if (!hasChildren && (node.material?.value.isContainer || node.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER)) {
+        if (!hasChildren && (node.isContainer() || node.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER)) {
           newChildren.push(
             React.createElement(self.dropPlaceholder, {
               node: node,

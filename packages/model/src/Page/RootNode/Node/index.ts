@@ -211,14 +211,6 @@ export class CNode {
     return this.getNodeConfig('isContainer');
   }
 
-  is() {
-    if (this.data.configure.isContainer !== undefined) {
-      return this.data.configure.isContainer;
-    } else {
-      return this.material?.value.isContainer;
-    }
-  }
-
   export(mode: ExportType): CNodeDataType {
     const data = this.data;
     if (typeof data === 'string') {

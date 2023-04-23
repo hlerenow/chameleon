@@ -419,10 +419,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       }
       const dropNode = dropInstance._NODE_MODEL;
       const isContainer =
-        (dropNode.isContainer() || dropNode.value?.componentName === InnerComponentNameEnum.ROOT_CONTAINER) &&
-        dropNode.value.children.length === 0;
-      const originalEvent = eventObj.event;
+        dropNode.isContainer() || dropNode.value?.componentName === InnerComponentNameEnum.ROOT_CONTAINER;
 
+      const originalEvent = eventObj.event;
       const dropInstanceDom = ReactDOM.findDOMNode(dropInstance);
       const dropInfo = calculateDropPosInfo({
         point: {
@@ -430,7 +429,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           y: originalEvent.clientY,
         },
         dom: dropInstanceDom as HTMLElement,
-        isContainer: isContainer,
+        isContainer: Boolean(isContainer),
       });
       return {
         ...eventObj,
@@ -640,7 +639,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     const { selectToolBar, hoverToolBar, selectBoxStyle = {}, hoverBoxStyle = {}, ghostView = <>Ghost</> } = this.props;
     return (
       <div className={styles.layoutContainer} id="iframeBox">
-        {/* 左上角添加显示元素名功能 */}
+        {/* 左上角添加显示元素名功能， hover */}
         <HighlightCanvas
           key={'highlightHoverCanvasRef'}
           ref={this.highlightHoverCanvasRef}

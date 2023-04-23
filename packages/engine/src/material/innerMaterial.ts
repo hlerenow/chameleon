@@ -107,7 +107,7 @@ const BaseComponentMeta: CMaterialType[] = [
         name: 'afterMount',
         title: '渲染之后',
         valueType: 'function',
-        setters: ['FunctionSetter', 'ExpressionSetter'],
+        setters: ['FunctionSetter', 'ExpressionSetter', 'TestSetter' as any],
       },
       {
         name: 'beforeDestroy',
