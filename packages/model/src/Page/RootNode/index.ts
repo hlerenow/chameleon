@@ -155,9 +155,27 @@ export class CRootNode {
       node: this,
     });
   }
+
   contains(nodeId: string) {
     const res = getNode(this, nodeId);
     return res;
+  }
+
+  /**
+   * 从物料 和 node config 中获取合并后的属性，node 中的配置优先级更高
+   * @param key 目前只支持 isContainer 属性
+   * @returns
+   */
+  getMaterialConfig(key: 'isContainer') {
+    if (this.data.configure[key] !== undefined) {
+      return this.data.configure.isContainer;
+    } else {
+      return this.material?.value.isContainer;
+    }
+  }
+
+  isContainer() {
+    return this.getMaterialConfig('isContainer');
   }
 
   export(mode: ExportType = ExportTypeEnum.SAVE): CRootNodeDataType {

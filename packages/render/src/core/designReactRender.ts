@@ -47,7 +47,7 @@ export type DesignRenderProp = Omit<RenderPropsType, 'ref' | 'render'> & {
 export const DefaultDropPlaceholder: React.FC<{ node: CNode | CRootNode }> = (props) => {
   const { node } = props;
   const configInfo = useMemo(() => {
-    const isContainer = node.material?.value?.isContainer;
+    const isContainer = node.isContainer();
     if (isPlainObject(isContainer)) {
       return isContainer as ContainerConfig;
     } else {

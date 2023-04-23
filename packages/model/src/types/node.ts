@@ -138,6 +138,8 @@ export type CNodeDataType = {
       condition?: boolean | JSExpressionPropType;
       props?: CPropObjDataType;
     };
+    /** 当前节点是否时容器节点 */
+    isContainer?: boolean;
   };
   classNames?: ClassNameType[];
   css?: CSSType;

@@ -419,8 +419,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       }
       const dropNode = dropInstance._NODE_MODEL;
       const isContainer =
-        (dropNode.material?.value.isContainer ||
-          dropNode.value?.componentName === InnerComponentNameEnum.ROOT_CONTAINER) &&
+        (dropNode.isContainer() || dropNode.value?.componentName === InnerComponentNameEnum.ROOT_CONTAINER) &&
         dropNode.value.children.length === 0;
       const originalEvent = eventObj.event;
 
