@@ -71,7 +71,7 @@ export const checkMaterials = (data: CMaterialType[]) => {
     checkComplexData({
       data: it,
       dataStruct: CMaterialTypeDescribe,
-      throwError: true,
+      throwError: false,
     });
   });
 };

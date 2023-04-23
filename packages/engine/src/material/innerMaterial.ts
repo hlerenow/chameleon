@@ -70,7 +70,6 @@ const BaseComponentMeta: CMaterialType[] = [
   {
     title: '块',
     componentName: 'CBlock',
-    isSupportStyle: true,
     props: [
       widthPropsMeta,
       heightPropsMeta,
@@ -100,7 +99,6 @@ const BaseComponentMeta: CMaterialType[] = [
   {
     title: '容器',
     componentName: 'CContainer',
-    isSupportStyle: true,
     isContainer: true,
     props: [
       widthPropsMeta,
@@ -137,7 +135,6 @@ const BaseComponentMeta: CMaterialType[] = [
   {
     title: '图片',
     componentName: 'CImage',
-    isSupportStyle: true,
     props: [
       {
         name: 'src',
@@ -167,7 +164,6 @@ const BaseComponentMeta: CMaterialType[] = [
   {
     title: '视频',
     componentName: 'CVideo',
-    isSupportStyle: true,
     props: [
       {
         name: 'src',
@@ -214,7 +210,6 @@ const BaseComponentMeta: CMaterialType[] = [
     title: '音频',
     groupName: '原子组件',
     componentName: 'CAudio',
-    isSupportStyle: true,
     props: [
       {
         name: 'src',
@@ -255,7 +250,6 @@ const BaseComponentMeta: CMaterialType[] = [
     title: '文本',
     componentName: 'CText',
     groupName: '原子组件',
-    isSupportStyle: true,
     props: [
       {
         name: 'content',
@@ -281,7 +275,6 @@ const BaseComponentMeta: CMaterialType[] = [
   {
     title: 'Canvas',
     componentName: 'CCanvas',
-    isSupportStyle: true,
     props: [widthPropsMeta, heightPropsMeta, customAttributesMeta],
     groupName: '原子组件',
     snippets: [
@@ -301,7 +294,6 @@ const BaseComponentMeta: CMaterialType[] = [
   {
     title: 'HTML 标签',
     componentName: 'CNativeTag',
-    isSupportStyle: true,
     props: [
       {
         name: 'htmlTag',

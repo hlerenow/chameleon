@@ -17,7 +17,7 @@ export const checkNode = (data: any) => {
   checkComplexData({
     data: data,
     dataStruct: CNodeDataStructDescribe,
-    throwError: true,
+    throwError: false,
   });
 };
 

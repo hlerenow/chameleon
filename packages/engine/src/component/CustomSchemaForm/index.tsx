@@ -34,7 +34,6 @@ const CustomSchemaFormCore = (props: CustomSchemaFormProps, ref: Ref<CustomSchem
     pluginCtx,
     customSetterMap,
   } = props;
-  console.log('🚀 ~ file: index.tsx:37 ~ CustomSchemaFormCore ~ customSetterMap:', customSetterMap);
   const properties: CMaterialPropsType = originProperties;
   return (
     <CCustomSchemaFormContext.Provider

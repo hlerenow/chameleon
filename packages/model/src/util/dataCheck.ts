@@ -21,17 +21,16 @@ export const checkFuncWrap = (func: DataCheckFunc): DataCheckFunc => {
     } else {
       if (throwError) {
         if (validateRes.message || message) {
-          throw new Error(
-            `${validateRes.message || message}\n originData: ${JSON.stringify(
-              data
-            )}`
-          );
+          throw new Error(`${validateRes.message || message}\n originData: ${JSON.stringify(data)}`);
         } else {
-          throw new Error(
-            `${JSON.stringify(data)} \n data struct format is invalidate`
-          );
+          throw new Error(`${JSON.stringify(data)} \n data struct format is invalidate`);
         }
       } else {
+        if (validateRes.message || message) {
+          console.warn(`${validateRes.message || message}\n originData: ${JSON.stringify(data)}`);
+        } else {
+          console.warn(`${JSON.stringify(data)} \n data struct format is invalidate`);
+        }
         return validateRes;
       }
     }

@@ -20,6 +20,8 @@ import {
 } from 'superstruct';
 import { ComplexSetterTypeEnum, LibMetaType, LibMetaTypeDescribe, SetterBasicType, SetterTypeEnum } from './base';
 import { CNodeDataStructDescribe, CNodeDataType } from './node';
+import { CNode } from '../Page/RootNode/Node';
+import { CRootNode } from '../Page/RootNode';
 
 export enum BaseDataType {
   STRING = 'string',
@@ -228,7 +230,7 @@ export const MaterialPropDescribe = object({
   condition: optional(func()),
 });
 
-export type ActionType = string | ((context: any) => React.ReactNode);
+export type ActionType = string | ((node: CNode | CRootNode, context: any) => React.ReactNode);
 
 export const ActionTypeDescribe = union([string(), func()]);
 
@@ -335,6 +337,11 @@ export type ContainerConfig = {
   style?: React.CSSProperties;
 };
 
+export type AdvanceCustomFuncParam = {
+  viewPortal: any;
+  context: any;
+};
+
 export type CMaterialType = {
   componentName: string;
   title: string;
@@ -357,7 +364,7 @@ export type CMaterialType = {
   isContainer?: boolean | ContainerConfig;
   /** 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize */
   isLayout?: boolean;
-  isSupportStyle?: boolean;
+  /** 选择框的根选择器 */
   rootSelector?: string;
   /** 是否可以派发dom事件，默认被禁止： click、mousedown、mouseup 等等 */
   isSupportDispatchNativeEvent?: boolean;
@@ -374,21 +381,26 @@ export type CMaterialType = {
   }[];
   /** 组件可能触发的事件 */
   events?: CMaterialEventType[];
-  // 用于定制组件额外的交互行为,
-  panels?: {
-    title: string;
-    key: string;
-    component: ($$context: any) => React.ReactNode;
-  }[];
-  /** 用于定制组件特有的一些选中交互， todo: 没有补充验证 类型 describe */
-  selection?: ($$context: any) => React.ReactNode;
-  selectionToolBars?: ActionType[];
-  /**定制组件释放时的行为 */
-  advance?: {
-    onDragStart: ($$context: any) => Promise<void>;
-    onDrop: ($$context: any) => Promise<void>;
+  /** 自定义选中工具栏 */
+  // selectionToolBarView?: (
+  //   node: CNode | CRootNode,
+  //   toolBarItems: { name: string; view: React.ReactNode }[],
+  //   context: any
+  // ) => { name: string; view: React.ReactNode }[];
+  /** 定制组件释放时的行为 */
+  advanceCustom?: {
+    onDrag: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<void>;
+    /** 拖动中触发 */
+    onDragging: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => void;
+    onDrop: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<void>;
+    /** 当第一次被拖入到画布时触发 */
+    onNewAdd: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<void>;
+    /** 当元素被删除时触发 */
+    onDelete: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => void;
+    /** 元素被选中时触发 */
+    onSelect: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => void;
   };
-  /** 扩展配置 */
+  /** 自定义扩展配置 */
   extra?: Record<any, any>;
 };
 
@@ -438,20 +450,12 @@ export const CMaterialTypeDescribe = object({
       }),
     ])
   ),
-  isModal: optional(
-    union([
-      boolean(),
-      object({
-        visibleKey: string(),
-      }),
-    ])
-  ),
-  isSupportStyle: optional(boolean()),
   isSupportDispatchNativeEvent: optional(boolean()),
   // 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize
   isLayout: optional(boolean()),
   rootSelector: optional(string()),
-  selectionToolBars: optional(array(ActionTypeDescribe)),
+  // selectionToolBarView: optional(func()),
+  advanceCustom: optional(any()),
   // 扩展配置
   extra: optional(record(any(), any())),
 });

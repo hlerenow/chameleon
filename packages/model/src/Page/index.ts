@@ -18,7 +18,7 @@ export const checkPage = (data: any): CPageDataType => {
   checkComplexData({
     data: data,
     dataStruct: CPageDataTypeDescribe,
-    throwError: true,
+    throwError: false,
   });
 
   return data;

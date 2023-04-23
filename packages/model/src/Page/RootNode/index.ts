@@ -21,7 +21,7 @@ export const checkRootNode = (data: any): CRootNodeDataType => {
   checkComplexData({
     data: data,
     dataStruct: CRootNodeDataTypeDescribe,
-    throwError: true,
+    throwError: false,
   });
   return data;
 };
