@@ -38,7 +38,7 @@ type WorkbenchStateType = {
   bodyView: React.ReactNode | null;
   rightView: React.ReactNode | null;
   topToolBarView: React.ReactNode | null;
-  subTopToolbarBox: React.ReactNode | null;
+  subTopToolBarView: React.ReactNode | null;
 };
 
 export type WorkbenchPropsType = {
@@ -69,7 +69,7 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
       bodyView: null,
       rightView: null,
       topToolBarView: null,
-      subTopToolbarBox: null,
+      subTopToolBarView: null,
     };
   }
 
@@ -238,7 +238,7 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
       bodyView,
       rightView,
       topToolBarView,
-      subTopToolbarBox,
+      subTopToolBarView,
     } = this.state;
     const leftBoContentStyle: React.CSSProperties = {};
     if (!leftBoxFixed) {
@@ -308,7 +308,7 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
             )}
           </div>
           <div className={styles.centerBox}>
-            {subTopToolbarBox && <div className={styles.subTopToolbarBox}></div>}
+            {subTopToolBarView && <div className={styles.subTopToolbarBox}></div>}
             <div className={styles.canvasBox}>
               <div className={styles.scrollBox}>{bodyView}</div>
             </div>
