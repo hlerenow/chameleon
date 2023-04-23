@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.12](https://github.com/ByteCrazy/chameleon/compare/v0.0.11...v0.0.12) (2023-04-23)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **build-script, build-script-example, engine, layout, material, model, render:** 🐛 fix can not find vite/client.d.ts problem ([8a53540](https://github.com/ByteCrazy/chameleon/commit/8a53540f75737707f69f93d2f701203dbf88084a))
+
 ## [0.0.11](https://github.com/ByteCrazy/chameleon/compare/v0.0.10...v0.0.11) (2023-04-21)
 
 ### ✨ Features | 新功能
