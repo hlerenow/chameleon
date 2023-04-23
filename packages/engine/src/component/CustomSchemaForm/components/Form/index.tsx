@@ -6,7 +6,7 @@ export type CFormProps = {
   name: string;
   children?: ReactNode | ReactNode[];
   initialValue?: Record<string, any>;
-  customSetterMap: CFormContextData['customSetterMap'];
+  customSetterMap?: CFormContextData['customSetterMap'];
   onValueChange?: (formData: Record<string, any>) => void;
 };
 export class CForm extends React.Component<CFormProps, CFormContextData> {

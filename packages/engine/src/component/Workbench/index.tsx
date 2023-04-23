@@ -39,6 +39,7 @@ type WorkbenchStateType = {
   rightView: React.ReactNode | null;
   topToolBarView: React.ReactNode | null;
   subTopToolbarBox: React.ReactNode | null;
+  subTopToolBarView: React.ReactNode | null;
 };
 
 export type WorkbenchPropsType = {
@@ -70,6 +71,7 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
       rightView: null,
       topToolBarView: null,
       subTopToolbarBox: null,
+      subTopToolBarView: null,
     };
   }
 

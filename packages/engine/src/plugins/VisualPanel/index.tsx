@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { CMaterialPropsType, CNode, CNodePropsTypeEnum, CProp, isExpression } from '@chamn/model';
+import { CMaterialPropsType, CNode, CRootNode, CNodePropsTypeEnum, CProp, isExpression } from '@chamn/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';
 
@@ -101,7 +101,7 @@ const styleArr2Obj = (val: styleArr) => {
   return res;
 };
 
-export const VisualPanel = (props: { node: CNode; pluginCtx: CPluginCtx }) => {
+export const VisualPanel = (props: { node: CNode | CRootNode; pluginCtx: CPluginCtx }) => {
   const formRef = useRef<CustomSchemaFormInstance>(null);
   const { node } = props;
   const cssEditorRef = useRef<CSSPropertiesEditorRef>(null);

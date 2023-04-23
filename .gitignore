@@ -7,3 +7,5 @@ temp
 packages/build-script/lib/*
 stats.html
 example
+
+.idea
