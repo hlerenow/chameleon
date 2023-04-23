@@ -4,7 +4,7 @@
 
 ```shell
 cd ./
-yarn
+lerna
 lerna bootstrap
 lerna link
 lerna run build
