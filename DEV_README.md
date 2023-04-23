@@ -4,8 +4,8 @@
 
 ```shell
 cd ./
-lerna
-lerna bootstrap
-lerna link
-lerna run build
+pnpm i
+pnpm run build
+cd package/engine
+pnpm ru nstart
 ```
