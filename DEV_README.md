@@ -7,5 +7,5 @@ cd ./
 pnpm i
 pnpm run build
 cd package/engine
-pnpm ru nstart
+pnpm run start
 ```
