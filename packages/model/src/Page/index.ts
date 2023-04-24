@@ -307,6 +307,7 @@ export class CPage {
       if (el.componentName && el.package && el.version) {
         return true;
       }
+      return false;
     });
     this.materialsModel.usedMaterials = [];
     let res: CPageDataType = {
@@ -319,7 +320,7 @@ export class CPage {
 
     this.data.thirdLibs?.forEach((thirdEl) => {
       const asset = assetPackagesList.find((el) => {
-        thirdEl.package === el.package;
+        return thirdEl.package === el.package;
       });
       if (asset) {
         finalAssets.push(asset);
