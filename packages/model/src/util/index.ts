@@ -139,3 +139,14 @@ export function getNode(nodeTree: CRootNode | CNode, id: string) {
 
   return null;
 }
+
+export function findNode(nodeTree: CRootNode | CNode, iterator: (item: CNode | CRootNode) => boolean) {
+  const nodeList: (CRootNode | CNode)[] = [nodeTree];
+  while (nodeList.length) {
+    const target = nodeList.shift();
+    if (target && iterator(target)) {
+      return target;
+    }
+  }
+  return undefined;
+}

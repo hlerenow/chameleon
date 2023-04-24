@@ -86,7 +86,7 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
       container: containerRef.current,
     });
 
-    boxSensor.setCanDrag((eventObj: SensorEventObjType) => {
+    const getNewNode = (eventObj: SensorEventObjType | Omit<SensorEventObjType, 'pointer'>) => {
       const targetDom = eventObj.event.target;
       if (!targetDom) {
         return;
@@ -101,7 +101,11 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
       if (!meta) {
         return;
       }
-      const newNode = pageModel?.createNode(meta.schema);
+      return pageModel?.createNode(meta.schema);
+    };
+
+    boxSensor.setCanDrag((eventObj: SensorEventObjType) => {
+      const newNode = getNewNode(eventObj);
 
       this.props.pluginCtx.pluginManager.get('Designer').then((designerHandle) => {
         const designerExports: DesignerExports = designerHandle?.exports;
@@ -130,6 +134,45 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
       dnd.emitter.off('dragStart', dragStart);
     });
     dnd.emitter.on('dragStart', dragStart);
+
+    const onClick = (eventObj: Omit<SensorEventObjType, 'pointer'>) => {
+      const newNode = getNewNode(eventObj);
+      if (!newNode) {
+        return;
+      }
+
+      const { pageModel } = this.props.pluginCtx;
+
+      this.props.pluginCtx.pluginManager.get('Designer').then((designerHandle) => {
+        const designerExports: DesignerExports = designerHandle?.exports;
+
+        // 获取当前选中，如果存在，就插入到当前选中的下面，否则就插入到根节点下面
+        const selectedNodeId = designerExports.getSelectedNodeId();
+        if (selectedNodeId) {
+          const selectedNode = pageModel.getNode(selectedNodeId);
+          if (selectedNode) {
+            const isContainer = selectedNode.isContainer();
+
+            // 如果不是容器，就插入到当前选中的后面，否则就插入到当前选中的子节点的最后面
+            if (!isContainer) {
+              pageModel.addNode(newNode, selectedNode, 'AFTER');
+            } else {
+              pageModel.addNode(newNode, selectedNode, 'CHILD_END');
+            }
+            return;
+          }
+        }
+        const rootNode = pageModel.getRootNode();
+        if (rootNode) {
+          pageModel.addNode(newNode, rootNode, 'CHILD_END');
+        }
+      });
+    };
+
+    this.disposeList.push(() => {
+      boxSensor.emitter.off('onClick', onClick);
+    });
+    boxSensor.emitter.on('onClick', onClick);
   };
 
   render(): React.ReactNode {

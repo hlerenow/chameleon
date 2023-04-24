@@ -6,10 +6,10 @@ import { ExportType, ExportTypeEnum } from '../const/schema';
 import { CMaterials } from '../Material';
 import { CNode } from './RootNode/Node';
 import { CNodeDataType } from '../types/node';
-import { cloneDeep, isPlainObject, omit, unionBy } from 'lodash-es';
+import { cloneDeep, get, isPlainObject, omit, unionBy } from 'lodash-es';
 import { CProp } from './RootNode/Node/prop';
 import { CSlot } from './RootNode/Node/slot';
-import { clearSchema, getNode, getRandomStr } from '../util';
+import { clearSchema, findNode, getNode, getRandomStr } from '../util';
 import { InnerComponentNameEnum } from '../types/rootNode';
 import { AssetPackage } from '../types/base';
 import { CMaterialType } from '../types/material';
@@ -330,6 +330,14 @@ export class CPage {
     res.assets = unionBy(finalAssets, (el) => el.package);
     res = omit(res, ['id']) as any;
     return JSON.parse(JSON.stringify(res));
+  }
+
+  getRootNode() {
+    const nodeTree = this.data.componentsTree;
+    return findNode(nodeTree, (item) => {
+      const componentName = get(item, 'data.componentName') || get(item, 'rawData.componentName');
+      return componentName === InnerComponentNameEnum.ROOT_CONTAINER;
+    });
   }
 }
 
