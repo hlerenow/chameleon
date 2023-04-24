@@ -116,7 +116,7 @@ export function getNode(nodeTree: CRootNode | CNode, id: string) {
       }
       if (isPlainObject(prop)) {
         const obj = prop as Record<string, any>;
-        Object.keys(obj).map((key) => {
+        Object.keys(obj).forEach((key) => {
           dpProps(obj[key]);
         });
         return;
