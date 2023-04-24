@@ -319,7 +319,7 @@ export class CPage {
 
     this.data.thirdLibs?.forEach((thirdEl) => {
       const asset = assetPackagesList.find((el) => {
-        thirdEl.package === el.package;
+        return thirdEl.package === el.package;
       });
       if (asset) {
         finalAssets.push(asset);
