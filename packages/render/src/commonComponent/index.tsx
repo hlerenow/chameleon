@@ -114,11 +114,7 @@ const CAudio = ({ children, $$attributes = [], ...props }: any) => {
   );
 };
 
-const CText = ({ children, $$attributes = [], content, ...props }: any) => {
-  let child = children;
-  if (!Array.isArray(children)) {
-    child = [children];
-  }
+const CText = ({ $$attributes = [], content, ...props }: any) => {
   return React.createElement(
     'span',
     {

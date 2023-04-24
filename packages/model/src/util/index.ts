@@ -16,7 +16,7 @@ export const isExpression = (arg: any) => {
 };
 
 export const isJSSlotPropNode = (arg: any) => {
-  if (arg?.type == CNodePropsTypeEnum.SLOT) {
+  if (arg?.type === CNodePropsTypeEnum.SLOT) {
     return true;
   } else {
     return false;
@@ -24,7 +24,7 @@ export const isJSSlotPropNode = (arg: any) => {
 };
 
 export const isFunction = (arg: any) => {
-  if (arg?.type == CNodePropsTypeEnum.FUNCTION) {
+  if (arg?.type === CNodePropsTypeEnum.FUNCTION) {
     return true;
   } else {
     return false;
@@ -133,9 +133,7 @@ export function getNode(nodeTree: CRootNode | CNode, id: string) {
     // 检索所有的 props 中的节点
     dpProps(props);
     // 合并入待索引的列表
-    const tempNodeList: CNode[] =
-      (target?.value.children.filter((el) => el instanceof CNode) as CNode[]) ||
-      [];
+    const tempNodeList: CNode[] = (target?.value.children.filter((el) => el instanceof CNode) as CNode[]) || [];
     nodeList.push(...tempNodeList);
   }
 
