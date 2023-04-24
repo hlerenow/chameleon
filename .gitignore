@@ -48,6 +48,7 @@ Thumbs.db
 .cache-loader/
 
 *.js.map
+*error.log
 
 packages/build-script/lib/*
 stats.html

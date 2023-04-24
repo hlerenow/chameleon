@@ -304,7 +304,10 @@ export class CPage {
     });
     // 剔除不合法的meta
     const finalComponentsMetaList = componentsMetaList.filter((el) => {
-      return !!(el.componentName && el.package && el.version);
+      if (el.componentName && el.package && el.version) {
+        return true;
+      }
+      return false;
     });
     this.materialsModel.usedMaterials = [];
     let res: CPageDataType = {
