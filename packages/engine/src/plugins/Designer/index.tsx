@@ -26,7 +26,7 @@ export const DesignerPlugin: CPlugin = (ctx) => {
         selectNode: (nodeId) => {
           designerRef.current?.layoutRef.current?.selectNode(nodeId);
         },
-        getSelectNodeId: () => {
+        getSelectedNodeId: () => {
           return designerRef.current?.layoutRef.current?.state.currentSelectId;
         },
         updatePage: (page: CPageDataType | CPage) => {
@@ -58,7 +58,7 @@ export type DesignerExports = {
   reload: (params?: { assets?: AssetPackage[] }) => void;
   getDnd: () => DragAndDrop;
   selectNode: (nodeId: string) => void;
-  getSelectNodeId: () => string | null;
+  getSelectedNodeId: () => string | undefined;
   updatePage: (page: CPageDataType) => void;
   getComponentInstances: (id: string) => RenderInstance[];
   getDynamicComponentInstances: (id: string) => RenderInstance;

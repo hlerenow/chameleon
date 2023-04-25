@@ -148,20 +148,13 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
 
         // 获取当前选中，如果存在，就插入到当前选中的下面，否则就插入到根节点下面
         const selectedNodeId = designerExports.getSelectedNodeId();
-        if (selectedNodeId) {
-          const selectedNode = pageModel.getNode(selectedNodeId);
-          if (selectedNode) {
-            const isContainer = selectedNode.isContainer();
-
-            // 如果不是容器，就插入到当前选中的后面，否则就插入到当前选中的子节点的最后面
-            if (!isContainer) {
-              pageModel.addNode(newNode, selectedNode, 'AFTER');
-            } else {
-              pageModel.addNode(newNode, selectedNode, 'CHILD_END');
-            }
-            return;
-          }
+        const selectedNode = pageModel.getNode(selectedNodeId);
+        const containerNode = findContainerNode(selectedNode);
+        if (containerNode && selectedNode) {
+          pageModel.addNode(newNode, containerNode as never, isPageModel(containerNode) ? 'CHILD_END' : 'AFTER');
+          return;
         }
+
         const rootNode = pageModel.getRootNode();
         if (rootNode) {
           pageModel.addNode(newNode, rootNode, 'CHILD_END');
