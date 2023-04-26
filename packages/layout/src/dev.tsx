@@ -94,9 +94,30 @@ const App = () => {
   const [ghostView, setGhostView] = useState(<div>213</div>);
   const [pageModel] = useState<any>(
     new CPage(BasePage, {
-      materials: Material,
+      materials: [
+        ...Material,
+        {
+          title: '块',
+          componentName: 'CText',
+          isSupportDispatchNativeEvent: true,
+          snippets: [],
+        } as any,
+        {
+          title: '块',
+          componentName: 'CBlock',
+          isSupportDispatchNativeEvent: true,
+          snippets: [],
+        } as any,
+        {
+          title: '块',
+          componentName: 'Button',
+          isSupportDispatchNativeEvent: true,
+          snippets: [],
+        } as any,
+      ],
     })
   );
+  console.log('Material', Material);
 
   const leftBoxRef = useRef<HTMLDivElement>(null);
   const layoutRef = useRef<Layout>(null);
@@ -111,8 +132,16 @@ const App = () => {
         const pageModel = layoutRef.current?.getPageModel();
 
         const newNode = pageModel?.createNode({
-          id: '111',
+          id: '11xzxczxczxc1',
           componentName: 'Button',
+          props: {
+            onClick: {
+              type: 'FUNCTION',
+              value: `function click(e) {
+                console.log(112312312311, e);
+              }`,
+            },
+          },
           children: ['insertData'],
         });
         return {
