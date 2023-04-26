@@ -16,16 +16,14 @@ export type SensorEventObjType = {
   extraData?: Record<string, any>;
 };
 
-export type SensorClickEventObjType = Omit<SensorEventObjType, 'pointer'>;
-
 export type SensorEventType = {
-  onLeave: SensorEventObjType;
-  onEnter: SensorEventObjType;
+  onLeave: Omit<SensorEventObjType, 'pointer'>;
+  onEnter: Omit<SensorEventObjType, 'pointer'>;
   onMouseChange: SensorEventObjType;
   onMouseUp: SensorEventObjType;
   onMouseDown: SensorEventObjType;
   onMouseMove: SensorEventObjType;
-  onClick: SensorEventObjType;
+  onClick: Omit<SensorEventObjType, 'pointer'>;
 } & BaseDragAndDropEventType;
 
 export type SensorEventNameType = keyof SensorEventType;
@@ -92,7 +90,6 @@ export class Sensor extends DEmitter<SensorEventType> {
         this.emitter.emit('onEnter', {
           sensor: this,
           event: e,
-          pointer: this.getPointer(e),
         });
       })
     );
@@ -101,7 +98,6 @@ export class Sensor extends DEmitter<SensorEventType> {
         this.emitter.emit('onLeave', {
           sensor: this,
           event: e,
-          pointer: this.getPointer(e),
         });
       })
     );
@@ -173,7 +169,6 @@ export class Sensor extends DEmitter<SensorEventType> {
           this.emitter.emit('onClick', {
             sensor: this,
             event: e,
-            pointer: this.getPointer(e),
           });
         },
         true

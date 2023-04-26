@@ -6,7 +6,7 @@ import { debounce } from 'lodash-es';
 
 type EmptyFunc = () => void;
 export type DragAndDropEventType = {
-  click: SensorEventObjType;
+  click: Omit<SensorEventObjType, 'pointer'>;
   onMouseMove: SensorEventObjType;
 } & BaseDragAndDropEventType;
 export class DragAndDrop {
@@ -106,20 +106,14 @@ export class DragAndDrop {
   registerSensor(
     sensor: Sensor,
     options?: {
-      banEvent: boolean | ((e: SensorEventObjType) => boolean);
+      banEvent: boolean;
     }
   ) {
     const { banEvent = true } = options || {};
     this.senors.push(sensor);
     sensor.emitter.on('onClick', (eventObj) => {
       const { event } = eventObj;
-      let banEventState = true;
-      if (typeof banEvent === 'function') {
-        banEventState = banEvent(eventObj);
-      } else if (typeof banEvent === 'boolean') {
-        banEventState = banEvent;
-      }
-      if (!this.canTriggerClick || banEventState) {
+      if (!this.canTriggerClick) {
         event.stopPropagation();
         event.preventDefault();
         event.stopImmediatePropagation();
@@ -128,21 +122,13 @@ export class DragAndDrop {
       this.emitter.emit('click', {
         sensor: eventObj.sensor,
         event: eventObj.event,
-        pointer: eventObj.pointer,
       });
     });
 
     const onMouseDown = (eventObj: SensorEventType['onMouseDown']) => {
       this.dragStartObj = eventObj;
       const { event } = eventObj;
-      let banEventState = true;
-      if (typeof banEvent === 'function') {
-        banEventState = banEvent(eventObj);
-      } else if (typeof banEvent === 'boolean') {
-        banEventState = banEvent;
-      }
-      debugger;
-      if (banEventState) {
+      if (banEvent) {
         event.stopPropagation();
         event.preventDefault();
       }
