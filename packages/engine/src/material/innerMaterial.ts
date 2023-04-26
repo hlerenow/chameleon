@@ -315,6 +315,7 @@ const BaseComponentMeta: CMaterialType[] = [
       },
       customAttributesMeta,
     ],
+    isContainer: true,
     groupName: '原子组件',
     snippets: [
       {
@@ -324,7 +325,6 @@ const BaseComponentMeta: CMaterialType[] = [
         schema: {
           props: {
             htmlTag: 'div',
-            children: 'html tag',
           },
         },
       },

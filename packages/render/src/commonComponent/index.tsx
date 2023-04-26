@@ -153,11 +153,18 @@ const CNativeTag = ({ children, $$attributes = [], htmlTag = 'div', ...props }: 
   if (!Array.isArray(children)) {
     child = [children];
   }
+  const { style = {}, ...attributes } = transformListToObj($$attributes);
+
+  const finalStyle = {
+    ...style,
+    ...(props.style || {}),
+  };
   return React.createElement(
     htmlTag,
     {
       ...props,
-      ...transformListToObj($$attributes),
+      ...attributes,
+      style: finalStyle,
     },
     ...child
   );
