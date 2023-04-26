@@ -10,7 +10,7 @@ import { withTranslation, WithTranslation } from 'react-i18next';
 import { ListView } from './components/ListView';
 import { getTargetMNodeKeyVal } from './util';
 import { DRAG_ITEM_KEY } from './components/DragItem';
-import { findContainerNode, SnippetsCollection } from '@chamn/model';
+import { CNode, findContainerNode, isPageModel, SnippetsCollection } from '@chamn/model';
 import { capitalize, get } from 'lodash-es';
 import { InsertNodePosType } from '@chamn/model/src';
 
@@ -153,11 +153,18 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
         const selectedNodeId = designerExports.getSelectedNodeId();
         const selectedNode = pageModel.getNode(selectedNodeId);
         const containerNode = findContainerNode(selectedNode);
-        if (containerNode && selectedNode) {
-          const isContainer = get(containerNode, 'isContainer', () => false);
-          const pos: InsertNodePosType = isContainer.call(containerNode) ? 'CHILD_END' : 'AFTER';
-
-          pageModel.addNode(newNode, containerNode as never, pos);
+        if (selectedNode) {
+          // 当前节点的父级节点是容器时
+          if (containerNode === selectedNode.parent) {
+            if (selectedNode.isContainer()) {
+              const pos: InsertNodePosType = 'CHILD_END';
+              pageModel.addNode(newNode, selectedNode as never, pos);
+            } else {
+              pageModel.addNode(newNode, selectedNode, 'AFTER');
+            }
+          } else if (containerNode && !isPageModel(containerNode)) {
+            pageModel.addNode(newNode, containerNode as CNode, 'CHILD_END');
+          }
         } else {
           const rootNode = pageModel.getRootNode();
           if (rootNode) {
