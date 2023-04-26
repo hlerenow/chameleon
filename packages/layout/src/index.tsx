@@ -194,6 +194,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             this.registerDragAndDropEvent();
             this.registerSelectEvent();
             this.registerHoverEvent();
+            this.registerEventLimit();
             this.readyOk();
           },
         });
@@ -364,6 +365,45 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     );
   }
 
+  /**
+   * 添加需要限制的事件触发的列表
+   * 默认禁止  ['click', 'mouseover', 'mousedown', 'mouseup', 'mousemove'] 事件派发
+   * @returns
+   */
+  registerEventLimit() {
+    const iframeDoc = this.iframeContainer.getDocument();
+    const subWin = this.iframeContainer.getWindow();
+
+    if (!iframeDoc || !subWin) {
+      return;
+    }
+    ['click', 'mouseover', 'mousedown', 'mouseup', 'mousemove'].forEach((ev: any) => {
+      this.eventExposeHandler.push(
+        addEventListenerReturnCancel<'click'>(
+          iframeDoc.body,
+          ev,
+          async (e) => {
+            const targetComponentInstance = this.designRenderRef.current?.getInstanceByDom(e.target as HTMLElement);
+            const targetNode = targetComponentInstance?._NODE_MODEL;
+            if (targetNode) {
+              const supportDispatchNativeEvent = targetNode.material?.value.supportDispatchNativeEvent;
+              if (supportDispatchNativeEvent === true) {
+                return;
+              }
+              if (Array.isArray(supportDispatchNativeEvent) && supportDispatchNativeEvent.includes(ev)) {
+                return;
+              }
+            }
+            // 默认禁止  ['click', 'mouseover', 'mousedown', 'mouseup', 'mousemove'] 事件派发
+            e.stopPropagation();
+            e.preventDefault();
+          },
+          true
+        )
+      );
+    });
+  }
+
   registerDragAndDropEvent() {
     const dnd = this.dnd;
     const iframeDoc = this.iframeContainer.getDocument()!;
@@ -438,21 +478,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       };
     });
 
-    dnd.registerSensor(sensor, {
-      banEvent: (e) => {
-        const startInstance = this.designRenderRef.current?.getInstanceByDom(e.event.target as HTMLElement);
-        // 木有可选中元素结束
-        if (!startInstance) {
-          return true;
-        }
-        const startNode = startInstance?._NODE_MODEL;
-        // 如果支持派发 native 事件给
-        if (startNode.material?.value.isSupportDispatchNativeEvent) {
-          return false;
-        }
-        return true;
-      },
-    });
+    dnd.registerSensor(sensor);
     const { onSelectNode } = this.props;
     sensor.emitter.on('dragStart', (eventObj) => {
       this.setState({

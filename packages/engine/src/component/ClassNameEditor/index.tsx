@@ -2,6 +2,7 @@ import { forwardRef } from 'react';
 import { ConfigProvider } from 'antd';
 import { CustomSchemaForm } from '../CustomSchemaForm';
 import { ClassNameType, CMaterialPropsType, CNodePropsTypeEnum } from '@chamn/model';
+import React from 'react';
 
 import styles from './style.module.scss';
 

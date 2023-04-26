@@ -342,6 +342,8 @@ export type AdvanceCustomFuncParam = {
   context: any;
 };
 
+export type EventName = keyof HTMLElementEventMap;
+
 export type CMaterialType<PropsSetter extends string = ''> = {
   componentName: string;
   title: string;
@@ -367,7 +369,7 @@ export type CMaterialType<PropsSetter extends string = ''> = {
   /** 选择框的根选择器 */
   rootSelector?: string;
   /** 是否可以派发dom事件，默认被禁止： click、mousedown、mouseup 等等 */
-  isSupportDispatchNativeEvent?: boolean;
+  supportDispatchNativeEvent?: boolean | EventName[];
   /** 组件支持的可被调用的方法， todo： 没有补充验证 类型 describe */
   actions?: {
     title: string;
@@ -450,7 +452,7 @@ export const CMaterialTypeDescribe = object({
       }),
     ])
   ),
-  isSupportDispatchNativeEvent: optional(boolean()),
+  supportDispatchNativeEvent: optional(union([boolean(), array(string())])),
   // 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize
   isLayout: optional(boolean()),
   rootSelector: optional(string()),

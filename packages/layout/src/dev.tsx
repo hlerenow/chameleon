@@ -99,19 +99,18 @@ const App = () => {
         {
           title: '块',
           componentName: 'CText',
-          isSupportDispatchNativeEvent: true,
           snippets: [],
         } as any,
         {
           title: '块',
           componentName: 'CBlock',
-          isSupportDispatchNativeEvent: true,
+          supportDispatchNativeEvent: true,
           snippets: [],
         } as any,
         {
           title: '块',
           componentName: 'Button',
-          isSupportDispatchNativeEvent: true,
+          supportDispatchNativeEvent: true,
           snippets: [],
         } as any,
       ],

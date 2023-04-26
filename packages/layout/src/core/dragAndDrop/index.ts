@@ -103,49 +103,20 @@ export class DragAndDrop {
     });
   }
 
-  registerSensor(
-    sensor: Sensor,
-    options?: {
-      banEvent: boolean | ((e: SensorEventObjType) => boolean);
-    }
-  ) {
-    const { banEvent = true } = options || {};
+  registerSensor(sensor: Sensor) {
     this.senors.push(sensor);
     sensor.emitter.on('onClick', (eventObj) => {
-      const { event } = eventObj;
-      let banEventState = true;
-      if (typeof banEvent === 'function') {
-        banEventState = banEvent(eventObj);
-      } else if (typeof banEvent === 'boolean') {
-        banEventState = banEvent;
+      if (this.canTriggerClick) {
+        this.emitter.emit('click', {
+          sensor: eventObj.sensor,
+          event: eventObj.event,
+          pointer: eventObj.pointer,
+        });
       }
-      if (!this.canTriggerClick || banEventState) {
-        event.stopPropagation();
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        return;
-      }
-      this.emitter.emit('click', {
-        sensor: eventObj.sensor,
-        event: eventObj.event,
-        pointer: eventObj.pointer,
-      });
     });
 
     const onMouseDown = (eventObj: SensorEventType['onMouseDown']) => {
       this.dragStartObj = eventObj;
-      const { event } = eventObj;
-      let banEventState = true;
-      if (typeof banEvent === 'function') {
-        banEventState = banEvent(eventObj);
-      } else if (typeof banEvent === 'boolean') {
-        banEventState = banEvent;
-      }
-      debugger;
-      if (banEventState) {
-        event.stopPropagation();
-        event.preventDefault();
-      }
     };
 
     sensor.emitter.on('onMouseDown', onMouseDown);
