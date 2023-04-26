@@ -154,10 +154,8 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
         const selectedNode = pageModel.getNode(selectedNodeId);
         const containerNode = findContainerNode(selectedNode);
         if (containerNode && selectedNode) {
-          const pos: InsertNodePosType = (() => {
-            const isContainer = get(containerNode, 'isContainer', () => false);
-            return isContainer.call(containerNode) ? 'CHILD_END' : 'AFTER';
-          })();
+          const isContainer = get(containerNode, 'isContainer', () => false);
+          const pos: InsertNodePosType = isContainer.call(containerNode) ? 'CHILD_END' : 'AFTER';
 
           pageModel.addNode(newNode, containerNode as never, pos);
         } else {
