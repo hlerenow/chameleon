@@ -268,9 +268,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         iframeDoc.body,
         'click',
         async (e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          e.stopImmediatePropagation();
           if (!this.designRenderRef.current) {
             return;
           }
@@ -441,7 +438,21 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       };
     });
 
-    dnd.registerSensor(sensor);
+    dnd.registerSensor(sensor, {
+      banEvent: (e) => {
+        const startInstance = this.designRenderRef.current?.getInstanceByDom(e.event.target as HTMLElement);
+        // 木有可选中元素结束
+        if (!startInstance) {
+          return true;
+        }
+        const startNode = startInstance?._NODE_MODEL;
+        // 如果支持派发 native 事件给
+        if (startNode.material?.value.isSupportDispatchNativeEvent) {
+          return false;
+        }
+        return true;
+      },
+    });
     const { onSelectNode } = this.props;
     sensor.emitter.on('dragStart', (eventObj) => {
       this.setState({
