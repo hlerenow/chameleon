@@ -10,8 +10,9 @@ import { withTranslation, WithTranslation } from 'react-i18next';
 import { ListView } from './components/ListView';
 import { getTargetMNodeKeyVal } from './util';
 import { DRAG_ITEM_KEY } from './components/DragItem';
-import { SnippetsCollection } from '@chamn/model';
-import { capitalize } from 'lodash-es';
+import { findContainerNode, SnippetsCollection } from '@chamn/model';
+import { capitalize, get } from 'lodash-es';
+import { InsertNodePosType } from '@chamn/model/src';
 
 interface ComponentLibViewProps extends WithTranslation {
   pluginCtx: CPluginCtx;
@@ -27,9 +28,11 @@ const TabTitle = ({ children }: { children: any }) => {
 type ComponentLibViewState = {
   componentsList: SnippetsCollection;
 };
+
 class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentLibViewState> {
   containerRef: React.RefObject<HTMLDivElement>;
   disposeList: (() => void)[] = [];
+
   constructor(props: ComponentLibViewProps) {
     super(props);
     this.containerRef = React.createRef<HTMLDivElement>();
@@ -151,14 +154,23 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
         const selectedNode = pageModel.getNode(selectedNodeId);
         const containerNode = findContainerNode(selectedNode);
         if (containerNode && selectedNode) {
-          pageModel.addNode(newNode, containerNode as never, isPageModel(containerNode) ? 'CHILD_END' : 'AFTER');
-          return;
+          const pos: InsertNodePosType = (() => {
+            const isContainer = get(containerNode, 'isContainer', () => false);
+            return isContainer.call(containerNode) ? 'CHILD_END' : 'AFTER';
+          })();
+
+          pageModel.addNode(newNode, containerNode as never, pos);
+        } else {
+          const rootNode = pageModel.getRootNode();
+          if (rootNode) {
+            pageModel.addNode(newNode, rootNode, 'CHILD_END');
+            designerExports?.selectNode(newNode.id);
+          }
         }
 
-        const rootNode = pageModel.getRootNode();
-        if (rootNode) {
-          pageModel.addNode(newNode, rootNode, 'CHILD_END');
-        }
+        setTimeout(() => {
+          designerExports?.selectNode(newNode.id);
+        }, 50);
       });
     };
 

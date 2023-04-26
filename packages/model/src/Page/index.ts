@@ -96,7 +96,8 @@ export class CPage {
   }
 
   // moveNode(from, to, pos) {}
-  getNode(id: string) {
+  getNode(id?: string) {
+    if (!id) return undefined;
     const nodeTree = this.data.componentsTree;
     return getNode(nodeTree, id);
   }
@@ -333,11 +334,7 @@ export class CPage {
   }
 
   getRootNode() {
-    const nodeTree = this.data.componentsTree;
-    return findNode(nodeTree, (item) => {
-      const componentName = get(item, 'data.componentName') || get(item, 'rawData.componentName');
-      return componentName === InnerComponentNameEnum.ROOT_CONTAINER;
-    });
+    return this.data.componentsTree;
   }
 }
 
