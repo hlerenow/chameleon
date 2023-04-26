@@ -6,10 +6,10 @@ import { ExportType, ExportTypeEnum } from '../const/schema';
 import { CMaterials } from '../Material';
 import { CNode } from './RootNode/Node';
 import { CNodeDataType } from '../types/node';
-import { cloneDeep, isPlainObject, omit, unionBy } from 'lodash-es';
+import { cloneDeep, get, isPlainObject, omit, unionBy } from 'lodash-es';
 import { CProp } from './RootNode/Node/prop';
 import { CSlot } from './RootNode/Node/slot';
-import { clearSchema, getNode, getRandomStr } from '../util';
+import { clearSchema, findNode, getNode, getRandomStr } from '../util';
 import { InnerComponentNameEnum } from '../types/rootNode';
 import { AssetPackage } from '../types/base';
 import { CMaterialType } from '../types/material';
@@ -96,7 +96,8 @@ export class CPage {
   }
 
   // moveNode(from, to, pos) {}
-  getNode(id: string) {
+  getNode(id?: string) {
+    if (!id) return undefined;
     const nodeTree = this.data.componentsTree;
     return getNode(nodeTree, id);
   }
@@ -330,6 +331,10 @@ export class CPage {
     res.assets = unionBy(finalAssets, (el) => el.package);
     res = omit(res, ['id']) as any;
     return JSON.parse(JSON.stringify(res));
+  }
+
+  getRootNode() {
+    return this.data.componentsTree;
   }
 }
 

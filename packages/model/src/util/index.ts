@@ -90,11 +90,11 @@ export const clearSchema = (res: any) => {
   return newRes;
 };
 
-export function getNode(nodeTree: CRootNode | CNode, id: string) {
+export function findNode(nodeTree: CRootNode | CNode, iterator: (item: CNode | CRootNode) => boolean) {
   const nodeList: (CRootNode | CNode)[] = [nodeTree];
   while (nodeList.length) {
     const target = nodeList.shift();
-    if (target?.id === id) {
+    if (target && iterator(target)) {
       return target;
     }
 
@@ -136,6 +136,19 @@ export function getNode(nodeTree: CRootNode | CNode, id: string) {
     const tempNodeList: CNode[] = (target?.value.children.filter((el) => el instanceof CNode) as CNode[]) || [];
     nodeList.push(...tempNodeList);
   }
+  return undefined;
+}
 
-  return null;
+export function getNode(nodeTree: CRootNode | CNode, id: string) {
+  return findNode(nodeTree, (node) => node.id === id);
+}
+
+export function findContainerNode(
+  node: CNode | CRootNode | CSlot | CPage | null | undefined
+): CNode | CRootNode | CSlot | CPage | undefined {
+  if (!node) return undefined;
+  if (isSlotModel(node) || isPageModel(node) || node.isContainer()) {
+    return node;
+  }
+  return findContainerNode(node.parent);
 }

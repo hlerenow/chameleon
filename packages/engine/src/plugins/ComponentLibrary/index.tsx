@@ -10,8 +10,9 @@ import { withTranslation, WithTranslation } from 'react-i18next';
 import { ListView } from './components/ListView';
 import { getTargetMNodeKeyVal } from './util';
 import { DRAG_ITEM_KEY } from './components/DragItem';
-import { SnippetsCollection } from '@chamn/model';
-import { capitalize } from 'lodash-es';
+import { findContainerNode, SnippetsCollection } from '@chamn/model';
+import { capitalize, get } from 'lodash-es';
+import { InsertNodePosType } from '@chamn/model/src';
 
 interface ComponentLibViewProps extends WithTranslation {
   pluginCtx: CPluginCtx;
@@ -27,9 +28,11 @@ const TabTitle = ({ children }: { children: any }) => {
 type ComponentLibViewState = {
   componentsList: SnippetsCollection;
 };
+
 class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentLibViewState> {
   containerRef: React.RefObject<HTMLDivElement>;
   disposeList: (() => void)[] = [];
+
   constructor(props: ComponentLibViewProps) {
     super(props);
     this.containerRef = React.createRef<HTMLDivElement>();
@@ -86,7 +89,7 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
       container: containerRef.current,
     });
 
-    boxSensor.setCanDrag((eventObj: SensorEventObjType) => {
+    const getNewNode = (eventObj: SensorEventObjType | Omit<SensorEventObjType, 'pointer'>) => {
       const targetDom = eventObj.event.target;
       if (!targetDom) {
         return;
@@ -101,7 +104,11 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
       if (!meta) {
         return;
       }
-      const newNode = pageModel?.createNode(meta.schema);
+      return pageModel?.createNode(meta.schema);
+    };
+
+    boxSensor.setCanDrag((eventObj: SensorEventObjType) => {
+      const newNode = getNewNode(eventObj);
 
       this.props.pluginCtx.pluginManager.get('Designer').then((designerHandle) => {
         const designerExports: DesignerExports = designerHandle?.exports;
@@ -130,6 +137,45 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
       dnd.emitter.off('dragStart', dragStart);
     });
     dnd.emitter.on('dragStart', dragStart);
+
+    const onClick = (eventObj: Omit<SensorEventObjType, 'pointer'>) => {
+      const newNode = getNewNode(eventObj);
+      if (!newNode) {
+        return;
+      }
+
+      const { pageModel } = this.props.pluginCtx;
+
+      this.props.pluginCtx.pluginManager.get('Designer').then((designerHandle) => {
+        const designerExports: DesignerExports = designerHandle?.exports;
+
+        // 获取当前选中，如果存在，就插入到当前选中的下面，否则就插入到根节点下面
+        const selectedNodeId = designerExports.getSelectedNodeId();
+        const selectedNode = pageModel.getNode(selectedNodeId);
+        const containerNode = findContainerNode(selectedNode);
+        if (containerNode && selectedNode) {
+          const isContainer = get(containerNode, 'isContainer', () => false);
+          const pos: InsertNodePosType = isContainer.call(containerNode) ? 'CHILD_END' : 'AFTER';
+
+          pageModel.addNode(newNode, containerNode as never, pos);
+        } else {
+          const rootNode = pageModel.getRootNode();
+          if (rootNode) {
+            pageModel.addNode(newNode, rootNode, 'CHILD_END');
+            designerExports?.selectNode(newNode.id);
+          }
+        }
+
+        setTimeout(() => {
+          designerExports?.selectNode(newNode.id);
+        }, 50);
+      });
+    };
+
+    this.disposeList.push(() => {
+      boxSensor.emitter.off('onClick', onClick);
+    });
+    boxSensor.emitter.on('onClick', onClick);
   };
 
   render(): React.ReactNode {
