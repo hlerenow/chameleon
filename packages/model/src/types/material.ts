@@ -391,16 +391,16 @@ export type CMaterialType<PropsSetter extends string = ''> = {
   // ) => { name: string; view: React.ReactNode }[];
   /** 定制组件释放时的行为 */
   advanceCustom?: {
-    onDrag: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<void>;
+    onDrag?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
     /** 拖动中触发 */
-    onDragging: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => void;
-    onDrop: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<void>;
+    onDragging?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => void;
+    onDrop?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
     /** 当第一次被拖入到画布时触发 */
-    onNewAdd: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<void>;
+    onNewAdd?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
     /** 当元素被删除时触发 */
-    onDelete: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => void;
+    onDelete?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
     /** 元素被选中时触发 */
-    onSelect: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => void;
+    onSelect?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
   };
   /** 自定义扩展配置 */
   extra?: Record<any, any>;

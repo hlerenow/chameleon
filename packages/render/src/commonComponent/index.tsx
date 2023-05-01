@@ -105,7 +105,7 @@ const CAudio = ({ children, $$attributes = [], ...props }: any) => {
     child = [children];
   }
   return React.createElement(
-    'video',
+    'audio',
     {
       ...props,
       ...transformListToObj($$attributes),

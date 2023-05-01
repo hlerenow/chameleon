@@ -136,7 +136,10 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
           nodeList={list}
           toSelectNode={(id) => {
             layoutRef.current?.selectNode(id);
-            this.onSelectNode(pageModel.getNode(id));
+            const selectedNode = pageModel.getNode(id);
+            if (selectedNode) {
+              this.onSelectNode(selectedNode);
+            }
           }}
           toCopy={(id) => {
             const newNode = this.props.pluginCtx.pageModel.copyNodeById(id);

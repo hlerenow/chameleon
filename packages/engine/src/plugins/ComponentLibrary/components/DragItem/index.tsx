@@ -20,14 +20,10 @@ export const DragComponentItem = (props: DragComponentItemProps) => {
 
   const icon = useMemo(() => {
     if (props.iconText) {
-      return (
-        <div className={styles.iconText}>
-          {String(props.iconText).toUpperCase()}
-        </div>
-      );
+      return <div className={styles.iconText}>{String(props.iconText).toUpperCase()}</div>;
     }
     if (typeof props.icon === 'string') {
-      return <img className={styles.iconImg} src={props.icon} />;
+      return <img className={styles.iconImg} src={props.icon} draggable={false} />;
     } else {
       return props.icon;
     }

@@ -107,12 +107,6 @@ const App = () => {
           supportDispatchNativeEvent: true,
           snippets: [],
         } as any,
-        {
-          title: '块',
-          componentName: 'Button',
-          supportDispatchNativeEvent: true,
-          snippets: [],
-        } as any,
       ],
     })
   );
