@@ -69,7 +69,7 @@ export class DragAndDrop {
       }
       const { pointer, event } = mouseMoveEventObj;
 
-      const draggingEventIbj = {
+      const draggingEventObj = {
         from: this.dragStartObj!.event,
         fromSensor: this.dragStartObj!.sensor,
         fromPointer: this.dragStartObj!.pointer,
@@ -78,12 +78,12 @@ export class DragAndDrop {
           ...(canDrop?.extraData || {}),
         },
         current: event,
-        currentSensor: null,
+        currentSensor: sensor,
         pointer: pointer,
       };
       const dragEventName = 'dragging';
-      this.emitter.emit(dragEventName, draggingEventIbj);
-      this.batchSensorEmit(dragEventName, draggingEventIbj);
+      this.emitter.emit(dragEventName, draggingEventObj);
+      this.batchSensorEmit(dragEventName, draggingEventObj);
     });
 
     sensor.emitter.on('onMouseUp', (e) => {

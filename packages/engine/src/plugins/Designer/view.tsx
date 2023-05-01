@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, LayoutDragAndDropExtraDataType } from '@chamn/layout';
+import { Layout, LayoutDragAndDropExtraDataType, LayoutDragEvent } from '@chamn/layout';
 import { CNode, CPage, CRootNode, InsertNodePosType } from '@chamn/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import localize from './localize';
@@ -67,39 +67,6 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
 
     await layoutRef.current.ready();
     const layoutInstance = layoutRef.current;
-    layoutInstance.dnd?.emitter.on('drop', (eventObj) => {
-      const pageModel = this.props.pluginCtx.pageModel;
-      const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
-      const dropPosInfo = extraData.dropPosInfo;
-      const posFlag = {
-        before: 'BEFORE',
-        after: 'AFTER',
-        current: 'CHILD_START',
-      }[dropPosInfo?.pos || 'after'] as InsertNodePosType;
-
-      if (!extraData.dropNode) {
-        console.warn('cancel drop, because drop node is null');
-        return;
-      }
-      if (extraData.type === 'NEW_ADD') {
-        if (extraData.dropNode?.nodeType !== 'NODE') {
-          pageModel?.addNode(extraData.startNode as CNode, extraData.dropNode!, 'CHILD_START');
-        } else {
-          pageModel?.addNode(extraData.startNode as CNode, extraData.dropNode!, posFlag);
-        }
-      } else {
-        if (extraData.dropNode?.id === extraData.startNode?.id) {
-          console.warn(' id is the same');
-          return;
-        }
-        const res = pageModel.moveNodeById(extraData.startNode?.id || '', extraData?.dropNode?.id || '', posFlag);
-        if (!res) {
-          console.warn('drop failed');
-        }
-      }
-      layoutRef.current?.selectNode(extraData.startNode?.id || '');
-      this.props.pluginCtx.emitter.emit('onDrop', eventObj);
-    });
 
     pluginCtx.emitter.emit('ready', {
       UIInstance: this,
@@ -121,7 +88,55 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     pluginCtx.pluginReadyOk();
   }
 
-  onSelectNode = (node: CNode | CRootNode | null) => {
+  onNodeDragging = async (eventObj: LayoutDragEvent) => {
+    const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
+    const startNode = extraData.startNode;
+    if (startNode) {
+      const res = startNode.material?.value.advanceCustom?.onDragging?.(startNode, {
+        context: this.props.pluginCtx,
+        viewPortal: {},
+      });
+      return res;
+    }
+  };
+
+  onNodeDrop = async (eventObj: LayoutDragEvent) => {
+    const { layoutRef } = this;
+
+    const pageModel = this.props.pluginCtx.pageModel;
+    const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
+    const dropPosInfo = extraData.dropPosInfo;
+    const posFlag = {
+      before: 'BEFORE',
+      after: 'AFTER',
+      current: 'CHILD_START',
+    }[dropPosInfo?.pos || 'after'] as InsertNodePosType;
+
+    if (!extraData.dropNode) {
+      console.warn('cancel drop, because drop node is null');
+      return;
+    }
+    if (extraData.type === 'NEW_ADD') {
+      if (extraData.dropNode?.nodeType !== 'NODE') {
+        pageModel?.addNode(extraData.startNode as CNode, extraData.dropNode!, 'CHILD_START');
+      } else {
+        pageModel?.addNode(extraData.startNode as CNode, extraData.dropNode!, posFlag);
+      }
+    } else {
+      if (extraData.dropNode?.id === extraData.startNode?.id) {
+        console.warn(' id is the same');
+        return;
+      }
+      const res = pageModel.moveNodeById(extraData.startNode?.id || '', extraData?.dropNode?.id || '', posFlag);
+      if (!res) {
+        console.warn('drop failed');
+      }
+    }
+    layoutRef.current?.selectNode(extraData.startNode?.id || '');
+    this.props.pluginCtx.emitter.emit('onDrop', eventObj);
+  };
+
+  onSelectNode = async (node: CNode | CRootNode | null) => {
     if (!node) {
       return;
     }
@@ -169,15 +184,27 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
         />
       ),
     });
+    return true;
   };
 
-  onDragStart = (startNode: CNode | CRootNode | null) => {
+  onDragStart = async (e: LayoutDragEvent) => {
+    const extraData = e.extraData as LayoutDragAndDropExtraDataType;
+    const startNode = extraData.startNode;
     if (!startNode) {
       return;
     }
-    this.setState({
-      ghostView: <GhostView node={startNode} />,
+
+    const res = await startNode.material?.value.advanceCustom?.onDrag?.(startNode, {
+      context: this.props.pluginCtx,
+      viewPortal: {},
     });
+
+    if (res !== false) {
+      this.setState({
+        ghostView: <GhostView node={startNode} />,
+      });
+    }
+    return res;
   };
 
   onHoverNode = (node: CNode | CRootNode | null, startNode: CNode | CRootNode) => {
@@ -201,7 +228,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
   };
 
   render() {
-    const { layoutRef, props, onSelectNode, onDragStart, onHoverNode } = this;
+    const { layoutRef, props, onSelectNode, onDragStart, onHoverNode, onNodeDrop, onNodeDragging } = this;
     const { pageModel, hoverToolBar, selectToolBar, ghostView, assets } = this.state;
     const { pluginCtx } = props;
     const renderJSUrl = pluginCtx.engine.props.renderJSUrl || './render.umd.js';
@@ -218,8 +245,10 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
         selectBoxStyle={{}}
         hoverBoxStyle={{}}
         onSelectNode={onSelectNode}
-        onDragStart={onDragStart}
+        onNodeDragStart={onDragStart}
         onHoverNode={onHoverNode}
+        onNodeDrop={onNodeDrop}
+        onNodeDragging={onNodeDragging}
         ghostView={ghostView}
         assets={assets}
       />

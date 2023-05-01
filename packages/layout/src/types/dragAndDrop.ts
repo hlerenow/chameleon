@@ -1,3 +1,6 @@
+import { Pointer } from '../core/dragAndDrop/common';
+import { Sensor } from '../core/dragAndDrop/sensor';
+
 export type DragAndDropEventObj = {
   from: MouseEvent;
   fromSensor: Sensor;

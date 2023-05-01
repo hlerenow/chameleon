@@ -9,10 +9,19 @@ import { HighlightCanvas, HighlightCanvasRefType } from './components/HighlightB
 import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
 import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
 import { DropAnchorCanvas } from './components/DropAnchor';
-import { AssetPackage, CNode, CPage, CPageDataType, CRootNode, InnerComponentNameEnum } from '@chamn/model';
+import {
+  AssetPackage,
+  CNode,
+  CPage,
+  CPageDataType,
+  CRootNode,
+  InnerComponentNameEnum,
+  getRandomStr,
+} from '@chamn/model';
 import { Pointer } from './core/dragAndDrop/common';
 import { calculateDropPosInfo, DropPosType } from './components/DropAnchor/util';
 import ReactDOM from 'react-dom';
+import { DragAndDropEventObj } from './types/dragAndDrop';
 
 export type LayoutDragAndDropExtraDataType = {
   type: 'NEW_ADD';
@@ -23,12 +32,17 @@ export type LayoutDragAndDropExtraDataType = {
   dropPosInfo?: Partial<DropPosType>;
 };
 
+export type LayoutDragEvent = DragAndDropEventObj;
+
 export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   renderJSUrl?: string;
   assets?: AssetPackage[];
-  onSelectNode?: (node: CNode | CRootNode | null) => void;
+  onSelectNode?: (node: CNode | CRootNode | null) => Promise<boolean | void>;
   onHoverNode?: (node: CNode | CRootNode | null, dragNode: CNode | CRootNode) => void;
-  onDragStart?: (node: CNode | CRootNode | null) => void;
+  onNodeDragStart?: (event: LayoutDragEvent) => Promise<boolean | void>;
+  onNodeDragging?: (event: LayoutDragEvent) => Promise<boolean | void>;
+  onNodeDrop?: (event: LayoutDragEvent) => Promise<boolean | void>;
+  onNodeNewAdd?: (event: LayoutDragEvent) => Promise<boolean | void>;
   selectToolBar?: React.ReactNode;
   selectBoxStyle?: React.CSSProperties;
   hoverBoxStyle?: React.CSSProperties;
@@ -84,8 +98,10 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   assets: AssetPackage[];
   dragStartNode: CNode | CRootNode | null = null;
   realTimeSelectNodeInstanceTimer = 0;
+  iframeDomId: string;
   constructor(props: LayoutPropsType) {
     super(props);
+    this.iframeDomId = getRandomStr();
     this.designRenderRef = React.createRef<DesignRender | null>();
     this.iframeContainer = new IFrameContainer();
     this.eventExposeHandler = [];
@@ -166,9 +182,10 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
     (window as any).___CHAMELEON_DESIGNER_RENDER___ = this.designRenderRef;
     const iframeContainer = this.iframeContainer;
-    iframeContainer.load(document.getElementById('iframeBox')!);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    iframeContainer.load(document.getElementById(this.iframeDomId)!);
     iframeContainer.onLoadFailed((e) => {
-      console.error(e);
+      console.error('iframe canvas load failed', e);
     });
     iframeContainer.ready(async () => {
       if (this.props.beforeInitRender) {
@@ -281,6 +298,11 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           if (componentInstance._NODE_MODEL.nodeType !== 'NODE') {
             return;
           }
+
+          const res = await this.props.onSelectNode?.(componentInstance._NODE_MODEL);
+          if (res === false) {
+            return;
+          }
           this.disposeRealTimeUpdate();
           this.setState({
             currentSelectId: componentInstance._NODE_ID,
@@ -288,7 +310,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             selectComponentInstances: [...instanceList],
             hoverComponentInstances: [],
           });
-          this.props.onSelectNode?.(componentInstance._NODE_MODEL);
           this.registerRealTimeUpdate();
         },
         true
@@ -411,7 +432,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     const sensor = new Sensor({
       name: 'layout',
       container: iframeDoc.body,
-      offsetDom: document.getElementById('iframeBox'),
+      offsetDom: document.getElementById(this.iframeDomId),
     });
 
     sensor.setCanDrag((eventObj: SensorEventObjType) => {
@@ -480,18 +501,23 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
     dnd.registerSensor(sensor);
     const { onSelectNode } = this.props;
-    sensor.emitter.on('dragStart', (eventObj) => {
+    sensor.emitter.on('dragStart', async (eventObj) => {
       this.setState({
         isDragging: true,
       });
       const { currentSelectInstance } = this.state;
       const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const dragStartNode = extraData.startNode!;
       const startInstance: RenderInstance | undefined = (
         this.designRenderRef.current?.getInstancesById(dragStartNode.id) || []
       ).shift();
       this.dragStartNode = dragStartNode;
-      this.props.onDragStart?.(this.dragStartNode);
+      // 可以终止拖拽开始
+      const res = await this.props.onNodeDragStart?.(eventObj);
+      if (res === false) {
+        return;
+      }
 
       // dom 不存在
       if (!startInstance) {
@@ -501,6 +527,13 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       const dragStartDom = this.designRenderRef.current?.getDomsById(dragStartNode.id);
       // 新增节点
       if (extraData?.type === 'NEW_ADD') {
+        if (dragStartNode) {
+          const res = await this.props.onNodeNewAdd?.(eventObj);
+          if (res === false) {
+            // 禁止添加
+            return;
+          }
+        }
         this.setState({
           currentSelectId: '',
           currentSelectInstance: null,
@@ -545,8 +578,8 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       if (!this.designRenderRef.current) {
         return;
       }
-
       const extraData = e.extraData as LayoutDragAndDropExtraDataType;
+      this.props.onNodeDragging?.(e);
       const componentInstance = (
         this.designRenderRef.current.getInstancesById(extraData.dropNode?.id || '', extraData.dropNodeUid) || []
       ).shift();
@@ -576,6 +609,13 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         dropComponentInstances: [],
         selectLockStyle: {},
       });
+    });
+
+    sensor.emitter.on('drop', (e) => {
+      if (!this.designRenderRef.current) {
+        return;
+      }
+      this.props.onNodeDrop?.(e);
     });
 
     // 监听所有感应区的鼠标移动事件
@@ -672,10 +712,10 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       isDragging,
       mousePointer,
     } = this.state;
-
+    const { iframeDomId } = this;
     const { selectToolBar, hoverToolBar, selectBoxStyle = {}, hoverBoxStyle = {}, ghostView = <>Ghost</> } = this.props;
     return (
-      <div className={styles.layoutContainer} id="iframeBox">
+      <div className={styles.layoutContainer} id={iframeDomId}>
         {/* 左上角添加显示元素名功能， hover */}
         <HighlightCanvas
           key={'highlightHoverCanvasRef'}
