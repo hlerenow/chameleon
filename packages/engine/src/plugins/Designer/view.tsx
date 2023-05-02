@@ -158,6 +158,13 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     if (!node) {
       return;
     }
+    const flag = await node.material?.value.advanceCustom?.onSelect?.(node, {
+      context: this.props.pluginCtx,
+      viewPortal: {} as any,
+    });
+    if (flag === false) {
+      return flag;
+    }
     const { pluginCtx } = this.props;
     pluginCtx.engine.updateCurrentSelectNode(node);
     const pageModel = this.props.pluginCtx.pageModel;

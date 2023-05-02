@@ -118,7 +118,7 @@ export const ButtonMeta: CMaterialType = {
     },
     onSelect: async () => {
       console.log('onSelect');
-      return true;
+      return false;
     },
     onDelete: async () => {
       console.log('onDelete');
