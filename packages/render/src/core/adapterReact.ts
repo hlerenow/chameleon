@@ -506,7 +506,9 @@ export class DefineReactAdapter {
             const classNames =
               nodeModel.value.classNames?.map((it) => {
                 const name = it.name;
-                const status = isExpression(it.status) ? runExpression(String(it.status?.value || ''), loopContext) : false;
+                const status = isExpression(it.status)
+                  ? runExpression(String(it.status?.value || ''), loopContext)
+                  : false;
                 if (status) {
                   return name;
                 }

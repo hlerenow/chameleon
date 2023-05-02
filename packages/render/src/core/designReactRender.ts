@@ -1,5 +1,13 @@
 /* eslint-disable react/no-find-dom-node */
-import { CNode, ContainerConfig, CPage, CPageDataType, CRootNode, getRandomStr, InnerComponentNameEnum } from '@chamn/model';
+import {
+  CNode,
+  ContainerConfig,
+  CPage,
+  CPageDataType,
+  CRootNode,
+  getRandomStr,
+  InnerComponentNameEnum,
+} from '@chamn/model';
 import { isArray, isPlainObject, merge } from 'lodash-es';
 import React, { useMemo, useRef } from 'react';
 import { RenderPropsType, Render, UseRenderReturnType } from './render';
@@ -41,7 +49,10 @@ export type DesignRenderProp = Omit<RenderPropsType, 'ref' | 'render'> & {
   ref?: React.MutableRefObject<DesignRender | null>;
   render?: UseDesignRenderReturnType;
   onMount?: (instance: DesignRender) => void;
-  dropPlaceholder?: React.ComponentClass<{ node: CNode | CRootNode }> | React.FunctionComponent<{ node: CNode | CRootNode }> | string;
+  dropPlaceholder?:
+    | React.ComponentClass<{ node: CNode | CRootNode }>
+    | React.FunctionComponent<{ node: CNode | CRootNode }>
+    | string;
 };
 
 export const DefaultDropPlaceholder: React.FC<{ node: CNode | CRootNode }> = (props) => {
@@ -133,7 +144,10 @@ export class DesignRender extends React.Component<DesignRenderProp> {
         }
 
         const hasChildren = Boolean(newChildren.filter(Boolean).length);
-        if (!hasChildren && (node.isContainer() || node.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER)) {
+        if (
+          !hasChildren &&
+          (node.isContainer() || node.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER)
+        ) {
           newChildren.push(
             React.createElement(self.dropPlaceholder, {
               node: node,
@@ -275,7 +289,8 @@ const findClosetFiberNode = (el: Element | null): SimpleFiberNodeType | null => 
   if (!el) {
     return null;
   }
-  const REACT_KEY = Object.keys(el).find((key) => key.startsWith('__reactInternalInstance$') || key.startsWith('__reactFiber$')) || '';
+  const REACT_KEY =
+    Object.keys(el).find((key) => key.startsWith('__reactInternalInstance$') || key.startsWith('__reactFiber$')) || '';
 
   if (REACT_KEY) {
     return (el as any)[REACT_KEY];

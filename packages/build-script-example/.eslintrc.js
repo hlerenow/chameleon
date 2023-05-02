@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 module.exports = {
-  root: true,
   settings: {
     react: {
       version: 'detect',

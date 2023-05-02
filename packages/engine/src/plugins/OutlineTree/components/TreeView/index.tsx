@@ -302,7 +302,7 @@ export class TreeView extends React.Component<
       newDropInfo.x = rect.x;
       if (dropPosInfo.pos === 'before') {
         newDropInfo.y = rect.y;
-      } else if (dropPosInfo.pos == 'after') {
+      } else if (dropPosInfo.pos === 'after') {
         newDropInfo.y = rect.y + rect.height;
       } else {
         newDropInfo.y = rect.y + rect.height;

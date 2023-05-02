@@ -25,24 +25,24 @@
     "packages/*/src/**/*": "prettier --write --ignore-unknown"
   },
   "devDependencies": {
+    "@hlerenow/git-cz": "^4.9.3",
     "@lerna-lite/cli": "^1.17.0",
     "@lerna-lite/list": "^1.17.0",
     "@lerna-lite/run": "^1.17.0",
     "@lerna-lite/watch": "^1.17.0",
     "@storybook/preset-scss": "^1.0.3",
+    "clsx": "^1.1.1",
     "commitizen": "^4.2.4",
     "conventional-changelog-conventionalcommits": "^5.0.0",
+    "cross-env": "^7.0.3",
     "css-loader": "5.2.7",
+    "eslint": "^8.39.0",
+    "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "2.7.1",
     "sass": "^1.53.0",
     "sass-loader": "10.1.1",
-    "@hlerenow/git-cz": "^4.9.3",
-    "clsx": "^1.1.1",
-    "cross-env": "^7.0.3",
-    "husky": "^8.0.1",
     "style-loader": "2.0.0"
   },
-  "dependencies": {},
   "config": {}
 }

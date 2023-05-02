@@ -26,7 +26,12 @@ export function shouldConstruct(Component: Function) {
 export function canAcceptsRef(Comp: any) {
   const hasSymbol = typeof Symbol === 'function' && Symbol.for;
   const REACT_FORWARD_REF_TYPE = hasSymbol ? Symbol.for('react.forward_ref') : 0xead0;
-  return Comp?.$$typeof === REACT_FORWARD_REF_TYPE || Comp?.prototype?.isReactComponent || Comp?.prototype?.setState || Comp._forwardRef;
+  return (
+    Comp?.$$typeof === REACT_FORWARD_REF_TYPE ||
+    Comp?.prototype?.isReactComponent ||
+    Comp?.prototype?.setState ||
+    Comp._forwardRef
+  );
 }
 
 export function compWrapper(Comp: any) {
@@ -62,7 +67,11 @@ export const runExpression = (expStr: string, context: any) => {
   }
 };
 
-export const convertCodeStringToFunction = (functionStr: string, $$context: ContextType, storeManager: StoreManager) => {
+export const convertCodeStringToFunction = (
+  functionStr: string,
+  $$context: ContextType,
+  storeManager: StoreManager
+) => {
   const newFunc = function (...args: any[]) {
     try {
       const codeBody = `

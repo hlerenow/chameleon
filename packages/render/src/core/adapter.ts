@@ -118,7 +118,9 @@ type CustomAdvanceAdapterMethodListType = typeof CustomAdvanceAdapter[number];
 type AdapterMethodListType = typeof AdapterMethodList[number];
 
 export const getAdapter = (defineAdapter: Partial<AdapterType>): AdapterType => {
-  const adapter: AdapterType = [...AdapterMethodList, ...CustomAdvanceAdapter].reduce<Record<AdapterMethodListType, any>>((res, funcName) => {
+  const adapter: AdapterType = [...AdapterMethodList, ...CustomAdvanceAdapter].reduce<
+    Record<AdapterMethodListType, any>
+  >((res, funcName) => {
     if (defineAdapter?.[funcName]) {
       res[funcName as AdapterMethodListType] = defineAdapter[funcName]?.bind(defineAdapter);
     } else {

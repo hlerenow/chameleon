@@ -222,7 +222,7 @@ export function calculateDropPosInfo(params: { point: { x: number; y: number }; 
     pos = 'before';
   }
 
-  if (mousePos.x > xCenter && pos == 'after') {
+  if (mousePos.x > xCenter && pos === 'after') {
     pos = 'current';
   }
 

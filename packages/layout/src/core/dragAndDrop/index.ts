@@ -53,7 +53,7 @@ export class DragAndDrop {
     });
 
     sensor.emitter.on('onMouseMove', (mouseMoveEventObj) => {
-      if (!(this.currentState === 'DRAGGING' && this.currentSensor == null)) {
+      if (!(this.currentState === 'DRAGGING' && this.currentSensor === null)) {
         return;
       }
 

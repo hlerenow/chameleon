@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 module.exports = {
-  root: true,
   settings: {
     react: {
       version: 'detect',
@@ -10,11 +9,7 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: [
-    'eslint:recommended',
-    'plugin:react/recommended',
-    'plugin:@typescript-eslint/recommended',
-  ],
+  extends: ['eslint:recommended', 'plugin:react/recommended', 'plugin:@typescript-eslint/recommended'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
