@@ -111,12 +111,30 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       after: 'AFTER',
       current: 'CHILD_START',
     }[dropPosInfo?.pos || 'after'] as InsertNodePosType;
-
+    const startNode = extraData.startNode;
+    if (startNode) {
+      const res = await startNode.material?.value.advanceCustom?.onDrop?.(startNode, {
+        context: this.props.pluginCtx,
+        viewPortal: {} as any,
+      });
+      if (res === false) {
+        return;
+      }
+    }
     if (!extraData.dropNode) {
       console.warn('cancel drop, because drop node is null');
       return;
     }
     if (extraData.type === 'NEW_ADD') {
+      if (startNode) {
+        const res = await startNode.material?.value.advanceCustom?.onNewAdd?.(startNode, {
+          context: this.props.pluginCtx,
+          viewPortal: {} as any,
+        });
+        if (res === false) {
+          return;
+        }
+      }
       if (extraData.dropNode?.nodeType !== 'NODE') {
         pageModel?.addNode(extraData.startNode as CNode, extraData.dropNode!, 'CHILD_START');
       } else {
@@ -198,13 +216,13 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       context: this.props.pluginCtx,
       viewPortal: {},
     });
-
-    if (res !== false) {
-      this.setState({
-        ghostView: <GhostView node={startNode} />,
-      });
+    if (res === false) {
+      return res;
     }
-    return res;
+
+    this.setState({
+      ghostView: <GhostView node={startNode} />,
+    });
   };
 
   onHoverNode = (node: CNode | CRootNode | null, startNode: CNode | CRootNode) => {

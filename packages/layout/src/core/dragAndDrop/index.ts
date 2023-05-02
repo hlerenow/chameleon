@@ -131,6 +131,7 @@ export class DragAndDrop {
       const { sensor, pointer, event } = mouseMoveEventObj;
       // 没有任何按键按下的 鼠标移动，直接返回
       if (event.buttons === 0) {
+        this.resetDrag();
         return;
       }
       if (this.currentState !== 'DRAGGING') {
@@ -275,6 +276,10 @@ export class DragAndDrop {
       e.handle();
     });
   }, 10);
+
+  resetDrag() {
+    this.currentState = 'NORMAL';
+  }
 }
 
 export * from './sensor';

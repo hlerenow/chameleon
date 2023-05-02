@@ -516,6 +516,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       // 可以终止拖拽开始
       const res = await this.props.onNodeDragStart?.(eventObj);
       if (res === false) {
+        this.resetDrag();
         return;
       }
 
@@ -531,6 +532,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           const res = await this.props.onNodeNewAdd?.(eventObj);
           if (res === false) {
             // 禁止添加
+            this.resetDrag();
             return;
           }
         }
@@ -600,15 +602,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
 
     sensor.emitter.on('dragEnd', (e) => {
-      this.dragStartNode = null;
-
-      this.setState({
-        isDragging: false,
-        mousePointer: null,
-        dropEvent: null,
-        dropComponentInstances: [],
-        selectLockStyle: {},
-      });
+      this.resetDrag();
     });
 
     sensor.emitter.on('drop', (e) => {
@@ -680,6 +674,18 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       selectComponentInstances: [],
     });
   }
+
+  resetDrag = () => {
+    this.dragStartNode = null;
+    this.setState({
+      isDragging: false,
+      mousePointer: null,
+      dropEvent: null,
+      dropComponentInstances: [],
+      selectLockStyle: {},
+    });
+    this.dnd.resetDrag();
+  };
 
   componentWillUnmount(): void {
     this.eventExposeHandler.forEach((el) => el());

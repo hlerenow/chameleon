@@ -107,7 +107,7 @@ export const ButtonMeta: CMaterialType = {
   advanceCustom: {
     onDrag: async () => {
       console.log('onDrag');
-      return true;
+      return false;
     },
     onDragging: async () => {
       console.log('onDragging');
@@ -122,6 +122,10 @@ export const ButtonMeta: CMaterialType = {
     },
     onDelete: async () => {
       console.log('onDelete');
+      return true;
+    },
+    onNewAdd: async () => {
+      console.log('onNewAdd');
       return true;
     },
   },
