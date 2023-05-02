@@ -52,7 +52,7 @@ export class Engine extends React.Component<EngineProps> {
     this.emitter = mitt();
   }
 
-  updateCurrentSelectNode(node: CNode | CRootNode) {
+  updateCurrentSelectNode(node: CNode | CRootNode | null) {
     this.currentSelectNode = node;
     this.emitter.emit('onSelectNodeChange', {
       node,
@@ -107,7 +107,7 @@ export class Engine extends React.Component<EngineProps> {
     if (!this.currentSelectNode?.id) {
       return null;
     }
-    const node = this.pageModel.getNode(this.currentSelectNode.id);
+    const node = this.pageModel.getNode(this.currentSelectNode.id) ?? null;
     this.currentSelectNode = node;
     return node;
   }

@@ -338,8 +338,13 @@ export type ContainerConfig = {
 };
 
 export type AdvanceCustomFuncParam = {
-  viewPortal: any;
+  viewPortal: {
+    setView: (view: React.ReactNode) => void;
+    clearView: () => void;
+  };
   context: any;
+  /** 如果是 api 触发的，则没有事件对象 */
+  event?: any;
 };
 
 export type EventName = keyof HTMLElementEventMap;

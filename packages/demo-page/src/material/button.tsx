@@ -1,4 +1,5 @@
 import { CMaterialType } from '@chamn/model';
+import React from 'react';
 
 export const ButtonMeta: CMaterialType = {
   title: 'Button',
@@ -105,8 +106,11 @@ export const ButtonMeta: CMaterialType = {
     },
   ],
   advanceCustom: {
-    onDrag: async () => {
-      console.log('onDrag');
+    onDrag: async (node, params) => {
+      console.log('onDrag', node, params);
+      if (params.event?.extraData?.type === 'NEW_ADD') {
+        return true;
+      }
       return false;
     },
     onDragging: async () => {
@@ -124,9 +128,15 @@ export const ButtonMeta: CMaterialType = {
       console.log('onDelete');
       return true;
     },
-    onNewAdd: async () => {
+    onNewAdd: async (node, params) => {
+      params.viewPortal.setView(<div>123</div>);
       console.log('onNewAdd');
-      return true;
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(true);
+          params.viewPortal.clearView();
+        }, 2000);
+      });
     },
   },
   snippets: [

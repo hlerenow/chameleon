@@ -207,19 +207,6 @@ export class DragAndDrop {
         setTimeout(() => {
           this.canTriggerClick = true;
         }, 100);
-        const dragEndEventName = 'dragEnd';
-        this.currentState = 'NORMAL';
-        const dragEndEventObj = {
-          from: this.dragStartObj!.event,
-          fromSensor: this.dragStartObj!.sensor,
-          fromPointer: this.dragStartObj!.pointer,
-          extraData: this.dragStartObj!.extraData || {},
-          current: event,
-          currentSensor: sensor,
-          pointer: pointer,
-        };
-        this.emitter.emit(dragEndEventName, dragEndEventObj);
-        this.batchSensorEmit(dragEndEventName, dragEndEventObj);
         const canDrop = sensor.canDrop({
           sensor,
           event,
@@ -245,6 +232,19 @@ export class DragAndDrop {
           this.emitter.emit(dropEventName, dropEventObj);
           this.batchSensorEmit(dropEventName, dropEventObj);
         }
+        const dragEndEventName = 'dragEnd';
+        this.currentState = 'NORMAL';
+        const dragEndEventObj = {
+          from: this.dragStartObj!.event,
+          fromSensor: this.dragStartObj!.sensor,
+          fromPointer: this.dragStartObj!.pointer,
+          extraData: this.dragStartObj!.extraData || {},
+          current: event,
+          currentSensor: sensor,
+          pointer: pointer,
+        };
+        this.emitter.emit(dragEndEventName, dragEndEventObj);
+        this.batchSensorEmit(dragEndEventName, dragEndEventObj);
       }
 
       this.dragStartObj = null;

@@ -23,7 +23,15 @@ export const DesignerPlugin: CPlugin = (ctx) => {
         getDnd: () => {
           return designerRef.current?.layoutRef.current?.dnd;
         },
-        selectNode: (nodeId) => {
+        selectNode: async (nodeId) => {
+          const node = ctx.pageModel.getNode(nodeId);
+          if (node) {
+            const flag = await designerRef.current?.onSelectNode(node, null);
+            if (flag === false) {
+              designerRef.current?.layoutRef.current?.selectNode('');
+              return;
+            }
+          }
           designerRef.current?.layoutRef.current?.selectNode(nodeId);
         },
         getSelectedNodeId: () => {

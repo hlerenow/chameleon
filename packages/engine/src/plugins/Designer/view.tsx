@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, LayoutDragAndDropExtraDataType, LayoutDragEvent } from '@chamn/layout';
+import { Layout, LayoutDragAndDropExtraDataType, LayoutDragEvent, LayoutPropsType } from '@chamn/layout';
 import { CNode, CPage, CRootNode, InsertNodePosType } from '@chamn/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import localize from './localize';
@@ -11,6 +11,8 @@ import { GhostView } from './components/GhostView';
 import styles from './style.module.scss';
 import '@chamn/layout/dist/style.css';
 import { AssetPackage } from '@chamn/model';
+import { createPortal } from 'react-dom';
+import { LayoutProps } from 'antd';
 
 export type DesignerPropsType = {
   pluginCtx: CPluginCtx;
@@ -21,6 +23,7 @@ type DesignerStateType = {
   hoverToolBar: React.ReactNode;
   selectToolBar: React.ReactNode;
   ghostView: React.ReactNode;
+  portalView: React.ReactNode;
   assets: AssetPackage[];
 };
 
@@ -35,9 +38,25 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       selectToolBar: null,
       ghostView: null,
       assets: props.pluginCtx.assets || ([] as AssetPackage[]),
+      portalView: null,
     };
     this.layoutRef = React.createRef<Layout>();
   }
+
+  getPortalViewCtx = () => {
+    return {
+      setView: (view: React.ReactNode) => {
+        this.setState({
+          portalView: view,
+        });
+      },
+      clearView: () => {
+        this.setState({
+          portalView: null,
+        });
+      },
+    };
+  };
 
   componentDidMount(): void {
     const { i18n } = this.props.pluginCtx;
@@ -72,7 +91,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       UIInstance: this,
     });
 
-    layoutInstance.dnd.emitter.on('click', ({ event }) => {
+    layoutInstance.dnd.emitter.on('click', ({ event }: { event: MouseEvent }) => {
       const workbench = pluginCtx.getWorkbench();
       workbench.onGlobalClick(event);
     });
@@ -94,7 +113,8 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     if (startNode) {
       const res = startNode.material?.value.advanceCustom?.onDragging?.(startNode, {
         context: this.props.pluginCtx,
-        viewPortal: {},
+        viewPortal: this.getPortalViewCtx(),
+        event: eventObj,
       });
       return res;
     }
@@ -102,7 +122,6 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
 
   onNodeDrop = async (eventObj: LayoutDragEvent) => {
     const { layoutRef } = this;
-
     const pageModel = this.props.pluginCtx.pageModel;
     const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
     const dropPosInfo = extraData.dropPosInfo;
@@ -115,7 +134,8 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     if (startNode) {
       const res = await startNode.material?.value.advanceCustom?.onDrop?.(startNode, {
         context: this.props.pluginCtx,
-        viewPortal: {} as any,
+        viewPortal: this.getPortalViewCtx(),
+        event: eventObj,
       });
       if (res === false) {
         return;
@@ -129,7 +149,8 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       if (startNode) {
         const res = await startNode.material?.value.advanceCustom?.onNewAdd?.(startNode, {
           context: this.props.pluginCtx,
-          viewPortal: {} as any,
+          viewPortal: this.getPortalViewCtx(),
+          event: eventObj,
         });
         if (res === false) {
           return;
@@ -150,26 +171,36 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
         console.warn('drop failed');
       }
     }
-    layoutRef.current?.selectNode(extraData.startNode?.id || '');
+
+    setTimeout(() => {
+      layoutRef.current?.selectNode(extraData.startNode?.id || '');
+    }, 200);
     this.props.pluginCtx.emitter.emit('onDrop', eventObj);
   };
 
-  onSelectNode = async (node: CNode | CRootNode | null) => {
+  onSelectNode: Required<LayoutPropsType>['onSelectNode'] = async (node: CNode | CRootNode | null, event) => {
+    const { pluginCtx } = this.props;
+    const { layoutRef } = this;
+
     if (!node) {
+      pluginCtx.engine.updateCurrentSelectNode(null);
+      layoutRef.current?.selectNode('');
+      this.setState({
+        selectToolBar: null,
+      });
       return;
     }
     const flag = await node.material?.value.advanceCustom?.onSelect?.(node, {
       context: this.props.pluginCtx,
-      viewPortal: {} as any,
+      viewPortal: this.getPortalViewCtx(),
+      event: event,
     });
     if (flag === false) {
       return flag;
     }
-    const { pluginCtx } = this.props;
     pluginCtx.engine.updateCurrentSelectNode(node);
     const pageModel = this.props.pluginCtx.pageModel;
     const list = getClosestNodeList(node, 5);
-    const { layoutRef } = this;
     this.setState({
       selectToolBar: (
         <DefaultSelectToolBar
@@ -178,23 +209,23 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
             layoutRef.current?.selectNode(id);
             const selectedNode = pageModel.getNode(id);
             if (selectedNode) {
-              this.onSelectNode(selectedNode);
+              this.onSelectNode?.(selectedNode, null);
             }
           }}
           toCopy={(id) => {
             const newNode = this.props.pluginCtx.pageModel.copyNodeById(id);
             if (newNode) {
               layoutRef.current?.selectNode(newNode.id);
-              this.onSelectNode(newNode);
+              this.onSelectNode?.(newNode, null);
             } else {
               layoutRef.current?.selectNode('');
-              this.onSelectNode(null);
+              this.onSelectNode?.(null, null);
             }
           }}
           toDelete={(id) => {
             this.props.pluginCtx.pageModel.deleteNodeById(id);
             layoutRef.current?.selectNode('');
-            this.onSelectNode(null);
+            this.onSelectNode?.(null, null);
           }}
           toHidden={(id) => {
             const targetNodeModel = this.props.pluginCtx.pageModel.getNode(id) as CNode;
@@ -209,22 +240,23 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
         />
       ),
     });
-    return true;
   };
 
   onDragStart = async (e: LayoutDragEvent) => {
+    console.log('🚀 ~ file: view.tsx:234 ~ Designer ~ onDragStart= ~ e:', e);
     const extraData = e.extraData as LayoutDragAndDropExtraDataType;
     const startNode = extraData.startNode;
     if (!startNode) {
       return;
     }
 
-    const res = await startNode.material?.value.advanceCustom?.onDrag?.(startNode, {
+    const dragFlag = await startNode.material?.value.advanceCustom?.onDrag?.(startNode, {
       context: this.props.pluginCtx,
-      viewPortal: {},
+      viewPortal: this.getPortalViewCtx(),
+      event: e,
     });
-    if (res === false) {
-      return res;
+    if (dragFlag === false) {
+      return dragFlag;
     }
 
     this.setState({
@@ -232,7 +264,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     });
   };
 
-  onHoverNode = (node: CNode | CRootNode | null, startNode: CNode | CRootNode) => {
+  onHoverNode = (node: CNode | CRootNode | null, startNode: CNode | CRootNode, event: MouseEvent) => {
     this.props.pluginCtx.emitter.emit('onHover', node);
     const material = node?.material;
     if (!material) {
@@ -254,29 +286,32 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
 
   render() {
     const { layoutRef, props, onSelectNode, onDragStart, onHoverNode, onNodeDrop, onNodeDragging } = this;
-    const { pageModel, hoverToolBar, selectToolBar, ghostView, assets } = this.state;
+    const { pageModel, hoverToolBar, selectToolBar, ghostView, assets, portalView } = this.state;
     const { pluginCtx } = props;
     const renderJSUrl = pluginCtx.engine.props.renderJSUrl || './render.umd.js';
     return (
-      <Layout
-        beforeInitRender={props.pluginCtx.config.beforeInitRender}
-        customRender={props.pluginCtx.config.customRender}
-        ref={layoutRef}
-        pageModel={pageModel}
-        renderJSUrl={renderJSUrl}
-        {...props}
-        hoverToolBar={hoverToolBar}
-        selectToolBar={selectToolBar}
-        selectBoxStyle={{}}
-        hoverBoxStyle={{}}
-        onSelectNode={onSelectNode}
-        onNodeDragStart={onDragStart}
-        onHoverNode={onHoverNode}
-        onNodeDrop={onNodeDrop}
-        onNodeDragging={onNodeDragging}
-        ghostView={ghostView}
-        assets={assets}
-      />
+      <>
+        <Layout
+          beforeInitRender={props.pluginCtx.config.beforeInitRender}
+          customRender={props.pluginCtx.config.customRender}
+          ref={layoutRef}
+          pageModel={pageModel}
+          renderJSUrl={renderJSUrl}
+          {...props}
+          hoverToolBar={hoverToolBar}
+          selectToolBar={selectToolBar}
+          selectBoxStyle={{}}
+          hoverBoxStyle={{}}
+          onSelectNode={onSelectNode}
+          onNodeDragStart={onDragStart}
+          onHoverNode={onHoverNode}
+          onNodeDrop={onNodeDrop}
+          onNodeDragging={onNodeDragging}
+          ghostView={ghostView}
+          assets={assets}
+        />
+        {portalView && createPortal(portalView, document.body)}
+      </>
     );
   }
 }
