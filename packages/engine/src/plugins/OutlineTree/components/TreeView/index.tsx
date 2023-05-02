@@ -183,7 +183,7 @@ export class TreeView extends React.Component<
     const pageModel = pluginCtx.pageModel;
     const designerExports: DesignerExports = await this.getDesignerHandler();
     const dnd = designerExports.getDnd();
-    sensor.setCanDrag((eventObj: SensorEventObjType) => {
+    sensor.setCanDrag(async (eventObj: SensorEventObjType) => {
       const targetDom = eventObj.event.target as HTMLDivElement;
       if (!targetDom) {
         return;
@@ -196,9 +196,23 @@ export class TreeView extends React.Component<
 
       const targetNode = pageModel.getNode(targetNodeId);
       const targetTreeNode = this.getTreeNodeByKey(targetNodeId);
+      // 判断当前节点是否可以在节点树上拖动，比如 jsslot 容器节点不能被拖动，大纲树特有
       if (targetTreeNode?.canDrag !== undefined && targetTreeNode?.canDrag === false) {
         return;
       }
+
+      // 判断节点本身是否可以拖动
+      const designerInstance = designerExports.getInstance();
+      const nodeDragFlag = await targetNode?.material?.value.advanceCustom?.onDrag?.(targetNode, {
+        context: this.props.pluginCtx,
+        event: null,
+        viewPortal: designerInstance.getPortalViewCtx(),
+      });
+      // 节点不能拖动
+      if (nodeDragFlag === false) {
+        return false;
+      }
+
       if (!targetNode) {
         console.log('targetNode not found');
         return;
@@ -212,7 +226,7 @@ export class TreeView extends React.Component<
       };
     });
 
-    sensor.setCanDrop((eventObj: SensorEventObjType) => {
+    sensor.setCanDrop(async (eventObj: SensorEventObjType) => {
       const targetDom = eventObj.event.target as HTMLDivElement;
 
       if (!targetDom) {

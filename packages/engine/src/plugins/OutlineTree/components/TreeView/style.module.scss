@@ -9,6 +9,7 @@
   }
 }
 .nodeBox {
+  user-select: none;
   cursor: pointer;
   .toolbarBox {
     display: none;

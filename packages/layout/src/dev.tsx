@@ -121,7 +121,7 @@ const App = () => {
         name: 'widgetListBox',
         container: leftBoxRef.current!,
       });
-      boxSensor.setCanDrag((eventObj: SensorEventObjType) => {
+      boxSensor.setCanDrag(async (eventObj: SensorEventObjType) => {
         const pageModel = layoutRef.current?.getPageModel();
 
         const newNode = pageModel?.createNode({
@@ -148,7 +148,7 @@ const App = () => {
 
       layoutRef.current?.dnd.registerSensor(boxSensor);
 
-      boxSensor.setCanDrop((eventObj) => {
+      boxSensor.setCanDrop(async (eventObj) => {
         const newNode = new CNode({
           id: 'newAdd',
           componentName: 'Button',

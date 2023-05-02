@@ -438,7 +438,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       offsetDom: document.getElementById(this.iframeDomId),
     });
 
-    sensor.setCanDrag((eventObj: SensorEventObjType) => {
+    sensor.setCanDrag(async (eventObj: SensorEventObjType) => {
       const startInstance = this.designRenderRef.current?.getInstanceByDom(eventObj.event.target as HTMLElement);
       // 木有可选中元素结束
       if (!startInstance) {
@@ -462,7 +462,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       };
     });
 
-    sensor.setCanDrop((eventObj: SensorEventObjType) => {
+    sensor.setCanDrop(async (eventObj: SensorEventObjType) => {
       const dropInstance = this.designRenderRef.current?.getInstanceByDom(eventObj.event.target as HTMLElement);
       if (!dropInstance) {
         this.setState({
@@ -525,6 +525,8 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         // 本次拖动取消后续拖动事件
         this.isCancelDrag = true;
         this.resetDrag();
+        this.dnd.cancelDrag();
+
         return;
       }
 
@@ -694,7 +696,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       dropComponentInstances: [],
       selectLockStyle: {},
     });
-    this.dnd.resetDrag();
   };
 
   componentWillUnmount(): void {

@@ -107,7 +107,7 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
       return pageModel?.createNode(meta.schema);
     };
 
-    boxSensor.setCanDrag((eventObj: SensorEventObjType) => {
+    boxSensor.setCanDrag(async (eventObj: SensorEventObjType) => {
       const newNode = getNewNode(eventObj);
 
       this.props.pluginCtx.pluginManager.get('Designer').then((designerHandle) => {

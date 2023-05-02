@@ -12,7 +12,6 @@ import styles from './style.module.scss';
 import '@chamn/layout/dist/style.css';
 import { AssetPackage } from '@chamn/model';
 import { createPortal } from 'react-dom';
-import { LayoutProps } from 'antd';
 
 export type DesignerPropsType = {
   pluginCtx: CPluginCtx;

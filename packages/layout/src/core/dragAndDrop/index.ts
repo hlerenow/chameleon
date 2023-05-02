@@ -26,7 +26,7 @@ export class DragAndDrop {
   shakeDistance = 4;
   eventHandler: EmptyFunc[] = [];
   currentSensor: Sensor | null = null;
-  currentState: 'NORMAL' | 'DRAGGING' = 'NORMAL';
+  currentState: 'NORMAL' | 'DRAGGING' | 'CANCEL' = 'NORMAL';
   dragStartObj: SensorEventType['onMouseDown'] | null = null;
   emitter = mitt<DragAndDropEventType>();
   // 拖动结束后是否可以触发点击事件
@@ -48,17 +48,17 @@ export class DragAndDrop {
       container: this.doc as unknown as HTMLElement,
     });
 
-    sensor.setCanDrag(() => {
+    sensor.setCanDrag(async () => {
       return null;
     });
 
-    sensor.emitter.on('onMouseMove', (mouseMoveEventObj) => {
+    sensor.emitter.on('onMouseMove', async (mouseMoveEventObj) => {
       if (!(this.currentState === 'DRAGGING' && this.currentSensor === null)) {
         return;
       }
 
       this.emitter.emit('onMouseMove', mouseMoveEventObj);
-      const canDrop = sensor.canDrop({
+      const canDrop = await sensor.canDrop({
         ...mouseMoveEventObj,
         extraData: {
           ...this.dragStartObj!.extraData,
@@ -125,16 +125,18 @@ export class DragAndDrop {
     });
 
     // mousemove
-    const onMouseMove = (mouseMoveEventObj: SensorEventType['onMouseMove']) => {
+    const onMouseMove = async (mouseMoveEventObj: SensorEventType['onMouseMove']) => {
+      if (this.currentState === 'CANCEL') {
+        return;
+      }
       this.emitter.emit('onMouseMove', mouseMoveEventObj);
-
       const { sensor, pointer, event } = mouseMoveEventObj;
       // 没有任何按键按下的 鼠标移动，直接返回
       if (event.buttons === 0) {
         this.resetDrag();
         return;
       }
-      if (this.currentState !== 'DRAGGING') {
+      if (this.currentState === 'NORMAL') {
         if (this.dragStartObj === null) {
           return;
         }
@@ -150,7 +152,7 @@ export class DragAndDrop {
           return;
         }
         // 判断元素是否可以拖动
-        const canDrag = this.dragStartObj.sensor.canDrag(this.dragStartObj);
+        const canDrag = await this.dragStartObj.sensor.canDrag(this.dragStartObj);
         if (!canDrag) {
           return;
         }
@@ -169,7 +171,7 @@ export class DragAndDrop {
         return;
       }
 
-      const canDrop = sensor.canDrop({
+      const canDrop = await sensor.canDrop({
         ...mouseMoveEventObj,
         extraData: {
           ...this.dragStartObj!.extraData,
@@ -201,13 +203,13 @@ export class DragAndDrop {
     });
 
     // mouseup
-    const onMouseUp = ({ sensor, event, pointer }: SensorEventType['onMouseUp']) => {
+    const onMouseUp = async ({ sensor, event, pointer }: SensorEventType['onMouseUp']) => {
       if (this.currentState === 'DRAGGING') {
         this.canTriggerClick = false;
         setTimeout(() => {
           this.canTriggerClick = true;
         }, 100);
-        const canDrop = sensor.canDrop({
+        const canDrop = await sensor.canDrop({
           sensor,
           event,
           pointer,
@@ -233,7 +235,6 @@ export class DragAndDrop {
           this.batchSensorEmit(dropEventName, dropEventObj);
         }
         const dragEndEventName = 'dragEnd';
-        this.currentState = 'NORMAL';
         const dragEndEventObj = {
           from: this.dragStartObj!.event,
           fromSensor: this.dragStartObj!.sensor,
@@ -247,6 +248,7 @@ export class DragAndDrop {
         this.batchSensorEmit(dragEndEventName, dragEndEventObj);
       }
 
+      this.currentState = 'NORMAL';
       this.dragStartObj = null;
     };
 
@@ -277,6 +279,9 @@ export class DragAndDrop {
     });
   }, 10);
 
+  cancelDrag() {
+    this.currentState = 'CANCEL';
+  }
   resetDrag() {
     this.currentState = 'NORMAL';
   }

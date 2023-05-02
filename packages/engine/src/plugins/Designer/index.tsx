@@ -20,6 +20,9 @@ export const DesignerPlugin: CPlugin = (ctx) => {
     },
     exports: () => {
       return {
+        getInstance: () => {
+          return designerRef.current;
+        },
         getDnd: () => {
           return designerRef.current?.layoutRef.current?.dnd;
         },
@@ -64,6 +67,7 @@ export const DesignerPlugin: CPlugin = (ctx) => {
 
 export type DesignerExports = {
   reload: (params?: { assets?: AssetPackage[] }) => void;
+  getInstance: () => Designer;
   getDnd: () => DragAndDrop;
   selectNode: (nodeId: string) => void;
   getSelectedNodeId: () => string | undefined;

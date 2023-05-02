@@ -41,8 +41,10 @@ export class Sensor extends DEmitter<SensorEventType> {
   container: HTMLElement;
   offsetDom?: HTMLElement | null;
 
-  canDrag: (params: SensorEventObjType) => SensorEventObjType | null | undefined = (params) => params;
-  canDrop: (params: SensorEventObjType) => SensorEventObjType | null | undefined = (params) => params;
+  canDrag: (params: SensorEventObjType) => Promise<SensorEventObjType | null | undefined> = (params) =>
+    Promise.resolve(params);
+  canDrop: (params: SensorEventObjType) => Promise<SensorEventObjType | null | undefined> = (params) =>
+    Promise.resolve(params);
 
   private eventDisposeQueue: (() => void)[] = [];
   name: string;
