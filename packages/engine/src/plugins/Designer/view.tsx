@@ -171,9 +171,16 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       }
     }
 
-    setTimeout(() => {
+    setTimeout(async () => {
+      if (startNode) {
+        const flag = await this.onSelectNode(startNode, null);
+        if (flag === false) {
+          layoutRef.current?.selectNode('');
+          return;
+        }
+      }
       layoutRef.current?.selectNode(extraData.startNode?.id || '');
-    }, 200);
+    }, 150);
     this.props.pluginCtx.emitter.emit('onDrop', eventObj);
   };
 

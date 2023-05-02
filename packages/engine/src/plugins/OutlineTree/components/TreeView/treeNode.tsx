@@ -152,7 +152,6 @@ export const TreeNode = (props: TreeNodeProps) => {
       titleView: item.title,
     });
   }
-  const titleText = targetNodeModel?.value.title || targetNodeModel?.value.componentName;
 
   const bodyView = (
     <div className={styles.nodeBox}>

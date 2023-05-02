@@ -10,8 +10,8 @@ import { withTranslation, WithTranslation } from 'react-i18next';
 import { ListView } from './components/ListView';
 import { getTargetMNodeKeyVal } from './util';
 import { DRAG_ITEM_KEY } from './components/DragItem';
-import { CNode, findContainerNode, isPageModel, SnippetsCollection } from '@chamn/model';
-import { capitalize, get } from 'lodash-es';
+import { CNode, CRootNode, CSlot, findContainerNode, isPageModel, SnippetsCollection } from '@chamn/model';
+import { capitalize } from 'lodash-es';
 import { InsertNodePosType } from '@chamn/model/src';
 
 interface ComponentLibViewProps extends WithTranslation {
@@ -138,7 +138,7 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
     });
     dnd.emitter.on('dragStart', dragStart);
 
-    const onClick = (eventObj: Omit<SensorEventObjType, 'pointer'>) => {
+    const toAddNewNode = async (eventObj: Omit<SensorEventObjType, 'pointer'>) => {
       const newNode = getNewNode(eventObj);
       if (!newNode) {
         return;
@@ -146,43 +146,58 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
 
       const { pageModel } = this.props.pluginCtx;
 
-      this.props.pluginCtx.pluginManager.get('Designer').then((designerHandle) => {
+      return this.props.pluginCtx.pluginManager.get('Designer').then(async (designerHandle) => {
         const designerExports: DesignerExports = designerHandle?.exports;
 
         // 获取当前选中，如果存在，就插入到当前选中的下面，否则就插入到根节点下面
         const selectedNodeId = designerExports.getSelectedNodeId();
         const selectedNode = pageModel.getNode(selectedNodeId);
         const containerNode = findContainerNode(selectedNode);
+        let pos: InsertNodePosType = 'CHILD_END';
+        let dropNode: CNode | CRootNode | CSlot | null = selectedNode ?? null;
         if (selectedNode) {
           // 当前节点的父级节点是容器时
           if (containerNode === selectedNode.parent) {
             if (selectedNode.isContainer()) {
-              const pos: InsertNodePosType = 'CHILD_END';
+              pos = 'CHILD_END';
+              dropNode = selectedNode;
               pageModel.addNode(newNode, selectedNode as never, pos);
             } else {
-              pageModel.addNode(newNode, selectedNode, 'AFTER');
+              pos = 'AFTER';
+              dropNode = selectedNode;
             }
           } else if (containerNode && !isPageModel(containerNode)) {
-            pageModel.addNode(newNode, containerNode as CNode, 'CHILD_END');
+            pos = 'CHILD_END';
+            dropNode = containerNode;
           }
         } else {
           const rootNode = pageModel.getRootNode();
           if (rootNode) {
-            pageModel.addNode(newNode, rootNode, 'CHILD_END');
-            designerExports?.selectNode(newNode.id);
+            pos = 'CHILD_END';
+            dropNode = rootNode;
           }
         }
-
+        const designerInstance = designerExports.getInstance();
+        const addFlag = await newNode.material?.value.advanceCustom?.onNewAdd?.(newNode, {
+          context: this.props.pluginCtx,
+          event: null,
+          viewPortal: designerInstance.getPortalViewCtx(),
+        });
+        if (!addFlag) {
+          return;
+        }
+        pageModel.addNode(newNode, selectedNode as never, pos);
         setTimeout(() => {
           designerExports?.selectNode(newNode.id);
-        }, 50);
+        }, 150);
       });
     };
 
     this.disposeList.push(() => {
-      boxSensor.emitter.off('onClick', onClick);
+      boxSensor.emitter.off('onClick', toAddNewNode);
     });
-    boxSensor.emitter.on('onClick', onClick);
+
+    boxSensor.emitter.on('onClick', toAddNewNode);
   };
 
   render(): React.ReactNode {

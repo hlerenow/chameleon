@@ -144,7 +144,7 @@ export const ButtonMeta: CMaterialType = {
       title: '基础按钮',
       snapshot:
         'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
-      description: '自定义延迟插入 Button -我是 antD 的 Button 组件',
+      description: '自定义延迟插入 Button, 不能被选中, 不能拖拽',
       schema: {
         props: {
           type: 'primary',

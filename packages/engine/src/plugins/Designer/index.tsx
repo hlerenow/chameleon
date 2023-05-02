@@ -30,6 +30,7 @@ export const DesignerPlugin: CPlugin = (ctx) => {
           const node = ctx.pageModel.getNode(nodeId);
           if (node) {
             const flag = await designerRef.current?.onSelectNode(node, null);
+            console.log('🚀 ~ file: index.tsx:33 ~ selectNode: ~ flag:', flag);
             if (flag === false) {
               designerRef.current?.layoutRef.current?.selectNode('');
               return;
