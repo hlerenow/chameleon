@@ -24,6 +24,9 @@
       "@/*": [
         "src/*"
       ],
+      "mitt": [
+        "./node_modules/mitt"
+      ]
     },
   },
   "include": [

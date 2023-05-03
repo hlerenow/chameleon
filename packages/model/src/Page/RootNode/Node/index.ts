@@ -5,7 +5,8 @@ import { CMaterials } from '../../../Material';
 import { CNodeDataStructDescribe, CNodeDataType } from '../../../types/node';
 import { getRandomStr, clearSchema, getNode } from '../../../util';
 import { checkComplexData } from '../../../util/dataCheck';
-import { DataModelEmitter, DataModelEventType } from '../../../util/modelEmitter';
+import { DataModelEmitter } from '../../../util/modelEmitter';
+import type { DataModelEventType } from '../../../util/modelEmitter';
 import { CProp } from './prop';
 import { CSlot } from './slot';
 

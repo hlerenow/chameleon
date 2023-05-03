@@ -62,7 +62,7 @@ const mainConfig = {
       },
     },
     define: {
-      'process.env': {},
+      'process.env': JSON.stringify('{}'),
       __PACKAGE_VERSION__: JSON.stringify(pkg.version),
     },
   },
@@ -85,7 +85,7 @@ const renderConfig = {
       outDir: './public',
     },
     define: {
-      'process.env': {},
+      'process.env': JSON.stringify('{}'),
       __PACKAGE_VERSION__: JSON.stringify(pkg.version),
     },
   },

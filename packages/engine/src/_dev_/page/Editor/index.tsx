@@ -41,8 +41,7 @@ export const App = () => {
   useEffect(() => {
     // check 本地版本号，如果不一致直接覆盖本地所有的
     const localBuildVersion = localStorage.getItem('build_version');
-    console.log(process.env.NODE_ENV);
-    if (localBuildVersion !== buildVersion && process.env.NODE_ENV !== 'development') {
+    if (localBuildVersion !== buildVersion && !import.meta.env.DEV) {
       // 清理 schema, 因为可能 协议不兼容，demo 可以这样粗暴处理
       localStorage.setItem('pageSchema', '');
       localStorage.setItem('build_version', buildVersion);

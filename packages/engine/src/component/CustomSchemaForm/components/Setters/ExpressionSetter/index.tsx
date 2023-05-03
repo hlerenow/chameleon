@@ -1,26 +1,21 @@
-import { ConfigProvider, Input, TextAreaProps } from 'antd';
+import { ConfigProvider, Input } from 'antd';
 import { CSetter, CSetterProps } from '../type';
 import { CNodePropsTypeEnum } from '@chamn/model';
+import { ChangeEventHandler } from 'react';
 
-export const ExpressionSetter: CSetter<
-  TextAreaProps & {
-    value: {
-      type: string;
-      value: string;
-    };
-  }
-> = ({
+export type ExpressionSetterProps = CSetterProps<{
+  value: {
+    type: string;
+    value: string;
+  };
+  onChange: ChangeEventHandler<HTMLTextAreaElement>;
+}>;
+
+export const ExpressionSetter: CSetter<ExpressionSetterProps> = ({
   onValueChange,
   setterContext,
   ...props
-}: CSetterProps<
-  TextAreaProps & {
-    value: {
-      type: string;
-      value: string;
-    };
-  }
->) => {
+}: ExpressionSetterProps) => {
   return (
     <ConfigProvider
       theme={{

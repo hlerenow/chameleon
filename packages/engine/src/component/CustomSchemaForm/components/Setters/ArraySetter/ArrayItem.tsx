@@ -30,7 +30,13 @@ export function ArrayItem(props: {
 
   return (
     <div style={style}>
-      <CForm ref={formRef} name={String(index)} initialValue={objectValue || {}} onValueChange={props.onValueChange}>
+      <CForm
+        ref={formRef}
+        name={String(index)}
+        initialValue={objectValue || {}}
+        onValueChange={props.onValueChange}
+        customSetterMap={{}}
+      >
         <SetterSwitcher
           suffix={
             <div

@@ -18,7 +18,7 @@
     "isolatedModules": false,
     "noEmit": true,
     "jsx": "react",
-    "preserveSymlinks": true,
+    "preserveSymlinks": true
   },
   "include": [
     "src"

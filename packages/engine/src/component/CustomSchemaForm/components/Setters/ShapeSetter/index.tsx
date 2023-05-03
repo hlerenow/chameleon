@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ConfigProvider } from 'antd';
 import { CSetter, CSetterProps } from '../type';
 import { CForm } from '../../Form';
@@ -39,6 +39,7 @@ export const ShapeSetter: CSetter<CShapeSetterProps> = ({
         onValueChange={(val) => {
           onValueChange?.(val);
         }}
+        customSetterMap={{}}
       >
         {elements.map((el, index) => {
           const setters = getSetterList(el.setters);
