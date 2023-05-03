@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.13](https://github.com/ByteCrazy/chameleon/compare/v0.0.12...v0.0.13) (2023-05-03)
+
+### ✨ Features | 新功能
+
+* add-nearby-component ([85a301c](https://github.com/ByteCrazy/chameleon/commit/85a301c3d95e785c116ab38c0b3a452ceb33742f))
+* **build-script, build-script-example, demo-page, engine, layout, material, model, render:** 🎸 config code style config ([2325504](https://github.com/ByteCrazy/chameleon/commit/23255048fa4a3d4fc8f5cfa1312db5abd6cac70d))
+* **build-script, demo-page, engine, layout, model, render:** 🎸 update meterial schema ([14f4e5c](https://github.com/ByteCrazy/chameleon/commit/14f4e5caf0a4f6eca131e139d0c34ea21969dc0b))
+* **demo-page, docs-website, engine, layout, model, render:** 🎸 node support methods config ([e080b20](https://github.com/ByteCrazy/chameleon/commit/e080b20cea3cea27b95def196e078c1c225d3a83))
+* **demo-page, engine, layout, model:** 🎸 finish customEvent config ([84640e3](https://github.com/ByteCrazy/chameleon/commit/84640e3d06b79858590b9fe92ef4764fbe3f4f7b))
+* **demo-page, engine, layout:** 🎸 outline support cancel drag by node material ([cd428d3](https://github.com/ByteCrazy/chameleon/commit/cd428d362a8bfe7d5b6e58ed2b6290e19c00672b))
+* **demo-page, engine, layout:** 🎸 support cancel drag and custom node drag event ([825717e](https://github.com/ByteCrazy/chameleon/commit/825717e063846b72f95b0e41d8cba279ef5270c8))
+* **demo-page, engine:** 🎸 complete advanceCustom material feature ([98cf273](https://github.com/ByteCrazy/chameleon/commit/98cf273543f2fd534c254990d61052534a6649da))
+* **demo-page, engine:** 🎸 supprot onSelectNode ([f496a82](https://github.com/ByteCrazy/chameleon/commit/f496a82920cab7ae8704335b2ecd02a7887de3b2))
+* **engine, layout, model:** 🎸 support supportDispatchNativeEvent field ([489fd05](https://github.com/ByteCrazy/chameleon/commit/489fd05b588e85ed4cea81cc33ab27739a1bac59))
+* **engine, layout:** 🎸 optimize layout event system ([56f35ef](https://github.com/ByteCrazy/chameleon/commit/56f35ef83cc7e1658bfeba9081f997ff457cf09e))
+* **engine, layout:** 🎸 support isSupportDispatchNativeEvent filed ([4f830b4](https://github.com/ByteCrazy/chameleon/commit/4f830b42b6e84d74e9d462c3b3e090de89686e18))
+* **engine, render:** 🎸 html native tag component support container filed ([475fdbd](https://github.com/ByteCrazy/chameleon/commit/475fdbd5a34581ab7cafe67b5c9d3b94102b3a16))
+* remove self-executing function ([e224524](https://github.com/ByteCrazy/chameleon/commit/e224524198aa3f1339afd3bc9f1bacb72bc4d20e))
+* remove some useless code and fix some problems detected by eslint. ([a8e6ec2](https://github.com/ByteCrazy/chameleon/commit/a8e6ec2f107250facefc81cf87f694e40f3ed684))
+* select element after in add node ([0c0d116](https://github.com/ByteCrazy/chameleon/commit/0c0d1164783420da306062292674fbccb0a8ffb0))
+* update model code ([f74162a](https://github.com/ByteCrazy/chameleon/commit/f74162a32dda1fa4244705a0b63066d73a4d6537))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* adjust find node logic ([5f9f073](https://github.com/ByteCrazy/chameleon/commit/5f9f07320888b3a83a4a24b04cfbd2e9e82aa4b1))
+* **engine, layout, model:** 🐛 fixed type error ([d11e81f](https://github.com/ByteCrazy/chameleon/commit/d11e81f607ef6a41a2dfda0b4ac657a9a87e948c))
+* **engine:** 🐛 fixed insert node logic ([7fd4866](https://github.com/ByteCrazy/chameleon/commit/7fd4866d7daaece1c8c3b2a846b55da27a1e0936))
+* eslint warning ([403342f](https://github.com/ByteCrazy/chameleon/commit/403342f60420326a69e4b46a1560ba0f4845ed60))
+* **model:** page thirdLibs forget process find return ([e1c5d2b](https://github.com/ByteCrazy/chameleon/commit/e1c5d2b3a7e365f892274c80402a72b7003151a8))
+
 ## [0.0.12](https://github.com/ByteCrazy/chameleon/compare/v0.0.11...v0.0.12) (2023-04-23)
 
 ### 👷 Continuous Integration | CI 配置

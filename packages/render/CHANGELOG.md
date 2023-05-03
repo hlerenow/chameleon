@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.13](https://github.com/ByteCrazy/chameleon/compare/v0.0.12...v0.0.13) (2023-05-03)
+
+### ✨ Features | 新功能
+
+* **build-script, build-script-example, demo-page, engine, layout, material, model, render:** 🎸 config code style config ([2325504](https://github.com/ByteCrazy/chameleon/commit/23255048fa4a3d4fc8f5cfa1312db5abd6cac70d))
+* **build-script, demo-page, engine, layout, model, render:** 🎸 update meterial schema ([14f4e5c](https://github.com/ByteCrazy/chameleon/commit/14f4e5caf0a4f6eca131e139d0c34ea21969dc0b))
+* **demo-page, docs-website, engine, layout, model, render:** 🎸 node support methods config ([e080b20](https://github.com/ByteCrazy/chameleon/commit/e080b20cea3cea27b95def196e078c1c225d3a83))
+* **engine, render:** 🎸 html native tag component support container filed ([475fdbd](https://github.com/ByteCrazy/chameleon/commit/475fdbd5a34581ab7cafe67b5c9d3b94102b3a16))
+* remove some useless code and fix some problems detected by eslint. ([a8e6ec2](https://github.com/ByteCrazy/chameleon/commit/a8e6ec2f107250facefc81cf87f694e40f3ed684))
+
 ## [0.0.12](https://github.com/ByteCrazy/chameleon/compare/v0.0.11...v0.0.12) (2023-04-23)
 
 ### 🐛 Bug Fixes | Bug 修复

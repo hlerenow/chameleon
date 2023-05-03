@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.13](https://github.com/ByteCrazy/chameleon/compare/v0.0.12...v0.0.13) (2023-05-03)
+
+### ✨ Features | 新功能
+
+* **demo-page, docs-website, engine, layout, model, render:** 🎸 node support methods config ([e080b20](https://github.com/ByteCrazy/chameleon/commit/e080b20cea3cea27b95def196e078c1c225d3a83))
+
 ## [0.0.12](https://github.com/ByteCrazy/chameleon/compare/v0.0.11...v0.0.12) (2023-04-23)
 
 ### ✨ Features | 新功能
