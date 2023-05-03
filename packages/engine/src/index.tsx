@@ -24,6 +24,7 @@ export type EngineProps = {
 };
 
 export class Engine extends React.Component<EngineProps> {
+  static version = __PACKAGE_VERSION__;
   currentSelectNode: CNode | CRootNode | null;
 
   pluginManager!: PluginManager;

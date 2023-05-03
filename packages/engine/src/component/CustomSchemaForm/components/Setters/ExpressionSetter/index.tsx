@@ -1,9 +1,9 @@
-import { ConfigProvider, Input, InputProps } from 'antd';
+import { ConfigProvider, Input, TextAreaProps } from 'antd';
 import { CSetter, CSetterProps } from '../type';
 import { CNodePropsTypeEnum } from '@chamn/model';
 
 export const ExpressionSetter: CSetter<
-  InputProps & {
+  TextAreaProps & {
     value: {
       type: string;
       value: string;
@@ -14,7 +14,7 @@ export const ExpressionSetter: CSetter<
   setterContext,
   ...props
 }: CSetterProps<
-  InputProps & {
+  TextAreaProps & {
     value: {
       type: string;
       value: string;
@@ -29,7 +29,7 @@ export const ExpressionSetter: CSetter<
         },
       }}
     >
-      <Input
+      <Input.TextArea
         {...props}
         value={props.value?.value || ''}
         onChange={(e) => {

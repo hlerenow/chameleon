@@ -235,15 +235,14 @@ export const BasePage = {
         state: {
           rowMark: 1,
         },
-        stateName: 'RowState',
+        nodeName: 'RowState',
         children: [
           {
             componentName: 'div',
             props: {
               children: {
                 type: 'EXPRESSION',
-                value:
-                  '"rowState to reshow: " + $$context.stateManager.RowState.state.rowMark',
+                value: '"rowState to reshow: " + $$context.stateManager.RowState.state.rowMark',
               },
             },
           },

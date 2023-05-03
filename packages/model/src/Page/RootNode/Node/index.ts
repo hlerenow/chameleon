@@ -41,6 +41,7 @@ export const parseNode = (
     id: data.id ?? getRandomStr(),
     children: [],
     props: {},
+    methods: data.methods || [],
     configure: merge(data.configure || {}, {
       propsSetter: {},
       advanceSetter: {},

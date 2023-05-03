@@ -47,7 +47,7 @@ export const SamplePage: CPageDataType = {
         state: {
           rowMark: 1,
         },
-        stateName: 'RowState',
+        nodeName: 'RowState',
         children: [
           {
             componentName: 'div',

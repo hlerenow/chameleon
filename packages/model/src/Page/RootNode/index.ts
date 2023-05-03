@@ -37,6 +37,7 @@ export const parseSchema = (
     props: {} as any,
     componentName: InnerComponentNameEnum.ROOT_CONTAINER,
     children: [],
+    methods: data.methods || [],
     configure: merge(data.configure || {}, {
       propsSetter: {},
       advanceSetter: {},

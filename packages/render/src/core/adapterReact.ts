@@ -30,11 +30,14 @@ import {
 import { DYNAMIC_COMPONENT_TYPE, InnerPropList } from '../const';
 import { StoreApi } from 'zustand/vanilla';
 import { StoreManager } from './storeManager';
+import { VariableManager } from './variableManager';
 
 export class DefineReactAdapter {
   renderMode: AdapterOptionType['renderMode'] = 'normal';
   components: AdapterOptionType['components'] = {};
   storeManager = new StoreManager();
+  // 存储节点的变量或者方法
+  variableManager = new VariableManager();
   runtimeComponentCache = new Map();
   onGetRef?: AdapterOptionType['onGetRef'];
   onGetComponent: AdapterOptionType['onGetComponent'];
@@ -64,6 +67,7 @@ export class DefineReactAdapter {
     let newCtx: ContextType = data;
     if (ctx) {
       newCtx = {
+        variableSpace: {},
         ...data,
       };
       (newCtx as any).__proto__ = ctx || null;
@@ -268,17 +272,21 @@ export class DefineReactAdapter {
       // save dom and media css
       domHeader: HTMLHeadElement | undefined;
       mediaStyleDomMap: Record<string, HTMLStyleElement> = {};
+      /** 存储当前节点的一些变量和方法，不具有响应性 */
+      variableSpace: Record<string, any>;
+      nodeName: any;
 
       constructor(props: PropsType) {
         super(props);
         this.targetComponentRef = React.createRef();
         this.state = nodeModel.value.state || {};
-        const storeName = nodeModel.value.stateName || nodeModel.id;
+        const nodeName = nodeModel.value.nodeName || nodeModel.id;
+        this.nodeName = nodeName;
 
-        const nodeStore = that.storeManager.getStore(storeName);
+        const nodeStore = that.storeManager.getStore(nodeName);
         if (!nodeStore) {
           // add to global store manager
-          this.storeState = that.storeManager.addStore(storeName, () => {
+          this.storeState = that.storeManager.addStore(nodeName, () => {
             return {
               ...(nodeModel.value.state || {}),
             };
@@ -297,6 +305,15 @@ export class DefineReactAdapter {
           });
         });
         this.connectStore();
+
+        // create node variable space
+        const variableSpace = that.variableManager.get(nodeName);
+        if (variableSpace) {
+          this.variableSpace = variableSpace;
+        } else {
+          this.variableSpace = {};
+          that.variableManager.add(nodeName, this.variableSpace);
+        }
       }
 
       updateState = (newState: any) => {
@@ -426,8 +443,8 @@ export class DefineReactAdapter {
         }
         that.onComponentMount?.(this, nodeModel);
         const forceUpdate = () => {
-          // stateName maybe changed
-          that.storeManager.setStore(nodeModel.value.stateName || nodeModel.id, this.storeState);
+          // nodeName maybe changed
+          that.storeManager.setStore(nodeModel.value.nodeName || nodeModel.id, this.storeState);
           this.storeState.setState({
             ...this.state,
             ...(nodeModel.value.state || {}),
@@ -460,6 +477,7 @@ export class DefineReactAdapter {
         };
         const tempContext: ContextType = {
           state: this.state || {},
+          variableSpace: this.variableSpace,
           updateState: this.updateState,
           staticState: this.staticState,
         };
@@ -470,8 +488,28 @@ export class DefineReactAdapter {
         }
 
         tempContext.stateManager = that.storeManager.getStateSnapshot();
+        tempContext.variableSpace = that.variableManager.get(this.nodeName);
+        tempContext.variableManager = that.variableManager.getStateSnapshot();
         const newContext = that.getContext(tempContext, $$context);
-
+        // 需要优先处理处理 methods， methods 内部不能调用 methods 上的方法
+        const methodsObj = that.transformProps(
+          {
+            methods: nodeModel.value.methods,
+          },
+          {
+            $$context: newContext,
+          }
+        );
+        const methodList = methodsObj.methods as { name: string; define: (...args: any) => void }[];
+        const methodMap = methodList.reduce((res, item) => {
+          res[item.name] = item.define;
+          return res;
+        }, {} as any);
+        newContext.methods = methodMap;
+        if (!newContext.variableSpace) {
+          newContext.variableSpace = {};
+        }
+        newContext.variableSpace.methods = methodMap;
         // 处理循环
         const loopObj = nodeModel.value.loop;
         let loopRes: any[] = [];
@@ -611,7 +649,6 @@ export class DefineReactAdapter {
         }
 
         newProps.className = finalClsx;
-
         // 处理 style
         const newStyle: Record<string, any> = that.transformProps(nodeModel.value.style, {
           $$context: newContext,

@@ -38,18 +38,25 @@ export const FunctionSetter: CSetter<any> = ({ onValueChange, setterContext, ...
         Edit
       </Button>
       <Modal
+        centered
         destroyOnClose
         open={open}
         title="Function Editor"
-        width="800px"
         onCancel={() => setOpen(false)}
+        width="calc(100vw - 100px)"
         onOk={() => {
           onInnerValueChange();
           setOpen(false);
         }}
-        style={{}}
+        style={{
+          maxWidth: '1300px',
+        }}
+        bodyStyle={{
+          minHeight: '500px',
+          height: 'calc(100vh - 280px)',
+        }}
       >
-        <div style={{ height: '500px' }}>
+        <div style={{ height: '100%' }}>
           {open && (
             <MonacoEditor
               beforeMount={(monaco) => {

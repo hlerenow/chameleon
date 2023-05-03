@@ -21,7 +21,21 @@ export function RenderDemo() {
   const renderHandle = useRender();
   (window as any).RENDER_HANDLE = renderHandle;
   useEffect(() => {
-    page.getNode('5');
+    const node = page.getNode('9g9ohd');
+    console.log('🚀 ~ file: RenderDemo.tsx:25 ~ useEffect ~ node:', node);
+    if (!node) {
+      return;
+    }
+    node.value.methods = [
+      {
+        name: 'testMethod',
+        define: {
+          type: 'FUNCTION',
+          value: 'function () { console.log("$$context", $$context);}',
+        },
+      },
+    ];
+    node.updateValue();
 
     // setTimeout(() => {
     //   const newNode = page.createNode({

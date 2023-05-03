@@ -2,6 +2,7 @@
 /* eslint-disable no-undef */
 
 const path = require('path');
+const pkg = require('./package.json');
 const { visualizer } = require('rollup-plugin-visualizer');
 const monacoEditorPlugin = require('vite-plugin-monaco-editor').default;
 
@@ -60,6 +61,10 @@ const mainConfig = {
         },
       },
     },
+    define: {
+      'process.env': {},
+      __PACKAGE_VERSION__: JSON.stringify(pkg.version),
+    },
   },
 };
 
@@ -79,7 +84,10 @@ const renderConfig = {
       copyPublicDir: false,
       outDir: './public',
     },
-    define: { 'process.env': {} },
+    define: {
+      'process.env': {},
+      __PACKAGE_VERSION__: JSON.stringify(pkg.version),
+    },
   },
 };
 

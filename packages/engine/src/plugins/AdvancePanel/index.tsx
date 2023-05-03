@@ -116,14 +116,14 @@ const properties: CMaterialPropsType = [
     setters: ['StringSetter'],
   },
   {
-    name: 'stateName',
+    name: 'nodeName',
     title: {
       label: (
         <>
-          state <br></br> name
+          node <br></br> name
         </>
       ) as any,
-      tip: 'alias for state',
+      tip: 'alias for node',
     },
     valueType: 'string',
     setters: ['StringSetter'],
@@ -156,16 +156,16 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
         name: loopObj?.name || '',
       },
       refId: node.value.refId,
-      stateName: node.value.stateName,
+      nodeName: node.value.nodeName,
     };
     formRef.current?.setFields(newValue);
   }, [node]);
 
-  const onValueChange = (newVal: { refId: string; loop: any; condition: any; stateName: any }) => {
+  const onValueChange = (newVal: { refId: string; loop: any; condition: any; nodeName: any }) => {
     node.value.loop = newVal.loop;
     node.value.condition = newVal.condition;
     node.value.refId = newVal.refId;
-    node.value.stateName = newVal.stateName;
+    node.value.nodeName = newVal.nodeName;
 
     node.updateValue();
   };

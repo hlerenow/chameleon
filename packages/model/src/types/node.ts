@@ -108,7 +108,7 @@ export type CNodeDataType = {
   // 所有的 props 的 value 需要支持表达式 $$context
   props?: CPropObjDataType;
   state?: Record<string, any>;
-  stateName?: string;
+  nodeName?: string;
   // if type is lowcode, schema is required
   schema?: CPageDataType;
   children?: (string | CNodeDataType)[];
@@ -144,20 +144,12 @@ export type CNodeDataType = {
   classNames?: ClassNameType[];
   css?: CSSType;
   style?: Record<string, string | JSExpressionPropType>;
+  // 组件引用的唯一id
   refId?: string;
-  // 逻辑编排使用
-  onEvents?: Record<
-    string,
-    {
-      actions?: {
-        // 需要场景化，暂时 string ，需要嘿编辑器 行为绑定
-        actionType: string;
-        options?: Record<any, any>;
-      }[];
-    }
-  >;
-  // 组件的一些方法，可用于逻辑编排
-  actions?: any[];
+  methods?: {
+    name: string;
+    define: FunctionPropType;
+  }[];
   loop?: {
     open: boolean;
     data: any[] | JSExpressionPropType;
@@ -168,7 +160,6 @@ export type CNodeDataType = {
   };
   // 是否渲染
   condition?: boolean | JSExpressionPropType;
-
   extra?: Record<any, any>;
 };
 
@@ -182,7 +173,7 @@ export const CNodeDataStructDescribe: any = object({
   title: optional(string()),
   componentName: string(),
   props: optional(record(string(), PropsDataStructDescribe)),
-  stateName: optional(string()),
+  nodeName: optional(string()),
   state: optional(record(string(), any())),
   children: dynamic(() => {
     return optional(array(union([string(), CNodeDataStructDescribe])));
@@ -194,7 +185,6 @@ export const CNodeDataStructDescribe: any = object({
   refId: optional(string()),
   extra: optional(record(any(), any())),
   condition: optional(union([boolean(), JSExpressionDescribe])),
-  tempDevConfig: optional(any()),
   loop: optional(
     object({
       open: boolean(),
@@ -206,4 +196,5 @@ export const CNodeDataStructDescribe: any = object({
       name: optional(string()),
     })
   ),
+  methods: optional(array(any())),
 });

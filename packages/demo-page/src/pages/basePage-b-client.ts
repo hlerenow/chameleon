@@ -259,7 +259,7 @@ export const BasePageBClient: CPageDataType = {
         state: {
           rowMark: 1,
         },
-        stateName: 'RowState',
+        nodeName: 'RowState',
         children: [
           {
             componentName: 'div',

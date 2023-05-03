@@ -510,7 +510,7 @@ export const BasePage: CPageDataType = {
                   name: '',
                 },
                 condition: true,
-                stateName: 'bannerState',
+                nodeName: 'bannerState',
                 css: {
                   class: 'c_2vi5b1',
                   value: [

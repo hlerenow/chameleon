@@ -14,6 +14,9 @@ export type ContextType = {
   loopData?: Record<any, any>;
   // 用于访访问和管理页面被注册为全局的局部 state
   stateManager?: Record<string, any>;
+  // 用于存储当前节点的临时变量或者方法
+  variableSpace?: Record<string, any>;
+  variableManager?: Record<string, Record<string, any>>;
   methods?: Record<string, (...arg: any) => any>;
   // 第三方辅助库
   thirdLibs?: Record<string, any>;
