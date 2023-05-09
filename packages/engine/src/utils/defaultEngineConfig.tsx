@@ -49,7 +49,7 @@ export const defaultRender: LayoutPropsType['customRender'] = async ({
       IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
     })
     .onError(() => {
-      console.log('资源加载出粗');
+      console.log('资源加载出错');
     })
     .load();
 };

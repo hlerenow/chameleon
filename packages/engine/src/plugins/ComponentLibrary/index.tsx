@@ -61,6 +61,14 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
 
     i18n.update();
     const allSnippets = materialsModel.getAllSnippets();
+
+    if (allSnippets.length && allSnippets[0].name === 'default') {
+      const df = allSnippets.shift();
+      if (df) {
+        allSnippets.push(df);
+      }
+    }
+
     this.setState({
       componentsList: allSnippets,
     });
@@ -183,10 +191,10 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
           event: null,
           viewPortal: designerInstance.getPortalViewCtx(),
         });
-        if (!addFlag) {
+        if (addFlag === false) {
           return;
         }
-        pageModel.addNode(newNode, selectedNode as never, pos);
+        pageModel.addNode(newNode, dropNode as CNode, pos);
         setTimeout(() => {
           designerExports?.selectNode(newNode.id);
         }, 150);
