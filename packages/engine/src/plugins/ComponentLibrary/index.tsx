@@ -197,7 +197,7 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
         pageModel.addNode(newNode, dropNode as CNode, pos);
         setTimeout(() => {
           designerExports?.selectNode(newNode.id);
-        }, 150);
+        }, 200);
       });
     };
 

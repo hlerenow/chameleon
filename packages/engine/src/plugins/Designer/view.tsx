@@ -170,7 +170,6 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
         console.warn('drop failed');
       }
     }
-
     setTimeout(async () => {
       if (startNode) {
         const flag = await this.onSelectNode(startNode, null);
@@ -222,6 +221,10 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
             const newNode = this.props.pluginCtx.pageModel.copyNodeById(id);
             if (newNode) {
               layoutRef.current?.selectNode(newNode.id);
+              // 延迟选中，因为可能 dom 还没有渲染完成
+              setTimeout(() => {
+                layoutRef.current?.selectNode(newNode.id);
+              }, 200);
               this.onSelectNode?.(newNode, null);
             } else {
               layoutRef.current?.selectNode('');

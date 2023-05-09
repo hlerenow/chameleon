@@ -659,7 +659,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     const dom = ReactDOM.findDOMNode(instance) as Element;
     if (dom) {
       dom.scrollIntoView?.({
-        block: 'center',
+        block: 'nearest',
       });
     }
     this.setState({

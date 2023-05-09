@@ -68,14 +68,17 @@ export class DragAndDrop {
         return;
       }
       const { pointer, event } = mouseMoveEventObj;
-
+      let canDropExtraData = {};
+      if (typeof canDrop !== 'boolean') {
+        canDropExtraData = canDrop.extraData || {};
+      }
       const draggingEventObj = {
         from: this.dragStartObj!.event,
         fromSensor: this.dragStartObj!.sensor,
         fromPointer: this.dragStartObj!.pointer,
         extraData: {
           ...this.dragStartObj!.extraData,
-          ...(canDrop?.extraData || {}),
+          ...canDropExtraData,
         },
         current: event,
         currentSensor: sensor,
@@ -129,13 +132,14 @@ export class DragAndDrop {
       if (this.currentState === 'CANCEL') {
         return;
       }
-      this.emitter.emit('onMouseMove', mouseMoveEventObj);
       const { sensor, pointer, event } = mouseMoveEventObj;
       // 没有任何按键按下的 鼠标移动，直接返回
       if (event.buttons === 0) {
         this.resetDrag();
         return;
       }
+      this.emitter.emit('onMouseMove', mouseMoveEventObj);
+
       if (this.currentState === 'NORMAL') {
         if (this.dragStartObj === null) {
           return;
@@ -156,7 +160,9 @@ export class DragAndDrop {
         if (!canDrag) {
           return;
         }
-        this.dragStartObj = canDrag;
+        if (typeof canDrag !== 'boolean') {
+          this.dragStartObj = canDrag;
+        }
         this.currentState = 'DRAGGING';
         const eventName = 'dragStart';
         const eventObj = {
@@ -177,8 +183,13 @@ export class DragAndDrop {
           ...this.dragStartObj!.extraData,
         },
       });
-      if (!canDrop) {
+      if (canDrop === false) {
         return;
+      }
+
+      let canDropExtraData = {};
+      if (typeof canDrop !== 'boolean') {
+        canDropExtraData = canDrop?.extraData || {};
       }
       const draggingEventIbj = {
         from: this.dragStartObj!.event,
@@ -186,7 +197,7 @@ export class DragAndDrop {
         fromPointer: this.dragStartObj!.pointer,
         extraData: {
           ...this.dragStartObj!.extraData,
-          ...(canDrop?.extraData || {}),
+          ...canDropExtraData,
         },
         current: event,
         currentSensor: sensor,
@@ -217,7 +228,12 @@ export class DragAndDrop {
             ...this.dragStartObj!.extraData,
           },
         });
-        if (canDrop) {
+
+        if (!(canDrop === false)) {
+          let canDropExtraData = {};
+          if (typeof canDrop !== 'boolean') {
+            canDropExtraData = canDrop?.extraData || {};
+          }
           const dropEventName = 'drop';
           const dropEventObj = {
             from: this.dragStartObj!.event,
@@ -225,7 +241,7 @@ export class DragAndDrop {
             fromPointer: this.dragStartObj!.pointer,
             extraData: {
               ...this.dragStartObj!.extraData,
-              ...(canDrop?.extraData || {}),
+              ...canDropExtraData,
             },
             current: event,
             currentSensor: sensor,
