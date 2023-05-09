@@ -12,6 +12,23 @@ export type AdvancePanelProps = {
 
 const properties: CMaterialPropsType = [
   {
+    name: 'id',
+    title: {
+      label: 'id',
+      tip: 'node unique id',
+    },
+    valueType: 'string',
+    setters: [
+      {
+        componentName: 'StringSetter',
+        props: {
+          disabled: true,
+          bordered: false,
+        },
+      },
+    ],
+  },
+  {
     name: 'condition',
     title: {
       label: 'Render',
@@ -146,6 +163,7 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
 
   useEffect(() => {
     const newValue = {
+      id: node.id,
       condition: node.value.condition || true,
       loop: {
         open: loopObj?.open || false,
