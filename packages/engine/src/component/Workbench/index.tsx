@@ -308,7 +308,7 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
             )}
           </div>
           <div className={styles.centerBox}>
-            {subTopToolBarView && <div className={styles.subTopToolbarBox}></div>}
+            {subTopToolBarView && <div className={styles.subTopToolbarBox}>{subTopToolBarView}</div>}
             <div className={styles.canvasBox}>
               <div className={styles.scrollBox}>{bodyView}</div>
             </div>

@@ -5,15 +5,15 @@ title: 页面协议
 
 # PageSchema
 
-| Key            | Value Type        | Description | Example  |
-| :------------- | :---------------- | :---------- | :------- |
-| version        | string            | 协议版本号  | 1.0.0    |
-| name           | string            | 页面名称    | TestPage |
-| css            | CSSType           | 页面 css    | —        |
-| componentsMeta | ComponentMetaType | 页面 css    | —        |
-| thirdLibs      | LibMetaType       | 页面 css    | —        |
-| componentsTree | CRootNodeDataType | 页面 css    | —        |
-| assets         | AssetPackage      | 页面 css    | —        |
+| Key            | Value Type        | Description                           | Example  |
+| :------------- | :---------------- | :------------------------------------ | :------- |
+| version        | string            | 协议版本号                            | 1.0.0    |
+| name           | string            | 页面名称                              | TestPage |
+| css            | CSSType           | 页面 css                              | —        |
+| componentsMeta | ComponentMetaType | 页面使用的组件物料                    | —        |
+| thirdLibs      | LibMetaType       | 页面依赖使用的第三方库描述            | —        |
+| componentsTree | CRootNodeDataType | 页面结构                              | —        |
+| assets         | AssetPackage      | 页面使用的所有资源信息，包含 url 信息 | —        |
 
 更多描述请参考 [【模型定定义】](https://github.com/hlerenow/chameleon/blob/master/packages/model/src/types/page.ts)
 

@@ -53,3 +53,8 @@ Thumbs.db
 packages/build-script/lib/*
 stats.html
 example
+
+
+# drawio
+*.bkp
+*.dtmp
