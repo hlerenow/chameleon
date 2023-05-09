@@ -103,13 +103,13 @@ export type CNodeDataType = {
   id?: string;
   title?: string;
   componentName: string;
-  // 组件类型
-  type?: 'lowcode' | 'normal';
+  // 节点类型
+  type?: 'dynamic' | 'normal';
   // 所有的 props 的 value 需要支持表达式 $$context
   props?: CPropObjDataType;
   state?: Record<string, any>;
   nodeName?: string;
-  // if type is lowcode, schema is required
+  // if type is dynamic, schema is required
   schema?: CPageDataType;
   children?: (string | CNodeDataType)[];
   /**
