@@ -384,7 +384,6 @@ export class DefineReactAdapter {
         let styleEl = mediaStyleDomMap[id];
         if (!styleEl) {
           styleEl = document.createElement('style');
-          styleEl.type = 'text/css';
           mediaStyleDomMap[id] = styleEl;
         }
         styleEl.id = id;
@@ -434,6 +433,7 @@ export class DefineReactAdapter {
         Object.keys(mediaStyleDomMap).forEach((key) => {
           this.domHeader?.removeChild(mediaStyleDomMap[key]);
         });
+        this.mediaStyleDomMap = {};
       };
 
       componentDidMount(): void {
