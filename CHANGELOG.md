@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.14](https://github.com/ByteCrazy/chameleon/compare/v0.0.13...v0.0.14) (2023-05-10)
+
+### ✨ Features | 新功能
+
+* **engine:** 🎸 add node id in advance panel ([d457203](https://github.com/ByteCrazy/chameleon/commit/d45720316ab95f75f6f67a5dbf31bb0030ceb3f1))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, layout:** 🐛 fixed new component can not be add into canvas ([4057fa9](https://github.com/ByteCrazy/chameleon/commit/4057fa925c18bf06325de04b270be5f6c23351c8))
+* **engine, layout:** 🐛 fixed type problem ([751a392](https://github.com/ByteCrazy/chameleon/commit/751a39244228f74138acf7f567d23e888b8ff687))
+* **engine, render:** 🐛 fixed removeMediaCSS method run failed ([9127ec3](https://github.com/ByteCrazy/chameleon/commit/9127ec3d13f43a1c8763b2350bc0224d683da85c))
+
 ## [0.0.13](https://github.com/ByteCrazy/chameleon/compare/v0.0.12...v0.0.13) (2023-05-03)
 
 ### ✨ Features | 新功能

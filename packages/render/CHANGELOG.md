@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.14](https://github.com/ByteCrazy/chameleon/compare/v0.0.13...v0.0.14) (2023-05-10)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, render:** 🐛 fixed removeMediaCSS method run failed ([9127ec3](https://github.com/ByteCrazy/chameleon/commit/9127ec3d13f43a1c8763b2350bc0224d683da85c))
+
 ## [0.0.13](https://github.com/ByteCrazy/chameleon/compare/v0.0.12...v0.0.13) (2023-05-03)
 
 ### ✨ Features | 新功能
