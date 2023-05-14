@@ -15,7 +15,7 @@ const win = window as any;
 win.React = React;
 win.ReactDOM = ReactDOM;
 win.ReactDOMClient = ReactDOMClient;
-const buildVersion = `t_${Date.now()}`;
+const buildVersion = `t_${__BUILD_VERSION__}`;
 
 const assetPackagesList = [
   {

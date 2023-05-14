@@ -64,6 +64,7 @@ const mainConfig = {
     define: {
       'process.env': JSON.stringify('{}'),
       __PACKAGE_VERSION__: JSON.stringify(pkg.version),
+      __BUILD_VERSION__: JSON.stringify(Date.now()),
     },
   },
 };
@@ -87,6 +88,7 @@ const renderConfig = {
     define: {
       'process.env': JSON.stringify('{}'),
       __PACKAGE_VERSION__: JSON.stringify(pkg.version),
+      __BUILD_VERSION__: JSON.stringify(Date.now()),
     },
   },
 };
