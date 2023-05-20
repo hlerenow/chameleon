@@ -43,13 +43,14 @@ export const BasePage: CPageDataType = {
                   afterMount: {
                     type: 'FUNCTION',
                     value:
-                      "function didRender() {\n  const timer = setInterval(() => {\n    $$context.stateManager.bannerState.updateState((oldState) => {\n      const newPage = (oldState.currentPage + 1) % 3;\n      console.log('newPage', newPage, oldState)\n      return {\n        ...oldState,\n        currentPage: newPage\n      };\n    })\n  }, 2 * 1000);\n  $$context.staticState.timer = timer;\n  console.log(11111, timer, window)\n}",
+                      "function didRender() {\n  const staticVar = $$context.getStaticVar();\n  console.log('$$context', $$context)\n  let setTimer = function () {\n    const staticVar = $$context.getStaticVar();\n    if (staticVar.timer) {\n      clearInterval(staticVar.timer);\n    }\n    const timer = setInterval(() => {\n      const bannerStateObj = $$context.getStateObj();\n      console.log('bannerStateObj', bannerStateObj)\n      bannerStateObj.updateState((oldState) => {\n        const newPage = (oldState.currentPage + 1) % 3;\n        console.log('newPage', newPage, oldState)\n        return {\n          ...oldState,\n          currentPage: newPage\n        };\n      })\n    }, 2 * 1000);\n    staticVar.timer = timer;\n  }\n\n  staticVar.preScence = function leftClick(e) {\n    const staticVar = $$context.getStaticVar();\n    if (staticVar.timer) {\n      clearInterval(staticVar.timer);\n    }\n\n    const bannerStateObj = $$context.getStateObj();\n    console.log('currentStateObj', bannerStateObj, $$context, bannerStateObj);\n    if (bannerStateObj.state.currentPage === 0) {\n      setTimer();\n      return\n    }\n    const newPage = (bannerStateObj.state.currentPage - 1) % 3;\n    bannerStateObj.updateState({\n      currentPage: newPage\n    });\n    setTimer();\n  };\n\n  staticVar.nextScence = function rightClick(e) {\n    const staticVar = $$context.getStaticVar();\n    if (staticVar.timer) {\n      clearInterval(staticVar.timer);\n    }\n\n    console.log($$context, e);\n    const currentStateObj = $$context.getStateObj();\n    console.log('currentStateObj', currentStateObj);\n\n    if (currentStateObj.state.currentPage === 2) {\n      setTimer();\n      return\n    }\n    const newPage = (currentStateObj.state.currentPage + 1) % 3\n    currentStateObj.updateState({\n      currentPage: newPage\n    });\n    setTimer();\n  };\n\n  console.log('staticVar', staticVar)\n\n\n  setTimer();\n}",
                   },
                   beforeDestroy: {
                     type: 'FUNCTION',
                     value:
                       "function beforeDestroy() {\n  console.log('clear timer 1111');\n  if ($$context.staticState.timer) {\n    console.log('clear timer');\n    clearInterval($$context.staticState.timer);\n  }  \n}",
                   },
+                  $$attributes: [{}],
                 },
                 componentName: 'CContainer',
                 id: '2vi5b1',
@@ -203,7 +204,7 @@ export const BasePage: CPageDataType = {
                           value: {
                             type: 'FUNCTION',
                             value:
-                              "function leftClick(e) {\n  console.log($$context, e);\n  const currentStateObj = $$context.stateManager.bannerState;\n  console.log('currentStateObj', currentStateObj);\n  if (currentStateObj.state.currentPage === 0) {\n    return\n  }\n  const newPage = (currentStateObj.state.currentPage - 1) % 3;\n  currentStateObj.updateState({\n    currentPage: newPage\n  });\n}",
+                              "function leftClick(e) {\n  const variableSpace =  $$context.getStaticVarById('bannerState')\n  console.log('variableSpace', variableSpace);\n  variableSpace.preScence();\n}",
                           },
                         },
                       ],
@@ -281,7 +282,7 @@ export const BasePage: CPageDataType = {
                           value: {
                             type: 'FUNCTION',
                             value:
-                              "function rightClick(e) {\n  console.log($$context, e);\n  const currentStateObj = $$context.stateManager.bannerState;\n  console.log('currentStateObj', currentStateObj);\n\n  if (currentStateObj.state.currentPage === 2) {\n    return\n  }\n  const newPage = (currentStateObj.state.currentPage + 1) % 3\n  currentStateObj.updateState({\n    currentPage: newPage\n  });\n}",
+                              "function rightClick(e) {\n\n  const variableSpace =  $$context.getStaticVarById('bannerState')\n  console.log('variableSpace', variableSpace);\n  variableSpace.nextScence();\n}",
                           },
                         },
                       ],
