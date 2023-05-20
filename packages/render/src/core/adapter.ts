@@ -2,6 +2,7 @@ import { CPage, CNode, CRootNode } from '@chamn/model';
 import { ReactInstance } from 'react';
 import { RefManager } from './refManager';
 import { RenderInstance } from './type';
+import { StoreManager } from './storeManager';
 
 export type ContextType = {
   params?: Record<any, any>;
@@ -12,8 +13,9 @@ export type ContextType = {
   updateState?: (newState: any) => void;
   refs?: RefManager;
   loopData?: Record<any, any>;
-  // 用于访访问和管理页面被注册为全局的局部 state
+  // 用于访访问和管理页面被注册为全局的局部 state 快照
   stateManager?: Record<string, any>;
+  storeManager?: StoreManager;
   // 用于存储当前节点的临时变量或者方法
   variableSpace?: Record<string, any>;
   variableManager?: Record<string, Record<string, any>>;

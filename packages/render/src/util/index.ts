@@ -75,12 +75,16 @@ export const convertCodeStringToFunction = (
   const newFunc = function (...args: any[]) {
     try {
       const codeBody = `
-        var f = ${functionStr};
         var args = Array.from(arguments);
-        var __$$storeManager__ = args.pop();
-        var $$context = args.pop();
-        $$context.stateManager = __$$storeManager__.getStateSnapshot();
-        return f.apply(f, args)
+        function runTimeFunc() {
+          var f = ${functionStr};
+          var __$$storeManager__ = args.pop();
+          console.log("🚀 ~ file: index.ts:82 ~ runTimeFunc ~ __$$storeManager__:", __$$storeManager__, __$$storeManager__.getStateSnapshot().bannerState)
+          var $$context = args.pop();
+          $$context.stateManager = __$$storeManager__.getStateSnapshot();
+          return f.apply(f, args)
+        }
+        return runTimeFunc();
       `;
       const f = new Function(codeBody);
       f(...args, $$context, storeManager);
@@ -170,4 +174,16 @@ export const flatObject = (obj: Record<string, any>, level = 1) => {
   }
 
   return res;
+};
+
+export const getMatchVal = (val: string, regArr: RegExp[]) => {
+  const list: string[] = [];
+  regArr.forEach((el) => {
+    const reg = el;
+    const res = reg.exec(val);
+    if (res?.length) {
+      list.push(res[1]);
+    }
+  });
+  return list;
 };

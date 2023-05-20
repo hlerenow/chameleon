@@ -23,6 +23,7 @@ import {
   convertCodeStringToFunction,
   formatSourceStylePropertyName,
   getCSSTextValue,
+  getMatchVal,
   getObjFromArrayMap,
   runExpression,
   shouldConstruct,
@@ -346,19 +347,20 @@ export class DefineReactAdapter {
           }
         );
 
-        const list = [...expressionList, ...cssAndClassExpressionList]
+        let storeNameList: string[] = [];
+        [...expressionList, ...cssAndClassExpressionList]
           .map((el) => {
             const targetVal: JSExpressionPropType = el.val;
-            const reg = /\$\$context.stateManager\.(.+?)\./gim;
-            const res = reg.exec(targetVal.value);
-            if (res?.length) {
-              return res[1];
-            } else {
-              return '';
-            }
+            const regArr = [
+              /\$\$context.stateManager\.(.+?)\./gim,
+              /\$\$context.stateManager\["(.+?)"\]/gim,
+              /\$\$context.stateManager\['(.+?)'\]/gim,
+            ];
+            const tempList = getMatchVal(targetVal.value, regArr);
+            storeNameList = [...storeNameList, ...tempList];
           })
           .filter(Boolean);
-        const uniqueList = Array.from(new Set(list));
+        const uniqueList = Array.from(new Set(storeNameList));
         // TODO: list need now repeat
         const disposeList: (() => void)[] = [];
         if (uniqueList.length) {
@@ -480,6 +482,7 @@ export class DefineReactAdapter {
           variableSpace: this.variableSpace,
           updateState: this.updateState,
           staticState: this.staticState,
+          storeManager: that.storeManager,
         };
 
         if (nodeModel.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER) {

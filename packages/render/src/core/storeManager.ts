@@ -23,6 +23,23 @@ export class StoreManager {
     return this.storeMap.get(storeName);
   }
 
+  getState(nodeId: string) {
+    return this.storeMap.get(nodeId)?.getState();
+  }
+
+  getStateObj(nodeId: string) {
+    return {
+      state: this.getState(nodeId),
+      updateState: (newState: Record<any, any>) => {
+        this.setState(nodeId, newState);
+      },
+    };
+  }
+
+  setState(nodeId: string, newState: Record<any, any>) {
+    return this.storeMap.get(nodeId)?.setState(newState);
+  }
+
   connect<T extends Record<any, any> = any>(name: string, cb: (newState: T) => void) {
     const store = this.storeMap.get(name);
     if (store) {
