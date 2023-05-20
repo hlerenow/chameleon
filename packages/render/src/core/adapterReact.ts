@@ -68,7 +68,6 @@ export class DefineReactAdapter {
     let newCtx: ContextType = data;
     if (ctx) {
       newCtx = {
-        variableSpace: {},
         ...data,
       };
       (newCtx as any).__proto__ = ctx || null;
@@ -267,14 +266,15 @@ export class DefineReactAdapter {
       targetComponentRef: React.MutableRefObject<any>;
       listenerHandle: (() => void)[] = [];
       storeState: StoreApi<any>;
-      // not react data
-      staticState: Record<string, any> = {};
-      storeListenDisposeLint: (() => void)[] = [];
+      storeListenDisposeList: (() => void)[] = [];
       // save dom and media css
       domHeader: HTMLHeadElement | undefined;
       mediaStyleDomMap: Record<string, HTMLStyleElement> = {};
       /** 存储当前节点的一些变量和方法，不具有响应性 */
-      variableSpace: Record<string, any>;
+      variableSpace!: {
+        staticVar: Record<any, any>;
+        methods: Record<any, (...args: any) => any>;
+      };
       nodeName: any;
 
       constructor(props: PropsType) {
@@ -312,7 +312,10 @@ export class DefineReactAdapter {
         if (variableSpace) {
           this.variableSpace = variableSpace;
         } else {
-          this.variableSpace = {};
+          this.variableSpace = {
+            staticVar: {},
+            methods: {},
+          };
           that.variableManager.add(nodeName, this.variableSpace);
         }
       }
@@ -332,7 +335,6 @@ export class DefineReactAdapter {
           }
         });
 
-        // TODO: css props、classNames props
         const cssAndClassExpressionList = that.collectSpecialProps(
           {
             css: nodeModel.value.css,
@@ -355,6 +357,10 @@ export class DefineReactAdapter {
               /\$\$context.stateManager\.(.+?)\./gim,
               /\$\$context.stateManager\["(.+?)"\]/gim,
               /\$\$context.stateManager\['(.+?)'\]/gim,
+              /getStateObj\('(.+?)'\)/gim,
+              /getStateObj\("(.+?)"\)/gim,
+              /getStateById\('(.+?)'\)/gim,
+              /getStateById\("(.+?)"\)/gim,
             ];
             const tempList = getMatchVal(targetVal.value, regArr);
             storeNameList = [...storeNameList, ...tempList];
@@ -370,7 +376,7 @@ export class DefineReactAdapter {
               that.storeManager.addStore(storeName, () => {
                 return {};
               });
-              console.log(that.storeManager, storeName, 'not exits');
+              console.warn(that.storeManager, storeName, 'not exits');
             }
             const handle = that.storeManager.connect(storeName, () => {
               this.forceUpdate();
@@ -378,7 +384,7 @@ export class DefineReactAdapter {
             disposeList.push(handle);
           });
         }
-        this.storeListenDisposeLint = disposeList;
+        this.storeListenDisposeList = disposeList;
       }
 
       getStyleDomById = (id: string) => {
@@ -457,7 +463,7 @@ export class DefineReactAdapter {
       }
 
       rebuildNode = () => {
-        this.storeListenDisposeLint.forEach((el) => el());
+        this.storeListenDisposeList.forEach((el) => el());
         this.removeMediaCSS();
         this.connectStore();
         this.addMediaCSS();
@@ -465,13 +471,14 @@ export class DefineReactAdapter {
       };
 
       componentWillUnmount(): void {
-        this.storeListenDisposeLint.forEach((el) => el());
+        this.storeListenDisposeList.forEach((el) => el());
         this.removeMediaCSS();
         that.onComponentDestroy?.(this, nodeModel);
       }
 
       render(): React.ReactNode {
         const { $$context, ...props } = this.props;
+        const nodeName = nodeModel.value.nodeName || nodeModel.id;
         const newOriginalProps = {
           key: nodeModel.id,
           ...nodeModel.props,
@@ -479,10 +486,25 @@ export class DefineReactAdapter {
         };
         const tempContext: ContextType = {
           state: this.state || {},
-          variableSpace: this.variableSpace,
+          staticVar: this.variableSpace.staticVar,
           updateState: this.updateState,
-          staticState: this.staticState,
           storeManager: that.storeManager,
+          getState: () => that.storeManager.getStateObj(nodeName),
+          getStateObj: () => that.storeManager.getStateObj(nodeName),
+          getStateObjById: (nodeId: string) => that.storeManager.getStateObj(nodeId),
+          stateManager: that.storeManager.getStateSnapshot(),
+          getMethods: () => {
+            return that.variableManager.get(nodeName).methods;
+          },
+          getMethodsById: (nodeId: string) => {
+            return that.variableManager.get(nodeId).methods;
+          },
+          getStaticVar: () => {
+            return that.variableManager.get(nodeName).staticVar;
+          },
+          getStaticVarById: (nodeId: string) => {
+            return that.variableManager.get(nodeId).staticVar;
+          },
         };
 
         if (nodeModel.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER) {
@@ -490,9 +512,6 @@ export class DefineReactAdapter {
           tempContext.updateGlobalState = this.updateState;
         }
 
-        tempContext.stateManager = that.storeManager.getStateSnapshot();
-        tempContext.variableSpace = that.variableManager.get(this.nodeName);
-        tempContext.variableManager = that.variableManager.getStateSnapshot();
         const newContext = that.getContext(tempContext, $$context);
         // 需要优先处理处理 methods， methods 内部不能调用 methods 上的方法
         const methodsObj = that.transformProps(
@@ -509,10 +528,7 @@ export class DefineReactAdapter {
           return res;
         }, {} as any);
         newContext.methods = methodMap;
-        if (!newContext.variableSpace) {
-          newContext.variableSpace = {};
-        }
-        newContext.variableSpace.methods = methodMap;
+        this.variableSpace.methods = Object.assign(this.variableSpace.methods, methodMap);
         // 处理循环
         const loopObj = nodeModel.value.loop;
         let loopRes: any[] = [];
@@ -535,7 +551,6 @@ export class DefineReactAdapter {
             const loopContext = that.getContext(
               {
                 [loopDataName]: loopData,
-                staticState: this.staticState,
               },
               newContext
             );

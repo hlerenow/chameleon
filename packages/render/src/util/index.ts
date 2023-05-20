@@ -79,7 +79,6 @@ export const convertCodeStringToFunction = (
         function runTimeFunc() {
           var f = ${functionStr};
           var __$$storeManager__ = args.pop();
-          console.log("🚀 ~ file: index.ts:82 ~ runTimeFunc ~ __$$storeManager__:", __$$storeManager__, __$$storeManager__.getStateSnapshot().bannerState)
           var $$context = args.pop();
           $$context.stateManager = __$$storeManager__.getStateSnapshot();
           return f.apply(f, args)

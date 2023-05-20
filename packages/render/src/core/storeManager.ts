@@ -1,10 +1,10 @@
-import create, { StateCreator, StoreApi } from 'zustand/vanilla';
+import { StateCreator, StoreApi, createStore } from 'zustand/vanilla';
 
 export class StoreManager {
   storeMap: Map<string, StoreApi<any>> = new Map();
 
   addStore(storeName: string, storeState: StateCreator<any>) {
-    const store = create(storeState);
+    const store = createStore(storeState);
     this.storeMap.set(storeName, store);
     (store as any).name = storeName;
 
@@ -44,6 +44,7 @@ export class StoreManager {
     const store = this.storeMap.get(name);
     if (store) {
       return store.subscribe(cb);
+      store;
     } else {
       console.warn('store not exits');
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -54,21 +55,13 @@ export class StoreManager {
   // storeManger 赋值以及 获取需要做转换
   getStateSnapshot() {
     const res: Record<string, any> = {};
-    this.storeMap.forEach((val, key) => {
-      res[key] = {
-        state: val.getState(),
-        updateState: (newState: any) => {
-          val.setState(newState);
-        },
-      };
+    this.storeMap.forEach((_, key) => {
+      res[key] = this.getStateObj(key);
     });
     return res;
   }
 
   destroy() {
-    this.storeMap.forEach((val) => {
-      val.destroy();
-    });
     this.storeMap = new Map();
   }
 }
