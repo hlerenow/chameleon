@@ -10,6 +10,7 @@ const loadAssets = async (assets: AssetPackage[]) => {
     await assetLoader.load();
     // 从子窗口获取物料对象
     const componentCollection = collectVariable(assets, window);
+    console.log('🚀 ~ file: index.tsx:13 ~ loadAssets ~ componentCollection:', componentCollection);
     const components = flatObject(componentCollection);
     return components;
   } catch (e) {
@@ -22,8 +23,10 @@ export const Preview = () => {
   const renderHandle = useRender();
   const [loading, setLoading] = useState(true);
   const [pageComponents, setPageComponents] = useState({});
+  // 需要区分 那些 UI 组件那些第三方库的对象，分别注入
   const loadPageAssets = async (assets: AssetPackage[]) => {
     const components = await loadAssets(assets);
+    console.log('🚀 ~ file: index.tsx:27 ~ loadPageAssets ~ components:', components);
     if (components) {
       setPageComponents(components);
       setLoading(false);

@@ -39,22 +39,26 @@ export type AssetPackage = {
 export type LibMetaType = {
   // unique
   package: string;
+  name: string;
   version: string;
-  exportName: string;
+  exportName?: string;
   destructuring?: boolean;
   // some library need to import css file
-  css?: string;
+  cssPaths?: string[];
   subName?: string;
+  // 库的特殊路径
   main?: string;
 };
 
 export const LibMetaTypeDescribe = object({
   package: string(),
   version: string(),
-  exportName: string(),
+  name: string(),
+  exportName: optional(string()),
   destructuring: optional(boolean()),
   subName: optional(string()),
   main: optional(string()),
+  cssPaths: optional(array(string())),
 });
 
 export const ThirdLibTypeDescribe = array(LibMetaTypeDescribe);

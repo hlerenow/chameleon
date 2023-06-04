@@ -120,13 +120,13 @@ export const App = () => {
   const onReady = useCallback(async (ctx: EnginContext) => {
     const designer = await ctx.pluginManager.onPluginReadyOk('Designer');
     const reloadPage = async () => {
-      setTimeout(() => {
-        const designerExports = designer?.exports as DesignerExports;
-        console.log('to reload');
-        designerExports.reload({
-          assets,
-        });
-      }, 0);
+      // setTimeout(() => {
+      //   const designerExports = designer?.exports as DesignerExports;
+      //   console.log('to reload');
+      //   designerExports.reload({
+      //     assets,
+      //   });
+      // }, 0);
     };
 
     reloadPage();
@@ -260,7 +260,7 @@ export const App = () => {
       plugins={DEFAULT_PLUGIN_LIST}
       schema={page as any}
       material={[...InnerComponentMeta, ...Material]}
-      assetPackagesList={assetPackagesList}
+      // assetPackagesList={assetPackagesList}
       onReady={onReady}
       beforePluginRun={({ pluginManager }) => {
         pluginManager.customPlugin('Designer', (pluginInstance) => {

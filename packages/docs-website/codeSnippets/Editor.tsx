@@ -4,12 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';
 import '@chamn/engine/dist/style.css';
-import {
-  Engine,
-  EnginContext,
-  InnerComponentMeta,
-  plugins,
-} from '@chamn/engine';
+import { Engine, EnginContext, InnerComponentMeta, plugins } from '@chamn/engine';
 import { RollbackOutlined } from '@ant-design/icons';
 import { DesignerExports } from '@chamn/engine/dist/plugins/Designer';
 import './index.css';
@@ -79,11 +74,7 @@ export const App = () => {
       >
         <div className="logo">Chameleon EG</div>
 
-        <a
-          target="_blank"
-          href="https://github.com/hlerenow/chameleon"
-          rel="noreferrer"
-        >
+        <a target="_blank" href="https://github.com/hlerenow/chameleon" rel="noreferrer">
           <Button style={{ marginRight: '10px' }}>Github </Button>
         </a>
 

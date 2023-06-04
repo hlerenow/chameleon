@@ -17,7 +17,16 @@
     "resolveJsonModule": true,
     "isolatedModules": false,
     "noEmit": true,
-    "jsx": "react"
+    "jsx": "react",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "mitt": [
+        "./node_modules/mitt"
+      ]
+    },
   },
   "include": [
     "src"

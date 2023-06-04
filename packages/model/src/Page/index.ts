@@ -63,10 +63,10 @@ export class CPage {
     }
   ) {
     checkPage(data);
-    this.assetPackagesList = options?.assetPackagesList || [];
     this.rawData = JSON.parse(JSON.stringify(data));
     this.materialsModel = new CMaterials(options?.materials || []);
     this.data = parsePage(data, this, this.materialsModel);
+    this.assetPackagesList = [...(options?.assetPackagesList || []), ...(this.data.assets || [])];
   }
 
   updatePage(data: CPageDataType) {

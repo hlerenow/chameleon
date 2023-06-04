@@ -700,5 +700,39 @@ export const BasePage: CPageDataType = {
       },
     ],
   },
-  assets: [],
+  thirdLibs: [
+    {
+      package: 'dayjs',
+      name: 'dayjs',
+      version: '1.0.0',
+    },
+    {
+      package: 'antd',
+      name: 'antd',
+      version: '1.0.0',
+    },
+  ],
+  assets: [
+    {
+      globalName: 'antd',
+      package: 'antd',
+      resources: [
+        {
+          src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.4.4/antd.js',
+        },
+        {
+          src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.4.4/reset.css',
+        },
+      ],
+    },
+    {
+      globalName: 'dayjs',
+      package: 'dayjs',
+      resources: [
+        {
+          src: 'https://cdn.bootcdn.net/ajax/libs/dayjs/1.11.7/dayjs.min.js',
+        },
+      ],
+    },
+  ],
 };
