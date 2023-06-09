@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import styles from './style.module.scss';
 import ReactDOM from 'react-dom';
 import { animationFrame, isDOM } from '../../utils';
 import { RenderInstance } from '@chamn/render';
+import { useInViewport } from 'ahooks';
 
 export type HighlightCanvasRefType = {
   update: () => void;
@@ -19,6 +20,7 @@ export type HighlightBoxPropsType = {
 export const HighlightBox = ({ instance, toolRender, getRef, onRefDestroy, style }: HighlightBoxPropsType) => {
   const [styleObj, setStyleObj] = useState<Record<string, string>>({});
   const [rect, setRect] = useState<DOMRect>();
+  const [toolBoxRect, setToolBoxRect] = useState<DOMRect>();
   const ref = useRef<HighlightCanvasRefType>(null);
 
   const toolBoxRef = useRef<HTMLDivElement>(null);
@@ -100,6 +102,8 @@ export const HighlightBox = ({ instance, toolRender, getRef, onRefDestroy, style
       toolBoxDom.style.height = tempRect?.height + 'px';
     }
     setStyleObj(tempObj);
+
+    setToolBoxRect(toolBoxRef.current?.getBoundingClientRect());
   }, []);
 
   useEffect(() => {
@@ -111,6 +115,16 @@ export const HighlightBox = ({ instance, toolRender, getRef, onRefDestroy, style
       updatePos();
     },
   };
+
+  const [, toolboxShowRatio] = useInViewport(toolBoxRef, {
+    root: toolBoxRef.current?.parentElement?.parentElement,
+  });
+
+  const boxTop = useMemo(() => {
+    return (toolboxShowRatio || 1) < 0.5
+      ? `calc( ${rect?.height || 0}px + ${toolBoxRect?.height || 0}px - 1px )`
+      : '0px';
+  }, [toolboxShowRatio, rect?.height, toolBoxRect?.height]);
 
   if (!targetDom || !instance) {
     return <></>;
@@ -126,7 +140,7 @@ export const HighlightBox = ({ instance, toolRender, getRef, onRefDestroy, style
       }}
     >
       {toolRender && (
-        <div ref={toolBoxRef} className={styles.toolBox}>
+        <div ref={toolBoxRef} className={styles.toolBox} style={{ top: boxTop }}>
           {toolRender}
         </div>
       )}
