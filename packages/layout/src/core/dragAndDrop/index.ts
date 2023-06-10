@@ -301,6 +301,12 @@ export class DragAndDrop {
   resetDrag() {
     this.currentState = 'NORMAL';
   }
+
+  clearSensors() {
+    const oldSensors = this.senors;
+    this.senors = [];
+    oldSensors.forEach((el) => el.destroy());
+  }
 }
 
 export * from './sensor';
