@@ -19,7 +19,6 @@ export type HighlightBoxPropsType = {
 export const HighlightBox = ({ instance, toolRender, getRef, onRefDestroy, style }: HighlightBoxPropsType) => {
   const [styleObj, setStyleObj] = useState<Record<string, string>>({});
   const [rect, setRect] = useState<DOMRect>();
-  const [toolBoxRect, setToolBoxRect] = useState<DOMRect>();
   const ref = useRef<HighlightCanvasRefType>(null);
 
   const toolBoxRef = useRef<HTMLDivElement>(null);
