@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import styles from './style.module.scss';
 import ReactDOM from 'react-dom';
 import { animationFrame, isDOM } from '../../utils';
 import { RenderInstance } from '@chamn/render';
-import { useInViewport } from 'ahooks';
 
 export type HighlightCanvasRefType = {
   update: () => void;
@@ -103,7 +102,20 @@ export const HighlightBox = ({ instance, toolRender, getRef, onRefDestroy, style
     }
     setStyleObj(tempObj);
 
-    setToolBoxRect(toolBoxRef.current?.getBoundingClientRect());
+    if (toolBoxRef.current) {
+      const toolBoxRect = toolBoxRef.current?.getBoundingClientRect();
+
+      const height = toolBoxRect?.height || 0;
+
+      const isOutsideViewport = tempRect.top - height < 0;
+
+      if (isOutsideViewport) {
+        // 向下去整 + 整个高度  + border 2px * 2
+        toolBoxRef.current.style.top = `calc( 100% + ${Math.floor(height)}px + 4px )`;
+      } else {
+        toolBoxRef.current.style.top = '0px';
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -115,16 +127,6 @@ export const HighlightBox = ({ instance, toolRender, getRef, onRefDestroy, style
       updatePos();
     },
   };
-
-  const [, toolboxShowRatio] = useInViewport(toolBoxRef, {
-    root: toolBoxRef.current?.parentElement?.parentElement,
-  });
-
-  const boxTop = useMemo(() => {
-    return (toolboxShowRatio || 1) < 0.5
-      ? `calc( ${rect?.height || 0}px + ${toolBoxRect?.height || 0}px - 1px )`
-      : '0px';
-  }, [toolboxShowRatio, rect?.height, toolBoxRect?.height]);
 
   if (!targetDom || !instance) {
     return <></>;
@@ -140,7 +142,7 @@ export const HighlightBox = ({ instance, toolRender, getRef, onRefDestroy, style
       }}
     >
       {toolRender && (
-        <div ref={toolBoxRef} className={styles.toolBox} style={{ top: boxTop }}>
+        <div ref={toolBoxRef} className={styles.toolBox}>
           {toolRender}
         </div>
       )}
