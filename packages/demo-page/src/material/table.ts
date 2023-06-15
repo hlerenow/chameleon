@@ -4,6 +4,7 @@ export const TableMeta: CMaterialType = {
   title: 'Table',
   componentName: 'Table',
   npm: {
+    name: 'MockMaterial',
     package: '@chamn/mock-material',
     exportName: 'Table',
     version: '1.0.0',

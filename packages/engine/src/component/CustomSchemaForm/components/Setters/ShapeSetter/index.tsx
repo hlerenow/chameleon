@@ -17,6 +17,7 @@ export const ShapeSetter: CSetter<CShapeSetterProps> = ({
   elements,
   value,
   setterContext,
+  initialValue,
 }: CSetterProps<CShapeSetterProps>) => {
   const { keyPaths } = setterContext;
   const formRef = useRef<CForm>(null);
@@ -35,7 +36,7 @@ export const ShapeSetter: CSetter<CShapeSetterProps> = ({
       <CForm
         ref={formRef}
         name={keyPaths.join('.')}
-        initialValue={value || {}}
+        initialValue={value || initialValue || {}}
         onValueChange={(val) => {
           onValueChange?.(val);
         }}

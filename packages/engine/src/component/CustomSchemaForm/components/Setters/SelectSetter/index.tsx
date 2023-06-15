@@ -5,6 +5,7 @@ import { CSetter, CSetterProps } from '../type';
 export const SelectSetter: CSetter<SelectProps> = ({
   onValueChange,
   setterContext,
+  initialValue,
   ...props
 }: CSetterProps<SelectProps>) => {
   const { keyPaths, onSetterChange } = setterContext;
@@ -23,6 +24,7 @@ export const SelectSetter: CSetter<SelectProps> = ({
           width: '100%',
         }}
         {...props}
+        value={props.value ?? initialValue}
         onChange={(val, option) => {
           props.onChange?.(val, option);
           onValueChange?.(val);

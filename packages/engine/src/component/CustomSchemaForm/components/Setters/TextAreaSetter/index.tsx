@@ -6,6 +6,7 @@ import { TextAreaProps } from 'antd/es/input';
 export const TextAreaSetter: CSetter<TextAreaProps> = ({
   onValueChange,
   setterContext,
+  initialValue,
   ...props
 }: CSetterProps<TextAreaProps>) => {
   const { keyPaths, onSetterChange } = setterContext;
@@ -19,6 +20,7 @@ export const TextAreaSetter: CSetter<TextAreaProps> = ({
     >
       <Input.TextArea
         {...props}
+        value={props.value ?? initialValue}
         onChange={(e) => {
           props.onChange?.(e);
           onValueChange?.(e.target.value);

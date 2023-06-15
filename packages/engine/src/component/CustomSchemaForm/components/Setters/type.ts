@@ -8,6 +8,7 @@ export type CSetter<T = any> = {
 export type CSetterProps<T = { _: any }> = {
   onValueChange?: ((val: any) => void) | undefined;
   value?: unknown;
+  initialValue?: undefined;
   setterContext: {
     pluginCtx: CPluginCtx;
     setCollapseHeaderExt?: (el: React.ReactNode) => void;
