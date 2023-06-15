@@ -180,6 +180,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   }
 
   init() {
+    this.dnd.clearSensors();
     this.iframeContainer.destroy();
     this.iframeContainer = new IFrameContainer();
 
