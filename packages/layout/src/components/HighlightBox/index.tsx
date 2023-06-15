@@ -61,6 +61,23 @@ export const HighlightBox = ({ instance, toolRender, getRef, onRefDestroy, style
     };
   }, []);
 
+  const updateToolBoxPosition = useCallback((targetRect: DOMRect) => {
+    if (toolBoxRef.current) {
+      const toolBoxRect = toolBoxRef.current?.getBoundingClientRect();
+
+      const height = toolBoxRect?.height || 0;
+
+      const isOutsideViewport = targetRect.top - height < 0;
+
+      if (isOutsideViewport) {
+        // 向下去整 + 整个高度  + border 2px * 2
+        toolBoxRef.current.style.top = `calc( 100% + ${Math.floor(height)}px + 4px )`;
+      } else {
+        toolBoxRef.current.style.top = '0px';
+      }
+    }
+  }, []);
+
   const updatePos = useCallback(() => {
     const tempInstance = instanceRef.current;
     let instanceDom: HTMLElement | null = null;
@@ -100,6 +117,9 @@ export const HighlightBox = ({ instance, toolRender, getRef, onRefDestroy, style
       toolBoxDom.style.height = tempRect?.height + 'px';
     }
     setStyleObj(tempObj);
+
+    // auto detect tool box position
+    updateToolBoxPosition(tempRect);
   }, []);
 
   useEffect(() => {
