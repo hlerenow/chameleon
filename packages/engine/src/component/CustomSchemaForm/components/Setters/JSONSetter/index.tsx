@@ -6,6 +6,7 @@ import { MonacoEditor, MonacoEditorInstance } from '../../../../MonacoEditor';
 export const JSONSetter: CSetter<any> = ({
   onValueChange,
   setterContext,
+  initialValue,
   ...props
 }: CSetterProps<any>) => {
   const { keyPaths, onSetterChange } = setterContext;
@@ -62,7 +63,7 @@ export const JSONSetter: CSetter<any> = ({
               onDidMount={(editor) => {
                 editorRef.current = editor;
               }}
-              initialValue={JSON.stringify(props.value || {}, null, 2)}
+              initialValue={JSON.stringify(props.value ?? (initialValue || {}), null, 2)}
               language={'json'}
               options={{
                 automaticLayout: true,

@@ -35,6 +35,7 @@ const CustomSchemaFormCore = (props: CustomSchemaFormProps, ref: Ref<CustomSchem
     customSetterMap,
   } = props;
   const properties: CMaterialPropsType = originProperties;
+  console.log('🚀 ~ file: index.tsx:38 ~ CustomSchemaFormCore ~ properties:', properties);
   return (
     <CCustomSchemaFormContext.Provider
       value={{
@@ -69,7 +70,7 @@ const CustomSchemaFormCore = (props: CustomSchemaFormProps, ref: Ref<CustomSchem
           >
             {properties.map((property) => {
               if (isSpecialMaterialPropType(property)) {
-                property.content;
+                console.log('Current not Support type config for props, wait future....');
               } else {
                 const title = getMTitle(property.title);
                 const tip = getMTitleTip(property.title);

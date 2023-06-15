@@ -16,11 +16,12 @@ export const CSSValueSetter: CSetter<CSSValueSetterProps> = ({
   setterContext,
   propertyKey = '',
   value,
+  initialValue,
   ...props
 }: CSetterProps<CSSValueSetterProps>) => {
   const { keyPaths, onSetterChange } = setterContext;
   const propertyValueRef = useRef<BaseSelectRef | null>(null);
-  const [innerValue, setInnerVal] = useState<any>(value || '');
+  const [innerValue, setInnerVal] = useState<any>(value ?? (initialValue || ''));
   const [focusState, setFocusState] = useState(false);
   const updateOuterValue = () => {
     onValueChange?.(innerValue);

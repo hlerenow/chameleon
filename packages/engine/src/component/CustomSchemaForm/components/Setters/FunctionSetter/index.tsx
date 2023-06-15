@@ -5,7 +5,12 @@ import { MonacoEditor, MonacoEditorInstance } from '../../../../MonacoEditor';
 import { DefaultTslibSource } from './defaultDts';
 import { CNodePropsTypeEnum } from '@chamn/model';
 
-export const FunctionSetter: CSetter<any> = ({ onValueChange, setterContext, ...props }: CSetterProps<any>) => {
+export const FunctionSetter: CSetter<any> = ({
+  onValueChange,
+  initialValue,
+  setterContext,
+  ...props
+}: CSetterProps<any>) => {
   const editorRef = useRef<MonacoEditorInstance | null>(null);
   const [open, setOpen] = useState(false);
   const onInnerValueChange = () => {
@@ -83,7 +88,7 @@ export const FunctionSetter: CSetter<any> = ({ onValueChange, setterContext, ...
               onDidMount={(editor) => {
                 editorRef.current = editor;
               }}
-              initialValue={props.value?.value || ''}
+              initialValue={props.value?.value ?? (initialValue || '')}
               language={'javascript'}
               options={{
                 automaticLayout: true,

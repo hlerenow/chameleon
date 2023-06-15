@@ -53,7 +53,13 @@ export const ButtonMeta: CMaterialType = {
       name: 'children',
       title: '文本',
       valueType: 'string',
-      setters: ['StringSetter', 'ExpressionSetter'],
+      setters: [
+        {
+          componentName: 'StringSetter',
+          initialValue: '123',
+        },
+        'ExpressionSetter',
+      ],
     },
     {
       name: 'onClick',

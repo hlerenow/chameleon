@@ -5,8 +5,9 @@ import { CSetter, CSetterProps } from '../type';
 export const StringSetter: CSetter<InputProps> = ({
   onValueChange,
   setterContext,
+  initialValue,
   ...props
-}: CSetterProps<InputProps>) => {
+}: CSetterProps<InputProps & { initialValue?: string }>) => {
   const { keyPaths, onSetterChange } = setterContext;
   return (
     <ConfigProvider
@@ -18,6 +19,7 @@ export const StringSetter: CSetter<InputProps> = ({
     >
       <Input
         {...props}
+        value={props.value ?? initialValue}
         onChange={(e) => {
           props.onChange?.(e);
           onValueChange?.(e.target.value);

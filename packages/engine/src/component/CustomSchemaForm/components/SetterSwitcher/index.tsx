@@ -97,10 +97,10 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
   if (menuItems.length === 1) {
     switcher = null;
   }
-
   const setterProps = useMemo(() => {
     let newProps = {
       ...(currentSetter?.props || {}),
+      initialValue: currentSetter?.initialValue,
     };
     const target = setters.find((el) => el.componentName === currentSetter?.componentName);
     if (target) {
