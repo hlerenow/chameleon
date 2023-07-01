@@ -42,7 +42,7 @@
     "@dnd-kit/sortable": "^7.0.2",
     "@dnd-kit/utilities": "^3.2.1",
     "ahooks": "^3.7.4",
-    "antd": "^5.0.0",
+    "antd": "^5.6.3",
     "consola": "^2.15.3",
     "i18next": "^22.1.5",
     "lodash-es": "^4.17.21",

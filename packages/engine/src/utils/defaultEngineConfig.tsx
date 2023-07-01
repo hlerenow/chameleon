@@ -1,4 +1,5 @@
 import { LayoutPropsType, collectVariable, flatObject } from '@chamn/layout';
+import { getComponentsLibs, getThirdLibs } from '@chamn/render';
 
 /** 默认使用 react 18 模式渲染 */
 export const beforeInitRender: LayoutPropsType['beforeInitRender'] = async ({ iframe }) => {
@@ -27,21 +28,31 @@ export const defaultRender: LayoutPropsType['customRender'] = async ({
   const IframeReactDOM = iframeWindow.ReactDOMClient!;
   const CRender = iframeWindow.CRender!;
 
+  // 从子窗口获取物料对象
+  const pageInfo = page || pageModel?.export();
+  if (!pageInfo) {
+    console.log('page schema is empty');
+    return;
+  }
+  const allAssets = [...assets, ...(pageInfo.assets || [])];
   // 注入组件物料资源
-  const assetLoader = new CRender.AssetLoader(assets, {
+  const assetLoader = new CRender.AssetLoader(allAssets, {
     window: iframeContainer.getWindow()!,
   });
   assetLoader
     .onSuccess(() => {
-      // 从子窗口获取物料对象
-      const componentCollection = collectVariable(assets, iframeWindow);
-      const components = flatObject(componentCollection);
+      const allLibs = collectVariable(allAssets, iframeWindow);
 
+      const componentsLibs = flatObject(getComponentsLibs(allLibs, pageInfo.componentsMeta));
+      const thirdLibs = getThirdLibs(allLibs, pageInfo.thirdLibs || []);
       const App = IframeReact?.createElement(CRender.DesignRender, {
         adapter: CRender?.ReactAdapter,
         page: page,
         pageModel: pageModel,
-        components,
+        components: componentsLibs,
+        $$context: {
+          thirdLibs,
+        },
         onMount: (designRenderInstance) => {
           ready(designRenderInstance);
         },

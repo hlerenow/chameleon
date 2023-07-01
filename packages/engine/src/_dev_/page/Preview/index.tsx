@@ -1,6 +1,14 @@
-import React from 'react';
 import { useEffect, useState } from 'react';
-import { ReactAdapter, Render, useRender, AssetLoader, collectVariable, flatObject } from '@chamn/render';
+import {
+  ReactAdapter,
+  Render,
+  useRender,
+  AssetLoader,
+  collectVariable,
+  flatObject,
+  getComponentsLibs,
+  getThirdLibs,
+} from '@chamn/render';
 import { AssetPackage, CPageDataType } from '@chamn/model';
 
 const loadAssets = async (assets: AssetPackage[]) => {
@@ -10,9 +18,7 @@ const loadAssets = async (assets: AssetPackage[]) => {
     await assetLoader.load();
     // 从子窗口获取物料对象
     const componentCollection = collectVariable(assets, window);
-    console.log('🚀 ~ file: index.tsx:13 ~ loadAssets ~ componentCollection:', componentCollection);
-    const components = flatObject(componentCollection);
-    return components;
+    return componentCollection;
   } catch (e) {
     return null;
   }
@@ -23,12 +29,16 @@ export const Preview = () => {
   const renderHandle = useRender();
   const [loading, setLoading] = useState(true);
   const [pageComponents, setPageComponents] = useState({});
+  const [renderContext, setRenderContext] = useState({});
   // 需要区分 那些 UI 组件那些第三方库的对象，分别注入
-  const loadPageAssets = async (assets: AssetPackage[]) => {
-    const components = await loadAssets(assets);
-    console.log('🚀 ~ file: index.tsx:27 ~ loadPageAssets ~ components:', components);
-    if (components) {
-      setPageComponents(components);
+  const loadPageAssets = async (pageInfo: CPageDataType) => {
+    const assets = pageInfo.assets || [];
+    const allLibs = (await loadAssets(assets)) || {};
+    const componentsLibs = flatObject(getComponentsLibs(allLibs, pageInfo.componentsMeta));
+    const thirdLibs = getThirdLibs(allLibs, pageInfo.thirdLibs || []);
+    if (componentsLibs) {
+      setPageComponents(componentsLibs);
+      setRenderContext({ thirdLibs });
       setLoading(false);
     }
   };
@@ -37,7 +47,7 @@ export const Preview = () => {
     if (localPage) {
       const page: CPageDataType = JSON.parse(localPage);
       setPage(page);
-      loadPageAssets(page.assets || []);
+      loadPageAssets(page);
     }
   }, []);
 
@@ -53,6 +63,7 @@ export const Preview = () => {
         }}
         render={renderHandle}
         adapter={ReactAdapter}
+        $$context={renderContext}
       />
     </div>
   );

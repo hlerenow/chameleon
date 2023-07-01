@@ -167,7 +167,7 @@ export const App = () => {
                   />
                 </div>
               ),
-              footer: null,
+              footer: <></>,
             });
           }}
         >
@@ -198,7 +198,7 @@ export const App = () => {
       // 传入组件物料
       material={[...InnerComponentMeta, ...Material]}
       // 组件物料对应的 js 运行库，只能使用 umd 模式的 js
-      assetPackagesList={assetPackagesList}
+      // assetPackagesList={assetPackagesList}
       beforePluginRun={({ pluginManager }) => {
         pluginManager.customPlugin('RightPanel', (pluginInstance) => {
           pluginInstance.ctx.config.customPropertySetterMap = {

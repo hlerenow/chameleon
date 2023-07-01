@@ -1,7 +1,7 @@
 /* eslint-disable react/no-find-dom-node */
 import React from 'react';
 import styles from './index.module.scss';
-import { RenderInstance } from '@chamn/render';
+import { RenderInstance, getComponentsLibs, getThirdLibs } from '@chamn/render';
 import { DesignRender, DesignRenderProp } from '@chamn/render';
 import { IFrameContainer } from './core/iframeContainer';
 import { addEventListenerReturnCancel, animationFrame, collectVariable, flatObject } from './utils';
@@ -36,6 +36,7 @@ export type LayoutDragEvent = DragAndDropEventObj;
 
 export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   renderJSUrl?: string;
+  /** 编辑模式下需要额外加在的资源信息 */
   assets?: AssetPackage[];
   onSelectNode?: (node: CNode | CRootNode | null, event: MouseEvent | null | undefined) => Promise<boolean | void>;
   onHoverNode?: (node: CNode | CRootNode | null, dragNode: CNode | CRootNode, event: MouseEvent) => void;
@@ -236,16 +237,27 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     assetLoader
       .onSuccess(() => {
         // 从子窗口获取物料对象
-        const componentCollection = collectVariable(this.assets, iframeWindow);
-        const components = flatObject(componentCollection);
+        const pageInfo = this.props.page || this.props.pageModel?.export();
+        if (!pageInfo) {
+          console.log('page schema is empty');
+          return;
+        }
+        const allLibs = collectVariable(this.assets, iframeWindow);
+
+        const componentsLibs = flatObject(getComponentsLibs(allLibs, pageInfo.componentsMeta));
+        const thirdLibs = getThirdLibs(allLibs, pageInfo.thirdLibs || []);
 
         const App = IframeReact?.createElement(CRender.DesignRender, {
           adapter: CRender?.ReactAdapter,
           page: this.props.page,
           pageModel: this.props.pageModel,
-          components,
+          components: componentsLibs,
+          $$context: {
+            thirdLibs,
+          },
           onMount: (designRenderInstance) => {
             this.designRenderRef.current = designRenderInstance;
+
             this.registerDragAndDropEvent();
             this.registerSelectEvent();
             this.registerHoverEvent();
@@ -406,6 +418,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       this.eventExposeHandler.push(
         addEventListenerReturnCancel<'click'>(
           iframeDoc.body,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ev,
           async (e) => {
             const targetComponentInstance = this.designRenderRef.current?.getInstanceByDom(e.target as HTMLElement);
