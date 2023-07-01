@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.15](https://github.com/ByteCrazy/chameleon/compare/v0.0.14...v0.0.15) (2023-07-01)
+
+### ✨ Features | 新功能
+
+* **demo-page, docs-website, engine, model, render:** 🎸 optimize assets load ([3ee6d58](https://github.com/ByteCrazy/chameleon/commit/3ee6d58a88e5af3fc631723240783d5c97a273b0))
+* **demo-page, engine:** 🎸 setter support initialValue ([794d807](https://github.com/ByteCrazy/chameleon/commit/794d8072518cb3b1a897b04a2e96f5ca53fdb365))
+
 ## [0.0.14](https://github.com/ByteCrazy/chameleon/compare/v0.0.13...v0.0.14) (2023-05-10)
 
 **Note:** Version bump only for package @chamn/demo-page

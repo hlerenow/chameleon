@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.15](https://github.com/ByteCrazy/chameleon/compare/v0.0.14...v0.0.15) (2023-07-01)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, layout:** 🐛 fixed component will be add repeatedly after reload page ([1507549](https://github.com/ByteCrazy/chameleon/commit/1507549632c3c6e09d8555fd0286fcc72855c358))
+
+### ✨ Features | 新功能
+
+* auto detect toolbox dir ([#13](https://github.com/ByteCrazy/chameleon/issues/13)) ([4047408](https://github.com/ByteCrazy/chameleon/commit/404740870a658fa1740abe29ca50feac4a4028e4))
+* **docs-website, engine, layout, material, render:** 🎸 support inject thridLib on $context ([ca2f074](https://github.com/ByteCrazy/chameleon/commit/ca2f07492b713c32e5a41d1f250f7888763cb665))
+
 ## [0.0.14](https://github.com/ByteCrazy/chameleon/compare/v0.0.13...v0.0.14) (2023-05-10)
 
 ### 🐛 Bug Fixes | Bug 修复

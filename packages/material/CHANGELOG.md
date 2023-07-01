@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.15](https://github.com/ByteCrazy/chameleon/compare/v0.0.14...v0.0.15) (2023-07-01)
+
+### ✨ Features | 新功能
+
+* **docs-website, engine, layout, material, render:** 🎸 support inject thridLib on $context ([ca2f074](https://github.com/ByteCrazy/chameleon/commit/ca2f07492b713c32e5a41d1f250f7888763cb665))
+
 ## [0.0.14](https://github.com/ByteCrazy/chameleon/compare/v0.0.13...v0.0.14) (2023-05-10)
 
 **Note:** Version bump only for package @chamn/material
