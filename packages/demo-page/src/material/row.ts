@@ -7,6 +7,7 @@ export const RowMeta: CMaterialType = {
     package: '@chamn/mock-material',
     exportName: 'Row',
     version: '1.0.0',
+    name: 'Row',
   },
   icon: 'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
   props: [

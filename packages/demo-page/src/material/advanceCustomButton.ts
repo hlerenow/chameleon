@@ -1,11 +1,12 @@
 import { CMaterialType } from '@chamn/model';
 
-export const ButtonMeta: CMaterialType = {
+export const AdvanceButtonMeta: CMaterialType = {
   title: 'Button',
   componentName: 'Button',
   npm: {
     package: '@chamn/mock-material',
     exportName: 'Button',
+    name: 'Button',
     version: '1.0.0',
   },
   icon: 'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
@@ -106,7 +107,7 @@ export const ButtonMeta: CMaterialType = {
   ],
   snippets: [
     {
-      title: '基础按钮',
+      title: '自定义按钮',
       snapshot:
         'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
       description:

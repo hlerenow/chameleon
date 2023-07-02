@@ -218,29 +218,36 @@ export const CSSEditor = (props: CSSEditorProps) => {
           style={{
             marginBottom: '10px',
           }}
-        >
-          <Collapse.Panel header={<span>Normal</span>} key="normal">
-            <CSSPropertiesEditor
-              ref={(ref) => {
-                cssPropertyRefMap.current['normal'] = ref;
-              }}
-              onValueChange={(val) => updateCssVal('normal', val)}
-              initialValue={currentCssStateVal['normal']}
-            />
-          </Collapse.Panel>
-          {mediaQueryList.map((el) => {
-            return (
-              <Collapse.Panel header={<span>{el.label}</span>} key={el.key}>
+          items={[
+            {
+              key: 'normal',
+              label: <span>Normal</span>,
+              children: (
                 <CSSPropertiesEditor
                   ref={(ref) => {
-                    cssPropertyRefMap.current[el.key] = ref;
+                    cssPropertyRefMap.current['normal'] = ref;
                   }}
-                  onValueChange={(val) => updateCssVal(el.key, val)}
+                  onValueChange={(val) => updateCssVal('normal', val)}
+                  initialValue={currentCssStateVal['normal']}
                 />
-              </Collapse.Panel>
-            );
-          })}
-        </Collapse>
+              ),
+            },
+            ...mediaQueryList.map((el) => {
+              return {
+                key: el.key,
+                label: <span>{el.label}</span>,
+                children: (
+                  <CSSPropertiesEditor
+                    ref={(ref) => {
+                      cssPropertyRefMap.current[el.key] = ref;
+                    }}
+                    onValueChange={(val) => updateCssVal(el.key, val)}
+                  />
+                ),
+              };
+            }),
+          ]}
+        ></Collapse>
       </Card>
     </>
   );

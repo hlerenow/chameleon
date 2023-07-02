@@ -5,7 +5,7 @@ import i18n from './i18n/index';
 import { CPlugin, PluginManager } from './core/pluginManager';
 import mitt, { Emitter } from 'mitt';
 import { AssetPackage, CMaterialType, CNode, CPage, CPageDataType, CRootNode, EmptyPage } from '@chamn/model';
-import { defaultRender, beforeInitRender } from './utils/defaultEngineConfig';
+import { getDefaultRender, beforeInitRender } from './utils/defaultEngineConfig';
 
 export type EnginContext = {
   pluginManager: PluginManager;
@@ -16,6 +16,7 @@ export type EngineProps = {
   plugins: CPlugin[];
   schema: CPageDataType;
   material?: CMaterialType[];
+  components?: Record<string, any>;
   assetPackagesList?: AssetPackage[];
   beforePluginRun?: (options: { pluginManager: PluginManager }) => void;
   onReady?: (ctx: EnginContext) => void;
@@ -75,7 +76,8 @@ export class Engine extends React.Component<EngineProps> {
     // 使用默认的渲染策略
     pluginManager.customPlugin('Designer', (pluginInstance) => {
       pluginInstance.ctx.config.beforeInitRender = beforeInitRender;
-      pluginInstance.ctx.config.customRender = defaultRender;
+      pluginInstance.ctx.config.customRender = getDefaultRender(this.props.components || {});
+      pluginInstance.ctx.config.components = this.props.components;
       return pluginInstance;
     });
     this.props.beforePluginRun?.({

@@ -80,17 +80,22 @@ export const VisualPanelPlus = (props: { node: CNode | CRootNode; pluginCtx: CPl
         style={{
           marginBottom: '10px',
         }}
-      >
-        <Collapse.Panel header={<span className={styles.header}>Style Variable Bind</span>} key="origin-css-edit">
-          <CSSPropertiesVariableBindEditor
-            ref={formRef}
-            initialValue={formatStyle.expressionProperty}
-            onValueChange={(val) => {
-              onUpdateStyle([...formatStyle.normalProperty, ...val]);
-            }}
-          />
-        </Collapse.Panel>
-      </Collapse>
+        items={[
+          {
+            key: 'origin-css-edit',
+            label: <span className={styles.header}>Style Variable Bind</span>,
+            children: (
+              <CSSPropertiesVariableBindEditor
+                ref={formRef}
+                initialValue={formatStyle.expressionProperty}
+                onValueChange={(val) => {
+                  onUpdateStyle([...formatStyle.normalProperty, ...val]);
+                }}
+              />
+            ),
+          },
+        ]}
+      ></Collapse>
       <CSSEditor handler={cssEditorRef} onValueChange={onUpdateCss} />
     </div>
   );

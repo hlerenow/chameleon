@@ -133,25 +133,34 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
           marginBottom: '10px',
         }}
         defaultActiveKey={[props.name]}
-      >
-        <Collapse.Panel
-          header={
-            <div className={styles.collapseHeader}>
-              <span
-                style={{
-                  flex: 1,
-                }}
-              >
-                {props.label}
-              </span>
-              {collapseHeaderExt}
-              {switcher}
-            </div>
-          }
-          key={props.name}
-        >
-          {useField && (
-            <CField {...props} noStyle {...conditionProps}>
+        items={[
+          {
+            label: (
+              <div className={styles.collapseHeader}>
+                <span
+                  style={{
+                    flex: 1,
+                  }}
+                >
+                  {props.label}
+                </span>
+                {collapseHeaderExt}
+                {switcher}
+              </div>
+            ),
+            children: useField ? (
+              <CField {...props} noStyle {...conditionProps}>
+                <CurrentSetterComp
+                  {...setterProps}
+                  setterContext={{
+                    ...setterContext,
+                    keyPaths: [...keyPaths],
+                    label: props.label,
+                    setCollapseHeaderExt: setCollapseHeaderExt,
+                  }}
+                />
+              </CField>
+            ) : (
               <CurrentSetterComp
                 {...setterProps}
                 setterContext={{
@@ -161,21 +170,10 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
                   setCollapseHeaderExt: setCollapseHeaderExt,
                 }}
               />
-            </CField>
-          )}
-          {!useField && (
-            <CurrentSetterComp
-              {...setterProps}
-              setterContext={{
-                ...setterContext,
-                keyPaths: [...keyPaths],
-                label: props.label,
-                setCollapseHeaderExt: setCollapseHeaderExt,
-              }}
-            />
-          )}
-        </Collapse.Panel>
-      </Collapse>
+            ),
+          },
+        ]}
+      ></Collapse>
     );
   } else if (['ShapeSetter'].includes(currentSetter?.componentName || '')) {
     bodyView = (
@@ -210,33 +208,35 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
             bordered={false}
             // defaultActiveKey={[props.name]}
             style={{ flex: 1 }}
-          >
-            <Collapse.Panel
-              header={
-                <div className={styles.collapseHeader}>
-                  <span
-                    style={{
-                      flex: 1,
-                    }}
-                  >
-                    {props.label}
-                  </span>
-                  {switcher}
-                </div>
-              }
-              key={props.name}
-            >
-              <CField {...props} noStyle {...conditionProps}>
-                <CurrentSetterComp
-                  {...setterProps}
-                  setterContext={{
-                    ...setterContext,
-                    keyPaths: [...keyPaths],
-                  }}
-                />
-              </CField>
-            </Collapse.Panel>
-          </Collapse>
+            items={[
+              {
+                key: props.name,
+                label: (
+                  <div className={styles.collapseHeader}>
+                    <span
+                      style={{
+                        flex: 1,
+                      }}
+                    >
+                      {props.label}
+                    </span>
+                    {switcher}
+                  </div>
+                ),
+                children: (
+                  <CField {...props} noStyle {...conditionProps}>
+                    <CurrentSetterComp
+                      {...setterProps}
+                      setterContext={{
+                        ...setterContext,
+                        keyPaths: [...keyPaths],
+                      }}
+                    />
+                  </CField>
+                ),
+              },
+            ]}
+          ></Collapse>
         )}
 
         {props.suffix ?? null}

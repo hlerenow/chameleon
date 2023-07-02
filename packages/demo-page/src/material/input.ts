@@ -6,6 +6,7 @@ export const InputMeta: CMaterialType = {
   npm: {
     package: '@chamn/mock-material',
     exportName: 'Input',
+    name: 'Input',
     version: '1.0.0',
   },
   icon: 'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',

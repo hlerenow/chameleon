@@ -10,6 +10,7 @@ import { DesignerExports } from '../../../plugins/Designer';
 import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 import { InnerComponentMeta } from '../../../material/innerMaterial';
 import { RollbackOutlined } from '@ant-design/icons';
+import { TestComponents } from '@/_dev_/lib';
 
 const win = window as any;
 win.React = React;
@@ -194,6 +195,7 @@ export const App = () => {
   return (
     <Engine
       plugins={DEFAULT_PLUGIN_LIST}
+      components={TestComponents}
       schema={page as any}
       // 传入组件物料
       material={[...InnerComponentMeta, ...Material]}

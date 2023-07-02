@@ -7,6 +7,7 @@ export const ModalMeta: CMaterialType = {
     package: '@chamn/mock-material',
     exportName: 'Modal',
     version: '1.0.0',
+    name: 'Modal',
   },
   icon: 'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
   props: [

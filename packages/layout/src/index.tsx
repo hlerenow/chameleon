@@ -226,51 +226,51 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
   }
 
-  initIframeLogic() {
-    const iframeWindow = this.iframeContainer.getWindow()!;
-    const iframeDoc = this.iframeContainer.getDocument()!;
-    const CRender = iframeWindow.CRender!;
-    const IframeReact = iframeWindow.React!;
-    const IframeReactDOM = iframeWindow.ReactDOMClient!;
-    // 注入组件物料资源
-    const assetLoader = new CRender.AssetLoader(this.assets);
-    assetLoader
-      .onSuccess(() => {
-        // 从子窗口获取物料对象
-        const pageInfo = this.props.page || this.props.pageModel?.export();
-        if (!pageInfo) {
-          console.log('page schema is empty');
-          return;
-        }
-        const allLibs = collectVariable(this.assets, iframeWindow);
+  // initIframeLogic() {
+  //   const iframeWindow = this.iframeContainer.getWindow()!;
+  //   const iframeDoc = this.iframeContainer.getDocument()!;
+  //   const CRender = iframeWindow.CRender!;
+  //   const IframeReact = iframeWindow.React!;
+  //   const IframeReactDOM = iframeWindow.ReactDOMClient!;
+  //   // 注入组件物料资源
+  //   const assetLoader = new CRender.AssetLoader(this.assets);
+  //   assetLoader
+  //     .onSuccess(() => {
+  //       // 从子窗口获取物料对象
+  //       const pageInfo = this.props.page || this.props.pageModel?.export();
+  //       if (!pageInfo) {
+  //         console.log('page schema is empty');
+  //         return;
+  //       }
+  //       const allLibs = collectVariable(this.assets, iframeWindow);
 
-        const componentsLibs = flatObject(getComponentsLibs(allLibs, pageInfo.componentsMeta));
-        const thirdLibs = getThirdLibs(allLibs, pageInfo.thirdLibs || []);
+  //       const componentsLibs = flatObject(getComponentsLibs(allLibs, pageInfo.componentsMeta));
+  //       const thirdLibs = getThirdLibs(allLibs, pageInfo.thirdLibs || []);
 
-        const App = IframeReact?.createElement(CRender.DesignRender, {
-          adapter: CRender?.ReactAdapter,
-          page: this.props.page,
-          pageModel: this.props.pageModel,
-          components: componentsLibs,
-          $$context: {
-            thirdLibs,
-          },
-          onMount: (designRenderInstance) => {
-            this.designRenderRef.current = designRenderInstance;
+  //       const App = IframeReact?.createElement(CRender.DesignRender, {
+  //         adapter: CRender?.ReactAdapter,
+  //         page: this.props.page,
+  //         pageModel: this.props.pageModel,
+  //         components: componentsLibs,
+  //         $$context: {
+  //           thirdLibs,
+  //         },
+  //         onMount: (designRenderInstance) => {
+  //           this.designRenderRef.current = designRenderInstance;
 
-            this.registerDragAndDropEvent();
-            this.registerSelectEvent();
-            this.registerHoverEvent();
-            this.readyOk();
-          },
-        });
-        IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
-      })
-      .onError(() => {
-        console.log('资源加载出错');
-      })
-      .load();
-  }
+  //           this.registerDragAndDropEvent();
+  //           this.registerSelectEvent();
+  //           this.registerHoverEvent();
+  //           this.readyOk();
+  //         },
+  //       });
+  //       IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
+  //     })
+  //     .onError(() => {
+  //       console.log('资源加载出错');
+  //     })
+  //     .load();
+  // }
 
   getPageModel() {
     return this.designRenderRef?.current?.getPageModel();

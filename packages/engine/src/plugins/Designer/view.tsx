@@ -252,7 +252,6 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
   };
 
   onDragStart = async (e: LayoutDragEvent) => {
-    console.log('🚀 ~ file: view.tsx:234 ~ Designer ~ onDragStart= ~ e:', e);
     const extraData = e.extraData as LayoutDragAndDropExtraDataType;
     const startNode = extraData.startNode;
     if (!startNode) {

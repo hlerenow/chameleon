@@ -1,16 +1,15 @@
 import { CMaterialType } from '@chamn/model';
-import React from 'react';
 
-export const ButtonMeta: CMaterialType = {
-  title: 'Button',
-  componentName: 'Button',
+export const LayoutMeta: CMaterialType = {
+  title: 'Layout',
+  componentName: 'Layout',
   npm: {
     package: '@chamn/mock-material',
-    exportName: 'Button',
+    exportName: 'Layout',
     version: '1.0.0',
-    name: 'Button',
+    name: 'Layout',
   },
-  icon: 'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
+  icon: 'Layout',
   props: [
     {
       name: 'type',
@@ -112,46 +111,12 @@ export const ButtonMeta: CMaterialType = {
       ],
     },
   ],
-  advanceCustom: {
-    onDrag: async (node, params) => {
-      console.log('onDrag', node, params);
-      if (params.event?.extraData?.type === 'NEW_ADD') {
-        return true;
-      }
-      return false;
-    },
-    onDragging: async () => {
-      console.log('onDragging');
-    },
-    onDrop: async () => {
-      console.log('onDrop');
-      return true;
-    },
-    onSelect: async () => {
-      console.log('onSelect');
-      return false;
-    },
-    onDelete: async () => {
-      console.log('onDelete');
-      return true;
-    },
-    onNewAdd: async (node, params) => {
-      params.viewPortal.setView(<div>123</div>);
-      console.log('onNewAdd');
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(true);
-          params.viewPortal.clearView();
-        }, 1000);
-      });
-    },
-  },
+
   snippets: [
     {
-      title: '基础按钮',
-      snapshot:
-        'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
+      title: '基础布局',
       description: '自定义延迟插入 Button, 不能被选中, 不能拖拽',
+      snapshotText: 'Layout',
       schema: {
         props: {
           type: 'primary',

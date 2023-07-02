@@ -5,7 +5,8 @@ export const ColMeta: CMaterialType = {
   componentName: 'Col',
   npm: {
     package: '@chamn/mock-material',
-    exportName: 'Table',
+    exportName: 'Col',
+    name: 'Col',
     version: '1.0.0',
   },
   icon: 'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
