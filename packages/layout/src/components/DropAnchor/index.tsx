@@ -108,6 +108,7 @@ export const DropAnchor = ({
     // target node dom rect
     const tempRect = instanceDom.getBoundingClientRect();
     setRect(tempRect);
+    // 绘制矩形高亮落点
     if (dropInfo.pos === 'current') {
       const transformStr = `translate3d(${tempRect?.left}px, ${tempRect.top}px, 0)`;
       setStyleObj({
@@ -116,6 +117,7 @@ export const DropAnchor = ({
         transform: transformStr,
       });
     } else {
+      // 绘制线条高亮落点
       const space = 2;
       const transformStr = `translate3d(${tempRect?.left - space}px, ${tempRect.top - space}px, 0)`;
       const tempObj = {

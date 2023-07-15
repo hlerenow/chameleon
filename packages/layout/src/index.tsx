@@ -1,10 +1,10 @@
 /* eslint-disable react/no-find-dom-node */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { RenderInstance, getComponentsLibs, getThirdLibs } from '@chamn/render';
+import { RenderInstance } from '@chamn/render';
 import { DesignRender, DesignRenderProp } from '@chamn/render';
 import { IFrameContainer } from './core/iframeContainer';
-import { addEventListenerReturnCancel, animationFrame, collectVariable, flatObject } from './utils';
+import { addEventListenerReturnCancel, animationFrame } from './utils';
 import { HighlightCanvas, HighlightCanvasRefType } from './components/HighlightBox';
 import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
 import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
@@ -20,7 +20,7 @@ import {
 } from '@chamn/model';
 import { Pointer } from './core/dragAndDrop/common';
 import { calculateDropPosInfo, DropPosType } from './components/DropAnchor/util';
-import { Resizable } from 're-resizable';
+// import { Resizable } from 're-resizable';
 import { DragAndDropEventObj } from './types/dragAndDrop';
 
 import styles from './index.module.scss';
@@ -82,6 +82,7 @@ export type LayoutStateType = {
   dropPosInfos: DropPosType[];
   dropEvent: DragAndDropEventType['dragging'] | null;
   dropInfo: DropPosType | null;
+  canDrop: boolean;
   pointerEventsForHightLightBox: 'auto' | 'none';
 };
 
@@ -126,6 +127,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       dropPosInfos: [],
       dropEvent: null,
       dropInfo: null,
+      canDrop: true,
       pointerEventsForHightLightBox: 'none',
     };
     this.highlightCanvasRef = React.createRef<HighlightCanvasRefType>();

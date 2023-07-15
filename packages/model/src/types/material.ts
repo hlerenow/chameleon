@@ -338,6 +338,8 @@ export type ContainerConfig = {
 };
 
 export type AdvanceCustomFuncParam = {
+  // TODO
+  dropNode?: CNode | CRootNode;
   viewPortal: {
     setView: (view: React.ReactNode) => void;
     clearView: () => void;
@@ -369,13 +371,13 @@ export type CMaterialType<PropsSetter extends string = ''> = {
   fixedProps?: Record<string, any> | ((props: Record<string, any>) => Record<string, any>);
   /** 可以拖入组件 */
   isContainer?: boolean | ContainerConfig;
-  /** 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize */
+  /** TODO: 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize */
   isLayout?: boolean;
   /** 选择框的根选择器 */
   rootSelector?: string;
   /** 是否可以派发dom事件，默认被禁止： click、mousedown、mouseup 等等 */
   supportDispatchNativeEvent?: boolean | EventName[];
-  /** 组件支持的可被调用的方法， todo： 没有补充验证 类型 describe */
+  /** TODO: 组件支持的可被调用的方法， todo： 没有补充验证 类型 describe */
   actions?: {
     title: string;
     // 方法名
@@ -386,15 +388,9 @@ export type CMaterialType<PropsSetter extends string = ''> = {
     }[];
     template?: string;
   }[];
-  /** 组件可能触发的事件 */
+  /** TODO: 组件可能触发的事件 */
   events?: CMaterialEventType[];
-  /** 自定义选中工具栏 */
-  // selectionToolBarView?: (
-  //   node: CNode | CRootNode,
-  //   toolBarItems: { name: string; view: React.ReactNode }[],
-  //   context: any
-  // ) => { name: string; view: React.ReactNode }[];
-  /** 定制组件释放时的行为 */
+  /** 定制组件高级编辑行为 */
   advanceCustom?: {
     onDrag?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
     /** 拖动中触发 */
@@ -406,6 +402,22 @@ export type CMaterialType<PropsSetter extends string = ''> = {
     onDelete?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
     /** 元素被选中时触发 */
     onSelect?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
+    /**  TODO: 当有其他 node 被放置到当前 node 的 child 时触发校验，可以控制落点的 UI 样式？ */
+    canAcceptNode?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
+    // TODO: 当前节点是否能被放置, 可以控制落点的 UI 样式？
+    canDropNode?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
+    // TODO:
+    toolBarView?: (
+      node: CNode | CRootNode,
+      context: any,
+      toolBarItems: { name: string; view: React.ReactNode }[]
+    ) => React.ReactNode;
+    // TODO:
+    selectHighlightRectView?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => React.ReactNode;
+    // TODO:
+    hoverHighlightRectView?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => React.ReactNode;
+    // TODO: 在拖动过程中计算 被拖动节点释放在当前节点时，应该放置在当前节点的位置
+    calcDropInfo?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => 'left' | 'right' | 'top' | 'bottom';
   };
   /** 自定义扩展配置 */
   extra?: Record<any, any>;
