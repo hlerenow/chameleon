@@ -78,10 +78,10 @@ export const HighlightBox = ({
       const isOutsideViewport = targetRect.top - height < 0;
 
       if (isOutsideViewport) {
-        // 向下去整 + 整个高度  + border 2px * 2
-        toolBoxRef.current.style.top = `calc( 100% + ${Math.floor(height)}px + 4px )`;
+        // 向下取整 + 整个高度  + outline 2px * 2
+        toolBoxRef.current.style.top = `calc( 100% + ${Math.floor(height)}px + 4px)`;
       } else {
-        toolBoxRef.current.style.top = '0px';
+        toolBoxRef.current.style.top = 'auto';
       }
     }
   }, []);

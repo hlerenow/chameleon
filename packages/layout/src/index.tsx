@@ -761,7 +761,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             position: 'absolute',
             left: 0,
             top: 0,
-            border: '1px dashed rgba(0,0,255, .8)',
+            outline: '1px dashed rgba(0,0,255, .8)',
             ...hoverBoxStyle,
           }}
           toolRender={hoverToolBar}
