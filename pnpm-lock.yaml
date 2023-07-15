@@ -423,6 +423,9 @@ importers:
       mitt:
         specifier: ^3.0.0
         version: 3.0.0
+      re-resizable:
+        specifier: ^6.9.9
+        version: 6.9.9(react-dom@18.2.0)(react@18.2.0)
       react:
         specifier: ^18.2.0
         version: 18.2.0

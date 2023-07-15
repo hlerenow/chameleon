@@ -14,9 +14,17 @@ export type HighlightBoxPropsType = {
   style?: React.CSSProperties;
   getRef?: (ref: React.RefObject<HighlightCanvasRefType>) => void;
   onRefDestroy?: (ref: React.RefObject<HighlightCanvasRefType>) => void;
+  children?: React.ReactElement;
 };
 
-export const HighlightBox = ({ instance, toolRender, getRef, onRefDestroy, style }: HighlightBoxPropsType) => {
+export const HighlightBox = ({
+  instance,
+  toolRender,
+  getRef,
+  onRefDestroy,
+  style,
+  children,
+}: HighlightBoxPropsType) => {
   const [styleObj, setStyleObj] = useState<Record<string, string>>({});
   const [rect, setRect] = useState<DOMRect>();
   const ref = useRef<HighlightCanvasRefType>(null);
@@ -150,6 +158,7 @@ export const HighlightBox = ({ instance, toolRender, getRef, onRefDestroy, style
           {toolRender}
         </div>
       )}
+      {children}
     </div>
   );
 };
@@ -159,10 +168,14 @@ export const HighlightCanvasCore = (
     instances,
     toolRender,
     style,
+    children,
+    containerStyle,
   }: {
     instances: RenderInstance[];
     toolRender?: React.ReactNode;
     style?: React.CSSProperties;
+    containerStyle?: React.CSSProperties;
+    children?: React.ReactElement;
   },
   ref: React.Ref<HighlightCanvasRefType>
 ) => {
@@ -187,7 +200,7 @@ export const HighlightCanvasCore = (
   };
 
   return (
-    <div className={styles.borderDrawBox}>
+    <div className={styles.borderDrawBox} style={containerStyle || {}}>
       {instances.map((el) => {
         if (!el || el._STATUS === 'DESTROY') {
           return null;
@@ -204,7 +217,9 @@ export const HighlightCanvasCore = (
               }
             }}
             onRefDestroy={onRefDestroy}
-          />
+          >
+            {children}
+          </HighlightBox>
         );
       })}
     </div>

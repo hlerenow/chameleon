@@ -1,6 +1,6 @@
 /* eslint-disable react/no-find-dom-node */
 import React from 'react';
-import styles from './index.module.scss';
+import ReactDOM from 'react-dom';
 import { RenderInstance, getComponentsLibs, getThirdLibs } from '@chamn/render';
 import { DesignRender, DesignRenderProp } from '@chamn/render';
 import { IFrameContainer } from './core/iframeContainer';
@@ -20,8 +20,10 @@ import {
 } from '@chamn/model';
 import { Pointer } from './core/dragAndDrop/common';
 import { calculateDropPosInfo, DropPosType } from './components/DropAnchor/util';
-import ReactDOM from 'react-dom';
+import { Resizable } from 're-resizable';
 import { DragAndDropEventObj } from './types/dragAndDrop';
+
+import styles from './index.module.scss';
 
 export type LayoutDragAndDropExtraDataType = {
   type: 'NEW_ADD';
@@ -80,6 +82,7 @@ export type LayoutStateType = {
   dropPosInfos: DropPosType[];
   dropEvent: DragAndDropEventType['dragging'] | null;
   dropInfo: DropPosType | null;
+  pointerEventsForHightLightBox: 'auto' | 'none';
 };
 
 const SELECT_LOCK_STYLE: React.CSSProperties = {
@@ -123,6 +126,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       dropPosInfos: [],
       dropEvent: null,
       dropInfo: null,
+      pointerEventsForHightLightBox: 'none',
     };
     this.highlightCanvasRef = React.createRef<HighlightCanvasRefType>();
     this.highlightHoverCanvasRef = React.createRef<HighlightCanvasRefType>();
@@ -772,6 +776,43 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           }}
           toolRender={selectToolBar}
         />
+
+        {/* <HighlightCanvas
+          ref={this.highlightCanvasRef}
+          instances={selectComponentInstances}
+          style={{
+            backgroundColor: 'rgba(0,0,0,0.3)',
+          }}
+          containerStyle={{
+            pointerEvents: this.state.pointerEventsForHightLightBox,
+          }}
+        >
+          <Resizable
+            defaultSize={{
+              width: 320,
+              height: 200,
+            }}
+            style={{
+              backgroundColor: 'red',
+              pointerEvents: 'auto',
+              maxWidth: '100%',
+              maxHeight: '100%',
+            }}
+            onResizeStart={() => {
+              this.setState({
+                pointerEventsForHightLightBox: 'auto',
+              });
+            }}
+            onResizeStop={() => {
+              this.setState({
+                pointerEventsForHightLightBox: 'none',
+              });
+            }}
+          >
+            Sample with default size
+          </Resizable>
+        </HighlightCanvas> */}
+
         <DropAnchorCanvas
           ref={this.highlightDropAnchorCanvasRef}
           instances={dropComponentInstances}
