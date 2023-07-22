@@ -41,6 +41,7 @@ jobs:
           cd packages/build-script
           pwd
           pnpm run build
+          pnpm link -g
           cd ../../
           pnpm run build
           cd packages/engine
