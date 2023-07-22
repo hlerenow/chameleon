@@ -20,17 +20,21 @@
     "vite"
   ],
   "scripts": {
-    "start": "npm run build:render && build-script",
+    "start": "build-script",
     "build": "cross-env BUILD_TYPE=PKG build-script --build",
     "build:analyze": "cross-env BUILD_TYPE=PKG  build-script --build --analyze",
-    "build:app": "npm run build:render && export NODE_OPTIONS=--max-old-space-size=32768 && cross-env BUILD_TYPE=APP build-script --build",
-    "build:render": "cross-env BUILD_TYPE=Render build-script --build",
+    "build:app": "export NODE_OPTIONS=--max-old-space-size=32768 && cross-env BUILD_TYPE=APP build-script --build",
     "build:app:analyze": "cross-env BUILD_TYPE=APP build-script --build --analyze",
+    "copyAssets": "",
     "lint": "eslint --ext .tsx,.ts src/",
     "prettier": "prettier --write ./src",
     "test": "jest",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
+  },
+  "peerDependencies": {
+    "react": ">=16.9.0",
+    "react-dom": ">=16.9.0"
   },
   "dependencies": {
     "@ant-design/icons": "^4.8.0",
@@ -49,9 +53,7 @@
     "mitt": "^3.0.0",
     "monaco-editor": "^0.34.1",
     "re-resizable": "^6.9.9",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-i18next": "^12.1.1"
+    "vite-plugin-static-copy": "^0.17.0"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",
@@ -72,6 +74,9 @@
     "cross-env": "^7.0.3",
     "eslint-plugin-react-hooks": "^4.6.0",
     "rc-select": "^14.4.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-i18next": "^12.1.1",
     "react-router-dom": "^6.7.0",
     "rollup-plugin-visualizer": "^5.8.3",
     "sass": "^1.54.0",

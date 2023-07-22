@@ -1,21 +1,18 @@
-/* eslint-disable no-undef */
-/* eslint-disable @typescript-eslint/no-var-requires */
+import path from 'path';
 
-const renderConfig = {
-  entry: './src/render.ts',
-  formats: ['umd'],
-  libName: 'CRender',
-  fileName: 'render',
-  external: ['react', 'react-dom'],
-  global: {
-    react: 'React',
-    'react-dom': 'ReactDOM',
-  },
-  // 额外的 vite 配置
-  vite: {
-    outDir: './public',
-  },
-};
+const layoutEntry = path.resolve(__dirname, 'index.html');
+const renderEntry = path.resolve(__dirname, './src/_dev_/render.html');
+
+let inputConfig = {};
+
+if (process.env.NODE_ENV === 'development') {
+  inputConfig = {
+    input: {
+      main: layoutEntry,
+      nested: renderEntry,
+    },
+  };
+}
 
 const mainConfig = {
   entry: './src/index.tsx',
@@ -30,11 +27,14 @@ const mainConfig = {
   vite: {
     build: {
       copyPublicDir: false,
+      rollupOptions: {
+        ...inputConfig,
+      },
     },
     plugins: [],
   },
 };
 
-const config = process.env.BUILD_TYPE === 'Render' ? renderConfig : mainConfig;
+const config = mainConfig;
 
 module.exports = config;

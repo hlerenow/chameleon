@@ -58,9 +58,6 @@ export class IFrameContainer {
     if (!(iframeDoc && iframeWin)) {
       return;
     }
-    const tpl = this.getHTMLTemplate();
-    iframeDoc.write(tpl);
-    iframeDoc.close();
 
     const loaded = () => {
       this.iframeStatus = 'LOADED';
@@ -69,7 +66,30 @@ export class IFrameContainer {
       queue.forEach((cb) => cb());
       iframeDoc.removeEventListener('load', loaded);
     };
-    loaded();
+
+    const p = new Promise((resolve) => {
+      this.iframe!.addEventListener('load', () => {
+        loaded();
+        resolve('finish');
+      });
+    });
+
+    const tpl = this.getHTMLTemplate();
+    iframeDoc.write(tpl);
+    iframeDoc.close();
+
+    return p;
+  }
+
+  loadUrl(url: string) {
+    return new Promise((resolve) => {
+      const handler = (e: Event) => {
+        resolve(e);
+        this.iframe?.removeEventListener('load', handler);
+      };
+      this.iframe?.addEventListener('load', handler);
+      this.iframe?.contentWindow?.location.replace(url);
+    });
   }
 
   ready(cb: () => void) {

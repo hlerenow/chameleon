@@ -11,6 +11,41 @@ import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 import { InnerComponentMeta } from '../../../material/innerMaterial';
 import { RollbackOutlined } from '@ant-design/icons';
 import { TestComponents } from '@/_dev_/lib';
+import { collectVariable, flatObject, LayoutPropsType } from '@chamn/layout';
+
+import renderAsURL from '../../../../node_modules/@chamn/render/dist/index.umd.js?url';
+
+const customRender: LayoutPropsType['customRender'] = async ({
+  iframe: iframeContainer,
+  assets,
+  page,
+  pageModel,
+  ready,
+}) => {
+  await iframeContainer.loadUrl('/src/_dev_/render.html');
+
+  const iframeWindow = iframeContainer.getWindow()!;
+  const iframeDoc = iframeContainer.getDocument()!;
+  const IframeReact = iframeWindow.React!;
+  const IframeReactDOM = iframeWindow.ReactDOMClient!;
+  const CRender = iframeWindow.CRender!;
+
+  // 从子窗口获取物料对象
+  const componentCollection = collectVariable(assets, iframeWindow);
+  const components = flatObject(componentCollection);
+
+  const App = IframeReact?.createElement(CRender.DesignRender, {
+    adapter: CRender?.ReactAdapter,
+    page: page,
+    pageModel: pageModel,
+    components,
+    onMount: (designRenderInstance) => {
+      ready(designRenderInstance);
+    },
+  });
+
+  IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
+};
 
 const win = window as any;
 win.React = React;
@@ -201,6 +236,7 @@ export const App = () => {
       material={[...InnerComponentMeta, ...Material]}
       // 组件物料对应的 js 运行库，只能使用 umd 模式的 js
       // assetPackagesList={assetPackagesList}
+      renderJSUrl={renderAsURL}
       beforePluginRun={({ pluginManager }) => {
         pluginManager.customPlugin('RightPanel', (pluginInstance) => {
           pluginInstance.ctx.config.customPropertySetterMap = {
@@ -216,6 +252,14 @@ export const App = () => {
               return <div>123</div>;
             },
           };
+
+          return pluginInstance;
+        });
+
+        pluginManager.customPlugin('Designer', (pluginInstance) => {
+          if (__RUN_MODE__ !== 'APP') {
+            pluginInstance.ctx.config.customRender = customRender;
+          }
           return pluginInstance;
         });
       }}

@@ -11,26 +11,29 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
-    "start": "npm run build:render && build-script",
+    "start": "build-script",
     "build": "build-script --build",
     "build:analyze": "build-script --build --analyze",
-    "build:render": "cross-env BUILD_TYPE=Render build-script --build",
     "build:w": "build-script --build --watch",
     "lint": "eslint --ext .tsx,.ts src/",
     "prettier": "prettier --write ./src",
     "test": "jest"
+  },
+  "peerDependencies": {
+    "react": ">=16.9.0",
+    "react-dom": ">=16.9.0"
   },
   "dependencies": {
     "@chamn/model": "workspace:*",
     "@chamn/render": "workspace:*",
     "lodash-es": "^4.17.21",
     "mitt": "^3.0.0",
-    "re-resizable": "^6.9.9",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "sass": "^1.54.0"
+    "re-resizable": "^6.9.9"
   },
   "devDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "sass": "^1.54.0",
     "@chamn/build-script": "workspace:*",
     "@chamn/demo-page": "workspace:*",
     "@types/lodash-es": "^4.17.6",

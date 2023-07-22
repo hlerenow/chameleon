@@ -2,12 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import ReactDOMAll from 'react-dom';
 import { BasePage, Material } from '@chamn/demo-page';
-import { Layout, LayoutDragAndDropExtraDataType, LayoutPropsType } from '.';
+import { Layout, LayoutDragAndDropExtraDataType, LayoutPropsType } from '..';
 import * as antD from 'antd';
-import './dev.css';
-import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
+import { Sensor, SensorEventObjType } from '../core/dragAndDrop/sensor';
 import { AssetPackage, CNode, CPage } from '@chamn/model';
-import { collectVariable, flatObject } from './utils';
+import { collectVariable, flatObject } from '../utils';
+
+import './dev.css';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOMAll;
@@ -43,11 +44,6 @@ const beforeInitRender: LayoutPropsType['beforeInitRender'] = async ({ iframe })
   subWin.React = React;
   (subWin as any).ReactDOM = ReactDOMAll;
   (subWin as any).ReactDOMClient = ReactDOM;
-  //   iframe.injectJsText(`
-  //   window.React = window.parent.React;
-  //   window.ReactDOM = window.parent.ReactDOM;
-  //   window.ReactDOMClient = window.parent.ReactDOMClient;
-  // `);
 };
 
 const customRender: LayoutPropsType['customRender'] = async ({
@@ -57,36 +53,29 @@ const customRender: LayoutPropsType['customRender'] = async ({
   pageModel,
   ready,
 }) => {
-  await iframeContainer.injectJS('./render.umd.js');
+  await iframeContainer.loadUrl('/src/_dev_/render.html');
+
   const iframeWindow = iframeContainer.getWindow()!;
   const iframeDoc = iframeContainer.getDocument()!;
   const IframeReact = iframeWindow.React!;
   const IframeReactDOM = iframeWindow.ReactDOMClient!;
   const CRender = iframeWindow.CRender!;
-  // 注入组件物料资源
-  const assetLoader = new CRender.AssetLoader(assets);
-  assetLoader
-    .onSuccess(() => {
-      // 从子窗口获取物料对象
-      const componentCollection = collectVariable(assets, iframeWindow);
-      const components = flatObject(componentCollection);
 
-      const App = IframeReact?.createElement(CRender.DesignRender, {
-        adapter: CRender?.ReactAdapter,
-        page: page,
-        pageModel: pageModel,
-        components,
-        onMount: (designRenderInstance) => {
-          ready(designRenderInstance);
-        },
-      });
+  // 从子窗口获取物料对象
+  const componentCollection = collectVariable(assets, iframeWindow);
+  const components = flatObject(componentCollection);
 
-      IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
-    })
-    .onError(() => {
-      console.log('资源加载出错');
-    })
-    .load();
+  const App = IframeReact?.createElement(CRender.DesignRender, {
+    adapter: CRender?.ReactAdapter,
+    page: page,
+    pageModel: pageModel,
+    components,
+    onMount: (designRenderInstance) => {
+      ready(designRenderInstance);
+    },
+  });
+
+  IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
 };
 
 const App = () => {
@@ -110,7 +99,6 @@ const App = () => {
       ],
     })
   );
-  console.log('Material', Material);
 
   const leftBoxRef = useRef<HTMLDivElement>(null);
   const layoutRef = useRef<Layout>(null);

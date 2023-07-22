@@ -16,12 +16,15 @@
     "prettier": "prettier --write ./src",
     "test": "jest"
   },
-  "dependencies": {
+  "peerDependencies": {
+    "react": ">=16.9.0",
+    "react-dom": ">=16.9.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "sass": "^1.54.0"
-  },
-  "devDependencies": {
+    "sass": "^1.54.0",
     "@chamn/build-script": "workspace:*",
     "@chamn/model": "workspace:*",
     "@types/react": "^18.0.15",

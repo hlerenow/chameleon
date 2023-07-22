@@ -1,10 +1,24 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable no-undef */
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 const path = require('path');
 const pkg = require('./package.json');
 const { visualizer } = require('rollup-plugin-visualizer');
 const monacoEditorPlugin = require('vite-plugin-monaco-editor').default;
+const layoutEntry = path.resolve(__dirname, 'index.html');
+const renderEntry = path.resolve(__dirname, './src/_dev_/render.html');
+
+let inputConfig = {};
+
+if (process.env.NODE_ENV === 'development') {
+  inputConfig = {
+    input: {
+      main: layoutEntry,
+      nested: renderEntry,
+    },
+  };
+}
 
 // 开发模式默认读取 index.html 作为开发模式入口
 // entry 作为打包库入口
@@ -17,6 +31,20 @@ if (process.env.ANALYZE) {
       emitFile: false,
       gzipSize: true,
       brotliSize: true,
+    })
+  );
+}
+
+if (process.env.BUILD_TYPE === 'APP') {
+  plugins.push(
+    viteStaticCopy({
+      targets: [
+        {
+          src: './node_modules/@chamn/render/dist/index.umd.js',
+          dest: './',
+          rename: 'render.umd.js',
+        },
+      ],
     })
   );
 }
@@ -49,6 +77,9 @@ const mainConfig = {
     build: {
       outDir: process.env.BUILD_TYPE === 'APP' ? './example' : './dist',
       copyPublicDir: process.env.BUILD_TYPE === 'APP',
+      rollupOptions: {
+        ...inputConfig,
+      },
     },
     plugins: plugins,
     resolve: {
@@ -63,35 +94,12 @@ const mainConfig = {
     },
     define: {
       'process.env': JSON.stringify('{}'),
+      __RUN_MODE__: JSON.stringify(process.env.BUILD_TYPE),
       __PACKAGE_VERSION__: JSON.stringify(pkg.version),
       __BUILD_VERSION__: JSON.stringify(Date.now()),
     },
   },
 };
 
-const renderConfig = {
-  entry: './src/_dev_/render.ts',
-  formats: ['umd'],
-  libName: 'CRender',
-  fileName: 'render',
-  external: ['react', 'react-dom'],
-  global: {
-    react: 'React',
-    'react-dom': 'ReactDOM',
-  },
-  // 额外的 vite 配置
-  vite: {
-    build: {
-      copyPublicDir: false,
-      outDir: './public',
-    },
-    define: {
-      'process.env': JSON.stringify('{}'),
-      __PACKAGE_VERSION__: JSON.stringify(pkg.version),
-      __BUILD_VERSION__: JSON.stringify(Date.now()),
-    },
-  },
-};
-
-const config = process.env.BUILD_TYPE === 'Render' ? renderConfig : mainConfig;
+const config = mainConfig;
 module.exports = config;

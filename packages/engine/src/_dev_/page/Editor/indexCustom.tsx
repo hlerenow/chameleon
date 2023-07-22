@@ -6,7 +6,6 @@ import ReactDOMClient from 'react-dom/client';
 import { Engine, EnginContext } from '../../..';
 import '../../index.css';
 import { DEFAULT_PLUGIN_LIST } from '../../../plugins';
-import { DesignerExports } from '../../../plugins/Designer';
 import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 import { AssetPackage } from '@chamn/model';
 import { InnerComponentMeta } from '../../../material/innerMaterial';
@@ -35,11 +34,11 @@ const customRender: LayoutPropsType['customRender'] = async ({
   pageModel,
   ready,
 }) => {
-  await iframeContainer.injectJS('./render.umd.js');
+  await iframeContainer.injectJS(renderAsURL);
   const iframeWindow = iframeContainer.getWindow()!;
   const iframeDoc = iframeContainer.getDocument()!;
-  const IframeReact = iframeWindow.React!;
-  const IframeReactDOM = iframeWindow.ReactDOMClient!;
+  const IframeReact = React;
+  const IframeReactDOM = ReactDOMClient;
   const CRender = iframeWindow.CRender!;
 
   // 注入组件物料资源
