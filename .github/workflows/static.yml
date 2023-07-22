@@ -37,11 +37,10 @@ jobs:
         with:
           version: 7
       - run: |
-          pnpm i
+          pnpm i --no-frozen-lockfile
           cd packages/build-script
           pwd
           pnpm run build
-          pnpm link -g
           cd ../../
           pnpm run build
           cd packages/engine
