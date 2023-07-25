@@ -46,10 +46,10 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   onNodeDragging?: (event: LayoutDragEvent) => Promise<boolean | void>;
   onNodeDrop?: (event: LayoutDragEvent) => Promise<boolean | void>;
   onNodeNewAdd?: (event: LayoutDragEvent) => Promise<boolean | void>;
-  selectToolBar?: React.ReactNode;
+  selectToolBarView?: React.ReactNode;
   selectBoxStyle?: React.CSSProperties;
   hoverBoxStyle?: React.CSSProperties;
-  hoverToolBar?: React.ReactNode;
+  hoverToolBarView?: React.ReactNode;
   ghostView?: React.ReactNode;
   /** 在 iframe 渲染 render 之前做一些事*/
   beforeInitRender?: (options: {
@@ -750,7 +750,13 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       mousePointer,
     } = this.state;
     const { iframeDomId } = this;
-    const { selectToolBar, hoverToolBar, selectBoxStyle = {}, hoverBoxStyle = {}, ghostView = <>Ghost</> } = this.props;
+    const {
+      selectToolBarView,
+      hoverToolBarView,
+      selectBoxStyle = {},
+      hoverBoxStyle = {},
+      ghostView = <>Ghost</>,
+    } = this.props;
     return (
       <div className={styles.layoutContainer} id={iframeDomId}>
         {/* 左上角添加显示元素名功能， hover */}
@@ -766,7 +772,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             outline: '1px dashed rgba(0,0,255, .8)',
             ...hoverBoxStyle,
           }}
-          toolRender={hoverToolBar}
+          toolView={hoverToolBarView}
         />
         {/* TODO:  选中框， 添加锁定功能 */}
         <HighlightCanvas
@@ -776,7 +782,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             ...selectBoxStyle,
             ...selectLockStyle,
           }}
-          toolRender={selectToolBar}
+          toolView={selectToolBarView}
         />
 
         {/* <HighlightCanvas

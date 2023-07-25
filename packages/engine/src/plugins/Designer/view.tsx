@@ -19,8 +19,8 @@ export type DesignerPropsType = {
 
 type DesignerStateType = {
   pageModel: CPage;
-  hoverToolBar: React.ReactNode;
-  selectToolBar: React.ReactNode;
+  hoverToolBarView: React.ReactNode;
+  selectToolBarView: React.ReactNode;
   ghostView: React.ReactNode;
   portalView: React.ReactNode;
   assets: AssetPackage[];
@@ -33,8 +33,8 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
 
     this.state = {
       pageModel: props.pluginCtx.pageModel,
-      hoverToolBar: null,
-      selectToolBar: null,
+      hoverToolBarView: null,
+      selectToolBarView: null,
       ghostView: null,
       assets: props.pluginCtx.assets || ([] as AssetPackage[]),
       portalView: null,
@@ -191,7 +191,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       pluginCtx.engine.updateCurrentSelectNode(null);
       layoutRef.current?.selectNode('');
       this.setState({
-        selectToolBar: null,
+        selectToolBarView: null,
       });
       return;
     }
@@ -207,7 +207,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     const pageModel = this.props.pluginCtx.pageModel;
     const list = getClosestNodeList(node, 5);
     this.setState({
-      selectToolBar: (
+      selectToolBarView: (
         <DefaultSelectToolBar
           nodeList={list}
           toSelectNode={(id) => {
@@ -280,21 +280,21 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     }
     if (!startNode) {
       this.setState({
-        hoverToolBar: <div className={styles.hoverTips}>{material?.value.title || material?.componentName}</div>,
+        hoverToolBarView: <div className={styles.hoverTips}>{material?.value.title || material?.componentName}</div>,
         ghostView: null,
       });
       return;
     }
 
     this.setState({
-      hoverToolBar: <div className={styles.hoverTips}>{material?.value.title || material?.componentName}</div>,
+      hoverToolBarView: <div className={styles.hoverTips}>{material?.value.title || material?.componentName}</div>,
       ghostView: <GhostView node={startNode} />,
     });
   };
 
   render() {
     const { layoutRef, props, onSelectNode, onDragStart, onHoverNode, onNodeDrop, onNodeDragging } = this;
-    const { pageModel, hoverToolBar, selectToolBar, ghostView, assets, portalView } = this.state;
+    const { pageModel, hoverToolBarView, selectToolBarView, ghostView, assets, portalView } = this.state;
     const { pluginCtx } = props;
     const renderJSUrl = pluginCtx.engine.props.renderJSUrl || './render.umd.js';
     return (
@@ -306,8 +306,8 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
           pageModel={pageModel}
           renderJSUrl={renderJSUrl}
           {...props}
-          hoverToolBar={hoverToolBar}
-          selectToolBar={selectToolBar}
+          hoverToolBarView={hoverToolBarView}
+          selectToolBarView={selectToolBarView}
           selectBoxStyle={{}}
           hoverBoxStyle={{}}
           onSelectNode={onSelectNode}

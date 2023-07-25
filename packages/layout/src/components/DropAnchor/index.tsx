@@ -13,25 +13,28 @@ export type HighlightCanvasRefType = {
 
 export type DropAnchorPropsType = {
   instance: RenderInstance;
-  toolRender?: React.ReactNode;
+  toolRenderView?: React.ReactNode;
   mouseEvent: DragAndDropEventType['dragging'] | null;
   style?: React.CSSProperties;
   getRef?: (ref: React.RefObject<HighlightCanvasRefType>) => void;
   onRefDestroy?: (ref: React.RefObject<HighlightCanvasRefType>) => void;
   onDropInfoChange?: (dropInfo: DropPosType | null) => void;
   dropInfo: DropPosType;
+  customDropViewRender?: (props: DropAnchorPropsType) => React.ReactElement;
 };
 
-export const DropAnchor = ({
-  instance,
-  toolRender,
-  getRef,
-  onRefDestroy,
-  style,
-  mouseEvent,
-  onDropInfoChange,
-  dropInfo,
-}: DropAnchorPropsType) => {
+export const DropAnchor = (props: DropAnchorPropsType) => {
+  const {
+    instance,
+    toolRenderView,
+    getRef,
+    onRefDestroy,
+    style,
+    mouseEvent,
+    onDropInfoChange,
+    dropInfo,
+    customDropViewRender,
+  } = props;
   const [styleObj, setStyleObj] = useState<Record<string, string>>({});
   const [posClassName, setPosClassName] = useState<string[]>([]);
   const [rect, setRect] = useState<DOMRect>();
@@ -143,14 +146,14 @@ export const DropAnchor = ({
     };
     const classList = [classNameMap[dropInfo.direction], classNameMap[dropInfo.pos]];
     setPosClassName(classList);
-
+    let newDropInfo = dropInfo;
     if (mouseEvent?.extraData.dropInfo) {
-      dropInfo = {
+      newDropInfo = {
         ...dropInfo,
         ...mouseEvent?.extraData.dropInfo,
       };
     }
-    onDropInfoChange?.(dropInfo);
+    onDropInfoChange?.(newDropInfo);
   }, [instance, mouseEvent]);
 
   useEffect(() => {
@@ -163,20 +166,35 @@ export const DropAnchor = ({
     },
   };
 
+  let innerDropView = (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        ...styleObj,
+      }}
+      className={clsx([...posClassName])}
+    ></div>
+  );
+
+  if (customDropViewRender) {
+    const Comp = customDropViewRender;
+    innerDropView = <Comp {...props} />;
+  }
+
   if (!targetDom || !instance) {
     return <></>;
   }
   return (
     <div
-      className={clsx([styles.highlightBox, ...posClassName])}
+      className={clsx([styles.highlightBox])}
       id={instance?._UNIQUE_ID}
       style={{
         ...style,
-        ...styleObj,
         opacity: rect ? 1 : 0,
       }}
     >
-      {toolRender && (
+      {toolRenderView && (
         <div
           ref={toolBoxRef}
           className={styles.toolBox}
@@ -185,9 +203,10 @@ export const DropAnchor = ({
             opacity: toolBoxSize.width ? 1 : 0,
           }}
         >
-          {toolRender}
+          {toolRenderView}
         </div>
       )}
+      {innerDropView}
     </div>
   );
 };
@@ -195,7 +214,7 @@ export const DropAnchor = ({
 export const DropAnchorCanvasCore = (
   {
     instances,
-    toolRender,
+    toolRenderView,
     style,
     mouseEvent,
     onDropInfoChange,
@@ -203,7 +222,7 @@ export const DropAnchorCanvasCore = (
   }: {
     instances: RenderInstance[];
     mouseEvent: DragAndDropEventType['dragging'] | null;
-    toolRender?: React.ReactNode;
+    toolRenderView?: React.ReactNode;
     style?: React.CSSProperties;
     onDropInfoChange?: (dropInfo: DropPosType | null) => void;
     dropInfos: DropPosType[];
@@ -244,7 +263,7 @@ export const DropAnchorCanvasCore = (
             style={style}
             key={el?._UNIQUE_ID}
             instance={el}
-            toolRender={toolRender}
+            toolRenderView={toolRenderView}
             dropInfo={dropInfos[index]}
             getRef={(ref) => {
               if (ref.current) {

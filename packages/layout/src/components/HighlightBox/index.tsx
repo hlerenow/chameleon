@@ -10,21 +10,14 @@ export type HighlightCanvasRefType = {
 
 export type HighlightBoxPropsType = {
   instance: RenderInstance;
-  toolRender?: React.ReactNode;
+  toolView?: React.ReactNode;
   style?: React.CSSProperties;
   getRef?: (ref: React.RefObject<HighlightCanvasRefType>) => void;
   onRefDestroy?: (ref: React.RefObject<HighlightCanvasRefType>) => void;
   children?: React.ReactElement;
 };
 
-export const HighlightBox = ({
-  instance,
-  toolRender,
-  getRef,
-  onRefDestroy,
-  style,
-  children,
-}: HighlightBoxPropsType) => {
+export const HighlightBox = ({ instance, toolView, getRef, onRefDestroy, style, children }: HighlightBoxPropsType) => {
   const [styleObj, setStyleObj] = useState<Record<string, string>>({});
   const [rect, setRect] = useState<DOMRect>();
   const ref = useRef<HighlightCanvasRefType>(null);
@@ -153,9 +146,9 @@ export const HighlightBox = ({
         opacity: rect ? 1 : 0,
       }}
     >
-      {toolRender && (
+      {toolView && (
         <div ref={toolBoxRef} className={styles.toolBox}>
-          {toolRender}
+          {toolView}
         </div>
       )}
       {children}
@@ -166,13 +159,13 @@ export const HighlightBox = ({
 export const HighlightCanvasCore = (
   {
     instances,
-    toolRender,
+    toolView,
     style,
     children,
     containerStyle,
   }: {
     instances: RenderInstance[];
-    toolRender?: React.ReactNode;
+    toolView?: React.ReactNode;
     style?: React.CSSProperties;
     containerStyle?: React.CSSProperties;
     children?: React.ReactElement;
@@ -210,7 +203,7 @@ export const HighlightCanvasCore = (
             style={style}
             key={el?._UNIQUE_ID}
             instance={el}
-            toolRender={toolRender}
+            toolView={toolView}
             getRef={(ref) => {
               if (ref.current) {
                 allBoxRef.current.push(ref);

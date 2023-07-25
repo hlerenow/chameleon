@@ -367,7 +367,7 @@ export type CMaterialType<PropsSetter extends string = ''> = {
   npm?: LibMetaType;
   snippets: SnippetsType[];
   props: CMaterialPropsType<PropsSetter>;
-  /** 固定的props, 不被 setter 的值覆盖 */
+  /** 固定的props, 不被 setter 的值覆盖, 只在编辑模式下会生效 */
   fixedProps?: Record<string, any> | ((props: Record<string, any>) => Record<string, any>);
   /** 可以拖入组件 */
   isContainer?: boolean | ContainerConfig;
