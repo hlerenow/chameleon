@@ -18,7 +18,14 @@ import {
   dynamic,
   assign,
 } from 'superstruct';
-import { ComplexSetterTypeEnum, LibMetaType, LibMetaTypeDescribe, SetterBasicType, SetterTypeEnum } from './base';
+import {
+  ComplexSetterTypeEnum,
+  DropPosType,
+  LibMetaType,
+  LibMetaTypeDescribe,
+  SetterBasicType,
+  SetterTypeEnum,
+} from './base';
 import { CNodeDataStructDescribe, CNodeDataType } from './node';
 import { CNode } from '../Page/RootNode/Node';
 import { CRootNode } from '../Page/RootNode';
@@ -344,7 +351,10 @@ export type AdvanceCustomFuncParam = {
     setView: (view: React.ReactNode) => void;
     clearView: () => void;
   };
+  //  当前元素在拖动中是否被锁住
+  isLock?: boolean;
   context: any;
+  cancelDrag?: () => void;
   /** 如果是 api 触发的，则没有事件对象 */
   event?: any;
 };
@@ -392,20 +402,63 @@ export type CMaterialType<PropsSetter extends string = ''> = {
   events?: CMaterialEventType[];
   /** 定制组件高级编辑行为 */
   advanceCustom?: {
-    onDrag?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
+    // TODO: 当前节点是否能被放置, 可以控制落点的 UI 样式？
+    canDragNode?: (
+      node: CNode | CRootNode,
+      params: AdvanceCustomFuncParam
+    ) => Promise<
+      | boolean
+      | {
+          dragNode: CNode | CRootNode;
+        }
+    >;
+    onDragStart?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => void;
     /** 拖动中触发 */
     onDragging?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => void;
-    onDrop?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
-    /** 当第一次被拖入到画布时触发 */
-    onNewAdd?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
-    /** 当元素被删除时触发 */
-    onDelete?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
-    /** 元素被选中时触发 */
-    onSelect?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
+    // TODO: 当前节点是否能被放置, 可以控制落点的 UI 样式？
     /**  TODO: 当有其他 node 被放置到当前 node 的 child 时触发校验，可以控制落点的 UI 样式？ */
     canAcceptNode?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
-    // TODO: 当前节点是否能被放置, 可以控制落点的 UI 样式？
-    canDropNode?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
+    canDropNode?: (
+      node: CNode | CRootNode,
+      params: AdvanceCustomFuncParam
+    ) => Promise<
+      | boolean
+      | {
+          dropNode: CNode | CRootNode;
+        }
+    >;
+    onDrop?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
+    /** 当第一次被拖入到画布时触发 */
+    onNewAdd?: (
+      node: CNode | CRootNode,
+      params: AdvanceCustomFuncParam
+    ) => Promise<
+      | boolean
+      | {
+          addNode: CNode | CRootNode;
+        }
+    >;
+    /** 当元素被删除时触发 */
+    onDelete?: (
+      node: CNode | CRootNode,
+      params: AdvanceCustomFuncParam
+    ) => Promise<
+      | boolean
+      | {
+          deleteNode: CNode | CRootNode;
+        }
+    >;
+    /** 元素被选中时触发 */
+    onSelect?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
+    onCopy?: (
+      node: CNode | CRootNode,
+      params: AdvanceCustomFuncParam
+    ) => Promise<
+      | boolean
+      | {
+          copyNode: CNode | CRootNode;
+        }
+    >;
     // TODO:
     toolBarView?: (
       node: CNode | CRootNode,
@@ -417,7 +470,13 @@ export type CMaterialType<PropsSetter extends string = ''> = {
     // TODO:
     hoverHighlightRectView?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => React.ReactNode;
     // TODO: 在拖动过程中计算 被拖动节点释放在当前节点时，应该放置在当前节点的位置
-    calcDropInfo?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => 'left' | 'right' | 'top' | 'bottom';
+    calcDropInfo?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<DropPosType>;
+    dropViewRender: (
+      props: DropPosType & {
+        // 是否可以放置
+        canDrop: boolean;
+      }
+    ) => React.ReactElement;
   };
   /** 自定义扩展配置 */
   extra?: Record<any, any>;

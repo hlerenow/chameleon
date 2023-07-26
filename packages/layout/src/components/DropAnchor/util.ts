@@ -1,18 +1,9 @@
-export type DropPosType = {
-  direction: 'vertical' | 'horizontal';
-  pos: 'before' | 'after' | 'current';
-};
+import { DropPosType } from '@chamn/model';
 
 // todo: 位置计算有缺陷， styles 应该取被 drop 的组件来计算
-export function judgeVertical(
-  styles: CSSStyleDeclaration,
-  parentStyle: CSSStyleDeclaration
-) {
+export function judgeVertical(styles: CSSStyleDeclaration, parentStyle: CSSStyleDeclaration) {
   const { display: parentDisplay, flexDirection } = parentStyle;
-  if (
-    parentDisplay === 'flex' &&
-    ['row', 'row-reverse'].includes(flexDirection)
-  ) {
+  if (parentDisplay === 'flex' && ['row', 'row-reverse'].includes(flexDirection)) {
     return false;
   }
 

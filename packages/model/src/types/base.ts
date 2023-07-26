@@ -97,3 +97,8 @@ export const BaseComponentTagList = [
   'CText',
   'CNativeTag',
 ];
+
+export type DropPosType = {
+  direction: 'vertical' | 'horizontal';
+  pos: 'before' | 'after' | 'current';
+};

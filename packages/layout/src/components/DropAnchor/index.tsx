@@ -5,7 +5,7 @@ import { animationFrame, isDOM } from '../../utils';
 import { RenderInstance } from '@chamn/render';
 import { DragAndDropEventType } from '../../core/dragAndDrop';
 import clsx from 'clsx';
-import { DropPosType } from './util';
+import { DropPosType } from '@chamn/model';
 
 export type HighlightCanvasRefType = {
   update: () => void;
