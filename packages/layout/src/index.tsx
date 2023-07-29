@@ -10,7 +10,9 @@ import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
 import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
 import { DropAnchorCanvas } from './components/DropAnchor';
 import {
+  AdvanceCustom,
   AssetPackage,
+  CMaterialType,
   CNode,
   CPage,
   CPageDataType,
@@ -50,6 +52,7 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   selectBoxStyle?: React.CSSProperties;
   hoverBoxStyle?: React.CSSProperties;
   hoverToolBarView?: React.ReactNode;
+  calcDropNodeInfo?: AdvanceCustom['calcDropNodeInfo'];
   ghostView?: React.ReactNode;
   /** 在 iframe 渲染 render 之前做一些事*/
   beforeInitRender?: (options: {
