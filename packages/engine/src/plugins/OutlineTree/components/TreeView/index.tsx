@@ -1,5 +1,5 @@
 import { Sensor, SensorEventObjType } from '@chamn/layout';
-import { CNode, CRootNode } from '@chamn/model';
+import { CNode, CRootNode, DropPosType } from '@chamn/model';
 import React from 'react';
 import { WithTranslation } from 'react-i18next';
 import { CPluginCtx } from '../../../../core/pluginManager';
@@ -10,6 +10,7 @@ import { ContextState, CTreeContext, DragState } from './context';
 import { TreeNodeData } from './dataStruct';
 import styles from './style.module.scss';
 import { DRAG_ITEM_KEY, TreeNode } from './treeNode';
+import { LayoutDragAndDropExtraDataType } from '@chamn/layout/dist/types/dragAndDrop';
 
 interface TreeViewProps extends WithTranslation {
   pluginCtx: CPluginCtx;
@@ -172,7 +173,7 @@ export class TreeView extends React.Component<
     if (!this.domRef.current) {
       return;
     }
-    const sensor = new Sensor({
+    const sensor = new Sensor<LayoutDragAndDropExtraDataType>({
       container: this.domRef.current,
       name: 'OutlineTree',
       eventPriority: 999,
@@ -182,7 +183,7 @@ export class TreeView extends React.Component<
     const pageModel = pluginCtx.pageModel;
     const designerExport = await this.getDesignerHandler();
     const dnd = designerExport!.getDnd()!;
-    sensor.setCanDrag(async (eventObj: SensorEventObjType) => {
+    sensor.setCanDrag(async (eventObj) => {
       const targetDom = eventObj.event.target as HTMLDivElement;
       if (!targetDom) {
         return;
@@ -220,12 +221,13 @@ export class TreeView extends React.Component<
       return {
         ...eventObj,
         extraData: {
-          startNode: targetNode,
+          dragNode: targetNode,
+          dragNodeUID: targetNode.id,
         },
       };
     });
 
-    sensor.setCanDrop(async (eventObj: SensorEventObjType) => {
+    sensor.setCanDrop(async (eventObj) => {
       const targetDom = eventObj.event.target as HTMLDivElement;
 
       if (!targetDom) {
@@ -250,7 +252,7 @@ export class TreeView extends React.Component<
         LOGGER.debug('targetNode not found');
         return eventObj;
       }
-      const startNode = eventObj.extraData?.startNode as CNode;
+      const startNode = eventObj.extraData?.dragNode as CNode;
       if (!startNode) {
         LOGGER.debug('startNode not found');
         return eventObj;
@@ -308,7 +310,7 @@ export class TreeView extends React.Component<
       if (!dropDom) {
         return;
       }
-      const dropPosInfo = e.extraData?.dropPosInfo;
+      const dropPosInfo = e.extraData?.dropPosInfo || ({} as DropPosType);
       const rect = dropDom.getBoundingClientRect();
       const newDropInfo = { x: 0, y: 0 };
 
