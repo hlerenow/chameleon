@@ -23,18 +23,9 @@ import {
 import { Pointer } from './core/dragAndDrop/common';
 import { calculateDropPosInfo } from './components/DropAnchor/util';
 // import { Resizable } from 're-resizable';
-import { DragAndDropEventObj } from './types/dragAndDrop';
+import { DragAndDropEventObj, LayoutDragAndDropExtraDataType } from './types/dragAndDrop';
 
 import styles from './index.module.scss';
-
-export type LayoutDragAndDropExtraDataType = {
-  dropType?: 'NEW_ADD' | 'NORMAL' | '';
-  dragNode?: CNode | CRootNode;
-  dragNodeUID?: string;
-  dropNode?: CNode | CRootNode;
-  dropNodeUID?: string;
-  dropPosInfo?: DropPosType;
-};
 
 export type LayoutDragEvent<T = LayoutDragAndDropExtraDataType> = DragAndDropEventObj<T>;
 
