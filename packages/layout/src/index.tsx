@@ -488,7 +488,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           ...(eventObj.extraData || {}),
           originDragNode: startNode,
           dragNode: targetDragNode,
-          dragNodeUid: startInstance?._UNIQUE_ID,
+          dragNodeUID: startInstance?._UNIQUE_ID,
         },
       };
       if (this.props.nodeCanDrag) {
