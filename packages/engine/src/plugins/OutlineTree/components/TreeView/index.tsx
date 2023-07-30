@@ -285,8 +285,8 @@ export class TreeView extends React.Component<
           ...eventObj.extraData,
           dropPosInfo: dropInfo,
           dropNode: targetNode,
-          dropNodeUid: undefined,
-        } as LayoutDragAndDropExtraDataType,
+          dropNodeUID: undefined,
+        },
       };
       return res;
     });

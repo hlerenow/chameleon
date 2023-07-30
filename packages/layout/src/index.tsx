@@ -10,6 +10,7 @@ import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
 import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
 import { DropAnchorCanvas } from './components/DropAnchor';
 import {
+  AdvanceCustom,
   AssetPackage,
   CNode,
   CPage,
@@ -27,11 +28,11 @@ import { DragAndDropEventObj } from './types/dragAndDrop';
 import styles from './index.module.scss';
 
 export type LayoutDragAndDropExtraDataType = {
-  dragNode?: CNode | CRootNode;
-  dragNodeUid?: string;
   dropType?: 'NEW_ADD' | 'NORMAL' | '';
+  dragNode?: CNode | CRootNode;
+  dragNodeUID?: string;
   dropNode?: CNode | CRootNode;
-  dropNodeUid?: string;
+  dropNodeUID?: string;
   dropPosInfo?: DropPosType;
 };
 
@@ -43,20 +44,13 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   assets?: AssetPackage[];
   onSelectNode?: (node: CNode | CRootNode | null, event: MouseEvent | null | undefined) => Promise<boolean | void>;
   onHoverNode?: (node: CNode | CRootNode | null, dragNode: CNode | CRootNode, event: MouseEvent) => void;
-  nodeCanDrag?: (event: LayoutDragEvent) => Promise<
-    | boolean
-    | void
-    | {
-        dragNode: CNode | CRootNode;
-      }
-  >;
-  nodeCanDrop?: (event: LayoutDragEvent) => Promise<boolean | void>;
-  onNodeDragStart?: (event: LayoutDragEvent) => Promise<boolean | void>;
-  onNodeDragging?: (event: LayoutDragEvent) => Promise<boolean | void>;
-  onNodeDraEnd?: (event: LayoutDragEvent) => void;
-  onNodeDrop?: (event: LayoutDragEvent) => Promise<boolean | void>;
-  onNodeNewAdd?: (event: LayoutDragEvent) => Promise<boolean | void>;
-  calcDropNodeInfo?: (event: LayoutDragEvent) => Promise<boolean | void>;
+  nodeCanDrag?: (event: LayoutDragEvent) => ReturnType<Required<AdvanceCustom>['canDragNode']>;
+  nodeCanDrop?: (event: LayoutDragEvent) => ReturnType<Required<AdvanceCustom>['canDropNode']>;
+  onNodeDragStart?: (event: LayoutDragEvent) => ReturnType<Required<AdvanceCustom>['onDragStart']>;
+  onNodeDragging?: (event: LayoutDragEvent) => ReturnType<Required<AdvanceCustom>['onDragging']>;
+  onNodeDraEnd?: (event: LayoutDragEvent) => ReturnType<Required<AdvanceCustom>['onDragEnd']>;
+  onNodeDrop?: (event: LayoutDragEvent) => ReturnType<Required<AdvanceCustom>['onDrop']>;
+  onNodeNewAdd?: (event: LayoutDragEvent) => ReturnType<Required<AdvanceCustom>['onNewAdd']>;
   selectToolBarView?: React.ReactNode;
   selectBoxStyle?: React.CSSProperties;
   hoverBoxStyle?: React.CSSProperties;
@@ -459,6 +453,16 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
   }
 
+  cancelDrag(event: LayoutDragEvent<LayoutDragAndDropExtraDataType>) {
+    // 本次拖动取消后续拖动事件
+    this.isCancelDrag = true;
+    this.resetDrag();
+    this.dnd.cancelDrag();
+
+    // 触发dragEnd ⌚️
+    // this.props.onNodeDraEnd?.(event);
+  }
+
   registerDragAndDropEvent() {
     const dnd = this.dnd;
     const iframeDoc = this.iframeContainer.getDocument()!;
@@ -512,7 +516,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       return canDragRes;
     });
 
-    sensor.setCanDrop(async (eventObj: SensorEventObjType) => {
+    sensor.setCanDrop(async (eventObj) => {
       const dropInstance = this.designRenderRef.current?.getInstanceByDom(eventObj.event.target as HTMLElement);
       if (!dropInstance) {
         this.setState({
@@ -542,14 +546,34 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         dom: dropInstanceDom as HTMLElement,
         isContainer: Boolean(isContainer),
       });
-      return {
+
+      const dropRes = {
         ...eventObj,
+        from: eventObj.event,
+        fromPointer: eventObj.pointer,
+        fromSensor: sensor,
         extraData: {
+          ...(eventObj.extraData || {}),
           dropPosInfo: dropInfo,
           dropNode: dropInstance?._NODE_MODEL,
-          dropNodeUid: dropInstance?._UNIQUE_ID,
-        } as LayoutDragAndDropExtraDataType,
+          dropNodeUID: dropInstance?._UNIQUE_ID,
+        },
       };
+
+      if (this.props.nodeCanDrop) {
+        const res = await this.props.nodeCanDrop?.(dropRes);
+        if (res === false) {
+          return false;
+        }
+        if (typeof res === 'object') {
+          dropRes.extraData = {
+            ...dropRes.extraData,
+            ...res,
+          };
+        }
+      }
+
+      return dropRes;
     });
 
     dnd.registerSensor(sensor);
@@ -571,14 +595,12 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       ).shift();
       this.dragStartNode = dragStartNode;
       // 可以终止拖拽开始
-      const res = await this.props.onNodeDragStart?.(eventObj);
-      if (res === false) {
-        // 本次拖动取消后续拖动事件
-        this.isCancelDrag = true;
-        this.resetDrag();
-        this.dnd.cancelDrag();
-
-        return;
+      if (this.props.onNodeDragStart) {
+        const res = await this.props.onNodeDragStart(eventObj);
+        if (res === false) {
+          this.cancelDrag(eventObj);
+          return;
+        }
       }
 
       // dom 不存在
@@ -595,14 +617,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           selectComponentInstances: [],
           hoverComponentInstances: [],
         });
-        if (dragStartNode) {
-          const res = await this.props.onNodeNewAdd?.(eventObj);
-          if (res === false) {
-            // 禁止添加
-            this.resetDrag();
-            return;
-          }
-        }
         // 清空之前的选中
         onSelectNode?.(null, eventObj.current);
       } else if (currentSelectDom?.length && dragStartDom?.length) {
@@ -638,14 +652,18 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       }
     });
 
-    sensor.emitter.on('dragging', (e) => {
+    sensor.emitter.on('dragging', async (e) => {
       if (!this.designRenderRef.current || this.isCancelDrag) {
         return;
       }
       const extraData = e.extraData;
-      this.props.onNodeDragging?.(e);
+      const res = await this.props.onNodeDragging?.(e);
+      if (res === false) {
+        this.cancelDrag(e);
+        return;
+      }
       const componentInstance = (
-        this.designRenderRef.current.getInstancesById(extraData.dropNode?.id || '', extraData.dropNodeUid) || []
+        this.designRenderRef.current.getInstancesById(extraData.dropNode?.id || '', extraData.dropNodeUID) || []
       ).shift();
 
       if (!componentInstance) {
@@ -666,12 +684,25 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     sensor.emitter.on('dragEnd', (e) => {
       this.resetDrag();
       this.isCancelDrag = false;
+      this.props.onNodeDraEnd?.(e);
     });
 
-    sensor.emitter.on('drop', (e) => {
+    sensor.emitter.on('drop', async (e) => {
       if (!this.designRenderRef.current || this.isCancelDrag) {
         return;
       }
+
+      const { dragNode } = e.extraData;
+
+      if (dragNode) {
+        const res = await this.props.onNodeNewAdd?.(e);
+        if (res === false) {
+          // 禁止添加
+          this.resetDrag();
+          return;
+        }
+      }
+
       this.props.onNodeDrop?.(e);
     });
 

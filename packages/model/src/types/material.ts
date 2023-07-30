@@ -372,9 +372,10 @@ export type AdvanceCustom = {
         dragNode: CNode | CRootNode;
       }
   >;
-  onDragStart?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => void;
+  onDragStart?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean | void | undefined>;
   /** 拖动中触发 */
-  onDragging?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => void;
+  onDragging?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean | void | undefined>;
+  onDragEnd?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => void;
   // TODO: 当前节点是否能被放置, 可以控制落点的 UI 样式？
   /**  TODO: 当有其他 node 被放置到当前 node 的 child 时触发校验，可以控制落点的 UI 样式？ */
   canAcceptNode?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
@@ -385,9 +386,13 @@ export type AdvanceCustom = {
     | boolean
     | {
         /** 被拖动的节点 */
-        dragNode: CNode | CRootNode;
+        dragNode?: CNode | CRootNode;
+        /** node 可能被循环渲染多次，这里表示 node 的唯一 id， node.id 只能表示 node 在 schema 中唯一，不代表渲染唯一 */
+        dragNodeUID?: string;
         /** 放置到的目标节点 */
-        dropNode: CNode | CRootNode;
+        dropNode?: CNode | CRootNode;
+        dropNodeUID?: string;
+        dropPosInfo?: DropPosType;
       }
   >;
   onDrop?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
@@ -440,15 +445,6 @@ export type AdvanceCustom = {
   selectHighlightRectView?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => React.ReactNode;
   // TODO:
   hoverHighlightRectView?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => React.ReactNode;
-  // TODO: 在拖动过程中计算 被拖动节点释放在当前节点时，应该放置在当前节点的位置, 并可以修改放置节点的信息
-  calcDropNodeInfo?: (
-    node: CNode | CRootNode,
-    params: AdvanceCustomFuncParam
-  ) => Promise<
-    DropPosType & {
-      dropNode: CNode | CRootNode;
-    }
-  >;
   dropViewRender: (
     props: DropPosType & {
       // 是否可以放置

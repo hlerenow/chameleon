@@ -129,6 +129,7 @@ export class DragAndDrop<E = Record<string, any>> {
 
     // mousemove
     const onMouseMove = async (mouseMoveEventObj: SensorEventType['onMouseMove']) => {
+      // 拖动过程中 API 终止
       if (this.currentState === 'CANCEL') {
         return;
       }
@@ -215,7 +216,7 @@ export class DragAndDrop<E = Record<string, any>> {
 
     // mouseup
     const onMouseUp = async ({ sensor, event, pointer }: SensorEventType['onMouseUp']) => {
-      if (this.currentState === 'DRAGGING') {
+      if (this.currentState !== 'NORMAL') {
         this.canTriggerClick = false;
         setTimeout(() => {
           this.canTriggerClick = true;
