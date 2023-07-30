@@ -5,11 +5,11 @@ import { BaseDragAndDropEventType } from '../../types/dragAndDrop';
 import { debounce } from 'lodash-es';
 
 type EmptyFunc = () => void;
-export type DragAndDropEventType = {
+export type DragAndDropEventType<E> = {
   click: SensorEventObjType;
   onMouseMove: SensorEventObjType;
-} & BaseDragAndDropEventType;
-export class DragAndDrop {
+} & BaseDragAndDropEventType<E>;
+export class DragAndDrop<E = Record<string, any>> {
   senors: Sensor[] = [];
   senorEventPriorityQueueMap: Record<
     string,
@@ -28,7 +28,7 @@ export class DragAndDrop {
   currentSensor: Sensor | null = null;
   currentState: 'NORMAL' | 'DRAGGING' | 'CANCEL' = 'NORMAL';
   dragStartObj: SensorEventType['onMouseDown'] | null = null;
-  emitter = mitt<DragAndDropEventType>();
+  emitter = mitt<DragAndDropEventType<E>>();
   // 拖动结束后是否可以触发点击事件
   canTriggerClick = true;
   constructor(options: {

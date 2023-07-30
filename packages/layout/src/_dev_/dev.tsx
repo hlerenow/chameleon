@@ -105,11 +105,11 @@ const App = () => {
   useEffect(() => {
     layoutRef.current?.ready(() => {
       console.log('layoutRef', layoutRef);
-      const boxSensor = new Sensor({
+      const boxSensor = new Sensor<LayoutDragAndDropExtraDataType>({
         name: 'widgetListBox',
         container: leftBoxRef.current!,
       });
-      boxSensor.setCanDrag(async (eventObj: SensorEventObjType) => {
+      boxSensor.setCanDrag(async (eventObj) => {
         const pageModel = layoutRef.current?.getPageModel();
 
         const newNode = pageModel?.createNode({
@@ -128,9 +128,9 @@ const App = () => {
         return {
           ...eventObj,
           extraData: {
-            type: 'NEW_ADD',
-            startNode: newNode,
-          } as LayoutDragAndDropExtraDataType,
+            dropType: 'NEW_ADD',
+            dragNode: newNode,
+          },
         };
       });
 
@@ -145,16 +145,13 @@ const App = () => {
         return {
           ...eventObj,
           extraData: {
-            dropPosInfo: {
-              // pos: 'before',
-            },
             dropNode: newNode,
-          } as LayoutDragAndDropExtraDataType,
+          },
         };
       });
 
       boxSensor.emitter.on('dragStart', (eventObj) => {
-        setGhostView(<div>{eventObj.extraData?.startNode.value.componentName}</div>);
+        setGhostView(<div>{eventObj.extraData?.dragNode?.value.componentName}</div>);
         if (eventObj.currentSensor === boxSensor) {
           layoutRef.current?.clearSelectNode();
         }
@@ -172,20 +169,20 @@ const App = () => {
           console.warn('cancel drop, because drop node is null');
           return;
         }
-        if (extraData.type === 'NEW_ADD') {
-          pageModel?.addNode(extraData.startNode as CNode, extraData.dropNode, 'BEFORE');
+        if (extraData.dropType === 'NEW_ADD') {
+          pageModel?.addNode(extraData.dragNode as CNode, extraData.dropNode, 'BEFORE');
         } else {
-          if (extraData.dropNode?.id === extraData.startNode?.id) {
+          if (extraData.dropNode?.id === extraData.dragNode?.id) {
             return;
           }
           if (extraData.dropPosInfo?.pos === 'before') {
-            pageModel?.moveNodeById(extraData.startNode?.id || '', extraData?.dropNode?.id || '', 'BEFORE');
+            pageModel?.moveNodeById(extraData.dragNode?.id || '', extraData?.dropNode?.id || '', 'BEFORE');
           } else {
-            pageModel?.moveNodeById(extraData.startNode?.id || '', extraData?.dropNode?.id || '', 'AFTER');
+            pageModel?.moveNodeById(extraData.dragNode?.id || '', extraData?.dropNode?.id || '', 'AFTER');
           }
         }
-        console.log('选中元素', extraData.startNode?.id || '', extraData?.dropNode?.id, extraData);
-        layoutRef.current?.selectNode(extraData.startNode?.id || '');
+        console.log('选中元素', extraData.dragNode?.id || '', extraData?.dropNode?.id, extraData);
+        layoutRef.current?.selectNode(extraData.dragNode?.id || '');
 
         console.log(pageModel?.export());
       });

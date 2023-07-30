@@ -9,28 +9,28 @@ export type SensorOffsetType = {
   y: number;
 };
 
-export type SensorEventObjType = {
-  sensor: Sensor;
+export type SensorEventObjType<T extends Record<string, any> = any> = {
+  sensor: Sensor<T>;
   pointer: Pointer;
   event: MouseEvent;
-  extraData?: Record<string, any>;
+  extraData?: T;
 };
 
 export type SensorClickEventObjType = Omit<SensorEventObjType, 'pointer'>;
 
-export type SensorEventType = {
-  onLeave: SensorEventObjType;
-  onEnter: SensorEventObjType;
-  onMouseChange: SensorEventObjType;
-  onMouseUp: SensorEventObjType;
-  onMouseDown: SensorEventObjType;
-  onMouseMove: SensorEventObjType;
-  onClick: SensorEventObjType;
-} & BaseDragAndDropEventType;
+export type SensorEventType<E extends Record<string, any> = any> = {
+  onLeave: SensorEventObjType<E>;
+  onEnter: SensorEventObjType<E>;
+  onMouseChange: SensorEventObjType<E>;
+  onMouseUp: SensorEventObjType<E>;
+  onMouseDown: SensorEventObjType<E>;
+  onMouseMove: SensorEventObjType<E>;
+  onClick: SensorEventObjType<E>;
+} & BaseDragAndDropEventType<E>;
 
-export type SensorEventNameType = keyof SensorEventType;
+export type SensorEventNameType = keyof SensorEventType<any>;
 
-export class Sensor extends DEmitter<SensorEventType> {
+export class Sensor<E extends Record<string, any> = any> extends DEmitter<SensorEventType<E>> {
   // TODO: 用于处理感应区重叠时，事件触发的优先级, 暂时未实现相关功能
   eventPriority = 0;
   private offset: SensorOffsetType = {
@@ -41,9 +41,9 @@ export class Sensor extends DEmitter<SensorEventType> {
   container: HTMLElement;
   offsetDom?: HTMLElement | null;
 
-  canDrag: (params: SensorEventObjType) => Promise<SensorEventObjType | null | undefined | boolean> = (params) =>
+  canDrag: (params: SensorEventObjType<E>) => Promise<SensorEventObjType<E> | null | undefined | boolean> = (params) =>
     Promise.resolve(params);
-  canDrop: (params: SensorEventObjType) => Promise<SensorEventObjType | null | undefined | boolean> = (params) =>
+  canDrop: (params: SensorEventObjType<E>) => Promise<SensorEventObjType<E> | null | undefined | boolean> = (params) =>
     Promise.resolve(params);
 
   private eventDisposeQueue: (() => void)[] = [];
@@ -198,11 +198,11 @@ export class Sensor extends DEmitter<SensorEventType> {
     return this.offset;
   }
 
-  setCanDrag(cb: Sensor['canDrag']) {
+  setCanDrag(cb: typeof this.canDrag) {
     this.canDrag = cb;
   }
 
-  setCanDrop(cb: Sensor['canDrop']) {
+  setCanDrop(cb: typeof this.canDrop) {
     this.canDrop = cb;
   }
 
