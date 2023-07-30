@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppstoreAddOutlined } from '@ant-design/icons';
-import { LayoutDragAndDropExtraDataType, Sensor, SensorEventObjType } from '@chamn/layout';
+import { Sensor, SensorEventObjType } from '@chamn/layout';
 import { Tabs } from 'antd';
 import { CPlugin, CPluginCtx } from '../../core/pluginManager';
 import { DesignerExports } from '../Designer';
@@ -13,6 +13,7 @@ import { DRAG_ITEM_KEY } from './components/DragItem';
 import { CNode, CRootNode, CSlot, findContainerNode, isPageModel, SnippetsCollection } from '@chamn/model';
 import { capitalize } from 'lodash-es';
 import { InsertNodePosType } from '@chamn/model/src';
+import { LayoutDragAndDropExtraDataType } from '@chamn/layout/dist/types/dragAndDrop';
 
 interface ComponentLibViewProps extends WithTranslation {
   pluginCtx: CPluginCtx;
@@ -92,7 +93,7 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
     const pageModel = pluginCtx.pageModel;
     const designerExports: DesignerExports = designerHandle.exports;
     const dnd = designerExports.getDnd();
-    const boxSensor = new Sensor({
+    const boxSensor = new Sensor<LayoutDragAndDropExtraDataType>({
       name: 'ComponentListBox',
       container: containerRef.current,
     });
@@ -115,7 +116,7 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
       return pageModel?.createNode(meta.schema);
     };
 
-    boxSensor.setCanDrag(async (eventObj: SensorEventObjType) => {
+    boxSensor.setCanDrag(async (eventObj) => {
       const newNode = getNewNode(eventObj);
 
       this.props.pluginCtx.pluginManager.get('Designer').then((designerHandle) => {
@@ -126,9 +127,9 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
       return {
         ...eventObj,
         extraData: {
-          type: 'NEW_ADD',
-          startNode: newNode,
-        } as LayoutDragAndDropExtraDataType,
+          dropType: 'NEW_ADD',
+          dragNode: newNode,
+        },
       };
     });
     dnd.registerSensor(boxSensor);

@@ -378,12 +378,14 @@ export type AdvanceCustom = {
   onDragEnd?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => void;
   // TODO: 当前节点是否能被放置, 可以控制落点的 UI 样式？
   /**  TODO: 当有其他 node 被放置到当前 node 的 child 时触发校验，可以控制落点的 UI 样式？ */
-  canAcceptNode?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
+  canAcceptNode?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean | void | undefined>;
   canDropNode?: (
     node: CNode | CRootNode,
     params: AdvanceCustomFuncParam
   ) => Promise<
     | boolean
+    | void
+    | undefined
     | {
         /** 被拖动的节点 */
         dragNode?: CNode | CRootNode;
@@ -395,13 +397,15 @@ export type AdvanceCustom = {
         dropPosInfo?: DropPosType;
       }
   >;
-  onDrop?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean>;
+  onDrop?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean | void | undefined>;
   /** 当第一次被拖入到画布时触发 */
   onNewAdd?: (
     node: CNode | CRootNode,
     params: AdvanceCustomFuncParam
   ) => Promise<
     | boolean
+    | void
+    | undefined
     | {
         addNode: CNode | CRootNode;
         dropNode: CNode | CRootNode;
@@ -413,6 +417,8 @@ export type AdvanceCustom = {
     params: AdvanceCustomFuncParam
   ) => Promise<
     | boolean
+    | void
+    | undefined
     | {
         deleteNode: CNode | CRootNode;
       }
@@ -422,7 +428,7 @@ export type AdvanceCustom = {
     node: CNode | CRootNode,
     params: AdvanceCustomFuncParam
   ) =>
-    | Promise<boolean>
+    | Promise<boolean | void | undefined>
     | {
         selectedNode: CNode | CRootNode;
       };
@@ -431,6 +437,8 @@ export type AdvanceCustom = {
     params: AdvanceCustomFuncParam
   ) => Promise<
     | boolean
+    | void
+    | undefined
     | {
         copyNode: CNode | CRootNode;
       }

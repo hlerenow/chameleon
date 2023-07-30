@@ -7,7 +7,7 @@ import { IFrameContainer } from './core/iframeContainer';
 import { addEventListenerReturnCancel, animationFrame } from './utils';
 import { HighlightCanvas, HighlightCanvasRefType } from './components/HighlightBox';
 import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
-import { Sensor, SensorEventObjType } from './core/dragAndDrop/sensor';
+import { Sensor } from './core/dragAndDrop/sensor';
 import { DropAnchorCanvas } from './components/DropAnchor';
 import {
   AdvanceCustom,

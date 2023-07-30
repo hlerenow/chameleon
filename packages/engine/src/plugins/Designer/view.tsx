@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, LayoutDragAndDropExtraDataType, LayoutDragEvent, LayoutPropsType } from '@chamn/layout';
+import { Layout, LayoutDragEvent, LayoutPropsType } from '@chamn/layout';
 import { CNode, CPage, CRootNode, InsertNodePosType } from '@chamn/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import localize from './localize';
@@ -106,11 +106,11 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     pluginCtx.pluginReadyOk();
   }
 
-  onNodeDragging = async (eventObj: LayoutDragEvent) => {
-    const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
-    const startNode = extraData.startNode;
-    if (startNode) {
-      const res = startNode.material?.value.advanceCustom?.onDragging?.(startNode, {
+  onNodeDragging: LayoutPropsType['onNodeDragging'] = async (eventObj) => {
+    const extraData = eventObj.extraData;
+    const dragNode = extraData?.dragNode;
+    if (dragNode) {
+      const res = dragNode.material?.value.advanceCustom?.onDragging?.(dragNode, {
         context: this.props.pluginCtx,
         viewPortal: this.getPortalViewCtx(),
         event: eventObj,
@@ -119,66 +119,67 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     }
   };
 
-  onNodeDrop = async (eventObj: LayoutDragEvent) => {
+  onNodeDrop: LayoutPropsType['onNodeDrop'] = async (eventObj) => {
     const { layoutRef } = this;
     const pageModel = this.props.pluginCtx.pageModel;
-    const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
-    const dropPosInfo = extraData.dropPosInfo;
+    const extraData = eventObj.extraData;
+    const dropPosInfo = extraData?.dropPosInfo;
     const posFlag = {
       before: 'BEFORE',
       after: 'AFTER',
       current: 'CHILD_START',
     }[dropPosInfo?.pos || 'after'] as InsertNodePosType;
-    const startNode = extraData.startNode;
-    if (startNode) {
-      const res = await startNode.material?.value.advanceCustom?.onDrop?.(startNode, {
+    const dragNode = extraData?.dragNode;
+    if (dragNode) {
+      const res = await dragNode.material?.value.advanceCustom?.onDrop?.(dragNode, {
         context: this.props.pluginCtx,
         viewPortal: this.getPortalViewCtx(),
         event: eventObj,
       });
       if (res === false) {
-        return;
+        return false;
       }
     }
-    if (!extraData.dropNode) {
+    if (!extraData?.dropNode) {
       console.warn('cancel drop, because drop node is null');
-      return;
+      return false;
     }
-    if (extraData.type === 'NEW_ADD') {
-      if (startNode) {
-        const res = await startNode.material?.value.advanceCustom?.onNewAdd?.(startNode, {
+    if (extraData.dropType === 'NEW_ADD') {
+      if (dragNode) {
+        const res = await dragNode.material?.value.advanceCustom?.onNewAdd?.(dragNode, {
           context: this.props.pluginCtx,
           viewPortal: this.getPortalViewCtx(),
           event: eventObj,
         });
         if (res === false) {
-          return;
+          return false;
         }
       }
       if (extraData.dropNode?.nodeType !== 'NODE') {
-        pageModel?.addNode(extraData.startNode as CNode, extraData.dropNode!, 'CHILD_START');
+        pageModel?.addNode(extraData.dragNode as CNode, extraData.dropNode!, 'CHILD_START');
       } else {
-        pageModel?.addNode(extraData.startNode as CNode, extraData.dropNode!, posFlag);
+        pageModel?.addNode(extraData.dragNode as CNode, extraData.dropNode!, posFlag);
       }
     } else {
-      if (extraData.dropNode?.id === extraData.startNode?.id) {
+      if (extraData.dropNode?.id === extraData.dragNode?.id) {
         console.warn(' id is the same');
         return;
       }
-      const res = pageModel.moveNodeById(extraData.startNode?.id || '', extraData?.dropNode?.id || '', posFlag);
+      const res = pageModel.moveNodeById(extraData.dragNode?.id || '', extraData?.dropNode?.id || '', posFlag);
       if (!res) {
         console.warn('drop failed');
+        return false;
       }
     }
     setTimeout(async () => {
-      if (startNode) {
-        const flag = await this.onSelectNode(startNode, null);
+      if (dragNode) {
+        const flag = await this.onSelectNode(dragNode, null);
         if (flag === false) {
           layoutRef.current?.selectNode('');
           return;
         }
       }
-      layoutRef.current?.selectNode(extraData.startNode?.id || '');
+      layoutRef.current?.selectNode(extraData.dragNode?.id || '');
     }, 150);
     this.props.pluginCtx.emitter.emit('onDrop', eventObj);
   };
@@ -251,14 +252,14 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     });
   };
 
-  onDragStart = async (e: LayoutDragEvent) => {
-    const extraData = e.extraData as LayoutDragAndDropExtraDataType;
-    const startNode = extraData.startNode;
-    if (!startNode) {
+  onDragStart: LayoutPropsType['onNodeDragStart'] = async (e) => {
+    const extraData = e.extraData;
+    const dragNode = extraData?.dragNode;
+    if (!dragNode) {
       return;
     }
 
-    const dragFlag = await startNode.material?.value.advanceCustom?.onDrag?.(startNode, {
+    const dragFlag = await dragNode.material?.value.advanceCustom?.onDragStart?.(dragNode, {
       context: this.props.pluginCtx,
       viewPortal: this.getPortalViewCtx(),
       event: e,
@@ -268,17 +269,17 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     }
 
     this.setState({
-      ghostView: <GhostView node={startNode} />,
+      ghostView: <GhostView node={dragNode} />,
     });
   };
 
-  onHoverNode = (node: CNode | CRootNode | null, startNode: CNode | CRootNode, event: MouseEvent) => {
+  onHoverNode: LayoutPropsType['onHoverNode'] = (node, dragNode) => {
     this.props.pluginCtx.emitter.emit('onHover', node);
     const material = node?.material;
     if (!material) {
       console.warn('material not found', node);
     }
-    if (!startNode) {
+    if (!dragNode) {
       this.setState({
         hoverToolBarView: <div className={styles.hoverTips}>{material?.value.title || material?.componentName}</div>,
         ghostView: null,
@@ -288,7 +289,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
 
     this.setState({
       hoverToolBarView: <div className={styles.hoverTips}>{material?.value.title || material?.componentName}</div>,
-      ghostView: <GhostView node={startNode} />,
+      ghostView: <GhostView node={dragNode} />,
     });
   };
 
