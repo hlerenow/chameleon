@@ -1,11 +1,10 @@
-import React from 'react';
-import { DropPosType } from '@chamn/layout/dist/components/DropAnchor/util';
 import {
   ArraySetterObjType,
   CNode,
   CNodeDataType,
   CPage,
   CPageDataType,
+  DropPosType,
   getMTitle,
   isJSSlotPropNode,
   isSpecialMaterialPropType,

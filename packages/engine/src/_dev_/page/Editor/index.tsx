@@ -6,7 +6,7 @@ import ReactDOMClient from 'react-dom/client';
 import { Engine, EnginContext } from '../../..';
 import '../../index.css';
 import { DEFAULT_PLUGIN_LIST } from '../../../plugins';
-import { DesignerExports } from '../../../plugins/Designer';
+import { DesignerExport } from '../../../plugins/Designer';
 import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 import { InnerComponentMeta } from '../../../material/innerMaterial';
 import { RollbackOutlined } from '@ant-design/icons';
@@ -92,9 +92,9 @@ export const App = () => {
     const designer = await ctx.pluginManager.onPluginReadyOk('Designer');
     const reloadPage = async () => {
       setTimeout(() => {
-        const designerExports = designer?.exports as DesignerExports;
+        const designerExport = designer?.export;
         console.log('to reload');
-        designerExports.reload();
+        designerExport.reload();
       }, 0);
     };
 
@@ -123,7 +123,7 @@ export const App = () => {
           style={{ marginRight: '10px' }}
           onClick={async () => {
             const res = await ctx.pluginManager.get('History');
-            res?.exports.preStep();
+            res?.export.preStep();
           }}
         >
           <RollbackOutlined />
@@ -132,7 +132,7 @@ export const App = () => {
           style={{ marginRight: '10px' }}
           onClick={async () => {
             const res = await ctx.pluginManager.get('History');
-            res?.exports.nextStep();
+            res?.export.nextStep();
           }}
         >
           <RollbackOutlined

@@ -1,13 +1,28 @@
 import React from 'react';
-import { DragAndDrop } from '@chamn/layout';
+import { DragAndDrop, LayoutPropsType } from '@chamn/layout';
 import '@chamn/layout/dist/style.css';
-import { CPlugin } from '../../core/pluginManager';
+import { CPlugin, PluginInstance } from '../../core/pluginManager';
 import { PLUGIN_NAME } from './config';
 import { Designer } from './view';
 import { AssetPackage, CPage, CPageDataType } from '@chamn/model';
 import { RenderInstance } from '@chamn/render';
 
-export const DesignerPlugin: CPlugin = (ctx) => {
+export type DesignerExport = {
+  reload: (params?: { assets?: AssetPackage[] }) => void;
+  getInstance: () => Designer | null;
+  getDnd: () => DragAndDrop | undefined;
+  selectNode: (nodeId: string) => void;
+  getSelectedNodeId: () => string | undefined;
+  updatePage: (page: CPageDataType) => void;
+  getComponentInstances: (id: string) => RenderInstance[];
+  getDynamicComponentInstances: (id: string) => RenderInstance;
+};
+
+export type DesignerPluginConfig = LayoutPropsType;
+export type DesignerPluginType = CPlugin<DesignerPluginConfig, DesignerExport>;
+export type DesignerPluginInstance = PluginInstance<DesignerPluginConfig, DesignerExport>;
+
+export const DesignerPlugin: DesignerPluginType = (ctx) => {
   const designerRef = React.createRef<Designer>();
   return {
     name: PLUGIN_NAME,
@@ -18,7 +33,7 @@ export const DesignerPlugin: CPlugin = (ctx) => {
     async destroy(ctx) {
       console.log('destroy', ctx);
     },
-    exports: () => {
+    export: () => {
       return {
         getInstance: () => {
           return designerRef.current;
@@ -53,9 +68,9 @@ export const DesignerPlugin: CPlugin = (ctx) => {
           const map =
             designerRef.current?.layoutRef.current?.designRenderRef.current?.renderRef.current
               ?.dynamicComponentInstanceMap;
-          return map?.get(id) || [];
+          return map?.get(id) || ([] as any);
         },
-      } as DesignerExports;
+      };
     },
     meta: {
       engine: {
@@ -63,15 +78,4 @@ export const DesignerPlugin: CPlugin = (ctx) => {
       },
     },
   };
-};
-
-export type DesignerExports = {
-  reload: (params?: { assets?: AssetPackage[] }) => void;
-  getInstance: () => Designer;
-  getDnd: () => DragAndDrop;
-  selectNode: (nodeId: string) => void;
-  getSelectedNodeId: () => string | undefined;
-  updatePage: (page: CPageDataType) => void;
-  getComponentInstances: (id: string) => RenderInstance[];
-  getDynamicComponentInstances: (id: string) => RenderInstance;
 };

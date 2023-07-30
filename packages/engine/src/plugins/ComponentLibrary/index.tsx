@@ -3,7 +3,7 @@ import { AppstoreAddOutlined } from '@ant-design/icons';
 import { Sensor, SensorEventObjType } from '@chamn/layout';
 import { Tabs } from 'antd';
 import { CPlugin, CPluginCtx } from '../../core/pluginManager';
-import { DesignerExports } from '../Designer';
+import { DesignerPluginInstance } from '../Designer';
 import localize from './localize';
 import styles from './style.module.scss';
 import { withTranslation, WithTranslation } from 'react-i18next';
@@ -82,7 +82,7 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
   registerDragEvent = async () => {
     const { containerRef } = this;
     const { pluginCtx } = this.props;
-    const designerHandle = await pluginCtx.pluginManager.get('Designer');
+    const designerHandle = await pluginCtx.pluginManager.get<DesignerPluginInstance>('Designer');
 
     if (!designerHandle) {
       return;
@@ -91,8 +91,8 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
       return;
     }
     const pageModel = pluginCtx.pageModel;
-    const designerExports: DesignerExports = designerHandle.exports;
-    const dnd = designerExports.getDnd();
+    const designerExport = designerHandle.export;
+    const dnd = designerExport.getDnd()!;
     const boxSensor = new Sensor<LayoutDragAndDropExtraDataType>({
       name: 'ComponentListBox',
       container: containerRef.current,
@@ -119,9 +119,9 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
     boxSensor.setCanDrag(async (eventObj) => {
       const newNode = getNewNode(eventObj);
 
-      this.props.pluginCtx.pluginManager.get('Designer').then((designerHandle) => {
-        const designerExports: DesignerExports = designerHandle?.exports;
-        designerExports.selectNode('');
+      this.props.pluginCtx.pluginManager.get<DesignerPluginInstance>('Designer').then((designerHandle) => {
+        const designerExport = designerHandle?.export;
+        designerExport?.selectNode('');
       });
 
       return {
@@ -155,11 +155,11 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
 
       const { pageModel } = this.props.pluginCtx;
 
-      return this.props.pluginCtx.pluginManager.get('Designer').then(async (designerHandle) => {
-        const designerExports: DesignerExports = designerHandle?.exports;
+      return this.props.pluginCtx.pluginManager.get<DesignerPluginInstance>('Designer').then(async (designerHandle) => {
+        const designerExport = designerHandle?.export;
 
         // 获取当前选中，如果存在，就插入到当前选中的下面，否则就插入到根节点下面
-        const selectedNodeId = designerExports.getSelectedNodeId();
+        const selectedNodeId = designerExport?.getSelectedNodeId();
         const selectedNode = pageModel.getNode(selectedNodeId);
         const containerNode = findContainerNode(selectedNode);
         let pos: InsertNodePosType = 'CHILD_END';
@@ -186,18 +186,18 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
             dropNode = rootNode;
           }
         }
-        const designerInstance = designerExports.getInstance();
+        const designerInstance = designerExport?.getInstance();
         const addFlag = await newNode.material?.value.advanceCustom?.onNewAdd?.(newNode, {
           context: this.props.pluginCtx,
           event: null,
-          viewPortal: designerInstance.getPortalViewCtx(),
+          viewPortal: designerInstance!.getPortalViewCtx(),
         });
         if (addFlag === false) {
           return;
         }
         pageModel.addNode(newNode, dropNode as CNode, pos);
         setTimeout(() => {
-          designerExports?.selectNode(newNode.id);
+          designerExport?.selectNode(newNode.id);
         }, 200);
       });
     };
@@ -253,7 +253,7 @@ export const ComponentLibPlugin: CPlugin = {
   async destroy(ctx) {
     console.log('destroy', ctx);
   },
-  exports: (ctx) => {
+  export: (ctx) => {
     return {};
   },
   meta: {

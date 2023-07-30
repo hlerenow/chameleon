@@ -151,7 +151,7 @@ export const App = () => {
           style={{ marginRight: '10px' }}
           onClick={async () => {
             const res = await ctx.pluginManager.get('History');
-            res?.exports.preStep();
+            res?.export.preStep();
           }}
         >
           <RollbackOutlined />
@@ -160,7 +160,7 @@ export const App = () => {
           style={{ marginRight: '10px' }}
           onClick={async () => {
             const res = await ctx.pluginManager.get('History');
-            res?.exports.nextStep();
+            res?.export.nextStep();
           }}
         >
           <RollbackOutlined

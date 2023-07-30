@@ -1,11 +1,10 @@
-import { LayoutDragAndDropExtraDataType, Sensor, SensorEventObjType } from '@chamn/layout';
-import { DropPosType } from '@chamn/layout/dist/components/DropAnchor/util';
+import { Sensor, SensorEventObjType } from '@chamn/layout';
 import { CNode, CRootNode } from '@chamn/model';
 import React from 'react';
 import { WithTranslation } from 'react-i18next';
 import { CPluginCtx } from '../../../../core/pluginManager';
 import { LOGGER } from '../../../../utils/logger';
-import { DesignerExports } from '../../../Designer';
+import { DesignerPluginInstance } from '../../../Designer';
 import { calculateDropPosInfo, getTargetMNodeKeyVal, transformPageSchemaToTreeData, traverseTree } from '../../util';
 import { ContextState, CTreeContext, DragState } from './context';
 import { TreeNodeData } from './dataStruct';
@@ -45,9 +44,9 @@ export class TreeView extends React.Component<
   }
 
   getDesignerHandler = async () => {
-    const designerPluginInstance = await this.props.pluginCtx.pluginManager.get('Designer');
-    const designerHandler: DesignerExports = designerPluginInstance?.exports;
-    return designerHandler;
+    const designerPluginInstance = await this.props.pluginCtx.pluginManager.get<DesignerPluginInstance>('Designer');
+    const designerHandler = designerPluginInstance?.export;
+    return designerHandler!;
   };
 
   updateTreeDataFromNode = () => {
@@ -181,8 +180,8 @@ export class TreeView extends React.Component<
     const { pluginCtx } = this.props;
 
     const pageModel = pluginCtx.pageModel;
-    const designerExports: DesignerExports = await this.getDesignerHandler();
-    const dnd = designerExports.getDnd();
+    const designerExport = await this.getDesignerHandler();
+    const dnd = designerExport!.getDnd()!;
     sensor.setCanDrag(async (eventObj: SensorEventObjType) => {
       const targetDom = eventObj.event.target as HTMLDivElement;
       if (!targetDom) {
@@ -202,11 +201,11 @@ export class TreeView extends React.Component<
       }
 
       // 判断节点本身是否可以拖动
-      const designerInstance = designerExports.getInstance();
-      const nodeDragFlag = await targetNode?.material?.value.advanceCustom?.onDrag?.(targetNode, {
+      const designerInstance = designerExport!.getInstance();
+      const nodeDragFlag = await targetNode?.material?.value.advanceCustom?.canDragNode?.(targetNode, {
         context: this.props.pluginCtx,
         event: null,
-        viewPortal: designerInstance.getPortalViewCtx(),
+        viewPortal: designerInstance!.getPortalViewCtx(),
       });
       // 节点不能拖动
       if (nodeDragFlag === false) {
@@ -222,7 +221,7 @@ export class TreeView extends React.Component<
         ...eventObj,
         extraData: {
           startNode: targetNode,
-        } as LayoutDragAndDropExtraDataType,
+        },
       };
     });
 
@@ -309,7 +308,7 @@ export class TreeView extends React.Component<
       if (!dropDom) {
         return;
       }
-      const dropPosInfo = e.extraData?.dropPosInfo as DropPosType;
+      const dropPosInfo = e.extraData?.dropPosInfo;
       const rect = dropDom.getBoundingClientRect();
       const newDropInfo = { x: 0, y: 0 };
 
@@ -346,15 +345,15 @@ export class TreeView extends React.Component<
           state: this.state,
           getDesignerHandler: this.getDesignerHandler,
           onSelectNode: async ({ keys: sk }) => {
-            const designer = await pluginCtx.pluginManager.get('Designer');
+            const designer = await pluginCtx.pluginManager.get<DesignerPluginInstance>('Designer');
             if (!designer) {
               console.warn('Designer is empty');
               return;
             }
             const nodeId = sk?.[0] || '';
             const nn = pluginCtx.pageModel.getNode(nodeId);
-            const designerExports: DesignerExports = designer.exports;
-            designerExports.selectNode(nodeId);
+            const designerExport = designer.export;
+            designerExport.selectNode(nodeId);
             if (nn) {
               pluginCtx.engine.updateCurrentSelectNode(nn);
             }

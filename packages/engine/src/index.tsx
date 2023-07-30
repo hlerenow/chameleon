@@ -6,6 +6,7 @@ import { CPlugin, PluginManager } from './core/pluginManager';
 import mitt, { Emitter } from 'mitt';
 import { AssetPackage, CMaterialType, CNode, CPage, CPageDataType, CRootNode, EmptyPage } from '@chamn/model';
 import { getDefaultRender, beforeInitRender } from './utils/defaultEngineConfig';
+import { DesignerPluginInstance } from './plugins/Designer';
 
 export type EnginContext = {
   pluginManager: PluginManager;
@@ -74,7 +75,7 @@ export class Engine extends React.Component<EngineProps> {
     });
     this.pluginManager = pluginManager;
     // 使用默认的渲染策略
-    pluginManager.customPlugin('Designer', (pluginInstance) => {
+    pluginManager.customPlugin<DesignerPluginInstance>('Designer', (pluginInstance) => {
       pluginInstance.ctx.config.beforeInitRender = beforeInitRender;
       pluginInstance.ctx.config.customRender = getDefaultRender(this.props.components || {});
       pluginInstance.ctx.config.components = this.props.components;

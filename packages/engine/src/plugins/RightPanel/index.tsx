@@ -14,7 +14,7 @@ export const RightPanelPlugin: CPlugin = (ctx) => {
     async destroy(ctx) {
       console.log('destroy', ctx);
     },
-    exports: (ctx) => {
+    export: (ctx) => {
       return uiHandle?.current;
     },
     meta: {

@@ -85,7 +85,7 @@ export const GlobalStatePanelPlugin: CPlugin = {
   async destroy(ctx) {
     console.log('destroy', ctx);
   },
-  exports: (ctx) => {
+  export: (ctx) => {
     return {};
   },
   meta: {

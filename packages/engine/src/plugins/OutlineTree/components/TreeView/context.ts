@@ -2,7 +2,7 @@
 import { Sensor } from '@chamn/layout';
 import { CPage } from '@chamn/model';
 import React from 'react';
-import { DesignerExports } from '../../../Designer';
+import { DesignerExport } from '../../../Designer';
 import { TreeNodeData } from './dataStruct';
 export enum DragState {
   DRAGGING = 'DRAGGING',
@@ -24,7 +24,7 @@ export type CTreeContextData = {
   onSelectNode: (params: { keys: string[]; node: TreeNodeData }) => void;
   onDeleteNode: (id: string) => void;
   onCopyNode: (id: string) => void;
-  getDesignerHandler?: () => Promise<DesignerExports>;
+  getDesignerHandler?: () => Promise<DesignerExport>;
 };
 
 export const CTreeContext = React.createContext<CTreeContextData>({

@@ -4,7 +4,7 @@ import { MonacoEditor, MonacoEditorInstance } from '../../component/MonacoEditor
 import { CPage } from '@chamn/model';
 import { waitReactUpdate } from '../../utils';
 import { EnginContext } from '../../index';
-import { DesignerExports } from '../Designer';
+import { DesignerPluginInstance } from '../Designer';
 
 export type DisplaySourceSchemaProps = {
   pageModel: CPage;
@@ -41,15 +41,15 @@ export const DisplaySourceSchema = (props: DisplaySourceSchemaProps) => {
           props.pageModel.updatePage(newPageJSON);
           await waitReactUpdate();
           const currentSelectNode = engineCtx.engine.getActiveNode();
-          const designerPluginInstance = await engineCtx.pluginManager.get('Designer');
+          const designerPluginInstance = await engineCtx.pluginManager.get<DesignerPluginInstance>('Designer');
           const nodeId = currentSelectNode?.id || '';
           designerPluginInstance?.ctx.emitter.on('ready', () => {
-            const designerExports: DesignerExports = designerPluginInstance.exports;
-            designerExports.selectNode(nodeId);
+            const designerExport = designerPluginInstance.export;
+            designerExport.selectNode(nodeId);
           });
           if (designerPluginInstance) {
-            const designerExports: DesignerExports = designerPluginInstance.exports;
-            designerExports.selectNode(nodeId);
+            const designerExport = designerPluginInstance.export;
+            designerExport.selectNode(nodeId);
           }
         }}
         style={{

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, LayoutDragEvent, LayoutPropsType } from '@chamn/layout';
+import { Layout, LayoutPropsType } from '@chamn/layout';
 import { CNode, CPage, CRootNode, InsertNodePosType } from '@chamn/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import localize from './localize';

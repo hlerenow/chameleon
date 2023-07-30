@@ -98,7 +98,7 @@ export const HistoryPlugin: CPlugin = (ctx) => {
     async destroy(ctx) {
       console.log('destroy', ctx);
     },
-    exports: () => {
+    export: () => {
       return resObj;
     },
     meta: {

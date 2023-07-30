@@ -5,14 +5,14 @@ import mitt, { Emitter } from 'mitt';
 import { Workbench } from '../component/Workbench';
 import { CustomI18n } from '../i18n';
 
-export type PluginObj = {
+export type PluginObj<C, E = any> = {
   name: string;
-  init: (ctx: CPluginCtx) => Promise<void>;
-  destroy: (ctx: CPluginCtx) => Promise<void>;
+  init: (ctx: CPluginCtx<C>) => Promise<void>;
+  destroy: (ctx: CPluginCtx<C>) => Promise<void>;
   /** 用于暴露给外部重载插件 */
-  reload?: (ctx: CPluginCtx) => Promise<void>;
+  reload?: (ctx: CPluginCtx<C>) => Promise<void>;
   /** 插件暴露给外部可以调用的方法 */
-  exports: (ctx: CPluginCtx) => any;
+  export: (ctx: CPluginCtx<C>) => E;
   meta: {
     engine: {
       version: string;
@@ -20,7 +20,7 @@ export type PluginObj = {
   };
 };
 
-export type CPlugin = PluginObj | ((ctx: CPluginCtx) => PluginObj);
+export type CPlugin<C = Record<string, any>, E = any> = PluginObj<C, E> | ((ctx: CPluginCtx<C>) => PluginObj<C, E>);
 
 type PluginManagerOptions = {
   getWorkbench: () => Workbench;
@@ -39,14 +39,14 @@ export type CPluginCtx<C = any> = {
   pluginReadyOk: () => void;
 } & PluginManagerOptions;
 
-export type PluginInstance = {
-  ctx: CPluginCtx;
-  exports: any;
-  source: PluginObj;
+export type PluginInstance<C = any, E = any> = {
+  ctx: CPluginCtx<C>;
+  export: E;
+  source: PluginObj<C, E>;
   ready: boolean;
 };
 
-export type CustomPluginHook = (pluginInstance: PluginInstance) => PluginInstance;
+export type CustomPluginHook<P extends PluginInstance<any, any> = any> = (pluginInstance: P) => P;
 
 export class PluginManager {
   plugins: Map<string, PluginInstance> = new Map();
@@ -68,7 +68,7 @@ export class PluginManager {
   }
 
   /** 自定义插件, 可以修改插件的配置 */
-  customPlugin = (pluginName: string, customPluginHook: CustomPluginHook) => {
+  customPlugin = <P extends PluginInstance<any, any>>(pluginName: string, customPluginHook: CustomPluginHook<P>) => {
     const customPluginHooks = this.customPluginHooks;
     const hookList = customPluginHooks[pluginName] || [];
     hookList.push(customPluginHook);
@@ -96,7 +96,7 @@ export class PluginManager {
   async add(plugin: CPlugin) {
     const ctx = this.createPluginCtx();
 
-    let innerPlugin: PluginObj;
+    let innerPlugin: PluginObj<any, any>;
     if (typeof plugin === 'function') {
       innerPlugin = plugin(ctx);
     } else {
@@ -105,7 +105,7 @@ export class PluginManager {
     let pluginCtx: PluginInstance = {
       source: innerPlugin,
       ctx: ctx,
-      exports: innerPlugin.exports?.(ctx) || {},
+      export: innerPlugin.export?.(ctx) || {},
       ready: false,
     };
     const customHookList = this.customPluginHooks[innerPlugin.name] || [];
@@ -120,15 +120,14 @@ export class PluginManager {
     await innerPlugin.init(ctx);
   }
 
-  async get(pluginName: string) {
+  async get<P extends PluginInstance<any, any>>(pluginName: string): Promise<P | undefined> {
     const pluginInstance = this.plugins.get(pluginName);
     if (pluginInstance?.ready) {
-      return pluginInstance;
+      return pluginInstance as any;
     } else {
       await this.onPluginReadyOk(pluginName);
-      return pluginInstance;
+      return pluginInstance as any;
     }
-    return;
   }
 
   async remove(name: string) {
