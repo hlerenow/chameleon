@@ -203,13 +203,17 @@ export class TreeView extends React.Component<
 
       // 判断节点本身是否可以拖动
       const designerInstance = designerExport!.getInstance();
-      const nodeDragFlag = await targetNode?.material?.value.advanceCustom?.canDragNode?.(targetNode, {
-        context: this.props.pluginCtx,
-        event: null,
-        viewPortal: designerInstance!.getPortalViewCtx(),
+      const nodeCanDragRes = await designerInstance?.customAdvanceHook.canDrag({
+        dragNode: targetNode,
+        eventObj: {
+          ...eventObj,
+          from: eventObj.event,
+          fromSensor: sensor,
+          fromPointer: eventObj.pointer,
+        },
       });
       // 节点不能拖动
-      if (nodeDragFlag === false) {
+      if (nodeCanDragRes === false) {
         return false;
       }
 
@@ -218,13 +222,20 @@ export class TreeView extends React.Component<
         return;
       }
 
-      return {
+      const canDragResInfo = {
         ...eventObj,
         extraData: {
           dragNode: targetNode,
           dragNodeUID: targetNode.id,
         },
       };
+
+      if (typeof nodeCanDragRes === 'object') {
+        canDragResInfo.extraData.dragNode = nodeCanDragRes.dragNode;
+        canDragResInfo.extraData.dragNodeUID = nodeCanDragRes.dragNode.id;
+      }
+
+      return canDragResInfo;
     });
 
     sensor.setCanDrop(async (eventObj) => {
@@ -241,7 +252,7 @@ export class TreeView extends React.Component<
         return eventObj;
       }
       const targetTreeNode = this.getTreeNodeByKey(targetNodeId);
-      if (targetTreeNode?.canDrop !== undefined && targetTreeNode.canDrop === false) {
+      if (targetTreeNode?.canDropPos !== undefined && targetTreeNode.canDropPos === false) {
         LOGGER.debug('node can not be drop by tree node config');
         return eventObj;
       }
@@ -274,8 +285,8 @@ export class TreeView extends React.Component<
         dom: targetDom,
       });
 
-      if (Array.isArray(targetTreeNode?.canDrop) && !targetTreeNode?.canDrop.includes(dropInfo.pos)) {
-        return eventObj;
+      if (Array.isArray(targetTreeNode?.canDropPos) && !targetTreeNode?.canDropPos.includes(dropInfo.pos)) {
+        return false;
       }
 
       LOGGER.info('can dropNode', targetNode);
@@ -286,9 +297,33 @@ export class TreeView extends React.Component<
           ...eventObj.extraData,
           dropPosInfo: dropInfo,
           dropNode: targetNode,
-          dropNodeUID: undefined,
+          dropNodeUID: targetNode.id,
         },
       };
+
+      // 判断节点本身是否可以拖动
+      const designerInstance = designerExport!.getInstance();
+      const nodeCanDropRes = await designerInstance?.customAdvanceHook.canDrop({
+        dragNode: res.extraData.dragNode,
+        dropNode: targetNode,
+        eventObj: {
+          ...res,
+          from: res.event,
+          fromSensor: sensor,
+          fromPointer: res.pointer,
+        },
+      });
+
+      if (nodeCanDropRes === false) {
+        return false;
+      }
+
+      if (typeof nodeCanDropRes === 'object') {
+        res.extraData = {
+          ...res.extraData,
+          ...nodeCanDropRes,
+        };
+      }
       return res;
     });
 

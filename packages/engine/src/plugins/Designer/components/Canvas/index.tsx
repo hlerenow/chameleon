@@ -1,17 +1,18 @@
 import React from 'react';
 import { Layout, LayoutPropsType } from '@chamn/layout';
 import { CNode, CPage, CRootNode, InsertNodePosType } from '@chamn/model';
-import { CPluginCtx } from '../../core/pluginManager';
-import localize from './localize';
-import { PLUGIN_NAME } from './config';
-import { DefaultSelectToolBar } from './components/DefaultSelectToolBar';
-import { getClosestNodeList } from './util';
-import { GhostView } from './components/GhostView';
+import localize from '../../localize';
+import { PLUGIN_NAME } from '../../config';
+import { DefaultSelectToolBar } from '../DefaultSelectToolBar';
+import { getClosestNodeList } from '../../util';
+import { GhostView } from '../GhostView';
 
 import styles from './style.module.scss';
 import '@chamn/layout/dist/style.css';
 import { AssetPackage } from '@chamn/model';
 import { createPortal } from 'react-dom';
+import { CPluginCtx } from '@/core/pluginManager';
+import { AdvanceCustomHook } from './advanceCustomHook';
 
 export type DesignerPropsType = {
   pluginCtx: CPluginCtx;
@@ -28,6 +29,7 @@ type DesignerStateType = {
 
 export class Designer extends React.Component<DesignerPropsType, DesignerStateType> {
   layoutRef: React.RefObject<Layout>;
+  customAdvanceHook: AdvanceCustomHook;
   constructor(props: DesignerPropsType) {
     super(props);
 
@@ -40,6 +42,10 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       portalView: null,
     };
     this.layoutRef = React.createRef<Layout>();
+    this.customAdvanceHook = new AdvanceCustomHook({
+      getPortalViewCtx: this.getPortalViewCtx,
+      ctx: this.props.pluginCtx,
+    });
   }
 
   getPortalViewCtx = () => {
@@ -114,6 +120,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
         context: this.props.pluginCtx,
         viewPortal: this.getPortalViewCtx(),
         event: eventObj,
+        extra: extraData,
       });
       return res;
     }
@@ -135,6 +142,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
         context: this.props.pluginCtx,
         viewPortal: this.getPortalViewCtx(),
         event: eventObj,
+        extra: extraData,
       });
       if (res === false) {
         return false;
@@ -147,14 +155,17 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     if (extraData.dropType === 'NEW_ADD') {
       if (dragNode) {
         const res = await dragNode.material?.value.advanceCustom?.onNewAdd?.(dragNode, {
+          dropNode: extraData.dropNode,
           context: this.props.pluginCtx,
           viewPortal: this.getPortalViewCtx(),
           event: eventObj,
+          extra: extraData,
         });
         if (res === false) {
           return false;
         }
       }
+      // 说明是根节点，直接插入到 第一个 child
       if (extraData.dropNode?.nodeType !== 'NODE') {
         pageModel?.addNode(extraData.dragNode as CNode, extraData.dropNode!, 'CHILD_START');
       } else {
@@ -162,7 +173,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       }
     } else {
       if (extraData.dropNode?.id === extraData.dragNode?.id) {
-        console.warn(' id is the same');
+        console.warn('dragNode and dropNode id is the same');
         return;
       }
       const res = pageModel.moveNodeById(extraData.dragNode?.id || '', extraData?.dropNode?.id || '', posFlag);
@@ -200,6 +211,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       context: this.props.pluginCtx,
       viewPortal: this.getPortalViewCtx(),
       event: event,
+      extra: {},
     });
     if (flag === false) {
       return flag;
@@ -263,6 +275,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       context: this.props.pluginCtx,
       viewPortal: this.getPortalViewCtx(),
       event: e,
+      extra: extraData,
     });
     if (dragFlag === false) {
       return dragFlag;
@@ -293,6 +306,27 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     });
   };
 
+  nodeCanDrag: LayoutPropsType['nodeCanDrag'] = async (e) => {
+    const extraData = e.extraData;
+    const dragNode = extraData?.dragNode;
+    const res = await this.customAdvanceHook.canDrag({
+      dragNode,
+      eventObj: e,
+    });
+    return res;
+  };
+
+  nodeCanDrop: LayoutPropsType['nodeCanDrop'] = async (e) => {
+    const extraData = e.extraData;
+    const dragNode = extraData?.dragNode;
+    const res = await this.customAdvanceHook.canDrop({
+      dragNode,
+      eventObj: e,
+      ...extraData,
+    });
+    return res;
+  };
+
   render() {
     const { layoutRef, props, onSelectNode, onDragStart, onHoverNode, onNodeDrop, onNodeDragging } = this;
     const { pageModel, hoverToolBarView, selectToolBarView, ghostView, assets, portalView } = this.state;
@@ -311,6 +345,8 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
           selectToolBarView={selectToolBarView}
           selectBoxStyle={{}}
           hoverBoxStyle={{}}
+          nodeCanDrag={this.nodeCanDrag}
+          nodeCanDrop={this.nodeCanDrop}
           onSelectNode={onSelectNode}
           onNodeDragStart={onDragStart}
           onHoverNode={onHoverNode}

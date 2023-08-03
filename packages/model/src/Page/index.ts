@@ -47,7 +47,7 @@ export type PosObj = {
 export type InsertNodePosType = 'BEFORE' | 'AFTER' | 'CHILD_START' | 'CHILD_END' | PosObj;
 
 export class CPage {
-  nodeType = 'PAGE';
+  nodeType = 'PAGE' as const;
   rawData: CPageDataType;
   emitter = DataModelEmitter;
   data: CPpageDataModelType;

@@ -344,6 +344,15 @@ export type ContainerConfig = {
   style?: React.CSSProperties;
 };
 
+export type DragAndDropEventExtraData = {
+  dropType?: 'NEW_ADD' | 'NORMAL' | '';
+  dragNode?: CNode | CRootNode;
+  dragNodeUID?: string;
+  dropNode?: CNode | CRootNode;
+  dropNodeUID?: string;
+  dropPosInfo?: DropPosType;
+};
+
 export type AdvanceCustomFuncParam = {
   // TODO
   dropNode?: CNode | CRootNode;
@@ -357,6 +366,7 @@ export type AdvanceCustomFuncParam = {
   cancelDrag?: () => void;
   /** 如果是 api 触发的，则没有事件对象 */
   event?: any;
+  extra: DragAndDropEventExtraData;
 };
 
 export type EventName = keyof HTMLElementEventMap;
@@ -369,7 +379,7 @@ export type AdvanceCustom = {
   ) => Promise<
     | boolean
     | {
-        dragNode: CNode | CRootNode;
+        dragNode?: CNode | CRootNode;
       }
   >;
   onDragStart?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean | void | undefined>;
@@ -407,8 +417,9 @@ export type AdvanceCustom = {
     | void
     | undefined
     | {
-        addNode: CNode | CRootNode;
-        dropNode: CNode | CRootNode;
+        addNode?: CNode | CRootNode;
+        dropNode?: CNode | CRootNode;
+        dropPosInfo?: DropPosType;
       }
   >;
   /** 当元素被删除时触发 */
@@ -420,7 +431,7 @@ export type AdvanceCustom = {
     | void
     | undefined
     | {
-        deleteNode: CNode | CRootNode;
+        deleteNode?: CNode | CRootNode;
       }
   >;
   /** 元素被选中时触发 */
@@ -430,7 +441,7 @@ export type AdvanceCustom = {
   ) =>
     | Promise<boolean | void | undefined>
     | {
-        selectedNode: CNode | CRootNode;
+        selectedNode?: CNode | CRootNode;
       };
   onCopy?: (
     node: CNode | CRootNode,
@@ -440,7 +451,7 @@ export type AdvanceCustom = {
     | void
     | undefined
     | {
-        copyNode: CNode | CRootNode;
+        copyNode?: CNode | CRootNode;
       }
   >;
   // TODO:
@@ -453,7 +464,7 @@ export type AdvanceCustom = {
   selectHighlightRectView?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => React.ReactNode;
   // TODO:
   hoverHighlightRectView?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => React.ReactNode;
-  dropViewRender: (
+  dropViewRender?: (
     props: DropPosType & {
       // 是否可以放置
       canDrop: boolean;

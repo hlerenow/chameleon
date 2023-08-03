@@ -1,14 +1,8 @@
 import React from 'react';
 
 export type TreeNodeData = {
-  containerRender?: (params: {
-    item: TreeNodeData;
-    treeNodeView: JSX.Element;
-  }) => React.ReactElement;
-  titleViewRender?: (params: {
-    item: TreeNodeData;
-    titleView: React.ReactNode;
-  }) => React.ReactElement;
+  containerRender?: (params: { item: TreeNodeData; treeNodeView: JSX.Element }) => React.ReactElement;
+  titleViewRender?: (params: { item: TreeNodeData; titleView: React.ReactNode }) => React.ReactElement;
   title: React.ReactNode;
   icon?: React.ReactNode;
   key?: string;
@@ -16,7 +10,7 @@ export type TreeNodeData = {
   parent?: TreeNodeData | null;
   canBeSelected?: boolean;
   canDrag?: boolean;
-  canDrop?: boolean | ('before' | 'after' | 'current')[];
+  canDropPos?: boolean | ('before' | 'after' | 'current')[];
   rootNode?: boolean;
 };
 
@@ -24,11 +18,7 @@ const x = 10;
 const y = 3;
 const z = 2;
 
-const generateData = (
-  _level: number,
-  _tns: TreeNodeData[],
-  _preKey?: React.Key
-) => {
+const generateData = (_level: number, _tns: TreeNodeData[], _preKey?: React.Key) => {
   const preKey = _preKey || '0';
   const tns = _tns || [];
 

@@ -1,7 +1,6 @@
-import { CNode } from '@chamn/model/dist/Page/RootNode/Node';
 import { Pointer } from '../core/dragAndDrop/common';
 import { Sensor } from '../core/dragAndDrop/sensor';
-import { CRootNode, DropPosType } from '@chamn/model';
+import { DragAndDropEventExtraData } from '@chamn/model';
 
 export type DragAndDropEventObj<T = Record<string, any>> = {
   from: MouseEvent;
@@ -10,7 +9,7 @@ export type DragAndDropEventObj<T = Record<string, any>> = {
   current?: MouseEvent;
   currentSensor?: Sensor;
   pointer: Pointer;
-  extraData?: T;
+  extraData: T;
 };
 
 export type BaseDragAndDropEventType<T = Record<string, any>> = {
@@ -20,11 +19,4 @@ export type BaseDragAndDropEventType<T = Record<string, any>> = {
   drop: Required<DragAndDropEventObj<T>>;
 };
 
-export type LayoutDragAndDropExtraDataType = {
-  dropType?: 'NEW_ADD' | 'NORMAL' | '';
-  dragNode?: CNode | CRootNode;
-  dragNodeUID?: string;
-  dropNode?: CNode | CRootNode;
-  dropNodeUID?: string;
-  dropPosInfo?: DropPosType;
-};
+export type LayoutDragAndDropExtraDataType = DragAndDropEventExtraData;

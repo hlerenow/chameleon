@@ -2,12 +2,7 @@ import { CNode } from '.';
 import { CRootNode } from '..';
 import { CNodePropsTypeEnum, ExportType } from '../../../const/schema';
 import { CMaterials } from '../../../Material';
-import {
-  CMaterialPropsType,
-  MaterialPropType,
-  PropsUIType,
-  SpecialMaterialPropType,
-} from '../../../types/material';
+import { CMaterialPropsType, MaterialPropType, PropsUIType, SpecialMaterialPropType } from '../../../types/material';
 
 import {
   FunctionPropType,
@@ -20,15 +15,9 @@ import { isArray, isPlainObject } from '../../../util/lodash';
 import { DataModelEmitter } from '../../../util/modelEmitter';
 import { CJSSlotPropDataType, CSlot } from './slot';
 
-export type CSpecialPropDataType =
-  | CJSSlotPropDataType
-  | FunctionPropType
-  | JSExpressionPropType;
+export type CSpecialPropDataType = CJSSlotPropDataType | FunctionPropType | JSExpressionPropType;
 
-export type CPropModelDataType =
-  | NormalPropType
-  | CSpecialPropDataType
-  | CSpecialPropDataType[];
+export type CPropModelDataType = NormalPropType | CSpecialPropDataType | CSpecialPropDataType[];
 
 const flatProps = (props: CMaterialPropsType): MaterialPropType[] => {
   let allProps: MaterialPropType[] = [];
@@ -49,11 +38,7 @@ const flatProps = (props: CMaterialPropsType): MaterialPropType[] => {
 };
 
 // TODO: 需要递归处理每个节点，将特殊节点转换为 CProp Model
-const handleObjProp = (
-  data: any,
-  parent: ParentType,
-  materials: CMaterials
-): any => {
+const handleObjProp = (data: any, parent: ParentType, materials: CMaterials): any => {
   if (data.type) {
     if (data.type === CNodePropsTypeEnum.SLOT) {
       // 转换为 Slot Node
@@ -89,7 +74,7 @@ const parseData = (data: any, parent: ParentType, materials: CMaterials) => {
 };
 
 export class CProp {
-  nodeType = 'PROP';
+  nodeType = 'PROP' as const;
   private rawData: CPropDataType;
   parent: CNode | CRootNode | null;
   emitter = DataModelEmitter;
@@ -187,10 +172,7 @@ export class CProp {
   }
 }
 
-export const transformObjToPropsModelObj = (
-  props: CPropObjDataType,
-  parent: CNode | null = null
-) => {
+export const transformObjToPropsModelObj = (props: CPropObjDataType, parent: CNode | null = null) => {
   const newProps: Record<string, CPropModelDataType> = {};
   const propsKeys = Object.keys(props || {});
   if (propsKeys.length) {

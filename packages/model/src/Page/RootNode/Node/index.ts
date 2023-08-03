@@ -100,7 +100,7 @@ type OnNodeChangeType = (params: DataModelEventType['onNodeChange']) => void;
 type ParentType = CNode | CRootNode | CSlot | null;
 
 export class CNode {
-  nodeType = 'NODE';
+  nodeType = 'NODE' as const;
   private rawData: CNodeDataType;
   private data: CNodeModelDataType;
   emitter = DataModelEmitter;

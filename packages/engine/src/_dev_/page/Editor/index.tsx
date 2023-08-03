@@ -6,7 +6,6 @@ import ReactDOMClient from 'react-dom/client';
 import { Engine, EnginContext } from '../../..';
 import '../../index.css';
 import { DEFAULT_PLUGIN_LIST } from '../../../plugins';
-import { DesignerExport } from '../../../plugins/Designer';
 import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 import { InnerComponentMeta } from '../../../material/innerMaterial';
 import { RollbackOutlined } from '@ant-design/icons';

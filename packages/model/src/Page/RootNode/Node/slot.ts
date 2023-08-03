@@ -46,17 +46,14 @@ const parseData = (data: any, parent?: ParentType) => {
 };
 
 export class CSlot {
-  nodeType = 'SLOT';
+  nodeType = 'SLOT' as const;
   private rawData: RenderPropType;
   parent: CProp | null;
   emitter = DataModelEmitter;
   private data: CJSSlotPropDataType;
   id: string;
   materialsMode: CMaterials;
-  constructor(
-    data: RenderPropType,
-    options?: { parent: CProp | null; materials: CMaterials }
-  ) {
+  constructor(data: RenderPropType, options?: { parent: CProp | null; materials: CMaterials }) {
     this.parent = options?.parent || null;
     this.rawData = data;
     const materials = options?.materials || new CMaterials([]);

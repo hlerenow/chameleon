@@ -187,17 +187,38 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
           }
         }
         const designerInstance = designerExport?.getInstance();
-        const addFlag = await newNode.material?.value.advanceCustom?.onNewAdd?.(newNode, {
-          context: this.props.pluginCtx,
-          event: null,
-          viewPortal: designerInstance!.getPortalViewCtx(),
+
+        const addFlag = await designerInstance?.customAdvanceHook.onNewAdd({
+          dragNode: newNode,
+          dropNode: dropNode as any,
+          eventObj: {
+            ...eventObj,
+            from: eventObj.event,
+            fromSensor: boxSensor,
+            pointer: null as any,
+            fromPointer: null as any,
+            extraData: {},
+          },
         });
         if (addFlag === false) {
           return;
         }
-        pageModel.addNode(newNode, dropNode as CNode, pos);
+        let addNodeInfo = {
+          dragNode: newNode,
+          dropNode: dropNode,
+          pos: pos,
+        };
+        if (typeof addFlag === 'object') {
+          addNodeInfo = {
+            ...addNodeInfo,
+            dragNode: (addFlag.addNode as any) ?? addNodeInfo.dragNode,
+            dropNode: (addFlag.dropNode as any) ?? addNodeInfo.dropNode,
+            pos: (addFlag.dropPosInfo?.pos as any) ?? addNodeInfo.pos,
+          };
+        }
+        pageModel.addNode(addNodeInfo.dragNode, addNodeInfo.dropNode as CNode, addNodeInfo.pos);
         setTimeout(() => {
-          designerExport?.selectNode(newNode.id);
+          designerExport?.selectNode(addNodeInfo.dragNode.id);
         }, 200);
       });
     };

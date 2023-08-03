@@ -1,11 +1,11 @@
 import React from 'react';
 import { DragAndDrop, LayoutPropsType } from '@chamn/layout';
-import '@chamn/layout/dist/style.css';
-import { CPlugin, PluginInstance } from '../../core/pluginManager';
-import { PLUGIN_NAME } from './config';
-import { Designer } from './view';
 import { AssetPackage, CPage, CPageDataType } from '@chamn/model';
 import { RenderInstance } from '@chamn/render';
+
+import { CPlugin, PluginInstance } from '../../core/pluginManager';
+import { PLUGIN_NAME } from './config';
+import { Designer } from './components/Canvas';
 
 export type DesignerExport = {
   reload: (params?: { assets?: AssetPackage[] }) => void;

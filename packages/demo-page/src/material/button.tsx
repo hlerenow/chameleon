@@ -113,8 +113,8 @@ export const ButtonMeta: CMaterialType = {
     },
   ],
   advanceCustom: {
-    onDrag: async (node, params) => {
-      console.log('onDrag', node, params);
+    canDragNode: async (node, params) => {
+      console.log('canDragNode', node, params);
       if (params.event?.extraData?.type === 'NEW_ADD') {
         return true;
       }
@@ -129,7 +129,7 @@ export const ButtonMeta: CMaterialType = {
     },
     onSelect: async () => {
       console.log('onSelect');
-      return false;
+      return true;
     },
     onDelete: async () => {
       console.log('onDelete');
