@@ -1,26 +1,9 @@
 import React from 'react';
-import { DragAndDrop, LayoutPropsType } from '@chamn/layout';
-import { AssetPackage, CPage, CPageDataType } from '@chamn/model';
-import { RenderInstance } from '@chamn/render';
+import { CPage, CPageDataType } from '@chamn/model';
 
-import { CPlugin, PluginInstance } from '../../core/pluginManager';
 import { PLUGIN_NAME } from './config';
 import { Designer } from './components/Canvas';
-
-export type DesignerExport = {
-  reload: (params?: { assets?: AssetPackage[] }) => void;
-  getInstance: () => Designer | null;
-  getDnd: () => DragAndDrop | undefined;
-  selectNode: (nodeId: string) => void;
-  getSelectedNodeId: () => string | undefined;
-  updatePage: (page: CPageDataType) => void;
-  getComponentInstances: (id: string) => RenderInstance[];
-  getDynamicComponentInstances: (id: string) => RenderInstance;
-};
-
-export type DesignerPluginConfig = LayoutPropsType;
-export type DesignerPluginType = CPlugin<DesignerPluginConfig, DesignerExport>;
-export type DesignerPluginInstance = PluginInstance<DesignerPluginConfig, DesignerExport>;
+import { DesignerPluginType } from './type';
 
 export const DesignerPlugin: DesignerPluginType = (ctx) => {
   const designerRef = React.createRef<Designer>();

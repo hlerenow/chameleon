@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { isPlainObject } from 'lodash-es';
-import React from 'react';
+import React, { ReactInstance } from 'react';
 import {
   object,
   string,
@@ -353,6 +353,14 @@ export type DragAndDropEventExtraData = {
   dropPosInfo?: DropPosType;
 };
 
+export type CustomViewRenderProps = {
+  node: CNode | CRootNode;
+  params: AdvanceCustomFuncParam;
+  componentInstance: ReactInstance;
+  /** 一个组件可能被循环渲染，这里表示是第几个索引 **/
+  componentInstanceIndex?: number;
+};
+
 export type AdvanceCustomFuncParam = {
   // TODO
   dropNode?: CNode | CRootNode;
@@ -386,9 +394,9 @@ export type AdvanceCustom = {
   /** 拖动中触发 */
   onDragging?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean | void | undefined>;
   onDragEnd?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => void;
-  // TODO: 当前节点是否能被放置, 可以控制落点的 UI 样式？
-  /**  TODO: 当有其他 node 被放置到当前 node 的 child 时触发校验，可以控制落点的 UI 样式？ */
+  /** 当有其他 node 被放置到当前 node 的 child 时触发校验，可以控制落点的 UI 样式？ */
   canAcceptNode?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => Promise<boolean | void | undefined>;
+  /** 当前节点是否能被放置, 可以控制落点的 UI 样 */
   canDropNode?: (
     node: CNode | CRootNode,
     params: AdvanceCustomFuncParam
@@ -455,21 +463,25 @@ export type AdvanceCustom = {
       }
   >;
   // TODO:
-  toolBarView?: (
+  toolBarViewRender?: (
     node: CNode | CRootNode,
     context: any,
-    toolBarItems: { name: string; view: React.ReactNode }[]
-  ) => React.ReactNode;
+    toolBarItems: { name: string; view: React.ReactElement }[]
+  ) => React.ReactElement;
   // TODO:
-  selectHighlightRectView?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => React.ReactNode;
+  selectRectViewRender?: (props: CustomViewRenderProps) => React.ReactElement;
   // TODO:
-  hoverHighlightRectView?: (node: CNode | CRootNode, params: AdvanceCustomFuncParam) => React.ReactNode;
+  hoverRectViewRender?: (props: CustomViewRenderProps) => React.ReactElement;
   dropViewRender?: (
-    props: DropPosType & {
+    props: CustomViewRenderProps & {
       // 是否可以放置
       canDrop: boolean;
+      posInfo: DropPosType;
     }
   ) => React.ReactElement;
+  ghostViewRender?: (props: CustomViewRenderProps) => React.ReactElement;
+  // TODO: 编辑模式下会使用该函数包裹目标组件，可用于定制编辑模式下的特殊信息
+  wrapComponent?: (targetComponent: (...args: any[]) => React.ReactElement) => (...args: any[]) => React.ReactElement;
 };
 
 export type CMaterialType<PropsSetter extends string = ''> = {

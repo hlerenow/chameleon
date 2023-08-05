@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout, LayoutPropsType } from '@chamn/layout';
-import { CNode, CPage, CRootNode, InsertNodePosType } from '@chamn/model';
+import { AdvanceCustom, CNode, CPage, CRootNode, InsertNodePosType } from '@chamn/model';
 import localize from '../../localize';
 import { PLUGIN_NAME } from '../../config';
 import { DefaultSelectToolBar } from '../DefaultSelectToolBar';
@@ -13,15 +13,19 @@ import { AssetPackage } from '@chamn/model';
 import { createPortal } from 'react-dom';
 import { CPluginCtx } from '@/core/pluginManager';
 import { AdvanceCustomHook } from './advanceCustomHook';
+import { DesignerPluginConfig } from '../../type';
 
 export type DesignerPropsType = {
-  pluginCtx: CPluginCtx;
+  pluginCtx: CPluginCtx<DesignerPluginConfig>;
 };
 
 type DesignerStateType = {
   pageModel: CPage;
   hoverToolBarView: React.ReactNode;
   selectToolBarView: React.ReactNode;
+  selectRectViewRender: AdvanceCustom['selectRectViewRender'] | null;
+  hoverRectViewRender: AdvanceCustom['hoverRectViewRender'] | null;
+  dropViewRender: AdvanceCustom['dropViewRender'] | null;
   ghostView: React.ReactNode;
   portalView: React.ReactNode;
   assets: AssetPackage[];
@@ -40,6 +44,9 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       ghostView: null,
       assets: props.pluginCtx.assets || ([] as AssetPackage[]),
       portalView: null,
+      selectRectViewRender: null,
+      hoverRectViewRender: null,
+      dropViewRender: null,
     };
     this.layoutRef = React.createRef<Layout>();
     this.customAdvanceHook = new AdvanceCustomHook({
@@ -219,6 +226,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     pluginCtx.engine.updateCurrentSelectNode(node);
     const pageModel = this.props.pluginCtx.pageModel;
     const list = getClosestNodeList(node, 5);
+
     this.setState({
       selectToolBarView: (
         <DefaultSelectToolBar
@@ -261,6 +269,8 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
           }}
         />
       ),
+      selectRectViewRender:
+        this.customAdvanceHook.getSelectRectViewRender(node) || this.props.pluginCtx.config.selectRectViewRender,
     });
   };
 
@@ -295,14 +305,17 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     if (!dragNode) {
       this.setState({
         hoverToolBarView: <div className={styles.hoverTips}>{material?.value.title || material?.componentName}</div>,
+        hoverRectViewRender:
+          this.customAdvanceHook.getHoverRectViewRender(node) || this.props.pluginCtx.config.hoverRectViewRender,
         ghostView: null,
       });
       return;
     }
-
     this.setState({
       hoverToolBarView: <div className={styles.hoverTips}>{material?.value.title || material?.componentName}</div>,
       ghostView: <GhostView node={dragNode} />,
+      hoverRectViewRender:
+        this.customAdvanceHook.getHoverRectViewRender(node) || this.props.pluginCtx.config.hoverRectViewRender,
     });
   };
 
@@ -327,11 +340,78 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     return res;
   };
 
+  innerSelectRectViewRender: LayoutPropsType['selectRectViewRender'] = (selectViewProps) => {
+    const { selectRectViewRender } = this.state;
+    const { pluginCtx } = this.props;
+
+    const Comp = selectRectViewRender;
+    const selectNode = pluginCtx.engine.getActiveNode();
+
+    if (!Comp || !selectNode) {
+      return <></>;
+    }
+    return (
+      <Comp
+        node={selectNode}
+        componentInstance={selectViewProps.instance}
+        componentInstanceIndex={selectViewProps.index}
+        params={{
+          viewPortal: this.getPortalViewCtx(),
+          context: this.props.pluginCtx,
+          extra: {},
+        }}
+      />
+    );
+  };
+
+  innerHoverRectViewRender: LayoutPropsType['hoverRectViewRender'] = (hoverViewProps) => {
+    const { hoverRectViewRender } = this.state;
+    const { pluginCtx } = this.props;
+
+    const Comp = hoverRectViewRender;
+    const selectNode = pluginCtx.engine.getActiveNode();
+
+    if (!Comp || !selectNode) {
+      return <></>;
+    }
+    return (
+      <Comp
+        node={hoverViewProps.instance._NODE_MODEL}
+        componentInstance={hoverViewProps.instance}
+        componentInstanceIndex={hoverViewProps.index}
+        params={{
+          viewPortal: this.getPortalViewCtx(),
+          context: this.props.pluginCtx,
+          extra: {},
+        }}
+      />
+    );
+  };
+
   render() {
     const { layoutRef, props, onSelectNode, onDragStart, onHoverNode, onNodeDrop, onNodeDragging } = this;
-    const { pageModel, hoverToolBarView, selectToolBarView, ghostView, assets, portalView } = this.state;
+    const {
+      pageModel,
+      hoverToolBarView,
+      selectToolBarView,
+      ghostView,
+      assets,
+      portalView,
+      selectRectViewRender,
+      hoverRectViewRender,
+    } = this.state;
     const { pluginCtx } = props;
     const renderJSUrl = pluginCtx.engine.props.renderJSUrl || './render.umd.js';
+    const advanceCustomProps: LayoutPropsType = {};
+
+    if (selectRectViewRender) {
+      advanceCustomProps.selectRectViewRender = this.innerSelectRectViewRender;
+    }
+
+    if (hoverRectViewRender) {
+      advanceCustomProps.hoverRectViewRender = this.innerHoverRectViewRender;
+    }
+
     return (
       <>
         <Layout
@@ -352,6 +432,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
           onHoverNode={onHoverNode}
           onNodeDrop={onNodeDrop}
           onNodeDragging={onNodeDragging}
+          {...advanceCustomProps}
           ghostView={ghostView}
           assets={assets}
         />

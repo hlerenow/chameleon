@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppstoreAddOutlined } from '@ant-design/icons';
-import { Sensor, SensorEventObjType } from '@chamn/layout';
+import { LayoutDragAndDropExtraDataType, Sensor, SensorEventObjType } from '@chamn/layout';
 import { Tabs } from 'antd';
 import { CPlugin, CPluginCtx } from '../../core/pluginManager';
 import { DesignerPluginInstance } from '../Designer';
@@ -13,7 +13,6 @@ import { DRAG_ITEM_KEY } from './components/DragItem';
 import { CNode, CRootNode, CSlot, findContainerNode, isPageModel, SnippetsCollection } from '@chamn/model';
 import { capitalize } from 'lodash-es';
 import { InsertNodePosType } from '@chamn/model/src';
-import { LayoutDragAndDropExtraDataType } from '@chamn/layout/dist/types/dragAndDrop';
 
 interface ComponentLibViewProps extends WithTranslation {
   pluginCtx: CPluginCtx;

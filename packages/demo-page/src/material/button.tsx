@@ -113,6 +113,24 @@ export const ButtonMeta: CMaterialType = {
     },
   ],
   advanceCustom: {
+    selectRectViewRender: (props) => {
+      console.log(123, props);
+      return (
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'red',
+            pointerEvents: 'none',
+          }}
+        >
+          123
+        </div>
+      );
+    },
+    hoverRectViewRender: () => {
+      return <>Hover</>;
+    },
     canDragNode: async (node, params) => {
       console.log('canDragNode', node, params);
       if (params.event?.extraData?.type === 'NEW_ADD') {

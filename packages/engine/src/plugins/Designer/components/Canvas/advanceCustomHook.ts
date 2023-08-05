@@ -1,6 +1,5 @@
 import { CPluginCtx } from '@/core/pluginManager';
-import { LayoutDragEvent } from '@/index';
-import { LayoutDragAndDropExtraDataType } from '@chamn/layout/dist/types/dragAndDrop';
+import { LayoutDragAndDropExtraDataType, LayoutDragEvent } from '@/index';
 import { AdvanceCustom, CNode, CRootNode } from '@chamn/model';
 
 export interface AdvanceCustomHookOptions {
@@ -87,5 +86,18 @@ export class AdvanceCustomHook {
       return false;
     }
     return res;
+  }
+
+  getSelectRectViewRender(node: CNode | CRootNode) {
+    const material = node.material;
+    return material?.value.advanceCustom?.selectRectViewRender;
+  }
+
+  getHoverRectViewRender(node?: CNode | CRootNode | null) {
+    if (!node) {
+      return null;
+    }
+    const material = node.material;
+    return material?.value.advanceCustom?.hoverRectViewRender;
   }
 }

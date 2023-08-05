@@ -6,7 +6,6 @@ import ReactDOMClient from 'react-dom/client';
 import '@chamn/engine/dist/style.css';
 import { Engine, EnginContext, InnerComponentMeta, plugins } from '@chamn/engine';
 import { RollbackOutlined } from '@ant-design/icons';
-import { DesignerExports } from '@chamn/engine/dist/plugins/Designer';
 import './index.css';
 
 const { DisplaySourceSchema, DEFAULT_PLUGIN_LIST } = plugins;
@@ -52,7 +51,7 @@ export const App = () => {
     const designer = await ctx.pluginManager.onPluginReadyOk('Designer');
     const reloadPage = async () => {
       setTimeout(() => {
-        const designerExports = designer?.exports as DesignerExports;
+        const designerExports = designer?.export;
         designerExports.reload();
       }, 0);
     };
@@ -82,7 +81,7 @@ export const App = () => {
           style={{ marginRight: '10px' }}
           onClick={async () => {
             const res = await ctx.pluginManager.get('History');
-            res?.exports.preStep();
+            res?.export.preStep();
           }}
         >
           <RollbackOutlined />
@@ -91,7 +90,7 @@ export const App = () => {
           style={{ marginRight: '10px' }}
           onClick={async () => {
             const res = await ctx.pluginManager.get('History');
-            res?.exports.nextStep();
+            res?.export.nextStep();
           }}
         >
           <RollbackOutlined

@@ -5,7 +5,7 @@ import { RenderInstance } from '@chamn/render';
 import { DesignRender, DesignRenderProp } from '@chamn/render';
 import { IFrameContainer } from './core/iframeContainer';
 import { addEventListenerReturnCancel, animationFrame } from './utils';
-import { HighlightCanvas, HighlightCanvasRefType } from './components/HighlightBox';
+import { HighlightCanvas, HighlightCanvasCoreProps, HighlightCanvasRefType } from './components/HighlightBox';
 import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
 import { Sensor } from './core/dragAndDrop/sensor';
 import { DropAnchorCanvas } from './components/DropAnchor';
@@ -46,6 +46,16 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   selectBoxStyle?: React.CSSProperties;
   hoverBoxStyle?: React.CSSProperties;
   hoverToolBarView?: React.ReactNode;
+  selectRectViewRender?: (props: {
+    instance: RenderInstance;
+    index: number;
+    isLock: boolean;
+  }) => ReturnType<Required<AdvanceCustom>['selectRectViewRender']>;
+  hoverRectViewRender?: (props: {
+    instance: RenderInstance;
+    index: number;
+    isLock: boolean;
+  }) => ReturnType<Required<AdvanceCustom>['hoverRectViewRender']>;
   ghostView?: React.ReactNode;
   /** 在 iframe 渲染 render 之前做一些事*/
   beforeInitRender?: (options: {
@@ -228,52 +238,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
   }
 
-  // initIframeLogic() {
-  //   const iframeWindow = this.iframeContainer.getWindow()!;
-  //   const iframeDoc = this.iframeContainer.getDocument()!;
-  //   const CRender = iframeWindow.CRender!;
-  //   const IframeReact = iframeWindow.React!;
-  //   const IframeReactDOM = iframeWindow.ReactDOMClient!;
-  //   // 注入组件物料资源
-  //   const assetLoader = new CRender.AssetLoader(this.assets);
-  //   assetLoader
-  //     .onSuccess(() => {
-  //       // 从子窗口获取物料对象
-  //       const pageInfo = this.props.page || this.props.pageModel?.export();
-  //       if (!pageInfo) {
-  //         console.log('page schema is empty');
-  //         return;
-  //       }
-  //       const allLibs = collectVariable(this.assets, iframeWindow);
-
-  //       const componentsLibs = flatObject(getComponentsLibs(allLibs, pageInfo.componentsMeta));
-  //       const thirdLibs = getThirdLibs(allLibs, pageInfo.thirdLibs || []);
-
-  //       const App = IframeReact?.createElement(CRender.DesignRender, {
-  //         adapter: CRender?.ReactAdapter,
-  //         page: this.props.page,
-  //         pageModel: this.props.pageModel,
-  //         components: componentsLibs,
-  //         $$context: {
-  //           thirdLibs,
-  //         },
-  //         onMount: (designRenderInstance) => {
-  //           this.designRenderRef.current = designRenderInstance;
-
-  //           this.registerDragAndDropEvent();
-  //           this.registerSelectEvent();
-  //           this.registerHoverEvent();
-  //           this.readyOk();
-  //         },
-  //       });
-  //       IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
-  //     })
-  //     .onError(() => {
-  //       console.log('资源加载出错');
-  //     })
-  //     .load();
-  // }
-
   getPageModel() {
     return this.designRenderRef?.current?.getPageModel();
   }
@@ -449,9 +413,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     this.isCancelDrag = true;
     this.resetDrag();
     this.dnd.cancelDrag();
-
-    // 触发dragEnd ⌚️
-    // this.props.onNodeDraEnd?.(event);
   }
 
   registerDragAndDropEvent() {
@@ -791,6 +752,24 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     }
   }
 
+  selectRectViewItemRender: HighlightCanvasCoreProps['itemRender'] = (props) => {
+    const { selectRectViewRender } = this.props;
+    const Comp = selectRectViewRender;
+    if (!Comp) {
+      return <></>;
+    }
+    return <Comp instance={props.instance} index={props.index} isLock={false} />;
+  };
+
+  hoverRectViewItemRender: HighlightCanvasCoreProps['itemRender'] = (props) => {
+    const { hoverRectViewRender } = this.props;
+    const Comp = hoverRectViewRender;
+    if (!Comp) {
+      return <></>;
+    }
+    return <Comp instance={props.instance} index={props.index} isLock={false} />;
+  };
+
   render() {
     const {
       selectComponentInstances,
@@ -809,7 +788,18 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       selectBoxStyle = {},
       hoverBoxStyle = {},
       ghostView = <>Ghost</>,
+      selectRectViewRender,
+      hoverRectViewRender,
     } = this.props;
+
+    let selectRectViewItemRender: HighlightCanvasCoreProps['itemRender'];
+    if (selectRectViewRender) {
+      selectRectViewItemRender = this.selectRectViewItemRender;
+    }
+    let hoverRectViewItemRender: HighlightCanvasCoreProps['itemRender'];
+    if (hoverRectViewRender) {
+      hoverRectViewItemRender = this.hoverRectViewItemRender;
+    }
     return (
       <div className={styles.layoutContainer} id={iframeDomId}>
         {/* 左上角添加显示元素名功能， hover */}
@@ -826,6 +816,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             ...hoverBoxStyle,
           }}
           toolView={hoverToolBarView}
+          itemRender={hoverRectViewItemRender}
         />
         {/* TODO:  选中框， 添加锁定功能 */}
         <HighlightCanvas
@@ -836,43 +827,8 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             ...selectLockStyle,
           }}
           toolView={selectToolBarView}
+          itemRender={selectRectViewItemRender}
         />
-
-        {/* <HighlightCanvas
-          ref={this.highlightCanvasRef}
-          instances={selectComponentInstances}
-          style={{
-            backgroundColor: 'rgba(0,0,0,0.3)',
-          }}
-          containerStyle={{
-            pointerEvents: this.state.pointerEventsForHightLightBox,
-          }}
-        >
-          <Resizable
-            defaultSize={{
-              width: 320,
-              height: 200,
-            }}
-            style={{
-              backgroundColor: 'red',
-              pointerEvents: 'auto',
-              maxWidth: '100%',
-              maxHeight: '100%',
-            }}
-            onResizeStart={() => {
-              this.setState({
-                pointerEventsForHightLightBox: 'auto',
-              });
-            }}
-            onResizeStop={() => {
-              this.setState({
-                pointerEventsForHightLightBox: 'none',
-              });
-            }}
-          >
-            Sample with default size
-          </Resizable>
-        </HighlightCanvas> */}
 
         <DropAnchorCanvas
           ref={this.highlightDropAnchorCanvasRef}
@@ -902,3 +858,4 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 export * from './core/dragAndDrop';
 export * from './core/iframeContainer';
 export * from './utils';
+export * from './types';

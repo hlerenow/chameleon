@@ -1,16 +1,15 @@
-import { Sensor, SensorEventObjType } from '@chamn/layout';
+import { LayoutDragAndDropExtraDataType, Sensor } from '@chamn/layout';
 import { CNode, CRootNode, DropPosType } from '@chamn/model';
 import React from 'react';
 import { WithTranslation } from 'react-i18next';
 import { CPluginCtx } from '../../../../core/pluginManager';
 import { LOGGER } from '../../../../utils/logger';
-import { DesignerPluginInstance } from '../../../Designer';
 import { calculateDropPosInfo, getTargetMNodeKeyVal, transformPageSchemaToTreeData, traverseTree } from '../../util';
 import { ContextState, CTreeContext, DragState } from './context';
 import { TreeNodeData } from './dataStruct';
 import styles from './style.module.scss';
 import { DRAG_ITEM_KEY, TreeNode } from './treeNode';
-import { LayoutDragAndDropExtraDataType } from '@chamn/layout/dist/types/dragAndDrop';
+import { DesignerPluginInstance } from '@/plugins/Designer/type';
 
 interface TreeViewProps extends WithTranslation {
   pluginCtx: CPluginCtx;
@@ -206,6 +205,7 @@ export class TreeView extends React.Component<
       const nodeCanDragRes = await designerInstance?.customAdvanceHook.canDrag({
         dragNode: targetNode,
         eventObj: {
+          extraData: {},
           ...eventObj,
           from: eventObj.event,
           fromSensor: sensor,
@@ -231,8 +231,8 @@ export class TreeView extends React.Component<
       };
 
       if (typeof nodeCanDragRes === 'object') {
-        canDragResInfo.extraData.dragNode = nodeCanDragRes.dragNode;
-        canDragResInfo.extraData.dragNodeUID = nodeCanDragRes.dragNode.id;
+        canDragResInfo.extraData.dragNode = nodeCanDragRes.dragNode!;
+        canDragResInfo.extraData.dragNodeUID = nodeCanDragRes.dragNode?.id || '';
       }
 
       return canDragResInfo;
