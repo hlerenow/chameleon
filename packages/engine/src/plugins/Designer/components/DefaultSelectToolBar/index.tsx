@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { CopyOutlined, DeleteOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import styles from './style.module.scss';
 import { CNode } from '@chamn/model';
@@ -40,13 +40,8 @@ const LayoutSelect = ({
   );
 };
 
-export const DefaultSelectToolBar = ({
-  nodeList,
-  toSelectNode,
-  toDelete,
-  toCopy,
-  toHidden,
-}: DefaultSelectToolBarProps) => {
+export const getDefaultToolbarItem = (props: DefaultSelectToolBarProps) => {
+  const { nodeList, toSelectNode, toDelete, toCopy, toHidden } = props;
   const tempList = [...nodeList];
   const currentNode = tempList.shift();
   const parentNodeItems = tempList.map((el) => {
@@ -82,6 +77,19 @@ export const DefaultSelectToolBar = ({
       <div>{currentNode?.value.title || currentNode?.material?.value.title || 'Empty'}</div>
     </LayoutSelect>
   );
+
+  return {
+    copyItem,
+    deleteItem,
+    visibleItem,
+    nodeLayout,
+  };
+};
+
+export const DefaultSelectToolBar = (props: DefaultSelectToolBarProps) => {
+  const { copyItem, deleteItem, visibleItem, nodeLayout } = useMemo(() => {
+    return getDefaultToolbarItem(props);
+  }, [props]);
 
   return (
     <div className={styles.toolBarBox}>

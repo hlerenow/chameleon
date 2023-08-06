@@ -134,6 +134,12 @@ export const ButtonMeta: CMaterialType = {
       console.log('123213', props);
       return <>drop 11111</>;
     },
+    ghostViewRender: () => {
+      return <>Big Button</>;
+    },
+    toolbarViewRender: () => {
+      return <>toolbar</>;
+    },
     canDragNode: async (node, params) => {
       console.log('canDragNode', node, params);
       if (params.event?.extraData?.type === 'NEW_ADD') {

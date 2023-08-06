@@ -108,4 +108,19 @@ export class AdvanceCustomHook {
     const material = node.material;
     return material?.value.advanceCustom?.dropViewRender;
   }
+
+  getGhostViewRender(node?: CNode | CRootNode | null) {
+    if (!node) {
+      return null;
+    }
+    const material = node.material;
+    return material?.value.advanceCustom?.ghostViewRender;
+  }
+  getToolbarViewRender(node?: CNode | CRootNode | null) {
+    if (!node) {
+      return null;
+    }
+    const material = node.material;
+    return material?.value.advanceCustom?.toolbarViewRender;
+  }
 }

@@ -356,7 +356,7 @@ export type DragAndDropEventExtraData = {
 export type CustomViewRenderProps = {
   node: CNode | CRootNode;
   params: AdvanceCustomFuncParam;
-  componentInstance: ReactInstance;
+  componentInstance?: ReactInstance;
   /** 一个组件可能被循环渲染，这里表示是第几个索引 **/
   componentInstanceIndex?: number;
 };
@@ -463,11 +463,16 @@ export type AdvanceCustom = {
       }
   >;
   // TODO:
-  toolBarViewRender?: (
-    node: CNode | CRootNode,
-    context: any,
-    toolBarItems: { name: string; view: React.ReactElement }[]
-  ) => React.ReactElement;
+  toolbarViewRender?: (props: {
+    node: CNode | CRootNode;
+    context: any;
+    toolBarItems: {
+      copyItem: React.ReactElement;
+      deleteItem: React.ReactElement;
+      visibleItem: React.ReactElement;
+      nodeLayout: React.ReactElement;
+    };
+  }) => React.ReactElement;
   // TODO:
   selectRectViewRender?: (props: CustomViewRenderProps) => React.ReactElement;
   // TODO:

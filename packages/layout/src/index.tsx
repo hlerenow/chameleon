@@ -42,7 +42,7 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   onNodeDraEnd?: (event: LayoutDragEvent) => ReturnType<Required<AdvanceCustom>['onDragEnd']>;
   onNodeDrop?: (event: LayoutDragEvent) => ReturnType<Required<AdvanceCustom>['onDrop']>;
   onNodeNewAdd?: (event: LayoutDragEvent) => ReturnType<Required<AdvanceCustom>['onNewAdd']>;
-  selectToolBarView?: React.ReactNode;
+  selectToolbarView?: React.ReactNode;
   selectBoxStyle?: React.CSSProperties;
   hoverBoxStyle?: React.CSSProperties;
   hoverToolBarView?: React.ReactNode;
@@ -797,7 +797,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     } = this.state;
     const { iframeDomId } = this;
     const {
-      selectToolBarView,
+      selectToolbarView,
       hoverToolBarView,
       selectBoxStyle = {},
       hoverBoxStyle = {},
@@ -835,7 +835,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             outline: '1px dashed rgba(0,0,255, .8)',
             ...hoverBoxStyle,
           }}
-          toolView={hoverToolBarView}
+          toolbarView={hoverToolBarView}
           itemRender={hoverRectViewItemRender}
         />
         {/* TODO:  选中框， 添加锁定功能 */}
@@ -846,7 +846,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             ...selectBoxStyle,
             ...selectLockStyle,
           }}
-          toolView={selectToolBarView}
+          toolbarView={selectToolbarView}
           itemRender={selectRectViewItemRender}
         />
 

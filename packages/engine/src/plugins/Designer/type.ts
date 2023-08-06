@@ -17,8 +17,16 @@ export type DesignerExport = {
 
 export type DesignerPluginConfig = Omit<
   LayoutPropsType,
-  'selectRectViewRender' | 'hoverRectViewRender' | 'dropViewRender'
+  | 'selectRectViewRender'
+  | 'hoverRectViewRender'
+  | 'dropViewRender'
+  | 'ghostView'
+  | 'selectToolBarView'
+  | 'hoverToolBarView'
 > &
-  Pick<AdvanceCustom, 'selectRectViewRender' | 'hoverRectViewRender' | 'dropViewRender'>;
+  Pick<
+    AdvanceCustom,
+    'selectRectViewRender' | 'hoverRectViewRender' | 'dropViewRender' | 'ghostViewRender' | 'toolbarViewRender'
+  >;
 export type DesignerPluginType = CPlugin<DesignerPluginConfig, DesignerExport>;
 export type DesignerPluginInstance = PluginInstance<DesignerPluginConfig, DesignerExport>;

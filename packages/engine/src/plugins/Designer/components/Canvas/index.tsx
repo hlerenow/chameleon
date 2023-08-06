@@ -3,7 +3,7 @@ import { Layout, LayoutPropsType } from '@chamn/layout';
 import { AdvanceCustom, CNode, CPage, CRootNode, InsertNodePosType } from '@chamn/model';
 import localize from '../../localize';
 import { PLUGIN_NAME } from '../../config';
-import { DefaultSelectToolBar } from '../DefaultSelectToolBar';
+import { DefaultSelectToolBar, DefaultSelectToolBarProps, getDefaultToolbarItem } from '../DefaultSelectToolBar';
 import { getClosestNodeList } from '../../util';
 import { GhostView } from '../GhostView';
 
@@ -14,6 +14,7 @@ import { createPortal } from 'react-dom';
 import { CPluginCtx } from '@/core/pluginManager';
 import { AdvanceCustomHook } from './advanceCustomHook';
 import { DesignerPluginConfig } from '../../type';
+import { AdvanceCustomFuncParam } from '@chamn/model';
 
 export type DesignerPropsType = {
   pluginCtx: CPluginCtx<DesignerPluginConfig>;
@@ -21,8 +22,8 @@ export type DesignerPropsType = {
 
 type DesignerStateType = {
   pageModel: CPage;
-  hoverToolBarView: React.ReactNode;
-  selectToolBarView: React.ReactNode;
+  hoverToolbarView: React.ReactNode;
+  selectToolbarView: React.ReactNode;
   selectRectViewRender: AdvanceCustom['selectRectViewRender'] | null;
   hoverRectViewRender: AdvanceCustom['hoverRectViewRender'] | null;
   dropViewRender: AdvanceCustom['dropViewRender'] | null;
@@ -39,8 +40,8 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
 
     this.state = {
       pageModel: props.pluginCtx.pageModel,
-      hoverToolBarView: null,
-      selectToolBarView: null,
+      hoverToolbarView: null,
+      selectToolbarView: null,
       ghostView: null,
       assets: props.pluginCtx.assets || ([] as AssetPackage[]),
       portalView: null,
@@ -135,6 +136,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
 
   onNodeDragEnd: LayoutPropsType['onNodeDraEnd'] = async () => {
     this.setState({
+      ...this.state,
       dropViewRender: this.props.pluginCtx.config.dropViewRender,
     });
   };
@@ -216,7 +218,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       pluginCtx.engine.updateCurrentSelectNode(null);
       layoutRef.current?.selectNode('');
       this.setState({
-        selectToolBarView: null,
+        selectToolbarView: null,
       });
       return;
     }
@@ -230,51 +232,11 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       return flag;
     }
     pluginCtx.engine.updateCurrentSelectNode(node);
-    const pageModel = this.props.pluginCtx.pageModel;
-    const list = getClosestNodeList(node, 5);
+    const toolbarView = this.getToolbarView(node);
 
     this.setState({
-      selectToolBarView: (
-        <DefaultSelectToolBar
-          nodeList={list}
-          toSelectNode={(id) => {
-            layoutRef.current?.selectNode(id);
-            const selectedNode = pageModel.getNode(id);
-            if (selectedNode) {
-              this.onSelectNode?.(selectedNode, null);
-            }
-          }}
-          toCopy={(id) => {
-            const newNode = this.props.pluginCtx.pageModel.copyNodeById(id);
-            if (newNode) {
-              layoutRef.current?.selectNode(newNode.id);
-              // 延迟选中，因为可能 dom 还没有渲染完成
-              setTimeout(() => {
-                layoutRef.current?.selectNode(newNode.id);
-              }, 200);
-              this.onSelectNode?.(newNode, null);
-            } else {
-              layoutRef.current?.selectNode('');
-              this.onSelectNode?.(null, null);
-            }
-          }}
-          toDelete={(id) => {
-            this.props.pluginCtx.pageModel.deleteNodeById(id);
-            layoutRef.current?.selectNode('');
-            this.onSelectNode?.(null, null);
-          }}
-          toHidden={(id) => {
-            const targetNodeModel = this.props.pluginCtx.pageModel.getNode(id) as CNode;
-            if (!targetNodeModel) {
-              return;
-            }
-            const devState = targetNodeModel.value.configure.devState ?? {};
-            devState.condition = false;
-            targetNodeModel.value.configure.devState = devState;
-            targetNodeModel.updateValue();
-          }}
-        />
-      ),
+      ...this.state,
+      selectToolbarView: toolbarView,
       selectRectViewRender:
         this.customAdvanceHook.getSelectRectViewRender(node) || this.props.pluginCtx.config.selectRectViewRender,
     });
@@ -287,31 +249,107 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       return;
     }
 
-    const dragFlag = await dragNode.material?.value.advanceCustom?.onDragStart?.(dragNode, {
+    const commonParam = {
       context: this.props.pluginCtx,
       viewPortal: this.getPortalViewCtx(),
       event: e,
       extra: extraData,
-    });
+    };
+
+    const dragFlag = await dragNode.material?.value.advanceCustom?.onDragStart?.(dragNode, { ...commonParam });
     if (dragFlag === false) {
       return dragFlag;
     }
 
+    const ghostView = this.getGhostView(dragNode, commonParam);
     this.setState({
-      ghostView: <GhostView node={dragNode} />,
+      ...this.state,
+      ghostView: ghostView,
       dropViewRender: this.customAdvanceHook.getDropViewRender(dragNode) || this.props.pluginCtx.config.dropViewRender,
     });
   };
 
-  onHoverNode: LayoutPropsType['onHoverNode'] = (node, dragNode) => {
+  getGhostView = (dragNode: CNode | CRootNode, commonParam: AdvanceCustomFuncParam) => {
+    let ghostView: React.ReactElement = <GhostView node={dragNode} />;
+    const nodeGhostView = this.customAdvanceHook.getGhostViewRender(dragNode);
+    const CustomGhostView = nodeGhostView || this.props.pluginCtx.config.ghostViewRender;
+
+    if (CustomGhostView) {
+      ghostView = <CustomGhostView node={dragNode} params={commonParam} />;
+    }
+    return ghostView;
+  };
+
+  getToolbarView = (node: CNode | CRootNode) => {
+    const list = getClosestNodeList(node, 5);
+    const { layoutRef } = this;
+    const pageModel = this.props.pluginCtx.pageModel;
+    const toolbarProps: DefaultSelectToolBarProps = {
+      nodeList: list,
+      toSelectNode: (id) => {
+        layoutRef.current?.selectNode(id);
+        const selectedNode = pageModel.getNode(id);
+        if (selectedNode) {
+          this.onSelectNode?.(selectedNode, null);
+        }
+      },
+      toCopy: (id) => {
+        const newNode = this.props.pluginCtx.pageModel.copyNodeById(id);
+        if (newNode) {
+          layoutRef.current?.selectNode(newNode.id);
+          // 延迟选中，因为可能 dom 还没有渲染完成
+          setTimeout(() => {
+            layoutRef.current?.selectNode(newNode.id);
+          }, 200);
+          this.onSelectNode?.(newNode, null);
+        } else {
+          layoutRef.current?.selectNode('');
+          this.onSelectNode?.(null, null);
+        }
+      },
+      toDelete: (id) => {
+        this.props.pluginCtx.pageModel.deleteNodeById(id);
+        layoutRef.current?.selectNode('');
+        this.onSelectNode?.(null, null);
+      },
+      toHidden: (id) => {
+        const targetNodeModel = this.props.pluginCtx.pageModel.getNode(id) as CNode;
+        if (!targetNodeModel) {
+          return;
+        }
+        const devState = targetNodeModel.value.configure.devState ?? {};
+        devState.condition = false;
+        targetNodeModel.value.configure.devState = devState;
+        targetNodeModel.updateValue();
+      },
+    };
+    const defaultToolbarItem = getDefaultToolbarItem(toolbarProps);
+    let toolbarView = <DefaultSelectToolBar {...toolbarProps} />;
+    const ToolbarView =
+      this.customAdvanceHook.getToolbarViewRender(node) || this.props.pluginCtx.config.toolbarViewRender;
+    if (ToolbarView) {
+      toolbarView = <ToolbarView node={node} context={this.context} toolBarItems={defaultToolbarItem} />;
+    }
+    return toolbarView;
+  };
+
+  onHoverNode: LayoutPropsType['onHoverNode'] = (node, dragNode, e) => {
     this.props.pluginCtx.emitter.emit('onHover', node);
     const material = node?.material;
     if (!material) {
       console.warn('material not found', node);
     }
+    const commonParam = {
+      context: this.props.pluginCtx,
+      viewPortal: this.getPortalViewCtx(),
+      event: e,
+      extra: {},
+    };
+    const ghostView = this.getGhostView(dragNode, commonParam);
+
     const newState = {
-      hoverToolBarView: <div className={styles.hoverTips}>{material?.value.title || material?.componentName}</div>,
-      ghostView: <GhostView node={dragNode} />,
+      hoverToolbarView: <div className={styles.hoverTips}>{material?.value.title || material?.componentName}</div>,
+      ghostView: ghostView,
       hoverRectViewRender:
         this.customAdvanceHook.getHoverRectViewRender(node) || this.props.pluginCtx.config.hoverRectViewRender,
     };
@@ -418,8 +456,8 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       this;
     const {
       pageModel,
-      hoverToolBarView,
-      selectToolBarView,
+      hoverToolbarView,
+      selectToolbarView,
       ghostView,
       assets,
       portalView,
@@ -442,6 +480,10 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     if (dropViewRender) {
       advanceCustomProps.dropViewRender = this.innerDropViewRender;
     }
+    console.log('toolbarViewRender', selectToolbarView);
+    if (selectToolbarView) {
+      advanceCustomProps.selectToolbarView = this.state.selectToolbarView;
+    }
 
     return (
       <>
@@ -452,8 +494,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
           pageModel={pageModel}
           renderJSUrl={renderJSUrl}
           {...props}
-          hoverToolBarView={hoverToolBarView}
-          selectToolBarView={selectToolBarView}
+          hoverToolBarView={hoverToolbarView}
           selectBoxStyle={{}}
           hoverBoxStyle={{}}
           nodeCanDrag={this.nodeCanDrag}
