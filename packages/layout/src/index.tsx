@@ -546,11 +546,11 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       const { currentSelectInstance } = this.state;
       const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const dragStartNode = extraData.dragNode!;
+      const dragStartNode = extraData.dragNode;
       const startInstance: RenderInstance | undefined = (
-        this.designRenderRef.current?.getInstancesById(dragStartNode.id) || []
+        this.designRenderRef.current?.getInstancesById(dragStartNode?.id || '') || []
       ).shift();
-      this.dragStartNode = dragStartNode;
+      this.dragStartNode = dragStartNode || null;
       // 可以终止拖拽开始
       if (this.props.onNodeDragStart) {
         const res = await this.props.onNodeDragStart(eventObj);
@@ -565,7 +565,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         return;
       }
       const currentSelectDom = this.designRenderRef.current?.getDomsById(currentSelectInstance?._NODE_ID || '');
-      const dragStartDom = this.designRenderRef.current?.getDomsById(dragStartNode.id);
+      const dragStartDom = this.designRenderRef.current?.getDomsById(dragStartNode?.id || '');
       // 新增节点
       if (extraData?.dropType === 'NEW_ADD') {
         this.setState({
