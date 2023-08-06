@@ -49,7 +49,7 @@ export const transformNodeSchemaToTreeData = (
       key: node.id,
       children: [],
       parent: parent,
-      canDrop: pageModel.getNode(node.id || '')?.isContainer() ? undefined : ['after', 'before'],
+      canDropPos: pageModel.getNode(node.id || '')?.isContainer() ? undefined : ['after', 'before'],
     };
     // 还需要处理 props 中的节点
     const propsNodeList: TreeNodeData[] = [];
@@ -58,7 +58,7 @@ export const transformNodeSchemaToTreeData = (
       key: `${node.id}-SLOT`,
       children: propsNodeList,
       canBeSelected: false,
-      canDrop: false,
+      canDropPos: false,
       parent: null,
       containerRender: ({ treeNodeView }) => {
         return (
@@ -98,7 +98,7 @@ export const transformNodeSchemaToTreeData = (
           children: [],
           canBeSelected: false,
           canDrag: false,
-          canDrop: ['current'],
+          canDropPos: ['current'],
           parent: slotNode,
         };
 

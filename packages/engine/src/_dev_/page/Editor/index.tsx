@@ -13,6 +13,7 @@ import { TestComponents } from '@/_dev_/lib';
 import { collectVariable, flatObject, LayoutPropsType } from '@chamn/layout';
 
 import renderAsURL from '../../../../node_modules/@chamn/render/dist/index.umd.js?url';
+import { getThirdLibs } from '@chamn/render';
 
 const customRender: LayoutPropsType['customRender'] = async ({
   iframe: iframeContainer,
@@ -32,12 +33,16 @@ const customRender: LayoutPropsType['customRender'] = async ({
   // 从子窗口获取物料对象
   const componentCollection = collectVariable(assets, iframeWindow);
   const components = flatObject(componentCollection);
+  const thirdLibs = getThirdLibs(componentCollection, page?.thirdLibs || []);
 
   const App = IframeReact?.createElement(CRender.DesignRender, {
     adapter: CRender?.ReactAdapter,
     page: page,
     pageModel: pageModel,
     components,
+    $$context: {
+      thirdLibs,
+    },
     onMount: (designRenderInstance) => {
       ready(designRenderInstance);
     },

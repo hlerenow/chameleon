@@ -6,7 +6,7 @@ import { CPlugin, PluginManager } from './core/pluginManager';
 import mitt, { Emitter } from 'mitt';
 import { AssetPackage, CMaterialType, CNode, CPage, CPageDataType, CRootNode, EmptyPage } from '@chamn/model';
 import { getDefaultRender, beforeInitRender } from './utils/defaultEngineConfig';
-import { DesignerPluginInstance } from './plugins/Designer';
+import { DesignerPluginInstance } from './plugins/Designer/type';
 
 export type EnginContext = {
   pluginManager: PluginManager;

@@ -21,7 +21,7 @@
   },
   "lint-staged": {
     "packages/*/src/**/*.{js,jsx,ts,tsx}": [
-      "eslint --fix --quiet"
+      "eslint --fix"
     ],
     "packages/*/src/**/*": "prettier --write --ignore-unknown"
   },

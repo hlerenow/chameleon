@@ -4,7 +4,7 @@ import { MonacoEditor, MonacoEditorInstance } from '../../component/MonacoEditor
 import { CPage } from '@chamn/model';
 import { waitReactUpdate } from '../../utils';
 import { EnginContext } from '../../index';
-import { DesignerPluginInstance } from '../Designer';
+import { DesignerPluginInstance } from '../Designer/type';
 
 export type DisplaySourceSchemaProps = {
   pageModel: CPage;

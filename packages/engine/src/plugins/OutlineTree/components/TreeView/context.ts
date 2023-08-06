@@ -2,8 +2,8 @@
 import { Sensor } from '@chamn/layout';
 import { CPage } from '@chamn/model';
 import React from 'react';
-import { DesignerExport } from '../../../Designer';
 import { TreeNodeData } from './dataStruct';
+import { DesignerExport } from '@/plugins/Designer/type';
 export enum DragState {
   DRAGGING = 'DRAGGING',
   NORMAL = 'NORMAL',

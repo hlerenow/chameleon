@@ -43,7 +43,7 @@ export const getDefaultRender = (components: Record<string, any>) => {
     assetLoader
       .onSuccess(() => {
         const allLibs = collectVariable(allAssets, iframeWindow);
-        const componentsLibs = flatObject(getComponentsLibs(allLibs, pageInfo.componentsMeta));
+        const componentsLibs = flatObject(allLibs);
         const thirdLibs = getThirdLibs(allLibs, pageInfo.thirdLibs || []);
         const App = IframeReact?.createElement(CRender.DesignRender, {
           adapter: CRender?.ReactAdapter,
