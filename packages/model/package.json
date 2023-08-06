@@ -30,11 +30,12 @@
     "superstruct": "^0.16.0"
   },
   "devDependencies": {
-    "@chamn/build-script": "workspace:*",
+    "@chamn/build-script": "0.0.16",
     "@types/lodash": "^4.14.192",
     "@types/lodash-es": "^4.17.6",
     "jest": "^28.1.3",
     "sass": "^1.54.0"
   },
-  "config": {}
+  "config": {},
+  "gitHead": "7475e219a826c2bd8f65350733931a847d99e2cd"
 }

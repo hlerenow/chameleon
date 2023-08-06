@@ -24,15 +24,15 @@
     "react-dom": ">=16.9.0"
   },
   "dependencies": {
-    "@chamn/model": "workspace:*",
-    "@chamn/render": "workspace:*",
+    "@chamn/model": "0.0.16",
+    "@chamn/render": "0.0.16",
     "lodash-es": "^4.17.21",
     "mitt": "^3.0.0",
     "re-resizable": "^6.9.9"
   },
   "devDependencies": {
-    "@chamn/build-script": "workspace:*",
-    "@chamn/demo-page": "workspace:*",
+    "@chamn/build-script": "0.0.16",
+    "@chamn/demo-page": "0.0.16",
     "@types/lodash-es": "^4.17.6",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
@@ -41,5 +41,6 @@
     "react-dom": "^18.2.0",
     "sass": "^1.54.0"
   },
-  "config": {}
+  "config": {},
+  "gitHead": "7475e219a826c2bd8f65350733931a847d99e2cd"
 }

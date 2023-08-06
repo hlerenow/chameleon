@@ -25,16 +25,16 @@
     "react-dom": ">=16.9.0"
   },
   "dependencies": {
-    "@chamn/model": "workspace:*",
+    "@chamn/model": "0.0.16",
     "html-tag-names": "^2.0.1",
     "loadjs": "4.3.0-rc1",
     "lodash-es": "^4.17.21",
     "zustand": "^4.3.8"
   },
   "devDependencies": {
-    "@chamn/build-script": "workspace:*",
-    "@chamn/demo-page": "workspace:*",
-    "@chamn/material": "workspace:*",
+    "@chamn/build-script": "0.0.16",
+    "@chamn/demo-page": "0.0.16",
+    "@chamn/material": "0.0.16",
     "@types/loadjs": "^4.0.1",
     "@types/lodash-es": "^4.17.6",
     "@types/node": "^18.15.9",
@@ -48,5 +48,6 @@
     "sass": "^1.54.0",
     "vite-plugin-dts": "^2.1.0"
   },
-  "config": {}
+  "config": {},
+  "gitHead": "7475e219a826c2bd8f65350733931a847d99e2cd"
 }

@@ -98,7 +98,8 @@ export const HighlightBox = ({
     let dom = ReactDOM.findDOMNode(tempInstance) as HTMLElement;
     const rootSelector = instance._NODE_MODEL.material?.value.rootSelector;
     if (rootSelector) {
-      dom = dom.querySelector(rootSelector) || dom;
+      // 文本节点 注释节点不存在 querySelector 方法
+      dom = dom.querySelector?.(rootSelector) || dom;
     }
     if (isDOM(dom)) {
       instanceDom = dom;

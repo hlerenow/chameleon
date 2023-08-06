@@ -54,5 +54,6 @@
     "vite-plugin-sass-dts": "^1.3.2",
     "yargs-parser": "^21.0.1"
   },
-  "config": {}
+  "config": {},
+  "gitHead": "7475e219a826c2bd8f65350733931a847d99e2cd"
 }

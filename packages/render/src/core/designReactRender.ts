@@ -209,7 +209,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
       if (dom && !(dom instanceof Text)) {
         if (selector) {
           // 判断是不是数组
-          const list: HTMLElement[] = Array.from(dom.querySelectorAll(selector));
+          const list: HTMLElement[] = Array.from(dom.querySelectorAll?.(selector) || []);
           doms.push(...list);
         } else {
           doms.push(dom as unknown as HTMLElement);
