@@ -1,7 +1,7 @@
 {
   "name": "@chamn/example",
   "private": true,
-  "version": "0.0.15",
+  "version": "0.0.16",
   "files": [
     "dist"
   ],
@@ -20,14 +20,13 @@
     "react": ">=16.9.0",
     "react-dom": ">=16.9.0"
   },
-  "dependencies": {},
   "devDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "sass": "^1.54.0",
     "@chamn/build-script": "workspace:*",
     "@types/react": "^18.0.15",
-    "@types/react-dom": "^18.0.6"
+    "@types/react-dom": "^18.0.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "sass": "^1.54.0"
   },
   "config": {}
 }

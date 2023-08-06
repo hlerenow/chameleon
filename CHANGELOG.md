@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.16](https://github.com/ByteCrazy/chameleon/compare/v0.0.15...v0.0.16) (2023-08-06)
+
+### 👷 Continuous Integration | CI 配置
+
+* 🎡 update ci build ([081fbde](https://github.com/ByteCrazy/chameleon/commit/081fbde6bb840f3682e86ad7cbbcdc1e04e89c36))
+* 🎡 update ci script ([099f032](https://github.com/ByteCrazy/chameleon/commit/099f03220711d0542081f462c517aae8ce4dea32))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, layout:** 🐛 fixed some node not exits querySelector method ([2ddc186](https://github.com/ByteCrazy/chameleon/commit/2ddc1863e6eb207ae2e2b705a9fef4d23bece37c))
+
+### ✨ Features | 新功能
+
+* **build-script-example, demo-page, engine, layout, material, model, render:** 🎸 support direct import render from package on dev mode ([6bb38e2](https://github.com/ByteCrazy/chameleon/commit/6bb38e29678a8a4d08a7fcf9548fa548399259b0))
+* **demo-page, engine, layout, model:** 🎸 support  advanceCustom drag and drop hooks ([fb21e15](https://github.com/ByteCrazy/chameleon/commit/fb21e1501f6829e4f13a35ea7be942ff72b0be91))
+* **demo-page, engine, layout, model:** 🎸 support toolbarViewRender and ghostViewRedner ([43ced37](https://github.com/ByteCrazy/chameleon/commit/43ced371cfb7dbb58a96fc15e1bf635092307fa8))
+* **demo-page, engine, layout:** 🎸 support DropViewRender ([1c025a6](https://github.com/ByteCrazy/chameleon/commit/1c025a6d1f57f450b2de262a787375f3f4891008))
+* **demo-page, engine, model:** 🎸 support onDelete onCopy ([b6a76bb](https://github.com/ByteCrazy/chameleon/commit/b6a76bb244bbe2c050de17157bda97cb7ad21abc))
+* **engine, layout, model:** 🎸 add customDropViewRender prop ([cea7f1e](https://github.com/ByteCrazy/chameleon/commit/cea7f1e3c2b0a8a13aef7cdcb0191593414615aa))
+* **engine, layout, model:** 🎸 finish layout transform ([73ead35](https://github.com/ByteCrazy/chameleon/commit/73ead357b9aded2b5ee2b545da6f2b3677ce8393))
+* **engine:** 🎸 optimze plugin type definition ([da9c107](https://github.com/ByteCrazy/chameleon/commit/da9c107b20646714834642ad09b2cbdfcb6eb7cd))
+* **layout, model:** 🎸 optimize advanceCustom type definition ([0f529d1](https://github.com/ByteCrazy/chameleon/commit/0f529d1a8d8adbfd0970ba13a75a116a26e4d2f8))
+* **layout, model:** 🎸 optimize advanceCustom type definition ([8cd11aa](https://github.com/ByteCrazy/chameleon/commit/8cd11aa9fb0dca0b605d9ed8504c2e827109dc8f))
+* **layout, model:** 🎸 update meterial types definition ([fcf4e82](https://github.com/ByteCrazy/chameleon/commit/fcf4e827942afe4df8ad4210a0a3134138a5b10e))
+* **layout:** 🎸 select hightlight use outline ([00654d0](https://github.com/ByteCrazy/chameleon/commit/00654d082c2823a6b01f109571f25a18bc51f5c5))
+* **layout:** 🎸 setCanDrag add hook ([04ec3b6](https://github.com/ByteCrazy/chameleon/commit/04ec3b687310f689bbaaaa4a037b25d9ae5f8b9a))
+
 ## [0.0.15](https://github.com/ByteCrazy/chameleon/compare/v0.0.14...v0.0.15) (2023-07-01)
 
 ### 🐛 Bug Fixes | Bug 修复

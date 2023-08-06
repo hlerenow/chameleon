@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.16](https://github.com/ByteCrazy/chameleon/compare/v0.0.15...v0.0.16) (2023-08-06)
+
+### ✨ Features | 新功能
+
+* **build-script-example, demo-page, engine, layout, material, model, render:** 🎸 support direct import render from package on dev mode ([6bb38e2](https://github.com/ByteCrazy/chameleon/commit/6bb38e29678a8a4d08a7fcf9548fa548399259b0))
+
 ## [0.0.15](https://github.com/ByteCrazy/chameleon/compare/v0.0.14...v0.0.15) (2023-07-01)
 
 **Note:** Version bump only for package @chamn/example

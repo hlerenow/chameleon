@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.16](https://github.com/ByteCrazy/chameleon/compare/v0.0.15...v0.0.16) (2023-08-06)
+
+### ✨ Features | 新功能
+
+* **build-script-example, demo-page, engine, layout, material, model, render:** 🎸 support direct import render from package on dev mode ([6bb38e2](https://github.com/ByteCrazy/chameleon/commit/6bb38e29678a8a4d08a7fcf9548fa548399259b0))
+* **demo-page, engine, layout, model:** 🎸 support  advanceCustom drag and drop hooks ([fb21e15](https://github.com/ByteCrazy/chameleon/commit/fb21e1501f6829e4f13a35ea7be942ff72b0be91))
+* **demo-page, engine, layout, model:** 🎸 support toolbarViewRender and ghostViewRedner ([43ced37](https://github.com/ByteCrazy/chameleon/commit/43ced371cfb7dbb58a96fc15e1bf635092307fa8))
+* **demo-page, engine, model:** 🎸 support onDelete onCopy ([b6a76bb](https://github.com/ByteCrazy/chameleon/commit/b6a76bb244bbe2c050de17157bda97cb7ad21abc))
+* **engine, layout, model:** 🎸 add customDropViewRender prop ([cea7f1e](https://github.com/ByteCrazy/chameleon/commit/cea7f1e3c2b0a8a13aef7cdcb0191593414615aa))
+* **engine, layout, model:** 🎸 finish layout transform ([73ead35](https://github.com/ByteCrazy/chameleon/commit/73ead357b9aded2b5ee2b545da6f2b3677ce8393))
+* **layout, model:** 🎸 optimize advanceCustom type definition ([0f529d1](https://github.com/ByteCrazy/chameleon/commit/0f529d1a8d8adbfd0970ba13a75a116a26e4d2f8))
+* **layout, model:** 🎸 optimize advanceCustom type definition ([8cd11aa](https://github.com/ByteCrazy/chameleon/commit/8cd11aa9fb0dca0b605d9ed8504c2e827109dc8f))
+* **layout, model:** 🎸 update meterial types definition ([fcf4e82](https://github.com/ByteCrazy/chameleon/commit/fcf4e827942afe4df8ad4210a0a3134138a5b10e))
+
 ## [0.0.15](https://github.com/ByteCrazy/chameleon/compare/v0.0.14...v0.0.15) (2023-07-01)
 
 ### ✨ Features | 新功能
