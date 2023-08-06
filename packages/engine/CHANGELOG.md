@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.17](https://github.com/ByteCrazy/chameleon/compare/v0.0.16...v0.0.17) (2023-08-06)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine:** 🐛 fixed types error ([1b68777](https://github.com/ByteCrazy/chameleon/commit/1b68777eb58225d750f40b16a7d263acb385477a))
+
 ## [0.0.16](https://github.com/ByteCrazy/chameleon/compare/v0.0.15...v0.0.16) (2023-08-06)
 
 ### 🐛 Bug Fixes | Bug 修复
