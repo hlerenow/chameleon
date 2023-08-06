@@ -7,6 +7,6 @@ export const waitReactUpdate = (time?: number) => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve('ok');
-    }, time ?? 16);
+    }, time ?? (1000 / 60) * 2);
   });
 };

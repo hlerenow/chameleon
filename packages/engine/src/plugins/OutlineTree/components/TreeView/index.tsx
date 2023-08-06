@@ -126,7 +126,13 @@ export class TreeView extends React.Component<
     this.registerDragEvent();
   }
 
-  toSelectTreeNode = (node: CNode | CRootNode) => {
+  toSelectTreeNode = (node: CNode | CRootNode | null) => {
+    if (!node) {
+      this.setState({
+        currentSelectNodeKeys: [],
+      });
+      return;
+    }
     const parentPaths = this.getParentKeyPaths(node.id);
     LOGGER.debug('onSelectNodeChange parent path', parentPaths, node);
     const newExpandKeys = Array.from(new Set([...this.state.expandKeys, ...parentPaths]));
@@ -398,11 +404,23 @@ export class TreeView extends React.Component<
           updateState: (newVal) => {
             this.setState(newVal as any);
           },
-          onDeleteNode: (id) => {
-            pluginCtx.pageModel.deleteNodeById(id);
+          onDeleteNode: async (id) => {
+            const designer = await pluginCtx.pluginManager.get<DesignerPluginInstance>('Designer');
+            if (!designer) {
+              console.warn('Designer is empty');
+              return;
+            }
+            const designerExport = designer.export;
+            designerExport.deleteNode(id);
           },
-          onCopyNode: (id) => {
-            pluginCtx.pageModel.copyNodeById(id);
+          onCopyNode: async (id) => {
+            const designer = await pluginCtx.pluginManager.get<DesignerPluginInstance>('Designer');
+            if (!designer) {
+              console.warn('Designer is empty');
+              return;
+            }
+            const designerExport = designer.export;
+            designerExport.copyNode(id);
           },
         }}
       >

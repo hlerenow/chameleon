@@ -113,6 +113,9 @@ export const ButtonMeta: CMaterialType = {
     },
   ],
   advanceCustom: {
+    onCopy: async () => {
+      console.log('onCopy');
+    },
     selectRectViewRender: (props) => {
       console.log(123, props);
       return (

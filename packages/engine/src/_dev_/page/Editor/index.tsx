@@ -246,7 +246,6 @@ export const App = () => {
                 currentNode.value.configure.isContainer = false;
                 currentNode.value.children = [];
                 currentNode.updateValue();
-                console.log('🚀 ~ file: index.tsx:200 ~ pluginManager.customPlugin ~ currentNode:', currentNode);
               }, []);
               return <div>123</div>;
             },

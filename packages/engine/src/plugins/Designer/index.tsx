@@ -25,15 +25,13 @@ export const DesignerPlugin: DesignerPluginType = (ctx) => {
           return designerRef.current?.layoutRef.current?.dnd;
         },
         selectNode: async (nodeId) => {
-          const node = ctx.pageModel.getNode(nodeId);
-          if (node) {
-            const flag = await designerRef.current?.onSelectNode(node, null);
-            if (flag === false) {
-              designerRef.current?.layoutRef.current?.selectNode('');
-              return;
-            }
-          }
-          designerRef.current?.layoutRef.current?.selectNode(nodeId);
+          designerRef.current?.toSelectNode(nodeId);
+        },
+        copyNode: async (nodeId) => {
+          designerRef.current?.toCopyNode(nodeId);
+        },
+        deleteNode: async (nodeId) => {
+          designerRef.current?.toDeleteNode(nodeId);
         },
         getSelectedNodeId: () => {
           return designerRef.current?.layoutRef.current?.state.currentSelectId;

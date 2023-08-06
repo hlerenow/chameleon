@@ -56,7 +56,6 @@ export const VisualPanelPlus = (props: { node: CNode | CRootNode; pluginCtx: CPl
   const onUpdateCss = (val: CSSVal) => {
     // class name 不能以数字开头，这里使用c_前缀
     node.value.css = formatCssToNodeVal(`c_${node.id}`, val);
-    console.log(' node.value.css', node.value.css);
     node.updateValue();
   };
 

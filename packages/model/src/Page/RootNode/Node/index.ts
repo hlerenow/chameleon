@@ -201,7 +201,8 @@ export class CNode {
     return props;
   }
 
-  getNodeConfig(key: 'isContainer') {
+  // 节点物料中的配置信息
+  getMaterialConfig(key: 'isContainer') {
     if (this.data.configure[key] !== undefined) {
       return this.data.configure.isContainer;
     } else {
@@ -210,7 +211,7 @@ export class CNode {
   }
 
   isContainer() {
-    return this.getNodeConfig('isContainer');
+    return this.getMaterialConfig('isContainer');
   }
 
   export(mode: ExportType): CNodeDataType {

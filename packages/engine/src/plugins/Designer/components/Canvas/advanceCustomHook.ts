@@ -1,5 +1,6 @@
 import { CPluginCtx } from '@/core/pluginManager';
-import { LayoutDragAndDropExtraDataType, LayoutDragEvent } from '@/index';
+import { Layout, LayoutDragAndDropExtraDataType, LayoutDragEvent } from '@/index';
+import { waitReactUpdate } from '@/utils';
 import { AdvanceCustom, CNode, CRootNode } from '@chamn/model';
 
 export interface AdvanceCustomHookOptions {
@@ -8,6 +9,7 @@ export interface AdvanceCustomHookOptions {
     clearView: () => void;
   };
   ctx: CPluginCtx;
+  layoutRef: React.RefObject<Layout>;
 }
 
 export type HookParameter = {
@@ -19,10 +21,11 @@ export type HookParameter = {
 export class AdvanceCustomHook {
   getPortalViewCtx!: AdvanceCustomHookOptions['getPortalViewCtx'];
   ctx: CPluginCtx;
-
+  layoutRef: AdvanceCustomHookOptions['layoutRef'];
   constructor(options: AdvanceCustomHookOptions) {
     this.getPortalViewCtx = options.getPortalViewCtx;
     this.ctx = options.ctx;
+    this.layoutRef = options.layoutRef;
   }
 
   async canDrag({ dragNode, eventObj }: HookParameter): ReturnType<Required<AdvanceCustom>['canDragNode']> {
@@ -122,5 +125,64 @@ export class AdvanceCustomHook {
     }
     const material = node.material;
     return material?.value.advanceCustom?.toolbarViewRender;
+  }
+
+  async onCopy(node: CNode | CRootNode) {
+    let resNode = node;
+    const ctx = this.ctx;
+    const material = node.material;
+    const onCopy = material?.value.advanceCustom?.onCopy;
+    if (onCopy) {
+      const newRes = await onCopy(node, {
+        viewPortal: this.getPortalViewCtx(),
+        context: ctx,
+        extra: {},
+      });
+      if (newRes === false) {
+        return false;
+      }
+      if (typeof newRes === 'object') {
+        resNode = newRes.copyNode ?? resNode;
+      }
+    }
+
+    if (resNode) {
+      const newNode = ctx.pageModel.copyNode(resNode as CNode);
+      if (newNode) {
+        await waitReactUpdate();
+      }
+    }
+
+    return resNode;
+  }
+
+  async onDelete(node: CNode | CRootNode) {
+    let resNode = node;
+    const ctx = this.ctx;
+    const material = node.material;
+    const onDelete = material?.value.advanceCustom?.onDelete;
+
+    if (onDelete) {
+      const newRes = await onDelete(node, {
+        viewPortal: this.getPortalViewCtx(),
+        context: ctx,
+        extra: {},
+      });
+      if (newRes === false) {
+        return false;
+      }
+      if (typeof newRes === 'object') {
+        resNode = newRes.deleteNode ?? resNode;
+      }
+    }
+
+    if (resNode) {
+      const newNode = ctx.pageModel.deleteNode(resNode as CNode);
+      if (newNode) {
+        await waitReactUpdate();
+      }
+    }
+
+    return resNode;
   }
 }
