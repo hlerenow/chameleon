@@ -100,4 +100,12 @@ export class AdvanceCustomHook {
     const material = node.material;
     return material?.value.advanceCustom?.hoverRectViewRender;
   }
+
+  getDropViewRender(node?: CNode | CRootNode | null) {
+    if (!node) {
+      return null;
+    }
+    const material = node.material;
+    return material?.value.advanceCustom?.dropViewRender;
+  }
 }

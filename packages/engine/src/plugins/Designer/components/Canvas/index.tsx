@@ -133,6 +133,12 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     }
   };
 
+  onNodeDragEnd: LayoutPropsType['onNodeDraEnd'] = async () => {
+    this.setState({
+      dropViewRender: this.props.pluginCtx.config.dropViewRender,
+    });
+  };
+
   onNodeDrop: LayoutPropsType['onNodeDrop'] = async (eventObj) => {
     const { layoutRef } = this;
     const pageModel = this.props.pluginCtx.pageModel;
@@ -293,6 +299,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
 
     this.setState({
       ghostView: <GhostView node={dragNode} />,
+      dropViewRender: this.customAdvanceHook.getDropViewRender(dragNode) || this.props.pluginCtx.config.dropViewRender,
     });
   };
 
@@ -302,20 +309,17 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     if (!material) {
       console.warn('material not found', node);
     }
-    if (!dragNode) {
-      this.setState({
-        hoverToolBarView: <div className={styles.hoverTips}>{material?.value.title || material?.componentName}</div>,
-        hoverRectViewRender:
-          this.customAdvanceHook.getHoverRectViewRender(node) || this.props.pluginCtx.config.hoverRectViewRender,
-        ghostView: null,
-      });
-      return;
-    }
-    this.setState({
+    const newState = {
       hoverToolBarView: <div className={styles.hoverTips}>{material?.value.title || material?.componentName}</div>,
       ghostView: <GhostView node={dragNode} />,
       hoverRectViewRender:
         this.customAdvanceHook.getHoverRectViewRender(node) || this.props.pluginCtx.config.hoverRectViewRender,
+    };
+    if (!dragNode) {
+      newState.ghostView = null as any;
+    }
+    this.setState({
+      ...newState,
     });
   };
 
@@ -366,12 +370,10 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
 
   innerHoverRectViewRender: LayoutPropsType['hoverRectViewRender'] = (hoverViewProps) => {
     const { hoverRectViewRender } = this.state;
-    const { pluginCtx } = this.props;
 
     const Comp = hoverRectViewRender;
-    const selectNode = pluginCtx.engine.getActiveNode();
 
-    if (!Comp || !selectNode) {
+    if (!Comp) {
       return <></>;
     }
     return (
@@ -388,8 +390,32 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     );
   };
 
+  innerDropViewRender: LayoutPropsType['dropViewRender'] = (dropViewProps) => {
+    const { dropViewRender } = this.state;
+
+    const Comp = dropViewRender;
+
+    if (!Comp) {
+      return <></>;
+    }
+    return (
+      <Comp
+        {...(dropViewProps as any)}
+        node={dropViewProps.instance._NODE_MODEL}
+        componentInstance={dropViewProps.instance}
+        componentInstanceIndex={dropViewProps.index}
+        params={{
+          viewPortal: this.getPortalViewCtx(),
+          context: this.props.pluginCtx,
+          extra: {},
+        }}
+      />
+    );
+  };
+
   render() {
-    const { layoutRef, props, onSelectNode, onDragStart, onHoverNode, onNodeDrop, onNodeDragging } = this;
+    const { layoutRef, props, onSelectNode, onDragStart, onHoverNode, onNodeDrop, onNodeDragging, onNodeDragEnd } =
+      this;
     const {
       pageModel,
       hoverToolBarView,
@@ -399,6 +425,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       portalView,
       selectRectViewRender,
       hoverRectViewRender,
+      dropViewRender,
     } = this.state;
     const { pluginCtx } = props;
     const renderJSUrl = pluginCtx.engine.props.renderJSUrl || './render.umd.js';
@@ -410,6 +437,10 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
 
     if (hoverRectViewRender) {
       advanceCustomProps.hoverRectViewRender = this.innerHoverRectViewRender;
+    }
+
+    if (dropViewRender) {
+      advanceCustomProps.dropViewRender = this.innerDropViewRender;
     }
 
     return (
@@ -432,6 +463,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
           onHoverNode={onHoverNode}
           onNodeDrop={onNodeDrop}
           onNodeDragging={onNodeDragging}
+          onNodeDraEnd={onNodeDragEnd}
           {...advanceCustomProps}
           ghostView={ghostView}
           assets={assets}

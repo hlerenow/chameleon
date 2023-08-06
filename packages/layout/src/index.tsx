@@ -8,7 +8,7 @@ import { addEventListenerReturnCancel, animationFrame } from './utils';
 import { HighlightCanvas, HighlightCanvasCoreProps, HighlightCanvasRefType } from './components/HighlightBox';
 import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
 import { Sensor } from './core/dragAndDrop/sensor';
-import { DropAnchorCanvas } from './components/DropAnchor';
+import { DropAnchorCanvas, DropAnchorPropsType } from './components/DropAnchor';
 import {
   AdvanceCustom,
   AssetPackage,
@@ -56,6 +56,11 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
     index: number;
     isLock: boolean;
   }) => ReturnType<Required<AdvanceCustom>['hoverRectViewRender']>;
+  dropViewRender?: (props: {
+    instance: RenderInstance;
+    index: number;
+    isLock: boolean;
+  }) => ReturnType<Required<AdvanceCustom>['dropViewRender']>;
   ghostView?: React.ReactNode;
   /** 在 iframe 渲染 render 之前做一些事*/
   beforeInitRender?: (options: {
@@ -770,6 +775,15 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     return <Comp instance={props.instance} index={props.index} isLock={false} />;
   };
 
+  dropViewItemRender: DropAnchorPropsType['customDropViewRender'] = (props) => {
+    const { dropViewRender } = this.props;
+    const Comp = dropViewRender;
+    if (!Comp) {
+      return <></>;
+    }
+    return <Comp {...props} instance={props.instance} index={0} isLock={false} />;
+  };
+
   render() {
     const {
       selectComponentInstances,
@@ -790,6 +804,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       ghostView = <>Ghost</>,
       selectRectViewRender,
       hoverRectViewRender,
+      dropViewRender,
     } = this.props;
 
     let selectRectViewItemRender: HighlightCanvasCoreProps['itemRender'];
@@ -799,6 +814,11 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     let hoverRectViewItemRender: HighlightCanvasCoreProps['itemRender'];
     if (hoverRectViewRender) {
       hoverRectViewItemRender = this.hoverRectViewItemRender;
+    }
+    let dropViewItemRender;
+
+    if (dropViewRender) {
+      dropViewItemRender = this.dropViewItemRender;
     }
     return (
       <div className={styles.layoutContainer} id={iframeDomId}>
@@ -835,6 +855,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           instances={dropComponentInstances}
           mouseEvent={dropEvent}
           dropInfos={dropPosInfos}
+          customDropViewRender={dropViewItemRender}
         />
         {isDragging && mousePointer && (
           <div

@@ -15,7 +15,10 @@ export type DesignerExport = {
   getDynamicComponentInstances: (id: string) => RenderInstance;
 };
 
-export type DesignerPluginConfig = Omit<LayoutPropsType, 'selectRectViewRender' | 'hoverRectViewRender'> &
-  Pick<AdvanceCustom, 'selectRectViewRender' | 'hoverRectViewRender'>;
+export type DesignerPluginConfig = Omit<
+  LayoutPropsType,
+  'selectRectViewRender' | 'hoverRectViewRender' | 'dropViewRender'
+> &
+  Pick<AdvanceCustom, 'selectRectViewRender' | 'hoverRectViewRender' | 'dropViewRender'>;
 export type DesignerPluginType = CPlugin<DesignerPluginConfig, DesignerExport>;
 export type DesignerPluginInstance = PluginInstance<DesignerPluginConfig, DesignerExport>;

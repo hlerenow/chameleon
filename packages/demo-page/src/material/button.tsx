@@ -120,7 +120,6 @@ export const ButtonMeta: CMaterialType = {
           style={{
             width: '100%',
             height: '100%',
-            backgroundColor: 'red',
             pointerEvents: 'none',
           }}
         >
@@ -131,12 +130,16 @@ export const ButtonMeta: CMaterialType = {
     hoverRectViewRender: () => {
       return <>Hover</>;
     },
+    dropViewRender: (props) => {
+      console.log('123213', props);
+      return <>drop 11111</>;
+    },
     canDragNode: async (node, params) => {
       console.log('canDragNode', node, params);
       if (params.event?.extraData?.type === 'NEW_ADD') {
         return true;
       }
-      return false;
+      return true;
     },
     onDragging: async () => {
       console.log('onDragging');

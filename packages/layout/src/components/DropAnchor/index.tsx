@@ -12,7 +12,7 @@ export type HighlightCanvasRefType = {
   update: () => void;
 };
 
-export type DropAnchorPropsType<E> = {
+export type DropAnchorPropsType<E = LayoutDragAndDropExtraDataType> = {
   instance: RenderInstance;
   toolRenderView?: React.ReactNode;
   mouseEvent: DragAndDropEventType<E>['dragging'] | null;
@@ -173,7 +173,6 @@ export function DropAnchor(props: DropAnchorPropsType<LayoutDragAndDropExtraData
       style={{
         width: '100%',
         height: '100%',
-        ...styleObj,
       }}
       className={clsx([...posClassName])}
     ></div>
@@ -208,7 +207,13 @@ export function DropAnchor(props: DropAnchorPropsType<LayoutDragAndDropExtraData
           {toolRenderView}
         </div>
       )}
-      {innerDropView}
+      <div
+        style={{
+          ...styleObj,
+        }}
+      >
+        {innerDropView}
+      </div>
     </div>
   );
 }
