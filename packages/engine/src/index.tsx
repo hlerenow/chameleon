@@ -20,7 +20,9 @@ export type EngineProps = {
   components?: Record<string, any>;
   assetPackagesList?: AssetPackage[];
   beforePluginRun?: (options: { pluginManager: PluginManager }) => void;
+  /** 所有的加插件加载完成 */
   onReady?: (ctx: EnginContext) => void;
+  onMount?: (ctx: EnginContext) => void;
   /** 渲染器 umd 格式 js 地址, 默认 ./render.umd.js */
   renderJSUrl?: string;
 };
@@ -87,6 +89,11 @@ export class Engine extends React.Component<EngineProps> {
 
     const pList = plugins.map((p) => {
       return this.pluginManager.add(p);
+    });
+
+    this.props.onMount?.({
+      pluginManager: this.pluginManager,
+      engine: this,
     });
 
     await Promise.all(pList);
