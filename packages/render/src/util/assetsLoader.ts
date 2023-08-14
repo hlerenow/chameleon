@@ -15,7 +15,7 @@ export class AssetLoader {
       window?: Window;
     }
   ) {
-    this.assets = assets;
+    this.assets = JSON.parse(JSON.stringify(assets || []));
     this.loadStatus = 'INIT';
     if (options?.window) {
       this.win = options.window;

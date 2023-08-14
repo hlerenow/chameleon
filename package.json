@@ -33,7 +33,6 @@
     "@lerna-lite/watch": "^1.17.0",
     "@storybook/preset-scss": "^1.0.3",
     "clsx": "^1.1.1",
-    "commitizen": "^4.2.4",
     "conventional-changelog-conventionalcommits": "^5.0.0",
     "cross-env": "^7.0.3",
     "css-loader": "5.2.7",
