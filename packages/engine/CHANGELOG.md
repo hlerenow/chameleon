@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.18](https://github.com/ByteCrazy/chameleon/compare/v0.0.17...v0.0.18) (2023-08-14)
+
+### ✨ Features | 新功能
+
+* **engine:** 🎸 add className and style for engine ([c2b7ef3](https://github.com/ByteCrazy/chameleon/commit/c2b7ef3c1c68708963dece239528889701eb0fd7))
+* **engine:** 🎸 add onMount for engine ([17c80ae](https://github.com/ByteCrazy/chameleon/commit/17c80aecc09f13da5f33d7a59b5849d73d99d12a))
+
 ## [0.0.17](https://github.com/ByteCrazy/chameleon/compare/v0.0.16...v0.0.17) (2023-08-06)
 
 ### 🐛 Bug Fixes | Bug 修复
