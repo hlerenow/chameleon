@@ -7,6 +7,7 @@ import mitt, { Emitter } from 'mitt';
 import { AssetPackage, CMaterialType, CNode, CPage, CPageDataType, CRootNode, EmptyPage } from '@chamn/model';
 import { getDefaultRender, beforeInitRender } from './utils/defaultEngineConfig';
 import { DesignerPluginInstance } from './plugins/Designer/type';
+import clsx from 'clsx';
 
 export type EnginContext = {
   pluginManager: PluginManager;
@@ -25,6 +26,8 @@ export type EngineProps = {
   onMount?: (ctx: EnginContext) => void;
   /** 渲染器 umd 格式 js 地址, 默认 ./render.umd.js */
   renderJSUrl?: string;
+  style?: React.CSSProperties;
+  className?: string;
 };
 
 export class Engine extends React.Component<EngineProps> {
@@ -148,7 +151,7 @@ export class Engine extends React.Component<EngineProps> {
 
   render() {
     return (
-      <div className={styles.engineContainer}>
+      <div className={clsx([styles.engineContainer, this.props.className])} style={this.props.style}>
         <Workbench ref={this.workbenchRef} emitter={this.emitter} />
       </div>
     );
