@@ -25,6 +25,7 @@ export class AssetLoader {
   load() {
     const assets = this.assets || [];
     const ids: string[] = [];
+
     for (let i = 0; i < assets.length; i++) {
       const item = assets[i];
       if (!item.id) {
@@ -47,6 +48,12 @@ export class AssetLoader {
     }
 
     return new Promise((resolve, reject) => {
+      if (assets.length === 0) {
+        this._onSuccessList.forEach((el) => el());
+        resolve('');
+        return;
+      }
+
       // 在下一个事件循环执行，确保 onSuccess 和 onError 被注册
       loadjs.ready(ids, {
         success: () => {

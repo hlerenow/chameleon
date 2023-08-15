@@ -57,22 +57,22 @@ win.ReactDOM = ReactDOM;
 win.ReactDOMClient = ReactDOMClient;
 const buildVersion = `t_${__BUILD_VERSION__}`;
 
-const assetPackagesList = [
-  {
-    package: 'antd',
-    globalName: 'antd',
-    resources: [
-      {
-        src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/reset.css',
-      },
-      {
-        src: 'https://cdn.bootcdn.net/ajax/libs/dayjs/1.11.7/dayjs.min.js',
-      },
-      {
-        src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/antd.js',
-      },
-    ],
-  },
+const assetPackagesList: any[] = [
+  // {
+  //   package: 'antd',
+  //   globalName: 'antd',
+  //   resources: [
+  //     {
+  //       src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/reset.css',
+  //     },
+  //     {
+  //       src: 'https://cdn.bootcdn.net/ajax/libs/dayjs/1.11.7/dayjs.min.js',
+  //     },
+  //     {
+  //       src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/antd.js',
+  //     },
+  //   ],
+  // },
 ];
 export const App = () => {
   const [ready, setReady] = useState(false);
@@ -235,7 +235,7 @@ export const App = () => {
     <Engine
       plugins={DEFAULT_PLUGIN_LIST}
       components={TestComponents}
-      schema={page as any}
+      schema={page}
       // 传入组件物料
       material={[...InnerComponentMeta, ...Material]}
       // 组件物料对应的 js 运行库，只能使用 umd 模式的 js

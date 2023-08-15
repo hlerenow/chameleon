@@ -11,6 +11,7 @@ import { AssetPackage } from '@chamn/model';
 import { InnerComponentMeta } from '../../../material/innerMaterial';
 import { RollbackOutlined } from '@ant-design/icons';
 import { collectVariable, flatObject, LayoutPropsType } from '@chamn/layout';
+// import renderAsURL from '../../../../node_modules/@chamn/render/dist/index.umd.js?url';
 
 const win = window as any;
 win.React = React;
@@ -34,7 +35,7 @@ const customRender: LayoutPropsType['customRender'] = async ({
   pageModel,
   ready,
 }) => {
-  await iframeContainer.injectJS(renderAsURL);
+  // await iframeContainer.injectJS(renderAsURL);
   const iframeWindow = iframeContainer.getWindow()!;
   const iframeDoc = iframeContainer.getDocument()!;
   const IframeReact = React;
