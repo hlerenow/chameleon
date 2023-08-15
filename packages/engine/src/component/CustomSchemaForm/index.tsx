@@ -96,3 +96,6 @@ const CustomSchemaFormCore = (props: CustomSchemaFormProps, ref: Ref<CustomSchem
 };
 
 export const CustomSchemaForm = React.forwardRef(CustomSchemaFormCore);
+
+export * from './components/SetterSwitcher';
+export * from './components/Setters';

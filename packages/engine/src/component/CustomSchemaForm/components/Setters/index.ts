@@ -24,3 +24,5 @@ export default {
   TextAreaSetter,
   CSSValueSetter,
 } as Record<string, CSetter>;
+
+export * from './type';

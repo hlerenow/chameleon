@@ -18,7 +18,7 @@ const defaultPropertyOptions = CSSPropertyList.map((el) => {
   };
 });
 
-export type SinglePropertyEditorProps = {
+export type InnerSinglePropertyEditorProps = {
   value?: {
     key: string;
     value: JSExpressionPropType;
@@ -31,11 +31,11 @@ export type SinglePropertyEditorProps = {
   mod?: 'create' | 'edit';
 };
 
-type SinglePropertyEditorRef = {
+export type InnerSinglePropertyEditorRef = {
   reset: () => void;
 };
 
-const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePropertyEditorProps>(
+const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, InnerSinglePropertyEditorProps>(
   function SinglePropertyEditorCore(props, ref) {
     const [keyFormatStatus, setKeyFormatStatus] = useState<InputStatus>('');
     const [valueFormatStatus, setValueFormatStatus] = useState<InputStatus>('');
@@ -297,7 +297,7 @@ export const CSSPropertiesVariableBindEditor = forwardRef<
     props.onValueChange?.(val);
   };
 
-  const createPropertyRef = useRef<SinglePropertyEditorRef>(null);
+  const createPropertyRef = useRef<InnerSinglePropertyEditorRef>(null);
   return (
     <ConfigProvider
       theme={{

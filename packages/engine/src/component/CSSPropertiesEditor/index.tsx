@@ -11,7 +11,7 @@ import { useDebounceFn } from 'ahooks';
 import clsx from 'clsx';
 import { InputStatus } from 'antd/es/_util/statusUtils';
 
-const defaultPropertyOptions = CSSPropertyList.map((el) => {
+export const defaultPropertyOptions = CSSPropertyList.map((el) => {
   return {
     value: el,
   };
@@ -32,7 +32,7 @@ export type SinglePropertyEditorProps = {
   onDelete?: () => void;
 };
 
-type SinglePropertyEditorRef = {
+export type SinglePropertyEditorRef = {
   reset: () => void;
 };
 
