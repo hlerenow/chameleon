@@ -1,9 +1,5 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 importers:
 
   .:
@@ -172,10 +168,10 @@ importers:
   packages/demo-page:
     devDependencies:
       '@chamn/build-script':
-        specifier: ^0.0.17
+        specifier: ^0.0.18
         version: link:../build-script
       '@chamn/model':
-        specifier: ^0.0.17
+        specifier: ^0.0.18
         version: link:../model
       '@types/react':
         specifier: ^18.0.15
@@ -287,13 +283,13 @@ importers:
         specifier: ^4.8.0
         version: 4.8.0(react-dom@18.2.0)(react@18.2.0)
       '@chamn/layout':
-        specifier: ^0.0.17
+        specifier: ^0.0.18
         version: link:../layout
       '@chamn/model':
-        specifier: ^0.0.17
+        specifier: ^0.0.18
         version: link:../model
       '@chamn/render':
-        specifier: ^0.0.17
+        specifier: ^0.0.18
         version: link:../render
       '@dnd-kit/core':
         specifier: ^6.0.7
@@ -339,10 +335,10 @@ importers:
         specifier: ^7.21.0
         version: 7.21.0
       '@chamn/build-script':
-        specifier: ^0.0.17
+        specifier: ^0.0.18
         version: link:../build-script
       '@chamn/demo-page':
-        specifier: ^0.0.17
+        specifier: ^0.0.18
         version: link:../demo-page
       '@storybook/addon-actions':
         specifier: ^6.5.16
@@ -414,10 +410,10 @@ importers:
   packages/layout:
     dependencies:
       '@chamn/model':
-        specifier: ^0.0.17
+        specifier: ^0.0.18
         version: link:../model
       '@chamn/render':
-        specifier: ^0.0.17
+        specifier: ^0.0.18
         version: link:../render
       lodash-es:
         specifier: ^4.17.21
@@ -430,10 +426,10 @@ importers:
         version: 6.9.9(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@chamn/build-script':
-        specifier: ^0.0.17
+        specifier: ^0.0.18
         version: link:../build-script
       '@chamn/demo-page':
-        specifier: ^0.0.17
+        specifier: ^0.0.18
         version: link:../demo-page
       '@types/lodash-es':
         specifier: ^4.17.6
@@ -464,7 +460,7 @@ importers:
         version: 5.6.3(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
       '@chamn/build-script':
-        specifier: ^0.0.17
+        specifier: ^0.0.18
         version: link:../build-script
       '@types/react':
         specifier: ^18.0.15
@@ -504,7 +500,7 @@ importers:
         version: 0.16.0
     devDependencies:
       '@chamn/build-script':
-        specifier: ^0.0.17
+        specifier: ^0.0.18
         version: link:../build-script
       '@types/lodash':
         specifier: ^4.14.192
@@ -522,7 +518,7 @@ importers:
   packages/render:
     dependencies:
       '@chamn/model':
-        specifier: ^0.0.17
+        specifier: ^0.0.18
         version: link:../model
       html-tag-names:
         specifier: ^2.0.1
@@ -538,13 +534,13 @@ importers:
         version: 4.3.8(react@18.2.0)
     devDependencies:
       '@chamn/build-script':
-        specifier: ^0.0.17
+        specifier: ^0.0.18
         version: link:../build-script
       '@chamn/demo-page':
-        specifier: ^0.0.17
+        specifier: ^0.0.18
         version: link:../demo-page
       '@chamn/material':
-        specifier: ^0.0.17
+        specifier: ^0.0.18
         version: link:../material
       '@types/loadjs':
         specifier: ^4.0.1
@@ -9917,7 +9913,7 @@ packages:
     engines: {node: '>=0.10.0'}
 
   /default-browser-id@1.0.4:
-    resolution: {integrity: sha1-5Z0JpdFXuCi4dsJoFuYcPSosIDo=}
+    resolution: {integrity: sha512-qPy925qewwul9Hifs+3sx1ZYn14obHxpkX+mPD369w4Rzg+YkJBgi3SOvwUq81nWSjqGUegIgEPwD8u+HUnxlw==}
     engines: {node: '>=0.10.0'}
     hasBin: true
     requiresBuild: true
@@ -21413,3 +21409,7 @@ packages:
 
   /zwitch@1.0.5:
     resolution: {integrity: sha512-V50KMwwzqJV0NpZIZFwfOD5/lyny3WlSzRiXgA0G7VUnRlqttta1L6UQIHzd6EuBY/cHGfwTIck7w1yH6Q5zUw==}
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false

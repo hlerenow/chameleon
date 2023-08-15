@@ -1,11 +1,12 @@
 import { waitReactUpdate } from '@/utils';
 import { CPageDataType } from '@chamn/model';
 import { cloneDeep } from 'lodash-es';
-import { CPlugin, CPluginCtx } from '../../core/pluginManager';
+import { CPluginCtx } from '../../core/pluginManager';
+import { HistoryPluginType } from './type';
 
 const PLUGIN_NAME = 'History';
 
-export const HistoryPlugin: CPlugin = (ctx) => {
+export const HistoryPlugin: HistoryPluginType = (ctx) => {
   const CTX: CPluginCtx | null = ctx;
   const dataStore = {
     historyRecords: [] as CPageDataType[],

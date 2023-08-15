@@ -14,6 +14,7 @@ import { collectVariable, flatObject, LayoutPropsType } from '@chamn/layout';
 
 import renderAsURL from '../../../../node_modules/@chamn/render/dist/index.umd.js?url';
 import { getThirdLibs } from '@chamn/render';
+import { HistoryPluginInstance } from '@/plugins/History/type';
 
 const customRender: LayoutPropsType['customRender'] = async ({
   iframe: iframeContainer,
@@ -126,7 +127,7 @@ export const App = () => {
         <Button
           style={{ marginRight: '10px' }}
           onClick={async () => {
-            const res = await ctx.pluginManager.get('History');
+            const res = await ctx.pluginManager.get<HistoryPluginInstance>('History');
             res?.export.preStep();
           }}
         >
@@ -135,7 +136,7 @@ export const App = () => {
         <Button
           style={{ marginRight: '10px' }}
           onClick={async () => {
-            const res = await ctx.pluginManager.get('History');
+            const res = await ctx.pluginManager.get<HistoryPluginInstance>('History');
             res?.export.nextStep();
           }}
         >
