@@ -6,19 +6,6 @@ const path = require('path');
 const pkg = require('./package.json');
 const { visualizer } = require('rollup-plugin-visualizer');
 const monacoEditorPlugin = require('vite-plugin-monaco-editor').default;
-const layoutEntry = path.resolve(__dirname, 'index.html');
-const renderEntry = path.resolve(__dirname, './src/_dev_/render.html');
-
-let inputConfig = {};
-
-if (process.env.NODE_ENV === 'development') {
-  inputConfig = {
-    input: {
-      main: layoutEntry,
-      nested: renderEntry,
-    },
-  };
-}
 
 // 开发模式默认读取 index.html 作为开发模式入口
 // entry 作为打包库入口
@@ -77,9 +64,6 @@ const mainConfig = {
     build: {
       outDir: process.env.BUILD_TYPE === 'APP' ? './example' : './dist',
       copyPublicDir: process.env.BUILD_TYPE === 'APP',
-      rollupOptions: {
-        ...inputConfig,
-      },
     },
     plugins: plugins,
     resolve: {

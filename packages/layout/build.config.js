@@ -1,19 +1,3 @@
-import path from 'path';
-
-const layoutEntry = path.resolve(__dirname, 'index.html');
-const renderEntry = path.resolve(__dirname, './src/_dev_/render.html');
-
-let inputConfig = {};
-
-if (process.env.NODE_ENV === 'development') {
-  inputConfig = {
-    input: {
-      main: layoutEntry,
-      nested: renderEntry,
-    },
-  };
-}
-
 const mainConfig = {
   entry: './src/index.tsx',
   libName: 'CLayout',
@@ -27,9 +11,6 @@ const mainConfig = {
   vite: {
     build: {
       copyPublicDir: false,
-      rollupOptions: {
-        ...inputConfig,
-      },
     },
     plugins: [],
   },
