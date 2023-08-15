@@ -58,21 +58,21 @@ win.ReactDOMClient = ReactDOMClient;
 const buildVersion = `t_${__BUILD_VERSION__}`;
 
 const assetPackagesList: any[] = [
-  // {
-  //   package: 'antd',
-  //   globalName: 'antd',
-  //   resources: [
-  //     {
-  //       src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/reset.css',
-  //     },
-  //     {
-  //       src: 'https://cdn.bootcdn.net/ajax/libs/dayjs/1.11.7/dayjs.min.js',
-  //     },
-  //     {
-  //       src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/antd.js',
-  //     },
-  //   ],
-  // },
+  {
+    package: 'antd',
+    globalName: 'antd',
+    resources: [
+      {
+        src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/reset.css',
+      },
+      {
+        src: 'https://cdn.bootcdn.net/ajax/libs/dayjs/1.11.7/dayjs.min.js',
+      },
+      {
+        src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/antd.js',
+      },
+    ],
+  },
 ];
 export const App = () => {
   const [ready, setReady] = useState(false);

@@ -9,6 +9,6 @@ window.React = React;
 (window as any).ReactDOM = ReactDOMAll;
 (window as any).ReactDOMClient = ReactDOM;
 
-(window as any).CRender = CRender;
-
 (window as any).antd = antd;
+
+(window as any).CRender = CRender;
