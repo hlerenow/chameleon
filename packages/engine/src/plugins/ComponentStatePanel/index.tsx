@@ -18,9 +18,9 @@ export const ComponentStatePanel = (props: ComponentStatePanelProps) => {
     editorRef?.current?.setValue(JSON.stringify(currentState, null, 2));
   }, [node]);
 
-  const onValueChange = (newValStr: string) => {
+  const onValueChange = (newValStr?: string) => {
     try {
-      const newVal = JSON.parse(newValStr);
+      const newVal = JSON.parse(newValStr || '{}');
       node.value.state = newVal;
       node.updateValue();
     } catch (e) {

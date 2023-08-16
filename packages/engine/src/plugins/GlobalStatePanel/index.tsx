@@ -32,9 +32,9 @@ const GlobalStatePanel = (props: GlobalStatePanelProps) => {
     });
   }, []);
 
-  const onValueChange = (newValStr: string) => {
+  const onValueChange = (newValStr?: string) => {
     try {
-      const newVal = JSON.parse(newValStr);
+      const newVal = JSON.parse(newValStr || '{}');
       pluginCtx.pageModel.value.componentsTree.value.state = newVal;
       triggerChangeBySelf = true;
       pluginCtx.pageModel.value.componentsTree.updateValue();

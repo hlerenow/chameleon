@@ -3,6 +3,7 @@
     "crossorigin",
     "JSEXPRESSION",
     "lowcode",
+    "monac",
     "PNPM",
     "superstruct"
   ]

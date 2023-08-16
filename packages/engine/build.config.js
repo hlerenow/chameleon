@@ -1,11 +1,7 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-undef */
 import { viteStaticCopy } from 'vite-plugin-static-copy';
-
-const path = require('path');
-const pkg = require('./package.json');
-const { visualizer } = require('rollup-plugin-visualizer');
-const monacoEditorPlugin = require('vite-plugin-monaco-editor').default;
+import path from 'path';
+import pkg from './package.json';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 // 开发模式默认读取 index.html 作为开发模式入口
 // entry 作为打包库入口
@@ -32,16 +28,6 @@ if (process.env.BUILD_TYPE === 'APP') {
           rename: 'render.umd.js',
         },
       ],
-    })
-  );
-}
-
-if (process.env.BUILD_TYPE !== 'PKG') {
-  plugins.push(
-    monacoEditorPlugin({
-      customDistPath: (root, buildOutDir) => {
-        return path.resolve(__dirname, './example/monacoeditorwork');
-      },
     })
   );
 }

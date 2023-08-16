@@ -147,7 +147,7 @@ const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, InnerSingl
                 disabled={mod === 'edit'}
                 ref={propertyKeyRef}
                 onSearch={onSearch}
-                dropdownMatchSelectWidth={200}
+                popupMatchSelectWidth={200}
                 value={innerValue.key}
                 onChange={(val) => {
                   setKeyFormatStatus('');

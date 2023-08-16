@@ -45,13 +45,14 @@
     "@dnd-kit/modifiers": "^6.0.1",
     "@dnd-kit/sortable": "^7.0.2",
     "@dnd-kit/utilities": "^3.2.1",
+    "@monaco-editor/react": "^4.5.1",
     "ahooks": "^3.7.4",
     "antd": "^5.6.3",
     "consola": "^2.15.3",
     "i18next": "^22.1.5",
     "lodash-es": "^4.17.21",
     "mitt": "^3.0.0",
-    "monaco-editor": "^0.34.1",
+    "monaco-editor": "^0.41.0",
     "re-resizable": "^6.9.9",
     "vite-plugin-static-copy": "^0.17.0"
   },
@@ -79,8 +80,7 @@
     "react-i18next": "^12.1.1",
     "react-router-dom": "^6.7.0",
     "rollup-plugin-visualizer": "^5.8.3",
-    "sass": "^1.54.0",
-    "vite-plugin-monaco-editor": "^1.1.0"
+    "sass": "^1.54.0"
   },
   "config": {},
   "gitHead": "7475e219a826c2bd8f65350733931a847d99e2cd"

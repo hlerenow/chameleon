@@ -169,7 +169,7 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
           disabled={!isCreate}
           onSearch={onSearch}
           status={keyFormatStatus}
-          dropdownMatchSelectWidth={200}
+          popupMatchSelectWidth={200}
           value={innerValue.key}
           onChange={(val) => {
             setInnerVal({
@@ -211,7 +211,7 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
           bordered={false}
           ref={propertyValueRef}
           status={valueFormatStatus}
-          dropdownMatchSelectWidth={200}
+          popupMatchSelectWidth={200}
           value={innerValue.value}
           onChange={(val) => {
             updateValueOptions();
