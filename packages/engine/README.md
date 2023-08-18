@@ -1,12 +1,10 @@
 # chameleon
 
-> "Chameleon", suitable for all environments
+> Chameleon is ever-changing
 
-A streamlined low-code engine, all modules support custom extensions, which can be used for web page generation and rendering. Applicable to a variety of business scenarios, PC Page, H5 Page etc
+A web visual programming engine, help to build a web page with 5 minutes. every people can use it easy.
 
-## [Document](https://hlerenow.github.io/chameleon/documents/)
-
-## [Demo](https://hlerenow.github.io/chameleon/)
+[Docs](https://hlerenow.github.io/chameleon/documents/) | [Demo](https://hlerenow.github.io/chameleon/)
 
 ## Install
 
