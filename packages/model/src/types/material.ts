@@ -462,7 +462,6 @@ export type AdvanceCustom = {
         copyNode?: CNode | CRootNode;
       }
   >;
-  // TODO:
   toolbarViewRender?: (props: {
     node: CNode | CRootNode;
     context: any;
@@ -473,9 +472,7 @@ export type AdvanceCustom = {
       nodeLayout: React.ReactElement;
     };
   }) => React.ReactElement;
-  // TODO:
   selectRectViewRender?: (props: CustomViewRenderProps) => React.ReactElement;
-  // TODO:
   hoverRectViewRender?: (props: CustomViewRenderProps) => React.ReactElement;
   dropViewRender?: (
     props: CustomViewRenderProps & {

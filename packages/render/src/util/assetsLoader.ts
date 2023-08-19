@@ -42,10 +42,6 @@ export class AssetLoader {
         },
       });
     }
-    if (assets.length === 0) {
-      this._onSuccessList.forEach((el) => el());
-      return;
-    }
 
     return new Promise((resolve, reject) => {
       if (assets.length === 0) {

@@ -120,6 +120,12 @@ export class DesignRender extends React.Component<DesignRenderProp> {
   onGetComponent = (comp: any, node: CNode | CRootNode) => {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
+    let innerComp = comp;
+    const wrapComponent = node.material?.value.advanceCustom?.wrapComponent;
+    if (wrapComponent) {
+      innerComp = wrapComponent(comp);
+    }
+
     class DesignWrap extends React.Component<any> {
       _DESIGN_BOX = true;
       _NODE_MODEL = node;
@@ -158,7 +164,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
           return newChildren;
         }
 
-        return React.createElement(comp, restProps, ...newChildren);
+        return React.createElement(innerComp, restProps, ...newChildren);
       }
     }
     return React.forwardRef(function ErrorWrap(props: any, ref) {
