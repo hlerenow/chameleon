@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.20](https://github.com/ByteCrazy/chameleon/compare/v0.0.19...v0.0.20) (2023-08-19)
+
+### ✨ Features | 新功能
+
+* **model, render:** 🎸 support wrapComponent meterial config ([73fa19c](https://github.com/ByteCrazy/chameleon/commit/73fa19cd698bd61ef8079ae71dfd284600796ad2))
+
 ## [0.0.19](https://github.com/ByteCrazy/chameleon/compare/v0.0.18...v0.0.19) (2023-08-17)
 
 ### 🐛 Bug Fixes | Bug 修复
