@@ -518,6 +518,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
           {...advanceCustomProps}
           ghostView={ghostView}
           assets={assets}
+          pluginCtx={this.props.pluginCtx}
         />
         {portalView && createPortal(portalView, document.body)}
       </>

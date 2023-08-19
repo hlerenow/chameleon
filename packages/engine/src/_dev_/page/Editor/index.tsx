@@ -16,15 +16,22 @@ import renderAsURL from '../../../../node_modules/@chamn/render/dist/index.umd.j
 import { getThirdLibs } from '@chamn/render';
 import { HistoryPluginInstance } from '@/plugins/History/type';
 
+const win = window as any;
+win.React = React;
+win.ReactDOM = ReactDOM;
+win.ReactDOMClient = ReactDOMClient;
+
 const customRender: LayoutPropsType['customRender'] = async ({
   iframe: iframeContainer,
   assets,
   page,
   pageModel,
+  beforeInitRender,
   ready,
 }) => {
   await iframeContainer.loadUrl('/src/_dev_/render.html');
-
+  // must call
+  beforeInitRender?.();
   const iframeWindow = iframeContainer.getWindow()!;
   const iframeDoc = iframeContainer.getDocument()!;
   const IframeReact = iframeWindow.React!;
@@ -52,10 +59,6 @@ const customRender: LayoutPropsType['customRender'] = async ({
   IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
 };
 
-const win = window as any;
-win.React = React;
-win.ReactDOM = ReactDOM;
-win.ReactDOMClient = ReactDOMClient;
 const buildVersion = `t_${__BUILD_VERSION__}`;
 
 const assetPackagesList: any[] = [

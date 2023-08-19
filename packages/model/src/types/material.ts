@@ -483,7 +483,13 @@ export type AdvanceCustom = {
   ) => React.ReactElement;
   ghostViewRender?: (props: CustomViewRenderProps) => React.ReactElement;
   // TODO: 编辑模式下会使用该函数包裹目标组件，可用于定制编辑模式下的特殊信息
-  wrapComponent?: (targetComponent: (...args: any[]) => React.ReactElement) => (...args: any[]) => React.ReactElement;
+  wrapComponent?: (
+    targetComponent: (...args: any[]) => React.ReactElement,
+    options: {
+      ctx: any;
+      node: CNode | CRootNode;
+    }
+  ) => (...args: any[]) => React.ReactElement;
 };
 
 export type CMaterialType<PropsSetter extends string = ''> = {

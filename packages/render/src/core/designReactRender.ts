@@ -123,7 +123,10 @@ export class DesignRender extends React.Component<DesignRenderProp> {
     let innerComp = comp;
     const wrapComponent = node.material?.value.advanceCustom?.wrapComponent;
     if (wrapComponent) {
-      innerComp = wrapComponent(comp);
+      innerComp = wrapComponent(comp, {
+        node,
+        ctx: (window as any).__C_ENGINE_DESIGNER_PLUGIN_CTX__,
+      });
     }
 
     class DesignWrap extends React.Component<any> {

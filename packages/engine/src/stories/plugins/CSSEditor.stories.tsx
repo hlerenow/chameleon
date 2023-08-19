@@ -69,6 +69,7 @@ const pluginManager = new PluginManager({
   },
   i18n: customI18n,
   pageModel: new CPage(BasePage),
+  engine: {} as any,
 });
 
 const ctx = pluginManager.createPluginCtx();

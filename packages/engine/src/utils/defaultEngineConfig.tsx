@@ -1,5 +1,5 @@
 import { LayoutPropsType, collectVariable, flatObject } from '@chamn/layout';
-import { getComponentsLibs, getThirdLibs } from '@chamn/render';
+import { getThirdLibs } from '@chamn/render';
 
 /** 默认使用 react 18 模式渲染 */
 export const beforeInitRender: LayoutPropsType['beforeInitRender'] = async ({ iframe }) => {

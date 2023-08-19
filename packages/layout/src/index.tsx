@@ -76,8 +76,10 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
     page?: CPageDataType;
     assets: AssetPackage[];
     renderJSUrl?: string;
+    beforeInitRender?: () => void;
     ready: (designRender: DesignRender) => void;
   }) => void;
+  pluginCtx?: any;
 };
 
 export type LayoutStateType = {
@@ -220,6 +222,11 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       } else {
         throw new Error('Must pass beforeInitRender methods');
       }
+      const innerBeforeInitRender = async () => {
+        const subWin = iframeContainer.getWindow();
+        (subWin as any).__C_ENGINE_DESIGNER_PLUGIN_CTX__ = this.props.pluginCtx;
+      };
+      await innerBeforeInitRender();
 
       if (this.props.customRender) {
         this.props.customRender({
@@ -228,8 +235,10 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           assets: this.props.assets || [],
           iframe: iframeContainer,
           renderJSUrl: this.props.renderJSUrl,
+          beforeInitRender: innerBeforeInitRender,
           ready: (designRenderInstance) => {
             this.designRenderRef.current = designRenderInstance;
+
             this.registerDragAndDropEvent();
             this.registerSelectEvent();
             this.registerHoverEvent();
