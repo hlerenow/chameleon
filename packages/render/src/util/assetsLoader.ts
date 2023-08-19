@@ -33,14 +33,16 @@ export class AssetLoader {
       }
       ids.push(item.id);
       const srcList = item.resources.map((el) => el.src);
-      loadjs(srcList, item.id, {
-        async: false,
-        before: (_path, scriptEl) => {
-          this.win.document.body.appendChild(scriptEl);
-          /* return `false` to bypass default DOM insertion mechanism */
-          return false;
-        },
-      });
+      if (srcList.length) {
+        loadjs(srcList, item.id, {
+          async: false,
+          before: (_path, scriptEl) => {
+            this.win.document.body.appendChild(scriptEl);
+            /* return `false` to bypass default DOM insertion mechanism */
+            return false;
+          },
+        });
+      }
     }
 
     return new Promise((resolve, reject) => {
