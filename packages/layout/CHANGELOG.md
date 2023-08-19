@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.21](https://github.com/ByteCrazy/chameleon/compare/v0.0.20...v0.0.21) (2023-08-19)
+
+### ✨ Features | 新功能
+
+* **engine, layout, model, render:** 🎸 optimize wrapComponent config ([d5916a7](https://github.com/ByteCrazy/chameleon/commit/d5916a7e6ee3cf79a32d4d23663b6873d86fe671))
+
 ## [0.0.20](https://github.com/ByteCrazy/chameleon/compare/v0.0.19...v0.0.20) (2023-08-19)
 
 **Note:** Version bump only for package @chamn/layout
