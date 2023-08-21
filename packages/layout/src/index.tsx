@@ -394,7 +394,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     if (!iframeDoc || !subWin) {
       return;
     }
-    ['click', 'mouseover', 'mousedown', 'mouseup', 'mousemove'].forEach((ev: any) => {
+    ['mouseover', 'mousedown', 'mouseup', 'mousemove'].forEach((ev: any) => {
       this.eventExposeHandler.push(
         addEventListenerReturnCancel<'click'>(
           iframeDoc.body,
@@ -437,6 +437,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       name: 'layout',
       container: iframeDoc.body,
       offsetDom: document.getElementById(this.iframeDomId),
+      isIframe: true,
     });
 
     sensor.setCanDrag(async (eventObj) => {

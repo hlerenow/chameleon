@@ -3,6 +3,7 @@ import { SensorEventType, Sensor, SensorEventObjType } from './sensor';
 import mitt from 'mitt';
 import { BaseDragAndDropEventType } from '../../types/dragAndDrop';
 import { debounce } from 'lodash-es';
+import { addEventListenerReturnCancel } from '../../utils';
 
 type EmptyFunc = () => void;
 export type DragAndDropEventType<E> = {
@@ -41,7 +42,10 @@ export class DragAndDrop<E = Record<string, any>> {
     if (options.dragConfig?.shakeDistance !== undefined) {
       this.shakeDistance = options.dragConfig?.shakeDistance;
     }
+    this.initGlobalSensor();
+  }
 
+  initGlobalSensor() {
     // global sensor
     const sensor = new Sensor({
       name: 'globalSensor',
@@ -107,6 +111,7 @@ export class DragAndDrop<E = Record<string, any>> {
   }
 
   registerSensor(sensor: Sensor) {
+    sensor.dnd = this;
     this.senors.push(sensor);
     sensor.emitter.on('onClick', (eventObj) => {
       if (this.canTriggerClick) {
@@ -150,8 +155,8 @@ export class DragAndDrop<E = Record<string, any>> {
         }
         const pointer1 = pointer;
         const pointer2 = this.dragStartObj.pointer;
-        const SHAKE_DISTANCE = this.shakeDistance;
-        const isShaken = Math.pow(pointer1.y - pointer2.y, 2) + Math.pow(pointer1.x - pointer2.x, 2) > SHAKE_DISTANCE;
+
+        const isShaken = this.canTriggerDrag(pointer1, pointer2);
         // 小于抖动距离，不是拖拽
         if (!isShaken) {
           return;
@@ -284,6 +289,12 @@ export class DragAndDrop<E = Record<string, any>> {
       sensor.emitter.off('onMouseUp', onMouseUp);
     });
   }
+
+  canTriggerDrag = (pointer1: Pointer, pointer2: Pointer) => {
+    const SHAKE_DISTANCE = this.shakeDistance;
+    const isShaken = Math.pow(pointer1.y - pointer2.y, 2) + Math.pow(pointer1.x - pointer2.x, 2) > SHAKE_DISTANCE;
+    return isShaken;
+  };
 
   flushSenorEventPriorityQueueMap = debounce((eventName: string) => {
     const list = this.senorEventPriorityQueueMap[eventName];

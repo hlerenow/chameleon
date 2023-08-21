@@ -348,7 +348,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     this.props.pluginCtx.emitter.emit('onHover', node);
     const material = node?.material;
     if (!material) {
-      console.warn('material not found', node);
+      // console.warn('material not found', node);
     }
     const commonParam = {
       context: this.props.pluginCtx,
