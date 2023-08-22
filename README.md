@@ -2,7 +2,7 @@
 
 > Chameleon is ever-changing
 
-A web visual programming engine, help to build a web page with 5 minutes. every people can use it easy.
+A web visual programming engine, help to build a web page with 5 minutes. everyone can use it easyly.
 
 [Docs](https://hlerenow.github.io/chameleon/documents/) | [Demo](https://hlerenow.github.io/chameleon/)
 
