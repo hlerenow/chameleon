@@ -254,8 +254,7 @@ export class DragAndDrop<E = Record<string, any>> {
         recoverEventList.forEach((el) => {
           const newEvent = new Event(el.name, el.event);
           (newEvent as any).fixed = true;
-          console.log('7788 dispatchEvent', el.name, el.event.target, newEvent.type, newEvent);
-          // el.event.target?.dispatchEvent(newEvent);
+          el.event.target?.dispatchEvent(newEvent);
         });
       }
 

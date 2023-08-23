@@ -93,7 +93,7 @@ const App = () => {
         {
           title: '块',
           componentName: 'CBlock',
-          supportDispatchNativeEvent: true,
+          disableEditorDragDom: true,
           snippets: [],
         } as any,
       ],

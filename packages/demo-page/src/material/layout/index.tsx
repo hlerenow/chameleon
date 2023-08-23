@@ -10,6 +10,9 @@ export const LayoutMeta: CMaterialType = {
     name: 'CLayout',
   },
   icon: 'Layout',
+  disableEditorDragDom: {
+    class: ['as44556', 'resize-handle'],
+  },
   props: [
     {
       name: 'type',
@@ -111,7 +114,6 @@ export const LayoutMeta: CMaterialType = {
       ],
     },
   ],
-
   snippets: [
     {
       title: '基础布局',

@@ -26,6 +26,7 @@ import { calculateDropPosInfo } from './components/DropAnchor/util';
 import { DragAndDropEventObj, LayoutDragAndDropExtraDataType } from './types/dragAndDrop';
 
 import styles from './index.module.scss';
+import intersection from 'lodash-es/intersection';
 
 export type LayoutDragEvent<T = LayoutDragAndDropExtraDataType> = DragAndDropEventObj<T>;
 
@@ -400,25 +401,30 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           iframeDoc.body,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ev,
-          async (e: any) => {
-            console.log(5566, ev, e.fixed);
-            if (e.fixed) {
-              return;
-            }
+          async (e) => {
             const targetComponentInstance = this.designRenderRef.current?.getInstanceByDom(e.target as HTMLElement);
             const targetNode = targetComponentInstance?._NODE_MODEL;
             if (targetNode) {
-              const supportDispatchNativeEvent = targetNode.material?.value.supportDispatchNativeEvent;
-              if (supportDispatchNativeEvent === true) {
+              const disableEditorDragDom = targetNode.material?.value.disableEditorDragDom;
+              if (disableEditorDragDom === true) {
+                this.cancelDrag();
                 return;
               }
-              if (Array.isArray(supportDispatchNativeEvent) && supportDispatchNativeEvent.includes(ev)) {
-                return;
+              if (typeof disableEditorDragDom === 'object') {
+                const targetDom = e.target as HTMLElement;
+                const classList = targetDom?.classList || [];
+                const id = targetDom?.id;
+                const hitClass = intersection(classList, disableEditorDragDom.class || []).length;
+                const hitId = intersection([id], disableEditorDragDom.id || []).length;
+                if (hitClass || hitId) {
+                  this.cancelDrag();
+                  return;
+                }
               }
             }
-            // 默认禁止  ['click', 'mouseover', 'mousedown', 'mouseup', 'mousemove'] 事件派发
-            // e.stopPropagation();
-            // e.preventDefault();
+
+            e.stopPropagation();
+            e.preventDefault();
           },
           true
         )
@@ -426,7 +432,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
   }
 
-  cancelDrag(event: LayoutDragEvent<LayoutDragAndDropExtraDataType>) {
+  cancelDrag(event?: LayoutDragEvent<LayoutDragAndDropExtraDataType>) {
     // 本次拖动取消后续拖动事件
     this.isCancelDrag = true;
     this.resetDrag();
@@ -652,7 +658,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
 
     sensor.emitter.on('dragEnd', (e) => {
-      console.log('dragEnd', e);
       this.resetDrag();
       this.isCancelDrag = false;
       this.props.onNodeDraEnd?.(e);

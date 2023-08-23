@@ -516,8 +516,13 @@ export type CMaterialType<PropsSetter extends string = ''> = {
   isLayout?: boolean;
   /** 选择框的根选择器 */
   rootSelector?: string;
-  /** 是否可以派发dom事件，默认被禁止： click、mousedown、mouseup 等等 */
-  supportDispatchNativeEvent?: boolean | EventName[];
+  /** 是否禁止编辑器的 drag 事件，被命中的 dom 不会出发 编辑器的 */
+  disableEditorDragDom?:
+    | {
+        class?: string[];
+        id?: string[];
+      }
+    | boolean;
   /** TODO: 组件支持的可被调用的方法， todo： 没有补充验证 类型 describe */
   actions?: {
     title: string;
@@ -583,7 +588,7 @@ export const CMaterialTypeDescribe = object({
       }),
     ])
   ),
-  supportDispatchNativeEvent: optional(union([boolean(), array(string())])),
+  disableEditorDragDom: optional(any()),
   // 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize
   isLayout: optional(boolean()),
   rootSelector: optional(string()),
