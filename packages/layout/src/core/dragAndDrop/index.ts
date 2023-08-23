@@ -7,7 +7,9 @@ import { debounce } from 'lodash-es';
 type EmptyFunc = () => void;
 export type DragAndDropEventType<E> = {
   click: SensorEventObjType;
-  onMouseMove: SensorEventObjType;
+  mouseMove: SensorEventObjType;
+  mouseDown: SensorEventObjType;
+  mouseUp: SensorEventObjType;
 } & BaseDragAndDropEventType<E>;
 export class DragAndDrop<E = Record<string, any>> {
   senors: Sensor[] = [];
@@ -27,10 +29,14 @@ export class DragAndDrop<E = Record<string, any>> {
   eventHandler: EmptyFunc[] = [];
   currentSensor: Sensor | null = null;
   currentState: 'NORMAL' | 'DRAGGING' | 'CANCEL' = 'NORMAL';
-  dragStartObj: SensorEventType['onMouseDown'] | null = null;
+  dragStartObj: SensorEventType['mouseDown'] | null = null;
   emitter = mitt<DragAndDropEventType<E>>();
   // 拖动结束后是否可以触发点击事件
   canTriggerClick = true;
+  /** 存储需要被恢复的事件列表 */
+  recoverEventList: { name: string; event: Event }[] = [];
+  /** 鼠标按压状态 */
+  mousePressStatus: 'DOWN' | 'UP' = 'UP';
   constructor(options: {
     doc: Document;
     dragConfig?: {
@@ -52,12 +58,19 @@ export class DragAndDrop<E = Record<string, any>> {
       return null;
     });
 
-    sensor.emitter.on('onMouseMove', async (mouseMoveEventObj) => {
+    sensor.emitter.on('mouseDown', async (mouseMoveEventObj) => {
+      this.emitter.emit('mouseDown', mouseMoveEventObj);
+      this.mousePressStatus = 'DOWN';
+      this.recoverEventList;
+      return;
+    });
+
+    sensor.emitter.on('mouseMove', async (mouseMoveEventObj) => {
       if (!(this.currentState === 'DRAGGING' && this.currentSensor === null)) {
         return;
       }
 
-      this.emitter.emit('onMouseMove', mouseMoveEventObj);
+      this.emitter.emit('mouseMove', mouseMoveEventObj);
       const canDrop = await sensor.canDrop({
         ...mouseMoveEventObj,
         extraData: {
@@ -89,7 +102,8 @@ export class DragAndDrop<E = Record<string, any>> {
       this.batchSensorEmit(dragEventName, draggingEventObj);
     });
 
-    sensor.emitter.on('onMouseUp', (e) => {
+    sensor.emitter.on('mouseUp', (e) => {
+      this.mousePressStatus = 'UP';
       if (this.currentSensor !== null) {
         return;
       }
@@ -108,7 +122,7 @@ export class DragAndDrop<E = Record<string, any>> {
 
   registerSensor(sensor: Sensor) {
     this.senors.push(sensor);
-    sensor.emitter.on('onClick', (eventObj) => {
+    sensor.emitter.on('click', (eventObj) => {
       if (this.canTriggerClick) {
         this.emitter.emit('click', {
           sensor: eventObj.sensor,
@@ -118,17 +132,29 @@ export class DragAndDrop<E = Record<string, any>> {
       }
     });
 
-    const onMouseDown = (eventObj: SensorEventType['onMouseDown']) => {
+    const onMouseDown = (eventObj: SensorEventType['mouseDown']) => {
+      this.mousePressStatus = 'DOWN';
+      this.recoverEventList.push({
+        name: 'mousedown',
+        event: eventObj.event,
+      });
       this.dragStartObj = eventObj;
     };
 
-    sensor.emitter.on('onMouseDown', onMouseDown);
+    sensor.emitter.on('mouseDown', onMouseDown);
     this.eventHandler.push(() => {
-      sensor.emitter.off('onMouseDown', onMouseDown);
+      sensor.emitter.off('mouseDown', onMouseDown);
     });
 
     // mousemove
-    const onMouseMove = async (mouseMoveEventObj: SensorEventType['onMouseMove']) => {
+    const onMouseMove = async (mouseMoveEventObj: SensorEventType['mouseMove']) => {
+      if (this.mousePressStatus === 'DOWN') {
+        this.recoverEventList.push({
+          name: 'mousemove',
+          event: mouseMoveEventObj.event,
+        });
+      }
+
       // 拖动过程中 API 终止
       if (this.currentState === 'CANCEL') {
         return;
@@ -139,7 +165,7 @@ export class DragAndDrop<E = Record<string, any>> {
         this.resetDrag();
         return;
       }
-      this.emitter.emit('onMouseMove', mouseMoveEventObj);
+      this.emitter.emit('mouseMove', mouseMoveEventObj);
 
       if (this.currentState === 'NORMAL') {
         if (this.dragStartObj === null) {
@@ -209,14 +235,32 @@ export class DragAndDrop<E = Record<string, any>> {
       this.batchSensorEmit(dragEventName, draggingEventIbj);
     };
 
-    sensor.emitter.on('onMouseMove', onMouseMove);
+    sensor.emitter.on('mouseMove', onMouseMove);
     this.eventHandler.push(() => {
-      sensor?.emitter.off('onMouseMove', onMouseMove);
+      sensor?.emitter.off('mouseMove', onMouseMove);
     });
 
     // mouseup
-    const onMouseUp = async ({ sensor, event, pointer }: SensorEventType['onMouseUp']) => {
-      if (this.currentState !== 'NORMAL') {
+    const onMouseUp = async ({ sensor, event, pointer }: SensorEventType['mouseUp']) => {
+      this.mousePressStatus = 'UP';
+      // 判断是否需要恢复事件触发
+      if (this.currentState === 'NORMAL') {
+        const recoverEventList = this.recoverEventList;
+        this.recoverEventList = [];
+        recoverEventList.push({
+          name: 'mouseup',
+          event: event,
+        });
+        recoverEventList.forEach((el) => {
+          const newEvent = new Event(el.name, el.event);
+          (newEvent as any).fixed = true;
+          console.log('7788 dispatchEvent', el.name, el.event.target, newEvent.type, newEvent);
+          // el.event.target?.dispatchEvent(newEvent);
+        });
+      }
+
+      if (this.currentState === 'DRAGGING') {
+        console.log('onMouseup', event, this.currentState);
         this.canTriggerClick = false;
         setTimeout(() => {
           this.canTriggerClick = true;
@@ -229,7 +273,6 @@ export class DragAndDrop<E = Record<string, any>> {
             ...this.dragStartObj!.extraData,
           },
         });
-
         if (!(canDrop === false)) {
           let canDropExtraData = {};
           if (typeof canDrop !== 'boolean') {
@@ -251,37 +294,38 @@ export class DragAndDrop<E = Record<string, any>> {
           this.emitter.emit(dropEventName, dropEventObj);
           this.batchSensorEmit(dropEventName, dropEventObj);
         }
-        const dragEndEventName = 'dragEnd';
-        const dragEndEventObj = {
-          from: this.dragStartObj!.event,
-          fromSensor: this.dragStartObj!.sensor,
-          fromPointer: this.dragStartObj!.pointer,
-          extraData: this.dragStartObj!.extraData || {},
-          current: event,
-          currentSensor: sensor,
-          pointer: pointer,
-        };
-        this.emitter.emit(dragEndEventName, dragEndEventObj);
-        this.batchSensorEmit(dragEndEventName, dragEndEventObj);
       }
+
+      const dragEndEventName = 'dragEnd';
+      const dragEndEventObj = {
+        from: this.dragStartObj!.event,
+        fromSensor: this.dragStartObj!.sensor,
+        fromPointer: this.dragStartObj!.pointer,
+        extraData: this.dragStartObj!.extraData || {},
+        current: event,
+        currentSensor: sensor,
+        pointer: pointer,
+      };
+      this.emitter.emit(dragEndEventName, dragEndEventObj);
+      this.batchSensorEmit(dragEndEventName, dragEndEventObj);
 
       this.currentState = 'NORMAL';
       this.dragStartObj = null;
     };
 
-    sensor.emitter.on('onMouseUp', onMouseUp);
+    sensor.emitter.on('mouseUp', onMouseUp);
     this.eventHandler.push(() => {
-      sensor.emitter.off('onMouseUp', onMouseUp);
+      sensor.emitter.off('mouseUp', onMouseUp);
     });
 
-    sensor.emitter.on('onEnter', () => {
+    sensor.emitter.on('mouseEnter', () => {
       this.currentSensor = sensor;
     });
-    sensor.emitter.on('onLeave', () => {
+    sensor.emitter.on('mouseLeave', () => {
       this.currentSensor = null;
     });
     this.eventHandler.push(() => {
-      sensor.emitter.off('onMouseUp', onMouseUp);
+      sensor.emitter.off('mouseUp', onMouseUp);
     });
   }
 

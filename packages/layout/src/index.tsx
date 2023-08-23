@@ -384,7 +384,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
   /**
    * 添加需要限制的事件触发的列表
-   * 默认禁止  ['click', 'mouseover', 'mousedown', 'mouseup', 'mousemove'] 事件派发
+   * 默认禁止  ['mousedown'] 事件派发
    * @returns
    */
   registerEventLimit() {
@@ -394,13 +394,17 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     if (!iframeDoc || !subWin) {
       return;
     }
-    ['click', 'mouseover', 'mousedown', 'mouseup', 'mousemove'].forEach((ev: any) => {
+    ['mousedown'].forEach((ev: any) => {
       this.eventExposeHandler.push(
-        addEventListenerReturnCancel<'click'>(
+        addEventListenerReturnCancel<'mousedown'>(
           iframeDoc.body,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ev,
-          async (e) => {
+          async (e: any) => {
+            console.log(5566, ev, e.fixed);
+            if (e.fixed) {
+              return;
+            }
             const targetComponentInstance = this.designRenderRef.current?.getInstanceByDom(e.target as HTMLElement);
             const targetNode = targetComponentInstance?._NODE_MODEL;
             if (targetNode) {
@@ -413,8 +417,8 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
               }
             }
             // 默认禁止  ['click', 'mouseover', 'mousedown', 'mouseup', 'mousemove'] 事件派发
-            e.stopPropagation();
-            e.preventDefault();
+            // e.stopPropagation();
+            // e.preventDefault();
           },
           true
         )
@@ -648,6 +652,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
 
     sensor.emitter.on('dragEnd', (e) => {
+      console.log('dragEnd', e);
       this.resetDrag();
       this.isCancelDrag = false;
       this.props.onNodeDraEnd?.(e);
@@ -687,8 +692,8 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       }
     };
 
-    sensor.emitter.on('onMouseMove', onMouseMove);
-    this.dnd.emitter.on('onMouseMove', onMouseMove);
+    sensor.emitter.on('mouseMove', onMouseMove);
+    this.dnd.emitter.on('mouseMove', onMouseMove);
   }
 
   selectNode(nodeId: string) {

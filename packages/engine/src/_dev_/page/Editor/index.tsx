@@ -9,7 +9,7 @@ import { DEFAULT_PLUGIN_LIST } from '../../../plugins';
 import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 import { InnerComponentMeta } from '../../../material/innerMaterial';
 import { RollbackOutlined } from '@ant-design/icons';
-import { TestComponents } from '@/_dev_/lib';
+import * as TestComponents from '@/_dev_/lib';
 import { collectVariable, flatObject, LayoutPropsType } from '@chamn/layout';
 
 import renderAsURL from '../../../../node_modules/@chamn/render/dist/index.umd.js?url';
@@ -47,7 +47,10 @@ const customRender: LayoutPropsType['customRender'] = async ({
     adapter: CRender?.ReactAdapter,
     page: page,
     pageModel: pageModel,
-    components,
+    components: {
+      ...components,
+      ...(iframeWindow as any).testComponent,
+    },
     $$context: {
       thirdLibs,
     },

@@ -1,13 +1,13 @@
 import { CMaterialType } from '@chamn/model';
 
 export const LayoutMeta: CMaterialType = {
-  title: 'Layout',
-  componentName: 'Layout',
+  title: 'CLayout',
+  componentName: 'CLayout',
   npm: {
     package: '@chamn/mock-material',
-    exportName: 'Layout',
+    exportName: 'CLayout',
     version: '1.0.0',
-    name: 'Layout',
+    name: 'CLayout',
   },
   icon: 'Layout',
   props: [

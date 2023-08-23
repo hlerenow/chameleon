@@ -19,13 +19,13 @@ export type SensorEventObjType<T extends Record<string, any> = any> = {
 export type SensorClickEventObjType = Omit<SensorEventObjType, 'pointer'>;
 
 export type SensorEventType<E extends Record<string, any> = any> = {
-  onLeave: SensorEventObjType<E>;
-  onEnter: SensorEventObjType<E>;
-  onMouseChange: SensorEventObjType<E>;
-  onMouseUp: SensorEventObjType<E>;
-  onMouseDown: SensorEventObjType<E>;
-  onMouseMove: SensorEventObjType<E>;
-  onClick: SensorEventObjType<E>;
+  mouseLeave: SensorEventObjType<E>;
+  mouseEnter: SensorEventObjType<E>;
+  mouseChange: SensorEventObjType<E>;
+  mouseUp: SensorEventObjType<E>;
+  mouseDown: SensorEventObjType<E>;
+  mouseMove: SensorEventObjType<E>;
+  click: SensorEventObjType<E>;
 } & BaseDragAndDropEventType<E>;
 
 export type SensorEventNameType = keyof SensorEventType<any>;
@@ -54,6 +54,7 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
     offset?: Sensor['offset'];
     offsetDom?: Sensor['offsetDom'];
     eventPriority?: number;
+    isIframe?: boolean;
   }) {
     super();
     this.name = options.name;
@@ -91,7 +92,7 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
     const container = this.container as unknown as HTMLElement;
     this.eventDisposeQueue.push(
       addEventListenerReturnCancel(container, 'mouseenter', (e) => {
-        this.emitter.emit('onEnter', {
+        this.emitter.emit('mouseEnter', {
           sensor: this,
           event: e,
           pointer: this.getPointer(e),
@@ -100,7 +101,7 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
     );
     this.eventDisposeQueue.push(
       addEventListenerReturnCancel(container, 'mouseleave', (e) => {
-        this.emitter.emit('onLeave', {
+        this.emitter.emit('mouseLeave', {
           sensor: this,
           event: e,
           pointer: this.getPointer(e),
@@ -112,13 +113,13 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
         container,
         'mousedown',
         (e) => {
-          this.emitter.emit('onMouseChange', {
+          this.emitter.emit('mouseChange', {
             sensor: this,
             pointer: this.getPointer(e),
             event: e,
           });
 
-          this.emitter.emit('onMouseDown', {
+          this.emitter.emit('mouseDown', {
             sensor: this,
             pointer: this.getPointer(e),
             event: e,
@@ -132,12 +133,12 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
         container,
         'mouseup',
         (e) => {
-          this.emitter.emit('onMouseChange', {
+          this.emitter.emit('mouseChange', {
             sensor: this,
             pointer: this.getPointer(e),
             event: e,
           });
-          this.emitter.emit('onMouseUp', {
+          this.emitter.emit('mouseUp', {
             sensor: this,
             pointer: this.getPointer(e),
             event: e,
@@ -152,12 +153,12 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
         container,
         'mousemove',
         (e) => {
-          this.emitter.emit('onMouseMove', {
+          this.emitter.emit('mouseMove', {
             sensor: this,
             pointer: this.getPointer(e),
             event: e,
           });
-          this.emitter.emit('onMouseChange', {
+          this.emitter.emit('mouseChange', {
             sensor: this,
             pointer: this.getPointer(e),
             event: e,
@@ -172,7 +173,7 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
         container,
         'click',
         (e) => {
-          this.emitter.emit('onClick', {
+          this.emitter.emit('click', {
             sensor: this,
             event: e,
             pointer: this.getPointer(e),
