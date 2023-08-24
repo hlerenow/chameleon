@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.22](https://github.com/ByteCrazy/chameleon/compare/v0.0.21...v0.0.22) (2023-08-24)
+
+### ✨ Features | 新功能
+
+* **demo-page, engine, layout, model:** 🎸 add disableEditorDragDom config ([1779f44](https://github.com/ByteCrazy/chameleon/commit/1779f44aff20370ea3336e72352032c6416f7dd3))
+
 ## [0.0.21](https://github.com/ByteCrazy/chameleon/compare/v0.0.20...v0.0.21) (2023-08-19)
 
 ### ✨ Features | 新功能
