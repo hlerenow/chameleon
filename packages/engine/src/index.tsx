@@ -164,3 +164,6 @@ export * from '@chamn/layout';
 export * from './material/innerMaterial';
 export * from './component/CustomSchemaForm/components/Setters/type';
 export * from './utils/index';
+
+/** 注册自定义 setter */
+export { registerCustomSetter } from './component/CustomSchemaForm/components/Form';

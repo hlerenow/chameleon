@@ -171,6 +171,8 @@ export type BasicSetterObjType<T extends SetterBasicType = ''> = {
   initialValue?: any;
   /** props reference CSetterProps<T> from engine */
   component?: (props: any) => React.ReactNode;
+  /** 是否隐藏前面的 label */
+  hiddenLabel?: boolean;
 };
 
 export type ShapeSetterObjType<T extends SetterBasicType = ''> = {
@@ -183,6 +185,7 @@ export type ShapeSetterObjType<T extends SetterBasicType = ''> = {
   initialValue: any;
   /** props reference CSetterProps<T> from engine */
   component?: (props: any) => React.ReactNode;
+  hiddenLabel?: boolean;
 };
 
 export type ArraySetterObjType<T extends SetterBasicType = ''> = {
@@ -197,6 +200,7 @@ export type ArraySetterObjType<T extends SetterBasicType = ''> = {
   initialValue: any;
   /** props reference CSetterProps<T> from engine */
   component?: (props: any) => React.ReactNode;
+  hiddenLabel?: boolean;
 };
 
 export type SetterObjType<T extends SetterBasicType = ''> =

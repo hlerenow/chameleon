@@ -36,7 +36,7 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
 
   let CurrentSetterComp = null;
   if (currentSetter?.componentName) {
-    CurrentSetterComp = allSetterMap[currentSetter?.componentName];
+    CurrentSetterComp = allSetterMap[currentSetter?.componentName] || currentSetter.component;
   }
 
   if (!CurrentSetterComp) {
@@ -125,6 +125,7 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
     },
   };
   let bodyView: any = null;
+  const hiddenLabel = useField === false || currentSetter?.hiddenLabel === true;
   if (['ArraySetter'].includes(currentSetter?.componentName || '')) {
     bodyView = (
       <Collapse
@@ -148,7 +149,7 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
                 {switcher}
               </div>
             ),
-            children: useField ? (
+            children: !hiddenLabel ? (
               <CField {...props} noStyle {...conditionProps}>
                 <CurrentSetterComp
                   {...setterProps}
@@ -181,7 +182,7 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
         {props.prefix ?? null}
         {(currentSetter?.props as any)?.collapse === false && (
           <div style={{ width: '100%' }}>
-            {useField && (
+            {!hiddenLabel && (
               <CField {...props} noStyle {...conditionProps}>
                 <CurrentSetterComp
                   {...setterProps}
@@ -192,7 +193,7 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
                 />
               </CField>
             )}
-            {!useField && (
+            {!hiddenLabel && (
               <CurrentSetterComp
                 {...setterProps}
                 setterContext={{
@@ -246,7 +247,7 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
     bodyView = (
       <div style={{ display: 'flex', alignItems: 'center', paddingBottom: '8px' }}>
         {props.prefix ?? null}
-        {useField && (
+        {!hiddenLabel && (
           <CField
             {...props}
             condition={condition}
@@ -263,7 +264,7 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
             />
           </CField>
         )}
-        {!useField && (
+        {hiddenLabel && (
           <CurrentSetterComp
             {...setterProps}
             setterContext={{
