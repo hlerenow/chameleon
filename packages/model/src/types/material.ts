@@ -490,6 +490,20 @@ export type AdvanceCustom = {
       node: CNode | CRootNode;
     }
   ) => (...args: any[]) => React.ReactElement;
+  /** 配置右侧面板 */
+  rightPanel?: {
+    /** 是否显示相应的面板 */
+    visual?: boolean;
+    state?: boolean;
+    advance?: boolean;
+    property?: boolean;
+    customTabs?: {
+      /** 唯一标识 */
+      key: string;
+      name: string | ((params: { node: CNode | CRootNode; pluginCtx: any }) => string);
+      view?: (params: { node: CNode | CRootNode; pluginCtx: any }) => React.ReactElement;
+    }[];
+  };
 };
 
 export type CMaterialType<PropsSetter extends string = ''> = {
@@ -512,8 +526,6 @@ export type CMaterialType<PropsSetter extends string = ''> = {
   fixedProps?: Record<string, any> | ((props: Record<string, any>) => Record<string, any>);
   /** 可以拖入组件 */
   isContainer?: boolean | ContainerConfig;
-  /** TODO: 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize */
-  isLayout?: boolean;
   /** 选择框的根选择器 */
   rootSelector?: string;
   /** 是否禁止编辑器的 drag 事件，被命中的 dom 不会出发 编辑器的 */

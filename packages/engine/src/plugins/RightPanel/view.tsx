@@ -104,6 +104,9 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
           return panel.show(panelParams);
         }
       });
+      // 获取物料中的自定义 panel
+      const customTabs = node.material?.value.advanceCustom?.rightPanel?.customTabs || [];
+      displayPanels.concat(customTabs);
       val = {
         panels: newPanels,
         displayPanels,

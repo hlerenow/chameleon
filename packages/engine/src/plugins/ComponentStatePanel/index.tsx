@@ -56,4 +56,7 @@ export const ComponentStatePanelConfig: CRightPanelItem = {
   key: 'State',
   name: 'State',
   view: ({ node, pluginCtx }) => <ComponentStatePanel node={node} pluginCtx={pluginCtx} />,
+  show: (props) => {
+    return props.node.material?.value.advanceCustom?.rightPanel?.state !== false;
+  },
 };

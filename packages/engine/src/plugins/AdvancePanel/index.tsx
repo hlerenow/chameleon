@@ -206,4 +206,7 @@ export const AdvancePanelConfig: CRightPanelItem = {
   key: 'Advance',
   name: 'Advance',
   view: ({ node, pluginCtx }) => <AdvancePanel node={node} pluginCtx={pluginCtx} />,
+  show: (props) => {
+    return props.node.material?.value.advanceCustom?.rightPanel?.advance !== false;
+  },
 };

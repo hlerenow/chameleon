@@ -102,6 +102,9 @@ export const VisualPanelPlus = (props: { node: CNode | CRootNode; pluginCtx: CPl
 
 export const VisualPanelPlusConfig: CRightPanelItem = {
   key: 'VisualPanelPlus',
-  name: 'VisualPanel',
+  name: 'Visual',
   view: ({ node, pluginCtx }) => <VisualPanelPlus node={node} pluginCtx={pluginCtx} />,
+  show: (props) => {
+    return props.node.material?.value.advanceCustom?.rightPanel?.visual !== false;
+  },
 };
