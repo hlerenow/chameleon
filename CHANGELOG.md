@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.23](https://github.com/ByteCrazy/chameleon/compare/v0.0.22...v0.0.23) (2023-08-26)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, render:** 🐛 fixed CSSPropertiesVariableBindEditor value not update ([9084c32](https://github.com/ByteCrazy/chameleon/commit/9084c32bb919c2e6191c29b871f9d1537d139050))
+
+### ✨ Features | 新功能
+
+* **engine, model:** 🎸 support custom rightPanel ([803d731](https://github.com/ByteCrazy/chameleon/commit/803d731819faa03430b2a17a154d3ff1e0daca28))
+* **engine, model:** 🎸 support inject custom setter ([a49ec4a](https://github.com/ByteCrazy/chameleon/commit/a49ec4ae4a98b42cf1cfb768990b64c981539881))
+
 ## [0.0.22](https://github.com/ByteCrazy/chameleon/compare/v0.0.21...v0.0.22) (2023-08-24)
 
 ### ✨ Features | 新功能

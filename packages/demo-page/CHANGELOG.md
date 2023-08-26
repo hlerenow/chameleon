@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.23](https://github.com/ByteCrazy/chameleon/compare/v0.0.22...v0.0.23) (2023-08-26)
+
+**Note:** Version bump only for package @chamn/demo-page
+
 ## [0.0.22](https://github.com/ByteCrazy/chameleon/compare/v0.0.21...v0.0.22) (2023-08-24)
 
 ### ✨ Features | 新功能

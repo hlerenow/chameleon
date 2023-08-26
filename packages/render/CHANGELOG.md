@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.23](https://github.com/ByteCrazy/chameleon/compare/v0.0.22...v0.0.23) (2023-08-26)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, render:** 🐛 fixed CSSPropertiesVariableBindEditor value not update ([9084c32](https://github.com/ByteCrazy/chameleon/commit/9084c32bb919c2e6191c29b871f9d1537d139050))
+
 ## [0.0.22](https://github.com/ByteCrazy/chameleon/compare/v0.0.21...v0.0.22) (2023-08-24)
 
 **Note:** Version bump only for package @chamn/render
