@@ -130,7 +130,6 @@ const CContainer = ({ children, $$attributes = [], afterMount, beforeDestroy, ..
   if (!Array.isArray(children)) {
     child = [children];
   }
-
   useEffect(() => {
     afterMount?.(props);
     return () => {
@@ -138,13 +137,10 @@ const CContainer = ({ children, $$attributes = [], afterMount, beforeDestroy, ..
     };
   }, []);
 
-  return React.createElement(
-    'div',
-    {
-      ...props,
-      ...transformListToObj($$attributes),
-    },
-    ...child
+  return (
+    <div {...props} {...transformListToObj($$attributes)}>
+      {child}
+    </div>
   );
 };
 

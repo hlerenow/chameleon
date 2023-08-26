@@ -16,8 +16,14 @@ import { AdvanceCustomHook } from './advanceCustomHook';
 import { DesignerPluginConfig } from '../../type';
 import { AdvanceCustomFuncParam } from '@chamn/model';
 
+export type DesignerCtx = CPluginCtx<DesignerPluginConfig>;
 export type DesignerPropsType = {
-  pluginCtx: CPluginCtx<DesignerPluginConfig>;
+  pluginCtx: DesignerCtx;
+};
+
+export type WrapComponentOptionsType = {
+  ctx: DesignerCtx;
+  node: CNode | CRootNode;
 };
 
 type DesignerStateType = {

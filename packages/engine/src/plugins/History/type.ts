@@ -9,6 +9,6 @@ export type HistoryExport = {
   canGoNextStep: () => boolean;
 };
 
-export type DesignerPluginConfig = any;
-export type HistoryPluginType = CPlugin<DesignerPluginConfig, HistoryExport>;
-export type HistoryPluginInstance = PluginInstance<DesignerPluginConfig, HistoryExport>;
+export type HistoryPluginConfig = any;
+export type HistoryPluginType = CPlugin<HistoryPluginConfig, HistoryExport>;
+export type HistoryPluginInstance = PluginInstance<HistoryPluginConfig, HistoryExport>;

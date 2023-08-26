@@ -140,6 +140,8 @@ export class PluginManager {
     const pluginObj = this.plugins.get(pluginName);
     if (pluginObj?.ready) {
       return;
+    } else if (pluginObj === undefined) {
+      console.warn(`plugin: ${pluginName} not found.`);
     }
 
     return new Promise<PluginInstance>((resolve) => {

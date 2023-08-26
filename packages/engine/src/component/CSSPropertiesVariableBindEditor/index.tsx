@@ -155,7 +155,6 @@ const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, InnerSingl
                     ...innerValue,
                     key: val,
                   });
-                  updateOuterValueDebounce();
                 }}
                 style={{
                   width: `${keyInputWidth}px`,
@@ -172,6 +171,7 @@ const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, InnerSingl
                     key: false,
                     value: false,
                   });
+                  updateOuterValueDebounce();
                 }}
                 placeholder="property"
                 options={propertyOptions}
@@ -202,6 +202,9 @@ const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, InnerSingl
                       ...innerValue,
                       value: newVal,
                     });
+                  }}
+                  onPressEnter={() => {
+                    updateOuterValueDebounce();
                   }}
                   onKeyDown={(e) => {
                     if (e.code === 'Enter' && mod === 'create') {
