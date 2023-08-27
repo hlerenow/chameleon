@@ -296,11 +296,11 @@ export class DragAndDrop<E = Record<string, any>> {
       }
 
       const dragEndEventName = 'dragEnd';
-      const dragEndEventObj = {
-        from: this.dragStartObj!.event,
-        fromSensor: this.dragStartObj!.sensor,
-        fromPointer: this.dragStartObj!.pointer,
-        extraData: this.dragStartObj!.extraData || {},
+      const dragEndEventObj: any = {
+        from: this.dragStartObj?.event,
+        fromSensor: this.dragStartObj?.sensor,
+        fromPointer: this.dragStartObj?.pointer,
+        extraData: this.dragStartObj?.extraData || {},
         current: event,
         currentSensor: sensor,
         pointer: pointer,
