@@ -143,8 +143,8 @@ export class CRootNode {
     return materialModel?.findByComponentName(this.data.componentName);
   }
 
-  updateWithPlainObj(val?: Partial<CRootNodeModelDataType>) {
-    const newVal: CRootNodeModelDataType = {
+  updateWithPlainObj(val?: Partial<CRootNodeModelDataType | CRootNodeDataType>) {
+    const newVal: any = {
       ...this.data,
       ...val,
     };
@@ -152,7 +152,7 @@ export class CRootNode {
     return newVal;
   }
 
-  updateValue(val?: Partial<CRootNodeModelDataType>) {
+  updateValue(val?: Partial<CRootNodeModelDataType | CRootNodeDataType>) {
     const oldData = this.data;
     this.updateWithPlainObj(val);
     this.emitter.emit('onNodeChange', {

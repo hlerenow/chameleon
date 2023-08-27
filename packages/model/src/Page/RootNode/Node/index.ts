@@ -163,8 +163,8 @@ export class CNode {
     });
   }
 
-  updateWithPlainObj(val?: Partial<CNodeModelDataType>) {
-    const newVal: CNodeModelDataType = {
+  updateWithPlainObj(val?: Partial<CNodeModelDataType | CNodeDataType>) {
+    const newVal: any = {
       ...this.data,
       ...val,
     };
@@ -173,7 +173,7 @@ export class CNode {
     return newVal;
   }
 
-  updateValue(val?: Partial<CNodeModelDataType>) {
+  updateValue(val?: Partial<CNodeModelDataType | CNodeDataType>) {
     const oldData = this.data;
     const newVal = this.updateWithPlainObj(val);
     this.emitter.emit('onNodeChange', {

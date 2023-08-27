@@ -67,7 +67,6 @@ export const PropertyPanelConfig: CRightPanelItem = {
   name: 'Property',
   view: ({ node, pluginCtx }) => <PropertyPanel node={node} pluginCtx={pluginCtx} />,
   show: (props) => {
-    console.log('props', props);
     return props.node?.material?.value.advanceCustom?.rightPanel?.property !== false;
   },
 };
