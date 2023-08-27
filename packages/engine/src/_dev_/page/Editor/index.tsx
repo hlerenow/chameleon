@@ -111,6 +111,21 @@ export const App = () => {
 
     const workbench = ctx.engine.getWorkbench();
 
+    // 添加自定义 view
+    const disposeView = workbench?.addCustomView({
+      key: 'testView',
+      view: (
+        <div
+          style={{
+            display: 'none',
+          }}
+          onClick={() => console.log('click')}
+        >
+          123123
+        </div>
+      ),
+    });
+
     workbench?.replaceTopBarView(
       <div
         style={{

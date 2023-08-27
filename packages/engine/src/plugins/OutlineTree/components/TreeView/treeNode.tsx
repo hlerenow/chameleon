@@ -7,6 +7,8 @@ import styles from './style.module.scss';
 import { LOGGER } from '../../../../utils/logger';
 import { CNode } from '@chamn/model';
 import { Input, InputRef } from 'antd';
+import { CPluginCtx } from '@/core/pluginManager';
+import { DesignerPluginInstance } from '@/plugins/Designer/type';
 
 export const DRAG_ITEM_KEY = 'data-drag-key';
 
@@ -14,6 +16,7 @@ export type TreeNodeProps = {
   item: TreeNodeData;
   level?: number;
   paths?: (string | number)[];
+  pluginCtx: CPluginCtx;
 };
 export const TreeNode = (props: TreeNodeProps) => {
   const allStateRef = useRef<{ titleEditable: boolean }>({
@@ -34,13 +37,26 @@ export const TreeNode = (props: TreeNodeProps) => {
   const [editInputValue, setEditInputValue] = useState('');
   allStateRef.current.titleEditable = titleEditable;
   const expanded = ctxState.expandKeys.find((el) => el === item.key);
-  const toggleExpandNode = () => {
+  const toggleExpandNode = (open?: boolean) => {
     let newExpandKeys = ctxState.expandKeys;
-    if (expanded) {
-      newExpandKeys = newExpandKeys.filter((el) => el !== item.key);
+    if (open !== undefined) {
+      if (open === true) {
+        if (!expanded) {
+          newExpandKeys.push(item.key || '');
+        }
+      } else {
+        if (expanded) {
+          newExpandKeys = newExpandKeys.filter((el) => el !== item.key);
+        }
+      }
     } else {
-      newExpandKeys.push(item.key || '');
+      if (expanded) {
+        newExpandKeys = newExpandKeys.filter((el) => el !== item.key);
+      } else {
+        newExpandKeys.push(item.key || '');
+      }
     }
+
     updateState({
       expandKeys: newExpandKeys,
     });
@@ -48,6 +64,7 @@ export const TreeNode = (props: TreeNodeProps) => {
   const selected = ctxState.currentSelectNodeKeys.find((el) => el === item.key);
   const titleEditInputRef = useRef<InputRef>(null);
   const toggleSelectNode = () => {
+    toggleExpandNode(true);
     if (titleEditable) {
       titleEditInputRef?.current?.focus();
       return;
@@ -119,7 +136,16 @@ export const TreeNode = (props: TreeNodeProps) => {
         targetNodeModel.updateValue();
       }
     };
+    let sunWin: Window | null;
+    const registerDesignerClick = async () => {
+      const designerPluginInstance = await props.pluginCtx.pluginManager.get<DesignerPluginInstance>('Designer');
+      const designerHandler = designerPluginInstance?.export;
+      const win = designerHandler?.getDesignerWindow();
+      win?.addEventListener('click', clickHandle);
+      sunWin = win || null;
+    };
 
+    registerDesignerClick();
     document.addEventListener('click', clickHandle);
 
     return () => {
@@ -127,6 +153,7 @@ export const TreeNode = (props: TreeNodeProps) => {
         clearTimeout(timerHandler);
       }
       document.removeEventListener('click', clickHandle);
+      sunWin?.removeEventListener('click', clickHandle);
     };
   }, []);
 
@@ -170,7 +197,7 @@ export const TreeNode = (props: TreeNodeProps) => {
         }}
       >
         {item.children?.length ? (
-          <span style={{ paddingRight: '5px' }} className={styles.arrowSpan} onClickCapture={toggleExpandNode}>
+          <span style={{ paddingRight: '5px' }} className={styles.arrowSpan} onClickCapture={() => toggleExpandNode()}>
             <RightOutlined className={clsx([styles.nodeArrow, expanded && styles.expanded])} />
           </span>
         ) : null}
@@ -191,7 +218,7 @@ export const TreeNode = (props: TreeNodeProps) => {
             setTitleEditable(true);
             setTimeout(() => {
               titleEditInputRef.current?.focus();
-            }, 100);
+            }, 16.66);
           }}
         >
           {!titleEditable && titleView}
@@ -204,6 +231,7 @@ export const TreeNode = (props: TreeNodeProps) => {
               <Input
                 size="small"
                 maxLength={20}
+                style={{}}
                 ref={titleEditInputRef}
                 value={editInputValue}
                 onPressEnter={() => {
@@ -254,7 +282,9 @@ export const TreeNode = (props: TreeNodeProps) => {
         {expanded &&
           item.children?.map((el, index) => {
             const key = `${el.key}-${index}`;
-            return <TreeNode key={key} item={el} paths={[...paths, index]} level={level + 1} />;
+            return (
+              <TreeNode key={key} item={el} paths={[...paths, index]} level={level + 1} pluginCtx={props.pluginCtx} />
+            );
           })}
       </div>
     </div>

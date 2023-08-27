@@ -426,7 +426,7 @@ export class TreeView extends React.Component<
       >
         <div className={styles.contentBox} ref={this.domRef}>
           {treeData.map((item, index) => {
-            return <TreeNode item={item} key={item.key + `${index}`}></TreeNode>;
+            return <TreeNode item={item} key={item.key + `${index}`} pluginCtx={this.props.pluginCtx}></TreeNode>;
           })}
           {dragState === DragState.DRAGGING && dropPosInfo && (
             <div

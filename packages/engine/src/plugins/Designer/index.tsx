@@ -51,6 +51,12 @@ export const DesignerPlugin: DesignerPluginType = (ctx) => {
               ?.dynamicComponentInstanceMap;
           return map?.get(id) || ([] as any);
         },
+        getLayoutRef: () => {
+          return designerRef.current?.layoutRef;
+        },
+        getDesignerWindow: () => {
+          return designerRef.current?.layoutRef.current?.iframeContainer.getWindow();
+        },
       };
     },
     meta: {

@@ -1,5 +1,5 @@
 import { CPlugin, PluginInstance } from '@/core/pluginManager';
-import { DragAndDrop, LayoutPropsType } from '@chamn/layout';
+import { DragAndDrop, Layout, LayoutPropsType } from '@chamn/layout';
 import { AdvanceCustom, AssetPackage, CPageDataType } from '@chamn/model';
 import { RenderInstance } from '@chamn/render';
 import { Designer } from './components/Canvas';
@@ -15,6 +15,8 @@ export type DesignerExport = {
   updatePage: (page: CPageDataType) => void;
   getComponentInstances: (id: string) => RenderInstance[];
   getDynamicComponentInstances: (id: string) => RenderInstance;
+  getLayoutRef: () => React.RefObject<Layout>;
+  getDesignerWindow: () => Window | null;
 };
 
 export type DesignerPluginConfig = Omit<

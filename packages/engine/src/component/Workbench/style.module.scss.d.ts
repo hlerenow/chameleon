@@ -21,5 +21,6 @@ declare const classNames: typeof globalClassNames & {
   readonly subTopToolbarBox: 'subTopToolbarBox';
   readonly canvasBox: 'canvasBox';
   readonly scrollBox: 'scrollBox';
+  readonly customViewBox: 'customViewBox';
 };
 export = classNames;

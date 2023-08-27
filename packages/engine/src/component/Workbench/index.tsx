@@ -6,6 +6,7 @@ import { CloseOutlined, DoubleRightOutlined, PushpinOutlined } from '@ant-design
 import clsx from 'clsx';
 import mitt, { Emitter } from 'mitt';
 import { waitReactUpdate } from '../../utils';
+import { createPortal } from 'react-dom';
 
 export interface PluginContext {
   openPanel: () => void;
@@ -19,6 +20,11 @@ type PanelItem = {
   title: string | React.ReactNode;
   icon: React.ReactNode;
   render: React.ReactNode;
+};
+
+export type WorkbenchCustomView = {
+  key: string;
+  view: React.ReactNode;
 };
 
 type WorkbenchStateType = {
@@ -39,6 +45,7 @@ type WorkbenchStateType = {
   rightView: React.ReactNode | null;
   topToolBarView: React.ReactNode | null;
   subTopToolBarView: React.ReactNode | null;
+  customViewList: WorkbenchCustomView[];
 };
 
 export type WorkbenchPropsType = {
@@ -70,6 +77,7 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
       rightView: null,
       topToolBarView: null,
       subTopToolBarView: null,
+      customViewList: [],
     };
   }
 
@@ -91,6 +99,27 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
       });
     }
   };
+
+  /**
+   * 添加属于插件的自定义视图
+   * @param view
+   * @returns dispose: 调用后移除 view
+   */
+  addCustomView(view: WorkbenchCustomView) {
+    const newViewList = this.state.customViewList;
+    newViewList.push(view);
+
+    this.setState({
+      customViewList: [...newViewList],
+    });
+
+    return () => {
+      const newViewList = this.state.customViewList.filter((el) => el !== view);
+      this.setState({
+        customViewList: [...newViewList],
+      });
+    };
+  }
 
   openLeftPanel = async (currentActiveLeftPanel?: string) => {
     const newActive = currentActiveLeftPanel || this.state.currentActiveLeftPanel;
@@ -239,6 +268,7 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
       rightView,
       topToolBarView,
       subTopToolBarView,
+      customViewList,
     } = this.state;
     const leftBoContentStyle: React.CSSProperties = {};
     if (!leftBoxFixed) {
@@ -344,6 +374,24 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
             </div>
           </div>
         </div>
+        {createPortal(
+          <div className={styles.customViewBox}>
+            {customViewList.map((el) => {
+              return (
+                <div
+                  key={el.key}
+                  style={{
+                    pointerEvents: 'auto',
+                    display: 'inline-block',
+                  }}
+                >
+                  {el.view}
+                </div>
+              );
+            })}
+          </div>,
+          document.body
+        )}
       </div>
     );
   }
