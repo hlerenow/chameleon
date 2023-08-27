@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.26](https://github.com/ByteCrazy/chameleon/compare/v0.0.25...v0.0.26) (2023-08-27)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **render:** 🐛 fixed process is not defined in render ([03e258f](https://github.com/ByteCrazy/chameleon/commit/03e258f5674bdb54da6dee8dd7a68c31f7432a69))
+
 ## [0.0.25](https://github.com/ByteCrazy/chameleon/compare/v0.0.24...v0.0.25) (2023-08-27)
 
 **Note:** Version bump only for package @chamn/render
