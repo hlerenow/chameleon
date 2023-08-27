@@ -1,7 +1,7 @@
 {
   "name": "@chamn/example",
   "private": true,
-  "version": "0.0.24",
+  "version": "0.0.25",
   "files": [
     "dist"
   ],
