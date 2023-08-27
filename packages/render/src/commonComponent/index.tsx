@@ -54,19 +54,18 @@ const CBlock = ({ children, width, height, $$attributes = [], ...props }: any) =
   );
 };
 
-const CCanvas = ({ children, $$attributes = [], ...props }: any) => {
-  let child = children;
-  if (!Array.isArray(children)) {
-    child = [children];
-  }
-  return React.createElement(
-    'canvas',
-    {
-      ...props,
-      ...transformListToObj($$attributes),
-    },
-    ...child
-  );
+const CCanvas = ({ afterMount, beforeDestroy, $$attributes = [], ...props }: any) => {
+  useEffect(() => {
+    afterMount?.(props);
+    return () => {
+      beforeDestroy?.(props);
+    };
+  }, []);
+
+  return React.createElement('canvas', {
+    ...props,
+    ...transformListToObj($$attributes),
+  });
 };
 
 const CImage = ({ children, $$attributes = [], ...props }: any) => {

@@ -73,21 +73,24 @@ export const convertCodeStringToFunction = (
   storeManager: StoreManager
 ) => {
   const newFunc = function (...args: any[]) {
+    let codeBody;
+
     try {
-      const codeBody = `
-        var args = Array.from(arguments);
-        function runTimeFunc() {
-          var f = ${functionStr};
-          var __$$storeManager__ = args.pop();
-          var $$context = args.pop();
-          $$context.stateManager = __$$storeManager__.getStateSnapshot();
-          return f.apply(f, args)
-        }
-        return runTimeFunc();
+      codeBody = `
+var $$$__args__$$$ = Array.from(arguments);
+function $$_run_$$() {
+  var $$_f_$$ = ${functionStr || 'function () {}'};
+  var __$$storeManager__ = $$$__args__$$$.pop();
+  var $$context = $$$__args__$$$.pop();
+  $$context.stateManager = __$$storeManager__.getStateSnapshot();
+  return $$_f_$$.apply($$_f_$$, $$$__args__$$$);
+}
+return $$_run_$$();
       `;
       const f = new Function(codeBody);
       f(...args, $$context, storeManager);
     } catch (e) {
+      console.log(codeBody);
       console.warn(e);
     }
   };

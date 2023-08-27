@@ -6,7 +6,7 @@ import { CRightPanelItem } from '../RightPanel/view';
 import styles from './style.module.scss';
 
 export type AdvancePanelProps = {
-  node: CNode | CRootNode;
+  node: CNode | CRootNode | null;
   pluginCtx: CPluginCtx;
 };
 
@@ -149,6 +149,9 @@ const properties: CMaterialPropsType = [
 
 export const AdvancePanel = (props: AdvancePanelProps) => {
   const { node } = props;
+  if (!node) {
+    return <></>;
+  }
   const onSetterChange: CustomSchemaFormProps['onSetterChange'] = (keyPaths, setterName) => {
     node.value.configure = node.value.configure || {};
     node.value.configure.advanceSetter = node.value.configure.advanceSetter || {};
@@ -207,6 +210,6 @@ export const AdvancePanelConfig: CRightPanelItem = {
   name: 'Advance',
   view: ({ node, pluginCtx }) => <AdvancePanel node={node} pluginCtx={pluginCtx} />,
   show: (props) => {
-    return props.node.material?.value.advanceCustom?.rightPanel?.advance !== false;
+    return props.node?.material?.value.advanceCustom?.rightPanel?.advance !== false;
   },
 };

@@ -504,8 +504,9 @@ export type AdvanceCustom = {
     customTabs?: {
       /** 唯一标识 */
       key: string;
-      name: string | ((params: { node: CNode | CRootNode; pluginCtx: any }) => string);
-      view?: (params: { node: CNode | CRootNode; pluginCtx: any }) => React.ReactElement;
+      name: string | ((params: { node: CNode | CRootNode | null; pluginCtx: any }) => string);
+      view: (params: { node: CNode | CRootNode | null; pluginCtx: any }) => React.ReactElement;
+      show?: (options: { node: CNode | CRootNode | null; pluginCtx: any }) => boolean;
     }[];
   };
 };

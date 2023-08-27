@@ -163,14 +163,19 @@ export class CNode {
     });
   }
 
-  updateValue(val?: Partial<CNodeModelDataType>) {
-    const oldData = this.data;
+  updateWithPlainObj(val?: Partial<CNodeModelDataType>) {
     const newVal: CNodeModelDataType = {
       ...this.data,
       ...val,
     };
 
     this.data = parseNode(newVal, this);
+    return newVal;
+  }
+
+  updateValue(val?: Partial<CNodeModelDataType>) {
+    const oldData = this.data;
+    const newVal = this.updateWithPlainObj(val);
     this.emitter.emit('onNodeChange', {
       value: newVal,
       preValue: oldData,

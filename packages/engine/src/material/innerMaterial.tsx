@@ -190,6 +190,22 @@ const BaseComponentMeta: CMaterialType[] = [
     fixedProps: {
       autoPlay: false,
     },
+    advanceCustom: {
+      wrapComponent: (Comp) => {
+        return (props) => {
+          //  原生的控制面板会阻断页面级别的事件监听，导致拖拽失效，这里在编辑态禁用 video 的控制面板相关事件触发
+          return (
+            <Comp
+              {...props}
+              style={{
+                pointerEvents: 'none',
+                ...props.style,
+              }}
+            ></Comp>
+          );
+        };
+      },
+    },
     groupName: '原子组件',
     snippets: [
       {
@@ -233,6 +249,28 @@ const BaseComponentMeta: CMaterialType[] = [
       heightPropsMeta,
       customAttributesMeta,
     ],
+    advanceCustom: {
+      wrapComponent: () => {
+        return (props) => {
+          return (
+            <div
+              style={{
+                display: 'inline-block',
+                fontSize: 0,
+              }}
+            >
+              <audio
+                {...props}
+                style={{
+                  pointerEvents: 'none',
+                  ...props.style,
+                }}
+              ></audio>
+            </div>
+          );
+        };
+      },
+    },
     snippets: [
       {
         title: '音频',
@@ -241,6 +279,7 @@ const BaseComponentMeta: CMaterialType[] = [
         schema: {
           props: {
             src: 'https://vjs.zencdn.net/v/oceans.mp4',
+            controls: true,
           },
         },
       },
@@ -275,8 +314,50 @@ const BaseComponentMeta: CMaterialType[] = [
   {
     title: 'Canvas',
     componentName: 'CCanvas',
-    props: [widthPropsMeta, heightPropsMeta, customAttributesMeta],
+    props: [
+      widthPropsMeta,
+      heightPropsMeta,
+      {
+        name: 'afterMount',
+        title: '渲染之后',
+        valueType: 'function',
+        setters: ['FunctionSetter', 'ExpressionSetter', 'TestSetter' as any],
+      },
+      {
+        name: 'beforeDestroy',
+        title: '销毁之前',
+        valueType: 'function',
+        setters: ['FunctionSetter', 'ExpressionSetter'],
+      },
+      customAttributesMeta,
+    ],
     groupName: '原子组件',
+    advanceCustom: {
+      onNewAdd: async (node, params) => {
+        const props = node.getPlainProps();
+        const id = Math.random().toString(32).slice(3, 9);
+        props.$$attributes = [
+          {
+            key: 'id',
+            value: id,
+          },
+          {
+            key: 'style',
+            value: {
+              display: 'block',
+              margin: '0 auto',
+            },
+          },
+        ];
+        props.afterMount.value = props.afterMount.value.replace('$[id]', id);
+        node.updateWithPlainObj({
+          props,
+        });
+        return {
+          addNode: node,
+        };
+      },
+    },
     snippets: [
       {
         title: '画布',
@@ -284,8 +365,21 @@ const BaseComponentMeta: CMaterialType[] = [
         category: '基础组件',
         schema: {
           props: {
-            width: '300px',
+            width: '600px',
             height: '150px',
+            style: {
+              margin: '0 auto',
+            },
+            afterMount: {
+              type: 'FUNCTION',
+              value: `
+              function run () {
+                var ctx = document.getElementById("$[id]").getContext("2d");
+                ctx.font = "48px serif";
+                ctx.fillText("Hello Canvas", 10, 50);
+              }
+              `,
+            },
           },
         },
       },

@@ -5,12 +5,15 @@ import { CRightPanelItem } from '../RightPanel/view';
 import { MonacoEditor, MonacoEditorInstance } from '../../component/MonacoEditor';
 
 export type ComponentStatePanelProps = {
-  node: CNode | CRootNode;
+  node: CNode | CRootNode | null;
   pluginCtx: CPluginCtx;
 };
 
 export const ComponentStatePanel = (props: ComponentStatePanelProps) => {
   const { node } = props;
+  if (!node) {
+    return <></>;
+  }
   const nodeState = node.value.state || {};
   const editorRef = useRef<MonacoEditorInstance | null>(null);
   useEffect(() => {
@@ -57,6 +60,6 @@ export const ComponentStatePanelConfig: CRightPanelItem = {
   name: 'State',
   view: ({ node, pluginCtx }) => <ComponentStatePanel node={node} pluginCtx={pluginCtx} />,
   show: (props) => {
-    return props.node.material?.value.advanceCustom?.rightPanel?.state !== false;
+    return props.node?.material?.value.advanceCustom?.rightPanel?.state !== false;
   },
 };

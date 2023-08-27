@@ -193,7 +193,7 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
                 />
               </CField>
             )}
-            {!hiddenLabel && (
+            {hiddenLabel && (
               <CurrentSetterComp
                 {...setterProps}
                 setterContext={{

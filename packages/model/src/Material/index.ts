@@ -108,7 +108,7 @@ export class CMaterials {
   }
 
   getAllSnippets() {
-    let allSnippets = this.data.reduce((res, el) => {
+    const allSnippets = this.data.reduce((res, el) => {
       res.push(...el.snippets);
       return res;
     }, [] as SnippetsType[]);
@@ -116,10 +116,6 @@ export class CMaterials {
     const groupRes: Record<string, SnippetsType[]> = {
       default: [],
     };
-
-    allSnippets = allSnippets.sort((a, b) => {
-      return (a.category || '') > (b.category || '') ? 1 : -1;
-    });
 
     // split group
     allSnippets.forEach((el) => {
@@ -131,7 +127,7 @@ export class CMaterials {
       groupRes[groupName].push(el);
     });
 
-    const res: SnippetsCollection = [];
+    let res: SnippetsCollection = [];
     groups.forEach((groupName) => {
       const categories: string[] = ['default'];
       const categoryRes: Record<string, SnippetsType[]> = {
@@ -168,6 +164,10 @@ export class CMaterials {
 
         res.push(val);
       }
+    });
+
+    res = res.sort((a, b) => {
+      return (a.name || '') > (b.name || '') ? 1 : -1;
     });
 
     return res;

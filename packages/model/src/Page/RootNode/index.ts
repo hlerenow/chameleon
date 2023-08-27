@@ -143,13 +143,18 @@ export class CRootNode {
     return materialModel?.findByComponentName(this.data.componentName);
   }
 
-  updateValue(val?: Partial<CRootNodeModelDataType>) {
-    const oldData = this.data;
-    const newVal = {
+  updateWithPlainObj(val?: Partial<CRootNodeModelDataType>) {
+    const newVal: CRootNodeModelDataType = {
       ...this.data,
       ...val,
     };
     this.data = parseSchema(newVal, this, this.materialsModel);
+    return newVal;
+  }
+
+  updateValue(val?: Partial<CRootNodeModelDataType>) {
+    const oldData = this.data;
+    this.updateWithPlainObj(val);
     this.emitter.emit('onNodeChange', {
       value: this.data,
       preValue: oldData,

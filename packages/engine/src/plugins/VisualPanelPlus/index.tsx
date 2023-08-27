@@ -14,9 +14,12 @@ import { ClassNameEditor } from '@/component/ClassNameEditor';
 import { CSSEditor, CSSEditorRef, CSSVal } from '@/component/CSSEditor';
 import { formatCSSProperty, formatCssToNodeVal, formatNodeValToEditor, StyleArr, styleArr2Obj } from '@/utils/css';
 
-export const VisualPanelPlus = (props: { node: CNode | CRootNode; pluginCtx: CPluginCtx }) => {
+export const VisualPanelPlus = (props: { node: CNode | CRootNode | null; pluginCtx: CPluginCtx }) => {
   const formRef = useRef<CSSPropertiesVariableBindEditorRef>(null);
-  const node = props.pluginCtx.pageModel.getNode(props.node.id)!;
+  const node = props.node;
+  if (!node) {
+    return <></>;
+  }
   const cssPropertyEditorRef = useRef<CSSPropertiesEditorRef>(null);
   const cssEditorRef = useRef<CSSEditorRef>(null);
   const [style, setStyle] = useState<Record<string, any>>({});
@@ -105,6 +108,6 @@ export const VisualPanelPlusConfig: CRightPanelItem = {
   name: 'Visual',
   view: ({ node, pluginCtx }) => <VisualPanelPlus node={node} pluginCtx={pluginCtx} />,
   show: (props) => {
-    return props.node.material?.value.advanceCustom?.rightPanel?.visual !== false;
+    return props.node?.material?.value.advanceCustom?.rightPanel?.visual !== false;
   },
 };
