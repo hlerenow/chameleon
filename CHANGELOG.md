@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.24](https://github.com/ByteCrazy/chameleon/compare/v0.0.23...v0.0.24) (2023-08-27)
+
+### ✨ Features | 新功能
+
+* **engine, model, render:** 🎸 fixed node maybe is null on rightPanel ([aee551e](https://github.com/ByteCrazy/chameleon/commit/aee551e77454f61900318003f9e3a3ffb1ef9427))
+
 ## [0.0.23](https://github.com/ByteCrazy/chameleon/compare/v0.0.22...v0.0.23) (2023-08-26)
 
 ### 🐛 Bug Fixes | Bug 修复
