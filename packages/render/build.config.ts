@@ -15,7 +15,7 @@ export default {
   // 额外的 vite 配置
   vite: {
     define: {
-      // 'process.env.NODE_ENV': JSON.stringify('production'),
+      'process.env.NODE_ENV': JSON.stringify('production'),
     },
     plugins: [
       dts({
