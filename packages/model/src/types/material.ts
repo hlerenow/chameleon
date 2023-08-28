@@ -494,6 +494,7 @@ export type AdvanceCustom = {
       node: CNode | CRootNode;
     }
   ) => (...args: any[]) => React.ReactElement;
+  dropPlaceholder?: (props: { node: CNode | CRootNode }) => React.ReactNode;
   /** 配置右侧面板 */
   rightPanel?: {
     /** 是否显示相应的面板 */

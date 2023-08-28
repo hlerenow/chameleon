@@ -86,8 +86,6 @@ export const DefaultDropPlaceholder: React.FC<{ node: CNode | CRootNode }> = (pr
         fontSize: '14px',
         color: 'gray',
         cursor: 'default',
-        minWidth: '300px',
-        minHeight: '50px',
         width: width,
         height: height,
         ...style,
@@ -157,8 +155,9 @@ export class DesignRender extends React.Component<DesignRenderProp> {
           !hasChildren &&
           (node.isContainer() || node.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER)
         ) {
+          const nodeDropPlaceholder = node.material?.value.advanceCustom?.dropPlaceholder;
           newChildren.push(
-            React.createElement(self.dropPlaceholder, {
+            React.createElement(nodeDropPlaceholder || self.dropPlaceholder, {
               node: node,
             })
           );
