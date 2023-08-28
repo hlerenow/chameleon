@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.27](https://github.com/ByteCrazy/chameleon/compare/v0.0.26...v0.0.27) (2023-08-28)
+
+### ✨ Features | 新功能
+
+* **engine:** 🎸 plugin system support add addCustomView method ([ce6db8f](https://github.com/ByteCrazy/chameleon/commit/ce6db8fcf1b87e6e3e14ed7464e7615c0ecc852b))
+
 ## [0.0.26](https://github.com/ByteCrazy/chameleon/compare/v0.0.25...v0.0.26) (2023-08-27)
 
 ### 🐛 Bug Fixes | Bug 修复

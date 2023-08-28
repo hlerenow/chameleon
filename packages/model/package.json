@@ -1,6 +1,6 @@
 {
   "name": "@chamn/model",
-  "version": "0.0.26",
+  "version": "0.0.27",
   "files": [
     "dist"
   ],
@@ -30,7 +30,7 @@
     "superstruct": "^0.16.0"
   },
   "devDependencies": {
-    "@chamn/build-script": "^0.0.26",
+    "@chamn/build-script": "^0.0.27",
     "@types/lodash": "^4.14.192",
     "@types/lodash-es": "^4.17.6",
     "jest": "^28.1.3",
