@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.28](https://github.com/ByteCrazy/chameleon/compare/v0.0.27...v0.0.28) (2023-08-29)
+
+### ✨ Features | 新功能
+
+* **model, render:** 🎸 node support custom dropPlaceholder ([dabdbc0](https://github.com/ByteCrazy/chameleon/commit/dabdbc00b375d5b8491ff3498075caac45473a98))
+
 ## [0.0.27](https://github.com/ByteCrazy/chameleon/compare/v0.0.26...v0.0.27) (2023-08-28)
 
 **Note:** Version bump only for package @chamn/render

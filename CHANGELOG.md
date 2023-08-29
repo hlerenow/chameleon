@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.28](https://github.com/ByteCrazy/chameleon/compare/v0.0.27...v0.0.28) (2023-08-29)
+
+### ✨ Features | 新功能
+
+* **model, render:** 🎸 node support custom dropPlaceholder ([dabdbc0](https://github.com/ByteCrazy/chameleon/commit/dabdbc00b375d5b8491ff3498075caac45473a98))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine:** 🐛 fixed click can't add component into canvas ([b8e8c2c](https://github.com/ByteCrazy/chameleon/commit/b8e8c2c703f20c2bc2836dc2e1f91b02b994e5ca))
+* **layout:** 🐛 fixed not auto inert component when drag on a empty aera ([45d9ae3](https://github.com/ByteCrazy/chameleon/commit/45d9ae3b0b874a225e068f378f6be07584bb2f87))
+
 ## [0.0.27](https://github.com/ByteCrazy/chameleon/compare/v0.0.26...v0.0.27) (2023-08-28)
 
 ### ✨ Features | 新功能

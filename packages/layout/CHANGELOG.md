@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.28](https://github.com/ByteCrazy/chameleon/compare/v0.0.27...v0.0.28) (2023-08-29)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **layout:** 🐛 fixed not auto inert component when drag on a empty aera ([45d9ae3](https://github.com/ByteCrazy/chameleon/commit/45d9ae3b0b874a225e068f378f6be07584bb2f87))
+
 ## [0.0.27](https://github.com/ByteCrazy/chameleon/compare/v0.0.26...v0.0.27) (2023-08-28)
 
 **Note:** Version bump only for package @chamn/layout

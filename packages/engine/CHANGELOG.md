@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.28](https://github.com/ByteCrazy/chameleon/compare/v0.0.27...v0.0.28) (2023-08-29)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine:** 🐛 fixed click can't add component into canvas ([b8e8c2c](https://github.com/ByteCrazy/chameleon/commit/b8e8c2c703f20c2bc2836dc2e1f91b02b994e5ca))
+
 ## [0.0.27](https://github.com/ByteCrazy/chameleon/compare/v0.0.26...v0.0.27) (2023-08-28)
 
 ### ✨ Features | 新功能
