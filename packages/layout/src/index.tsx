@@ -570,19 +570,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         this.designRenderRef.current?.getInstancesById(dragStartNode?.id || '') || []
       ).shift();
       this.dragStartNode = dragStartNode || null;
-      // 可以终止拖拽开始
-      if (this.props.onNodeDragStart) {
-        const res = await this.props.onNodeDragStart(eventObj);
-        if (res === false) {
-          this.cancelDrag(eventObj);
-          return;
-        }
-      }
 
-      // dom 不存在
-      if (!startInstance) {
-        return;
-      }
       const currentSelectDom = this.designRenderRef.current?.getDomsById(currentSelectInstance?._NODE_ID || '');
       const dragStartDom = this.designRenderRef.current?.getDomsById(dragStartNode?.id || '');
       // 新增节点
@@ -596,8 +584,21 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         // 清空之前的选中
         onSelectNode?.(null, eventObj.current);
       } else if (currentSelectDom?.length && dragStartDom?.length) {
+        // dom 不存在
+        if (!startInstance) {
+          return;
+        }
+
         // 如果当前选中的dom 不包含 拖动开始的元素
         if (!currentSelectDom[0].contains(dragStartDom[0])) {
+          // 可以终止拖拽开始
+          if (this.props.onNodeDragStart) {
+            const res = await this.props.onNodeDragStart(eventObj);
+            if (res === false) {
+              this.cancelDrag(eventObj);
+              return;
+            }
+          }
           this.setState({
             currentSelectId: startInstance._NODE_ID,
             currentSelectInstance: startInstance,
@@ -608,11 +609,33 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           onSelectNode?.(startInstance?._NODE_MODEL || null, eventObj.current);
         } else {
           this.dragStartNode = currentSelectInstance?._NODE_MODEL || null;
+          // 可以终止拖拽开始
+          if (this.props.onNodeDragStart) {
+            eventObj.extraData.dragNode = this.dragStartNode!;
+            eventObj.extraData.dragNodeUID = currentSelectInstance?._UNIQUE_ID;
+            const res = await this.props.onNodeDragStart(eventObj);
+            if (res === false) {
+              this.cancelDrag(eventObj);
+              return;
+            }
+          }
           this.setState({
             hoverComponentInstances: [],
           });
         }
       } else if (!currentSelectDom?.length) {
+        // dom 不存在
+        if (!startInstance) {
+          return;
+        }
+        // 可以终止拖拽开始
+        if (this.props.onNodeDragStart) {
+          const res = await this.props.onNodeDragStart(eventObj);
+          if (res === false) {
+            this.cancelDrag(eventObj);
+            return;
+          }
+        }
         // 没有选中元素时，当前拖动的元素为选中元素
         this.setState({
           currentSelectId: startInstance._NODE_ID,
