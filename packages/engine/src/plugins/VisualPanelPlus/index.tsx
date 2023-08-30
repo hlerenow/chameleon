@@ -4,7 +4,7 @@ import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';
 
 import styles from './style.module.scss';
-import { CSSPropertiesEditor, CSSPropertiesEditorRef } from '../../component/CSSPropertiesEditor';
+import { CSSPropertiesEditorRef } from '../../component/CSSPropertiesEditor';
 import {
   CSSPropertiesVariableBindEditor,
   CSSPropertiesVariableBindEditorRef,
@@ -85,7 +85,7 @@ export const VisualPanelPlus = (props: { node: CNode | CRootNode | null; pluginC
         items={[
           {
             key: 'origin-css-edit',
-            label: <span className={styles.header}>Style Variable Bind</span>,
+            label: <span className={styles.header}>Style Variable</span>,
             children: (
               <CSSPropertiesVariableBindEditor
                 ref={formRef}

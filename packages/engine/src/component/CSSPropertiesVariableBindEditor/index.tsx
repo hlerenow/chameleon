@@ -186,7 +186,7 @@ const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, InnerSingl
                   },
                 }}
               >
-                <Input
+                <Input.TextArea
                   status={valueFormatStatus}
                   value={innerValue.value.value}
                   onChange={(e) => {

@@ -221,7 +221,7 @@ export const CSSEditor = (props: CSSEditorProps) => {
           items={[
             {
               key: 'normal',
-              label: <span>Normal</span>,
+              label: <span>Default</span>,
               children: (
                 <CSSPropertiesEditor
                   ref={(ref) => {

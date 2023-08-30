@@ -41,7 +41,7 @@ const properties: CMaterialPropsType = [
                       name: 'status',
                       title: '启用',
                       valueType: 'boolean',
-                      setters: ['ExpressionSetter'],
+                      setters: ['BooleanSetter', 'ExpressionSetter'],
                     },
                   ],
                 },

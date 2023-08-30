@@ -124,7 +124,7 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
     };
 
     const { run: updateOuterValueDebounce } = useDebounceFn(updateOuterValue, {
-      wait: 20,
+      wait: 0,
     });
 
     const [keyInputWidth, setKeyInputWidth] = useState(0);
