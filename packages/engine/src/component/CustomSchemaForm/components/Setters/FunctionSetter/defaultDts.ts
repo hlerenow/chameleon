@@ -1,4 +1,37 @@
-export const DefaultTslibSource = `
+type SetStateInternal<T> = {
+  _(
+    partial:
+      | T
+      | Partial<T>
+      | {
+          _(state: T): T | Partial<T>;
+        }['_'],
+    replace?: boolean | undefined
+  ): void;
+}['_'];
+export interface StoreApi<T> {
+  setState: SetStateInternal<T>;
+  getState: () => T;
+  subscribe: (listener: (state: T, prevState: T) => void) => () => void;
+  /**
+   * @deprecated Use `unsubscribe` returned by `subscribe`
+   */
+  destroy: () => void;
+}
+export declare class StoreManager {
+  storeMap: Map<string, StoreApi<any>>;
+  getStore(storeName: string): StoreApi<any> | undefined;
+  getState(nodeId: string): any;
+  getStateObj(nodeId: string): {
+    state: any;
+    updateState: (newState: Record<any, any>) => void;
+  };
+  setState(nodeId: string, newState: Record<any, any>): void | undefined;
+  connect<T extends Record<any, any> = any>(name: string, cb: (newState: T) => void): () => void;
+  getStateSnapshot(): Record<string, any>;
+  destroy(): void;
+}
+
 type ContextType = {
   /** 渲染函数的入口参数 */
   params?: Record<any, any>;
@@ -29,19 +62,23 @@ type ContextType = {
     updateState?: (newState: any) => void;
   };
   /**  用于访访问和管理页面被注册为全局的局部 state 快照，在闭包中使用会存在值不是最新的情况 */
-  stateManager?: Record<string, {
-    state: any,
-    updateState: (newState: Record<string, any>) => void
-  }>;
+  stateManager: Record<
+    string,
+    {
+      state: any;
+      updateState: (newState: Record<string, any>) => void;
+    }
+  >;
   /** 循环数据 */
   loopData?: Record<any, any>;
   /** 组件节点的 Ref */
-  refs?: {get: (nodeId: string) => any};
+  refs?: { get: (nodeId: string) => any };
   storeManager?: StoreManager;
   /** 第三方辅助库 */
   thirdLibs?: Record<string, any>;
 };
 
 /** 渲染上下文 */
-declare var $$context: ContextType;
-`;
+declare global {
+  const $$context: ContextType;
+}

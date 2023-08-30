@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Button, ConfigProvider, Modal } from 'antd';
 import { CSetter, CSetterProps } from '../type';
 import { MonacoEditor, MonacoEditorInstance } from '../../../../MonacoEditor';
-import { DefaultTslibSource } from './defaultDts';
+import DefaultTslibSource from './defaultDts?raw';
 import { CNodePropsTypeEnum } from '@chamn/model';
 
 export const FunctionSetter: CSetter<any> = ({
