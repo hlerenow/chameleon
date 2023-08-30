@@ -29,8 +29,8 @@
     "lint": "eslint --ext .tsx,.ts src/",
     "prettier": "prettier --write ./src",
     "test": "jest",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "peerDependencies": {
     "react": ">=16.9.0",
@@ -59,13 +59,15 @@
     "@babel/core": "^7.21.0",
     "@chamn/build-script": "^0.0.28",
     "@chamn/demo-page": "^0.0.28",
-    "@storybook/addon-actions": "^6.5.16",
-    "@storybook/addon-essentials": "^6.5.16",
-    "@storybook/addon-interactions": "^6.5.16",
-    "@storybook/addon-links": "^6.5.16",
-    "@storybook/builder-vite": "^0.4.2",
-    "@storybook/react": "^6.5.16",
-    "@storybook/testing-library": "^0.0.13",
+    "@storybook/addon-docs": "^7.4.0",
+    "@storybook/addon-essentials": "^7.4.0",
+    "@storybook/addon-interactions": "^7.4.0",
+    "@storybook/addon-links": "^7.4.0",
+    "@storybook/addon-onboarding": "^1.0.8",
+    "@storybook/blocks": "^7.4.0",
+    "@storybook/react": "^7.4.0",
+    "@storybook/react-vite": "^7.4.0",
+    "@storybook/testing-library": "^0.2.0",
     "@types/consola": "^2.2.5",
     "@types/lodash-es": "^4.17.6",
     "@types/react": "^18.0.15",
@@ -73,6 +75,7 @@
     "babel-loader": "^8.3.0",
     "cross-env": "^7.0.3",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "prop-types": "^15.8.1",
     "rc-select": "^14.4.0",
     "re-resizable": "^6.9.9",
     "react": "^18.2.0",
@@ -81,7 +84,8 @@
     "react-i18next": "^12.1.1",
     "react-router-dom": "^6.7.0",
     "rollup-plugin-visualizer": "^5.8.3",
-    "sass": "^1.54.0"
+    "sass": "^1.54.0",
+    "storybook": "^7.4.0"
   },
   "config": {},
   "gitHead": "7475e219a826c2bd8f65350733931a847d99e2cd"

@@ -1,7 +1,7 @@
 import { viteStaticCopy } from 'vite-plugin-static-copy';
-import path from 'path';
 import pkg from './package.json';
 import { visualizer } from 'rollup-plugin-visualizer';
+import commonConfig from './build.common.config';
 
 // 开发模式默认读取 index.html 作为开发模式入口
 // entry 作为打包库入口
@@ -52,16 +52,7 @@ const mainConfig = {
       copyPublicDir: process.env.BUILD_TYPE === 'APP',
     },
     plugins: plugins,
-    resolve: {
-      alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
-    },
-    css: {
-      preprocessorOptions: {
-        scss: {
-          additionalData: '@import "@/assets/styles/mixin.scss";',
-        },
-      },
-    },
+    ...commonConfig,
     define: {
       'process.env': JSON.stringify('{}'),
       __RUN_MODE__: JSON.stringify(process.env.BUILD_TYPE),

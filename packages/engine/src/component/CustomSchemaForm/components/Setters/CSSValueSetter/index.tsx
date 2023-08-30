@@ -1,8 +1,7 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { AutoComplete, ConfigProvider, Input, InputProps } from 'antd';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { AutoComplete, ConfigProvider } from 'antd';
 import { CSetter, CSetterProps } from '../type';
 import { BaseSelectRef } from 'rc-select';
-import { useDebounceFn } from 'ahooks';
 import clsx from 'clsx';
 import styles from './style.module.scss';
 import { CSSProperties, CSSPropertiesKey } from '../../../../CSSPropertiesEditor/cssProperties';
@@ -17,21 +16,17 @@ export const CSSValueSetter: CSetter<CSSValueSetterProps> = ({
   propertyKey = '',
   value,
   initialValue,
-  ...props
 }: CSetterProps<CSSValueSetterProps>) => {
-  const { keyPaths, onSetterChange } = setterContext;
+  // const { keyPaths, onSetterChange } = setterContext;
   const propertyValueRef = useRef<BaseSelectRef | null>(null);
   const [innerValue, setInnerVal] = useState<any>(value ?? (initialValue || ''));
   const [focusState, setFocusState] = useState(false);
   const updateOuterValue = () => {
     onValueChange?.(innerValue);
   };
-  useLayoutEffect(() => {
+  useEffect(() => {
     setInnerVal(value);
   }, [value]);
-  const { run: updateOuterValueDebounce } = useDebounceFn(updateOuterValue, {
-    wait: 10,
-  });
 
   const optionsValue = useMemo(() => {
     const list = CSSProperties[propertyKey as unknown as CSSPropertiesKey]?.values || [];
@@ -57,7 +52,7 @@ export const CSSValueSetter: CSetter<CSSValueSetterProps> = ({
         value={innerValue}
         onChange={(val) => {
           setInnerVal(val);
-          updateOuterValueDebounce();
+          updateOuterValue();
         }}
         style={{
           flex: 1,

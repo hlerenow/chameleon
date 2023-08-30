@@ -102,4 +102,4 @@ export const FunctionSetter: CSetter<any> = ({
   );
 };
 
-FunctionSetter.setterName = '函数 设置器';
+FunctionSetter.setterName = '函数设置器';
