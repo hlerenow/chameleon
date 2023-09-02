@@ -9,7 +9,7 @@ import { TableMeta } from './table';
 import { LayoutMeta } from './layout/index';
 import { AdvanceButtonMeta } from './advanceCustomButton';
 
-export const Material: CMaterialType[] = [
+export const Material: CMaterialType<any>[] = [
   TableMeta,
   ModalMeta,
   ButtonMeta,
