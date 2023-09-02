@@ -107,6 +107,7 @@ export const CSSEditor = (props: CSSEditorProps) => {
     Object.keys(res).forEach((key) => {
       newVal[key] = formatCSSProperty(res[key] || {}).normalProperty;
     });
+
     return newVal;
   }, [selectedStateTag, cssVal]);
 

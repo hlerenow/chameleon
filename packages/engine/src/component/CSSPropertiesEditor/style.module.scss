@@ -15,13 +15,25 @@
     .ant-select-selector input {
       color: $textColor !important;
     }
-    .ant-select-status-error {
-      border-bottom: 1px solid red !important;
-    }
   }
 
   .inputAuto {
     border-bottom: 1px solid rgba(128, 128, 128, 0.23);
+    transition: all 0.1s;
+    height: 30px;
+
+    &.error {
+      border-bottom: 1px solid red !important;
+    }
+  }
+
+  .keyField {
+    position: relative;
+    font-size: 14px;
+    height: 30px;
+    &.notEdit {
+      border-bottom: 1px solid transparent !important;
+    }
   }
 
   .active {
@@ -30,7 +42,7 @@
 }
 
 .cssBox {
-  overflow-x: hidden;
+  overflow: hidden;
   :global {
     .ant-collapse-borderless > .ant-collapse-item {
       border-bottom: 1px solid #e4e4e4;

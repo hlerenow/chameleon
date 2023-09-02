@@ -1,6 +1,6 @@
 // Button.stories.ts|tsx
 
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import { VisualPanelPlus } from '@/plugins/VisualPanelPlus';
 import { CNode, CPage } from '@chamn/model';
 import { PluginManager } from '@/core/pluginManager';
@@ -25,9 +25,9 @@ export default {
       </div>
     ),
   ],
-} as ComponentMeta<typeof VisualPanelPlus>;
+} as Meta<typeof VisualPanelPlus>;
 
-const Template: ComponentStory<typeof TargetComponent> = (args) => <TargetComponent />;
+const Template: StoryFn<typeof TargetComponent> = (args) => <TargetComponent />;
 
 const node = new CNode({
   props: {
@@ -73,4 +73,4 @@ const pluginManager = new PluginManager({
 });
 
 const ctx = pluginManager.createPluginCtx();
-export const Default = () => <Template pluginCtx={ctx}></Template>;
+export const Default = () => <Template></Template>;

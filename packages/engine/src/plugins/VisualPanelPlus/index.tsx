@@ -20,7 +20,6 @@ export const VisualPanelPlus = (props: { node: CNode | CRootNode | null; pluginC
   if (!node) {
     return <></>;
   }
-  const cssPropertyEditorRef = useRef<CSSPropertiesEditorRef>(null);
   const cssEditorRef = useRef<CSSEditorRef>(null);
   const [style, setStyle] = useState<Record<string, any>>({});
   const formatStyle = useMemo(() => {
@@ -33,8 +32,7 @@ export const VisualPanelPlus = (props: { node: CNode | CRootNode | null; pluginC
       lastNode.current = node;
       const newStyle = node.value.style || {};
       setStyle(newStyle);
-      const { normalProperty, expressionProperty } = formatCSSProperty(newStyle);
-      cssPropertyEditorRef.current?.setValue(normalProperty);
+      const { expressionProperty } = formatCSSProperty(newStyle);
       formRef.current?.setValue(expressionProperty);
       const fCss = formatNodeValToEditor(node.value.css);
       cssEditorRef.current?.setValue(fCss);
@@ -46,7 +44,7 @@ export const VisualPanelPlus = (props: { node: CNode | CRootNode | null; pluginC
       node.emitter.off('onNodeChange', handel);
       node.emitter.off('onReloadPage', handel);
     };
-  }, [node]);
+  }, [node.id]);
 
   const onUpdateStyle = (styleArr: StyleArr) => {
     // merge style

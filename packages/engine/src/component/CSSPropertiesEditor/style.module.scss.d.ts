@@ -4,8 +4,10 @@ declare const classNames: typeof globalClassNames & {
   readonly 'ant-select-selector': 'ant-select-selector';
   readonly 'ant-select-single': 'ant-select-single';
   readonly 'ant-select-selection-search': 'ant-select-selection-search';
-  readonly 'ant-select-status-error': 'ant-select-status-error';
   readonly inputAuto: 'inputAuto';
+  readonly error: 'error';
+  readonly keyField: 'keyField';
+  readonly notEdit: 'notEdit';
   readonly active: 'active';
   readonly cssBox: 'cssBox';
   readonly 'ant-collapse-borderless': 'ant-collapse-borderless';

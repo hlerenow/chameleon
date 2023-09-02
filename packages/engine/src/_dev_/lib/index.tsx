@@ -15,9 +15,7 @@ export const CLayout = () => {
   };
 
   useEffect(() => {
-    console.log(contentEditableRef);
     document.addEventListener('click', (e) => {
-      console.log('click 55666', e);
       if (e.target && contentEditableRef.current) {
         if (!(contentEditableRef.current as HTMLDivElement).contains(e.target as any)) {
           (contentEditableRef.current as any)?.blur();

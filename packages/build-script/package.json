@@ -7,7 +7,7 @@
   "description": "",
   "main": "index.js",
   "bin": {
-    "build-script": "./lib/cjs/index.js"
+    "build-script": "./bin/run.js"
   },
   "types": "types/index.d.ts",
   "scripts": {

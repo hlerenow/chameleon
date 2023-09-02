@@ -1,6 +1,8 @@
 import { join, dirname } from 'path';
+import { getCommonConfig } from '@chamn/build-script/lib/esm/index';
 const { mergeConfig } = require('vite');
 const viteConfig = require('../build.config').vite;
+
 /**
  * This function is used to resolve the absolute path of a package.
  * It is needed in projects that use Yarn PnP or are set up within a monorepo.
@@ -26,6 +28,7 @@ const config = {
     autodocs: 'tag',
   },
   async viteFinal(config) {
+    const viteCommonConfig = await getCommonConfig();
     return mergeConfig(config, {
       // Use the same "resolve" configuration as your app
       resolve: viteConfig.resolve,
@@ -34,6 +37,7 @@ const config = {
       optimizeDeps: {
         include: ['storybook-dark-mode'],
       },
+      plugins: [viteCommonConfig.plugins[0]],
       define: {
         global: 'window',
       },

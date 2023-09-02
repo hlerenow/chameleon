@@ -1,5 +1,5 @@
 scripts
-bin
+bin/*
 lib
 example
 jest.*
