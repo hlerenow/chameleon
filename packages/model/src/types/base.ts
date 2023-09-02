@@ -15,6 +15,7 @@ export enum SetterTypeEnum {
   TEXT_AREA_SETTER = 'TextAreaSetter',
   COLOR_SETTER = 'ColorSetter',
   AntDColorSetter = 'AntDColorSetter',
+  RadioGroupSetter = 'RadioGroupSetter',
 }
 
 export type SetterBasicType = string;

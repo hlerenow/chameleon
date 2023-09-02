@@ -13,6 +13,7 @@ import { CSSValueSetter } from './CSSValueSetter';
 import { ColorSetter } from './ColorSetter';
 import { AntDColorSetter } from './AntDColorSetter';
 import { SliderSetter } from './SliderSetter';
+import { RadioGroupSetter } from './RadioGroupSetter';
 
 export default {
   StringSetter,
@@ -29,6 +30,7 @@ export default {
   ColorSetter,
   SliderSetter,
   AntDColorSetter,
+  RadioGroupSetter,
 } as Record<string, CSetter>;
 
 export * from './type';

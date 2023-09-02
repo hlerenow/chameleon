@@ -7,6 +7,7 @@ export const ButtonMeta: CMaterialType<
   | 'CSSSizeSetter'
   | 'BoxSizingSetter'
   | 'AntDColorSetter'
+  | 'RadioGroupSetter'
 > = {
   title: 'Button',
   componentName: 'Button',
@@ -24,6 +25,27 @@ export const ButtonMeta: CMaterialType<
       valueType: 'string',
       setters: [
         'AntDColorSetter',
+        {
+          componentName: 'RadioGroupSetter',
+          props: {
+            options: [
+              {
+                label: 'A',
+                value: 'a',
+              },
+              {
+                label: 'B',
+                value: 'b',
+              },
+              {
+                label: 'C',
+                value: 'c',
+              },
+            ],
+            optionType: 'button',
+            buttonStyle: 'solid',
+          },
+        },
         'ColorSetter',
         'SliderSetter',
         'CSSSizeSetter',
