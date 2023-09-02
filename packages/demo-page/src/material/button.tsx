@@ -2,7 +2,11 @@ import { CMaterialType } from '@chamn/model';
 import React from 'react';
 
 export const ButtonMeta: CMaterialType<
-  'ColorSetter' | 'SliderSetter' | 'CSSSizeSetter' | 'BoxSizingSetter'
+  | 'ColorSetter'
+  | 'SliderSetter'
+  | 'CSSSizeSetter'
+  | 'BoxSizingSetter'
+  | 'AntDColorSetter'
 > = {
   title: 'Button',
   componentName: 'Button',
@@ -19,6 +23,7 @@ export const ButtonMeta: CMaterialType<
       title: 'setter test',
       valueType: 'string',
       setters: [
+        'AntDColorSetter',
         'ColorSetter',
         'SliderSetter',
         'CSSSizeSetter',

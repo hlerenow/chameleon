@@ -14,6 +14,7 @@ export enum SetterTypeEnum {
   COMPONENT_SETTER = 'ComponentSetter',
   TEXT_AREA_SETTER = 'TextAreaSetter',
   COLOR_SETTER = 'ColorSetter',
+  AntDColorSetter = 'AntDColorSetter',
 }
 
 export type SetterBasicType = string;

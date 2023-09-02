@@ -11,6 +11,7 @@ import { FunctionSetter } from './FunctionSetter';
 import { TextAreaSetter } from './TextAreaSetter';
 import { CSSValueSetter } from './CSSValueSetter';
 import { ColorSetter } from './ColorSetter';
+import { AntDColorSetter } from './AntDColorSetter';
 import { SliderSetter } from './SliderSetter';
 
 export default {
@@ -27,6 +28,7 @@ export default {
   CSSValueSetter,
   ColorSetter,
   SliderSetter,
+  AntDColorSetter,
 } as Record<string, CSetter>;
 
 export * from './type';
