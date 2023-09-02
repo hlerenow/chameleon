@@ -53,6 +53,7 @@
     "lodash-es": "^4.17.21",
     "mitt": "^3.0.0",
     "monaco-editor": "^0.41.0",
+    "react-color": "^2.19.3",
     "vite-plugin-static-copy": "^0.17.0"
   },
   "devDependencies": {
@@ -71,6 +72,7 @@
     "@types/consola": "^2.2.5",
     "@types/lodash-es": "^4.17.6",
     "@types/react": "^18.0.15",
+    "@types/react-color": "^3.0.6",
     "@types/react-dom": "^18.0.6",
     "babel-loader": "^8.3.0",
     "cross-env": "^7.0.3",

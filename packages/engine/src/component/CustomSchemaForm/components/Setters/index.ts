@@ -10,6 +10,7 @@ import { JSONSetter } from './JSONSetter';
 import { FunctionSetter } from './FunctionSetter';
 import { TextAreaSetter } from './TextAreaSetter';
 import { CSSValueSetter } from './CSSValueSetter';
+import { ColorSetter } from './ColorSetter';
 
 export default {
   StringSetter,
@@ -23,6 +24,7 @@ export default {
   FunctionSetter,
   TextAreaSetter,
   CSSValueSetter,
+  ColorSetter,
 } as Record<string, CSetter>;
 
 export * from './type';

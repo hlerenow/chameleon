@@ -1,4 +1,3 @@
-import React from 'react';
 import { ConfigProvider, Input, InputProps } from 'antd';
 import { CSetter, CSetterProps } from '../type';
 

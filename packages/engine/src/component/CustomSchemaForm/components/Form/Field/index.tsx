@@ -10,13 +10,13 @@ export type CFieldProps = {
   condition?: (formState: Record<string, any>) => boolean;
   onConditionValueChange?: (val: boolean) => void;
   noStyle?: boolean;
+  hiddenLabel?: boolean;
 };
 
 export const CField = (props: CFieldProps) => {
-  const { children, label, tips, name } = props;
+  const { children, label, tips, name, hiddenLabel } = props;
   let labelView: ReactNode = label;
-  const { formState, updateContext, updateConditionConfig } =
-    React.useContext(CFormContext);
+  const { formState, updateContext, updateConditionConfig } = React.useContext(CFormContext);
   useEffect(() => {
     if (props.condition) {
       updateConditionConfig(name, props.condition);
@@ -36,11 +36,7 @@ export const CField = (props: CFieldProps) => {
     }
     labelView = (
       <Tooltip
-        title={
-          <span style={{ color: 'rgba(255,255,255,0.9', fontSize: '12px' }}>
-            {newTip}
-          </span>
-        }
+        title={<span style={{ color: 'rgba(255,255,255,0.9', fontSize: '12px' }}>{newTip}</span>}
         color="rgba(50,50,50,0.8)"
       >
         <span className={styles.tipsLabel}>{label}</span>
@@ -74,7 +70,7 @@ export const CField = (props: CFieldProps) => {
 
   return (
     <div className={styles.fieldBox}>
-      <div className={styles.label}>{labelView}</div>
+      {hiddenLabel !== true && <div className={styles.label}>{labelView}</div>}
       <div className={styles.content}>{newChildren}</div>
     </div>
   );

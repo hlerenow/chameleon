@@ -13,6 +13,7 @@ export enum SetterTypeEnum {
   FUNCTION_SETTER = 'FunctionSetter',
   COMPONENT_SETTER = 'ComponentSetter',
   TEXT_AREA_SETTER = 'TextAreaSetter',
+  COLOR_SETTER = 'ColorSetter',
 }
 
 export type SetterBasicType = string;

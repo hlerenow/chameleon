@@ -1,7 +1,7 @@
 import { CMaterialType } from '@chamn/model';
 import React from 'react';
 
-export const ButtonMeta: CMaterialType = {
+export const ButtonMeta: CMaterialType<'ColorSetter'> = {
   title: 'Button',
   componentName: 'Button',
   npm: {
@@ -12,6 +12,23 @@ export const ButtonMeta: CMaterialType = {
   },
   icon: 'https://alifd.oss-cn-hangzhou.aliyuncs.com/fusion-cool/icons/icon-light/ic_light_button.png',
   props: [
+    {
+      name: 'setterTest',
+      title: 'setter test',
+      valueType: 'string',
+      setters: ['ColorSetter'],
+    },
+    {
+      name: 'setterTest2',
+      title: 'setter test2',
+      valueType: 'string',
+      setters: [
+        {
+          componentName: 'ColorSetter',
+          hiddenLabel: true,
+        },
+      ],
+    },
     {
       name: 'type',
       title: '按钮类型',

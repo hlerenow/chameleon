@@ -75,7 +75,7 @@ export const VisualPanelPlus = (props: { node: CNode | CRootNode | null; pluginC
         />
       </div>
       <Collapse
-        defaultActiveKey={['origin-css-edit']}
+        // defaultActiveKey={['origin-css-edit']}
         bordered={false}
         style={{
           marginBottom: '10px',
