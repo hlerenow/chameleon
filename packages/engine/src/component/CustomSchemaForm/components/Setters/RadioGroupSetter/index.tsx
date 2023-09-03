@@ -1,4 +1,4 @@
-import { ColorPicker, ConfigProvider, Radio } from 'antd';
+import { ConfigProvider, Radio } from 'antd';
 import { CSetter, CSetterProps } from '../type';
 
 type ColorSetterProps = {

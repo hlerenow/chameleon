@@ -1,12 +1,13 @@
-import { ConfigProvider, Input, InputProps } from 'antd';
+import { ConfigProvider } from 'antd';
 import { CSetter, CSetterProps } from '../type';
+import { CSSSizeInput, CSSSizeInputProps } from '@/component/CSSSizeInput';
 
-export const CSSSizeSetter: CSetter<InputProps> = ({
+export const CSSSizeSetter: CSetter<CSSSizeInputProps> = ({
   onValueChange,
   setterContext,
   initialValue,
   ...props
-}: CSetterProps<InputProps & { initialValue?: string }>) => {
+}: CSetterProps<CSSSizeInputProps & { initialValue?: string }>) => {
   const { keyPaths, onSetterChange } = setterContext;
   return (
     <ConfigProvider
@@ -16,16 +17,16 @@ export const CSSSizeSetter: CSetter<InputProps> = ({
         },
       }}
     >
-      <Input
+      <CSSSizeInput
+        min={0}
         {...props}
         value={props.value ?? initialValue}
-        onChange={(e) => {
-          props.onChange?.(e);
-          onValueChange?.(e.target.value);
+        onValueChange={(newVal) => {
+          onValueChange?.(newVal);
         }}
       />
     </ConfigProvider>
   );
 };
 
-CSSSizeSetter.setterName = '字符设置器';
+CSSSizeSetter.setterName = 'CSS size 设置器';

@@ -8,6 +8,7 @@ export const ButtonMeta: CMaterialType<
   | 'BoxSizingSetter'
   | 'AntDColorSetter'
   | 'RadioGroupSetter'
+  | 'CSSSizeSetter'
 > = {
   title: 'Button',
   componentName: 'Button',

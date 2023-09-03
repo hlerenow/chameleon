@@ -110,7 +110,7 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
       };
     }
     return newProps;
-  }, [setters]);
+  }, [setters, currentSetter]);
 
   const setterContext = {
     formRef,

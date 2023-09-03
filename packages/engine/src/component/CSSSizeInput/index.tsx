@@ -140,12 +140,15 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
       unit: 'px',
     };
     const tempVal = parseFloat(props.value || '');
-    if (tempVal === tempVal) {
+    if (!isNaN(tempVal)) {
       res.value = String(tempVal);
     }
+    console.log('🚀 ~ file: index.tsx:120 ~ value:', props.value);
 
     const unit = outValue.replace(res.value, '').trim() as keyof MinMaxType;
-    res.unit = unit || 'px';
+    if (['px', '%', 'rem', 'vw', 'vx'].includes(unit)) {
+      res.unit = unit || 'px';
+    }
     return res;
   }, [props.value]);
 
@@ -173,7 +176,11 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
     if (props.cumulativeTransform) {
       data = props.cumulativeTransform(data);
     }
-    let newVal = parseFloat(value) + data.cumulativeX;
+    let num = parseFloat(value);
+    if (isNaN(num)) {
+      num = 0;
+    }
+    let newVal = num + data.cumulativeX;
 
     if (currentMinMix.min !== undefined) {
       newVal = Math.max(newVal, currentMinMix.min);

@@ -14,6 +14,7 @@ import { ColorSetter } from './ColorSetter';
 import { AntDColorSetter } from './AntDColorSetter';
 import { SliderSetter } from './SliderSetter';
 import { RadioGroupSetter } from './RadioGroupSetter';
+import { CSSSizeSetter } from './CSSSizeSetter';
 
 export default {
   StringSetter,
@@ -31,6 +32,7 @@ export default {
   SliderSetter,
   AntDColorSetter,
   RadioGroupSetter,
+  CSSSizeSetter,
 } as Record<string, CSetter>;
 
 export * from './type';
