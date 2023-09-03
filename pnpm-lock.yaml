@@ -144,27 +144,6 @@ importers:
         specifier: ^4.9.5
         version: 4.9.5
 
-  packages/build-script-example:
-    devDependencies:
-      '@chamn/build-script':
-        specifier: workspace:*
-        version: link:../build-script
-      '@types/react':
-        specifier: ^18.0.15
-        version: 18.0.15
-      '@types/react-dom':
-        specifier: ^18.0.6
-        version: 18.0.6
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      sass:
-        specifier: ^1.54.0
-        version: 1.62.0
-
   packages/demo-page:
     devDependencies:
       '@chamn/build-script':
