@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CNode, CRootNode } from '@chamn/model';
 import { CPluginCtx } from '../../core/pluginManager';
-import { CRightPanelItem } from '../RightPanel/view';
+import { CRightPanelItem, RightPanelOptions } from '../RightPanel/view';
 
 import styles from './style.module.scss';
 import {
@@ -12,8 +12,9 @@ import { Collapse } from 'antd';
 import { ClassNameEditor } from '@/component/ClassNameEditor';
 import { CSSEditor, CSSEditorRef, CSSVal } from '@/component/CSSEditor';
 import { formatCSSProperty, formatCssToNodeVal, formatNodeValToEditor, StyleArr, styleArr2Obj } from '@/utils/css';
+import { waitReactUpdate } from '@/utils';
 
-export const VisualPanelPlus = (props: { node: CNode | CRootNode | null; pluginCtx: CPluginCtx }) => {
+export const VisualPanelPlus = (props: RightPanelOptions) => {
   const formRef = useRef<CSSPropertiesVariableBindEditorRef>(null);
   const node = props.node;
   if (!node) {
@@ -26,24 +27,28 @@ export const VisualPanelPlus = (props: { node: CNode | CRootNode | null; pluginC
   }, [style]);
 
   const lastNode = useRef<CNode | CRootNode>();
+  const updatePanelValue = () => {
+    lastNode.current = node;
+    const newStyle = node.value.style || {};
+    setStyle(newStyle);
+    const { allProperty } = formatCSSProperty(newStyle);
+    const fCss = formatNodeValToEditor(node.value.css);
+    waitReactUpdate({
+      cb: () => {
+        formRef.current?.setValue([...allProperty]);
+        cssEditorRef.current?.setValue(fCss);
+      },
+    });
+  };
   useEffect(() => {
-    const handel = () => {
-      lastNode.current = node;
-      const newStyle = node.value.style || {};
-      setStyle(newStyle);
-      const { expressionProperty } = formatCSSProperty(newStyle);
-      formRef.current?.setValue(expressionProperty);
-      const fCss = formatNodeValToEditor(node.value.css);
-      cssEditorRef.current?.setValue(fCss);
-    };
-    handel();
-    node.emitter.on('onNodeChange', handel);
-    node.emitter.on('onReloadPage', handel);
+    updatePanelValue();
+    node.emitter.on('onNodeChange', updatePanelValue);
+    node.emitter.on('onReloadPage', updatePanelValue);
     () => {
-      node.emitter.off('onNodeChange', handel);
-      node.emitter.off('onReloadPage', handel);
+      node.emitter.off('onNodeChange', updatePanelValue);
+      node.emitter.off('onReloadPage', updatePanelValue);
     };
-  }, [node.id]);
+  }, [node.id, props.activeTab]);
 
   const onUpdateStyle = (styleArr: StyleArr) => {
     // merge style
@@ -79,6 +84,11 @@ export const VisualPanelPlus = (props: { node: CNode | CRootNode | null; pluginC
         style={{
           marginBottom: '10px',
         }}
+        onChange={(val) => {
+          if (val.length) {
+            updatePanelValue();
+          }
+        }}
         items={[
           {
             key: 'origin-css-edit',
@@ -103,7 +113,7 @@ export const VisualPanelPlus = (props: { node: CNode | CRootNode | null; pluginC
 export const VisualPanelPlusConfig: CRightPanelItem = {
   key: 'VisualPanelPlus',
   name: 'Visual',
-  view: ({ node, pluginCtx }) => <VisualPanelPlus node={node} pluginCtx={pluginCtx} />,
+  view: ({ node, pluginCtx, activeTab }) => <VisualPanelPlus node={node} pluginCtx={pluginCtx} activeTab={activeTab} />,
   show: (props) => {
     return props.node?.material?.value.advanceCustom?.rightPanel?.visual !== false;
   },

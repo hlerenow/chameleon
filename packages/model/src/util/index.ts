@@ -6,25 +6,26 @@ import { CNode } from '../Page/RootNode/Node';
 import { CProp } from '../Page/RootNode/Node/prop';
 import { CSlot } from '../Page/RootNode/Node/slot';
 import { InnerComponentNameEnum } from '../types/rootNode';
+import { FunctionPropType, JSExpressionPropType, RenderPropType } from '@/types/node';
 
-export const isExpression = (arg: any) => {
-  if (arg?.type === CNodePropsTypeEnum.EXPRESSION) {
+export const isExpression = (val: any): val is JSExpressionPropType => {
+  if (val?.type === CNodePropsTypeEnum.EXPRESSION) {
     return true;
   } else {
     return false;
   }
 };
 
-export const isJSSlotPropNode = (arg: any) => {
-  if (arg?.type === CNodePropsTypeEnum.SLOT) {
+export const isJSSlotPropNode = (val: any): val is RenderPropType => {
+  if (val?.type === CNodePropsTypeEnum.SLOT) {
     return true;
   } else {
     return false;
   }
 };
 
-export const isFunction = (arg: any) => {
-  if (arg?.type === CNodePropsTypeEnum.FUNCTION) {
+export const isFunction = (val: any): val is FunctionPropType => {
+  if (val?.type === CNodePropsTypeEnum.FUNCTION) {
     return true;
   } else {
     return false;

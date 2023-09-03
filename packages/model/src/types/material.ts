@@ -216,6 +216,7 @@ export const SetterTypeDescribe = union([
     /** 用于标记当前数据的初始值，如添加一个数组元素可以使用该值填充 */
     initialValue: optional(any()),
     component: optional(any()),
+    hiddenLabel: optional(boolean()),
   }),
 ]);
 

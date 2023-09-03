@@ -88,7 +88,9 @@ const BaseComponentMeta: CMaterialType[] = [
         snapshotText: 'Block',
         category: '基础组件',
         schema: {
-          props: {
+          props: {},
+          style: {
+            background: 'white',
             width: '100%',
             height: '100px',
           },

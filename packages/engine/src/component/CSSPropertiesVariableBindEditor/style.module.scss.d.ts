@@ -11,5 +11,6 @@ declare const classNames: typeof globalClassNames & {
   readonly 'ant-collapse-borderless': 'ant-collapse-borderless';
   readonly 'ant-collapse-item': 'ant-collapse-item';
   readonly 'ant-collapse-content-box': 'ant-collapse-content-box';
+  readonly switchBtn: 'switchBtn';
 };
 export = classNames;

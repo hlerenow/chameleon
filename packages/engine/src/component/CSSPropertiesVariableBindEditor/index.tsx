@@ -1,268 +1,16 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { CSSPropertyList } from './cssProperties';
+import { ConfigProvider, message } from 'antd';
+import { JSExpressionPropType } from '@chamn/model';
 
 import styles from './style.module.scss';
-
-import { AutoComplete, Button, ConfigProvider, Input, message } from 'antd';
-import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { getTextWidth } from './util';
-import { BaseSelectRef } from 'rc-select';
-import { useDebounceFn } from 'ahooks';
-import clsx from 'clsx';
-import { CNodePropsTypeEnum, JSExpressionPropType } from '@chamn/model';
-import { InputStatus } from 'antd/es/_util/statusUtils';
-
-const defaultPropertyOptions = CSSPropertyList.map((el) => {
-  return {
-    value: el,
-  };
-});
-
-export type InnerSinglePropertyEditorProps = {
-  value?: {
-    key: string;
-    value: JSExpressionPropType;
-  };
-  onValueChange: (value: { key: string; value: JSExpressionPropType }) => void;
-  onDelete?: () => void;
-  onCreate?: (value: { key: string; value: JSExpressionPropType }) => {
-    errorKey?: string[];
-  } | void;
-  mod?: 'create' | 'edit';
-};
-
-export type InnerSinglePropertyEditorRef = {
-  reset: () => void;
-};
-
-const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, InnerSinglePropertyEditorProps>(
-  function SinglePropertyEditorCore(props, ref) {
-    const [keyFormatStatus, setKeyFormatStatus] = useState<InputStatus>('');
-    const [valueFormatStatus, setValueFormatStatus] = useState<InputStatus>('');
-
-    const { mod = 'create' } = props;
-    const [innerValue, setInnerVal] = useState<{
-      key: string;
-      value: JSExpressionPropType;
-    }>({
-      key: props.value?.key || '',
-      value: props.value?.value || {
-        type: CNodePropsTypeEnum.EXPRESSION,
-        value: '',
-      },
-    });
-
-    useEffect(() => {
-      if (props.value) {
-        setInnerVal(props.value);
-      }
-    }, [props.value]);
-
-    const [propertyOptions, setPropertyOptions] = useState(defaultPropertyOptions);
-
-    const onSearch = (searchText: string) => {
-      const newOptions = defaultPropertyOptions.filter((el) => el.value.includes(searchText));
-      if (!searchText) {
-        setPropertyOptions(defaultPropertyOptions);
-      } else {
-        setPropertyOptions(newOptions);
-      }
-    };
-
-    const updateOuterValue = () => {
-      props.onValueChange({
-        ...innerValue,
-      });
-    };
-
-    const { run: updateOuterValueDebounce } = useDebounceFn(updateOuterValue, {
-      wait: 20,
-    });
-
-    const [keyInputWidth, setKeyInputWidth] = useState(0);
-
-    useEffect(() => {
-      getTextWidth(innerValue.key, 13.33).then((w) => {
-        let tempW = parseFloat(w);
-        if (innerValue.key === '') {
-          tempW = 200;
-        }
-        setKeyInputWidth(tempW + 6);
-      });
-    }, [innerValue.key]);
-
-    const propertyKeyRef = useRef<BaseSelectRef | null>(null);
-    const [focusState, setFocusState] = useState({
-      key: false,
-      value: false,
-    });
-    useImperativeHandle(
-      ref,
-      () => {
-        return {
-          reset: () => {
-            setInnerVal({
-              key: '',
-              value: {
-                type: CNodePropsTypeEnum.EXPRESSION,
-                value: '',
-              },
-            });
-            propertyKeyRef.current?.focus();
-          },
-        };
-      },
-      []
-    );
-
-    const innerOnCreate = () => {
-      if (innerValue.key === '') {
-        setKeyFormatStatus('error');
-        return;
-      }
-      if (innerValue.value.value === '') {
-        setValueFormatStatus('error');
-        return;
-      }
-      setKeyFormatStatus('');
-      setValueFormatStatus('');
-
-      const res = props.onCreate?.(innerValue);
-      if (res?.errorKey?.includes('key')) {
-        setKeyFormatStatus('error');
-      }
-      if (res?.errorKey?.includes('value')) {
-        setValueFormatStatus('error');
-      }
-    };
-
-    return (
-      <>
-        <div className={styles.cssFieldBox}>
-          <div className={styles.leftBox}>
-            <div className={styles.row}>
-              <span className={styles.fieldLabel}>Name</span>
-              <AutoComplete
-                status={keyFormatStatus}
-                disabled={mod === 'edit'}
-                ref={propertyKeyRef}
-                onSearch={onSearch}
-                popupMatchSelectWidth={200}
-                value={innerValue.key}
-                onChange={(val) => {
-                  setKeyFormatStatus('');
-                  setInnerVal({
-                    ...innerValue,
-                    key: val,
-                  });
-                }}
-                style={{
-                  width: `${keyInputWidth}px`,
-                }}
-                className={clsx([styles.inputBox])}
-                onFocus={() => {
-                  setFocusState({
-                    key: true,
-                    value: false,
-                  });
-                }}
-                onBlur={() => {
-                  setFocusState({
-                    key: false,
-                    value: false,
-                  });
-                  updateOuterValueDebounce();
-                }}
-                placeholder="property"
-                options={propertyOptions}
-              />
-            </div>
-            <div className={styles.row}>
-              <span className={styles.fieldLabel}>Value</span>
-              <ConfigProvider
-                theme={{
-                  token: {
-                    borderRadius: 4,
-                  },
-                }}
-              >
-                <Input.TextArea
-                  status={valueFormatStatus}
-                  value={innerValue.value.value}
-                  onChange={(e) => {
-                    setValueFormatStatus('');
-                    const newVal: {
-                      type: CNodePropsTypeEnum.EXPRESSION;
-                      value: string;
-                    } = {
-                      type: CNodePropsTypeEnum.EXPRESSION,
-                      value: e.target.value,
-                    };
-                    setInnerVal({
-                      ...innerValue,
-                      value: newVal,
-                    });
-                  }}
-                  onPressEnter={() => {
-                    updateOuterValueDebounce();
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.code === 'Enter' && mod === 'create') {
-                      innerOnCreate();
-                      propertyKeyRef.current?.focus();
-                    }
-                  }}
-                />
-              </ConfigProvider>
-            </div>
-          </div>
-          <div className={styles.rightBox}>
-            {props.onDelete && mod === 'edit' && (
-              <Button
-                size="small"
-                type="text"
-                onClick={() => {
-                  props.onDelete?.();
-                }}
-              >
-                <MinusOutlined
-                  style={{
-                    display: 'inline-flex',
-                    fontSize: '12px',
-                  }}
-                />
-              </Button>
-            )}
-          </div>
-          {props.onCreate && mod === 'create' && (
-            <div>
-              <Button
-                size="small"
-                type="text"
-                icon={
-                  <PlusOutlined
-                    style={{
-                      fontSize: '12px',
-                      display: 'inline-flex',
-                    }}
-                  />
-                }
-                onClick={innerOnCreate}
-              ></Button>
-            </div>
-          )}
-        </div>
-      </>
-    );
-  }
-);
+import { InnerSinglePropertyEditorRef, SinglePropertyEditor } from './SingleProperty';
 
 export type CSSPropertiesVariableBindEditorProps = {
-  initialValue?: { key: string; value: string }[];
+  initialValue?: { key: string; value: string | JSExpressionPropType }[];
   onValueChange?: (val: { key: string; value: string }[]) => void;
 };
 export type CSSPropertiesVariableBindEditorRef = {
-  setValue: (val: { key: string; value: string }[]) => void;
+  setValue: (val: { key: string; value: string | JSExpressionPropType }[]) => void;
 };
 
 export const CSSPropertiesVariableBindEditor = forwardRef<
@@ -288,12 +36,12 @@ export const CSSPropertiesVariableBindEditor = forwardRef<
     }
   }, []);
 
-  const [newProperty, setNewProperty] = useState({
+  const [newProperty, setNewProperty] = useState<{
+    key: string;
+    value: JSExpressionPropType | string;
+  }>({
     key: '',
-    value: {
-      type: CNodePropsTypeEnum.EXPRESSION,
-      value: '',
-    } as JSExpressionPropType,
+    value: '',
   });
 
   const innerOnValueChange = (val: typeof propertyList) => {
@@ -317,6 +65,8 @@ export const CSSPropertiesVariableBindEditor = forwardRef<
                 value={el}
                 mod={'edit'}
                 onValueChange={(newVal) => {
+                  console.log('🚀 ~ file: index.tsx: edit ~ CSSPropertiesVariableBindEditorCore ~ newVal:', newVal);
+
                   if (newVal.key === '') {
                     propertyList.splice(index, 1);
                     setPropertyList([...propertyList]);
@@ -341,6 +91,7 @@ export const CSSPropertiesVariableBindEditor = forwardRef<
           ref={createPropertyRef}
           mod="create"
           onValueChange={(newVal) => {
+            console.log('🚀 ~ file: index.tsx:411 ~ CSSPropertiesVariableBindEditorCore ~ newVal:', newVal);
             setNewProperty(newVal);
           }}
           onCreate={(val) => {
@@ -356,10 +107,7 @@ export const CSSPropertiesVariableBindEditor = forwardRef<
             innerOnValueChange(propertyList);
             setNewProperty({
               key: '',
-              value: {
-                type: CNodePropsTypeEnum.EXPRESSION,
-                value: '',
-              },
+              value: '',
             });
           }}
         />

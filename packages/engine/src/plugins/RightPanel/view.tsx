@@ -8,7 +8,7 @@ import { AdvancePanelConfig } from '../AdvancePanel';
 import styles from './style.module.scss';
 import { VisualPanelPlusConfig } from '../VisualPanelPlus';
 
-export type RightPanelOptions = { node: CNode | CRootNode | null; pluginCtx: CPluginCtx };
+export type RightPanelOptions = { node: CNode | CRootNode | null; pluginCtx: CPluginCtx; activeTab: string };
 
 export type CRightPanelItem = {
   key: string;
@@ -178,7 +178,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
         </div>
       );
     }
-    const panelParams = { node: node, pluginCtx };
+    const panelParams = { node: node, pluginCtx, activeTab: this.state.activeKey };
 
     return (
       <div className={styles.rightPanelContainer}>

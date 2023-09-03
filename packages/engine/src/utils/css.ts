@@ -1,5 +1,5 @@
 import { CSSVal } from '@/component/CSSEditor';
-import { CSSType, CSSValue, isExpression } from '@chamn/model';
+import { CSSType, CSSValue, JSExpressionPropType, isExpression } from '@chamn/model';
 
 export type StyleArr = {
   key: string;
@@ -16,24 +16,26 @@ export const styleArr2Obj = (val: StyleArr) => {
 
 export const formatCSSProperty = (cssVal: Record<string, any>) => {
   const normalProperty: { key: string; value: string }[] = [];
-  const expressionProperty: { key: string; value: any }[] = [];
+  const expressionProperty: { key: string; value: JSExpressionPropType }[] = [];
+  const allProperty: { key: string; value: any }[] = [];
   Object.keys(cssVal).forEach((key) => {
     const val = cssVal[key];
+    const obj = {
+      key,
+      value: val,
+    };
+
+    allProperty.push(obj);
     if (isExpression(val)) {
-      expressionProperty.push({
-        key,
-        value: val,
-      });
+      expressionProperty.push(obj);
     } else {
-      normalProperty.push({
-        key,
-        value: val,
-      });
+      normalProperty.push(obj);
     }
   });
   const res = {
     normalProperty,
     expressionProperty,
+    allProperty,
   };
   return res;
 };
