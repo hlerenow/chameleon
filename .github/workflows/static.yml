@@ -37,7 +37,7 @@ jobs:
         with:
           version: 8
       - run: |
-          pnpm i --no-frozen-lockfile
+          pnpm i
           cd packages/build-script
           pwd
           pnpm run build
