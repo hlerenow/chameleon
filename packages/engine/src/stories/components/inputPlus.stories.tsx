@@ -1,17 +1,17 @@
 // Button.stories.ts|tsx
 
 import { Meta, StoryFn } from '@storybook/react';
-import { ColorSetter } from '@/component/CustomSchemaForm/components/Setters/ColorSetter';
+import { CSSSizeInput } from '@/component/CSSSizeInput';
 import { useState } from 'react';
 
-const TargetComponent = ColorSetter;
+const TargetComponent = CSSSizeInput;
 
 export default {
   /* 👇 The title prop is optional.
    * See https://storybook.js.org/docs/react/configure/overview#configure-story-loading
    * to learn how to generate automatic titles
    */
-  title: 'ColorSetter',
+  title: 'InputNumberPlus',
   component: TargetComponent,
   decorators: [
     (Story) => (
@@ -23,8 +23,24 @@ export default {
 } as Meta<typeof TargetComponent>;
 
 const Template: StoryFn<typeof TargetComponent> = (args) => {
-  const [color, setColor] = useState<string>('white');
-  return <TargetComponent value={color} onValueChange={(newColor: string) => setColor(newColor)} {...args} />;
+  const [val, setVal] = useState('100px');
+  return (
+    <>
+      <TargetComponent
+        value={val}
+        onValueChange={(newVal) => setVal(newVal)}
+        {...args}
+        min={0}
+        max={100}
+        cumulativeTransform={(data) => {
+          const { cumulativeX } = data;
+          data.cumulativeX = Math.ceil(cumulativeX / 10);
+          return data;
+        }}
+      />
+      <span>value: {val}</span>
+    </>
+  );
 };
 
 export const Default = () => <Template></Template>;

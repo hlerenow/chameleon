@@ -1,0 +1,10 @@
+.cssSizeInput {
+  display: inline-block;
+  .unitSelect {
+    :global {
+      .ant-select-focused .ant-select-selector {
+        color: rgba(0, 0, 0, 0.85);
+      }
+    }
+  }
+}
