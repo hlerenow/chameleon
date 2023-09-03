@@ -13,7 +13,6 @@ node_modules
 *.iml
 *.iws
 
-**/bin**/*
 
 # IDEs and editors
 /.idea

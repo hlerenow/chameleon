@@ -4,7 +4,6 @@ import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';
 
 import styles from './style.module.scss';
-import { CSSPropertiesEditorRef } from '../../component/CSSPropertiesEditor';
 import {
   CSSPropertiesVariableBindEditor,
   CSSPropertiesVariableBindEditorRef,
