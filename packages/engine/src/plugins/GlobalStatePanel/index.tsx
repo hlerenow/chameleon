@@ -46,6 +46,7 @@ const GlobalStatePanel = (props: GlobalStatePanelProps) => {
   return (
     <div className={styles.box}>
       <MonacoEditor
+        initialValue={JSON.stringify(pluginCtx.pageModel.value.componentsTree.value.state, null, 2)}
         language={'json'}
         options={{
           automaticLayout: true,

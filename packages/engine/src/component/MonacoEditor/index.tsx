@@ -32,6 +32,7 @@ export const MonacoEditor = (props: MonacoEditorProps) => {
         beforeMount={handleEditorBeforeMount}
         onMount={handleEditorDidMount}
         options={props.options}
+        onChange={props.onChange}
       />
     </>
   );
