@@ -1,4 +1,4 @@
-import { InputNumber, Select } from 'antd';
+import { ConfigProvider, InputNumber, InputProps, Select } from 'antd';
 import { MouseEventHandler, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './style.module.scss';
 import { addEventListenerReturnCancel } from '@chamn/layout';
@@ -10,7 +10,7 @@ type CumulativeInfoType = {
   cumulativeY: number;
 };
 
-const useDragSize = function (options?: {
+export const useDragSize = function (options?: {
   onStart?: (data: CumulativeInfoType) => void;
   onChange?: (data: CumulativeInfoType) => void;
   onEnd?: (data: CumulativeInfoType) => void;
@@ -112,7 +112,6 @@ type MinMaxType = {
   vw?: number;
   vh?: number;
   rem?: number;
-  '': number;
 };
 
 export type CSSSizeInputProps = {
@@ -120,6 +119,9 @@ export type CSSSizeInputProps = {
   onValueChange?: (newVal: string) => void;
   min?: MinMaxType | number;
   max?: MinMaxType | number;
+  size?: InputProps['size'];
+  style?: React.CSSProperties;
+  unit?: boolean;
   /** 累计的偏移量，映射为具体的值，默认 1:1 */
   cumulativeTransform?: (params: CumulativeInfoType) => CumulativeInfoType;
 };
@@ -143,7 +145,6 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
     if (!isNaN(tempVal)) {
       res.value = String(tempVal);
     }
-    console.log('🚀 ~ file: index.tsx:120 ~ value:', props.value);
 
     const unit = outValue.replace(res.value, '').trim() as keyof MinMaxType;
     if (['px', '%', 'rem', 'vw', 'vx'].includes(unit)) {
@@ -244,6 +245,7 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
   const unitSelect = (
     <span className={styles.unitSelect}>
       <Select
+        size={props.size}
         defaultValue="px"
         value={valObj.unit}
         onChange={(val) => {
@@ -252,6 +254,10 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
             unit: val,
           });
         }}
+        style={{
+          width: '40px',
+        }}
+        popupMatchSelectWidth={false}
         options={[
           { value: 'px', label: 'px' },
           { value: '%', label: '%' },
@@ -263,20 +269,28 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
     </span>
   );
   return (
-    <div className={styles.cssSizeInput} {...dragSizeHandle}>
-      <InputNumber
-        value={Number(valObj.value)}
-        addonAfter={unitSelect}
-        min={currentMinMix.min}
-        max={currentMinMix.max}
-        onChange={(val) => {
-          console.log('input value change', val);
-          updateValue({
-            value: String(val),
-            unit: valObj.unit,
-          });
-        }}
-      />
-    </div>
+    <ConfigProvider
+      theme={{
+        token: {
+          borderRadius: 2,
+        },
+      }}
+    >
+      <div className={styles.cssSizeInput} {...dragSizeHandle} style={props.style}>
+        <InputNumber
+          size={props.size}
+          value={Number(valObj.value)}
+          addonAfter={props.unit === false ? '' : unitSelect}
+          min={currentMinMix.min}
+          max={currentMinMix.max}
+          onChange={(val) => {
+            updateValue({
+              value: String(val),
+              unit: valObj.unit,
+            });
+          }}
+        />
+      </div>
+    </ConfigProvider>
   );
 };

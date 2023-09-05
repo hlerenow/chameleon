@@ -286,7 +286,7 @@ export const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, Inn
                     },
                   ],
                   onClick: onChooseSetter,
-                  defaultSelectedKeys: [],
+                  defaultSelectedKeys: [innerValueObj.isExp ? 'expression' : 'text'],
                 }}
               >
                 <SwapOutlined />

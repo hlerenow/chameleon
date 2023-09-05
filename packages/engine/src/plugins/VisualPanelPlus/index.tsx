@@ -8,11 +8,12 @@ import {
   CSSPropertiesVariableBindEditor,
   CSSPropertiesVariableBindEditorRef,
 } from '../../component/CSSPropertiesVariableBindEditor';
-import { Collapse } from 'antd';
+import { Collapse, Radio } from 'antd';
 import { ClassNameEditor } from '@/component/ClassNameEditor';
 import { CSSEditor, CSSEditorRef, CSSVal } from '@/component/CSSEditor';
 import { formatCSSProperty, formatCssToNodeVal, formatNodeValToEditor, StyleArr, styleArr2Obj } from '@/utils/css';
 import { waitReactUpdate } from '@/utils';
+import { CSSUIPanel } from '@/component/CSSUIPanel';
 
 export const VisualPanelPlus = (props: RightPanelOptions) => {
   const formRef = useRef<CSSPropertiesVariableBindEditorRef>(null);
@@ -71,6 +72,7 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
           marginBottom: '10px',
         }}
       >
+        <CSSUIPanel />
         <ClassNameEditor
           onValueChange={(newVal) => {
             node.value.classNames = newVal;

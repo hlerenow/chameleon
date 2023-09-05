@@ -78,7 +78,7 @@ export const CSSEditor = (props: CSSEditorProps) => {
   const handleChange = (tag: DomCSSStatusType) => {
     setSelectedStateTag(tag);
   };
-  const [domStatusList, setDomStatusList] = useState<string[]>(['normal']);
+  const [domStatusList, setDomStatusList] = useState<string[]>([]);
   const cssStatusList = useMemo(() => {
     return DOM_CSS_STATUS_LIST.filter((el) => {
       return !domStatusList.includes(el.key);

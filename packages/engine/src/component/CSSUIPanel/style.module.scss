@@ -1,0 +1,18 @@
+.label {
+  width: 60px;
+  display: inline-block;
+  color: $fontColor;
+  font-size: 14px;
+  &.font {
+    width: 50px;
+  }
+}
+
+.fontOption {
+  display: inline-block;
+  width: 50px;
+}
+
+.row {
+  padding-bottom: 10px;
+}
