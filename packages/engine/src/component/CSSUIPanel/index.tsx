@@ -5,6 +5,7 @@ import styles from './style.module.scss';
 import { DimensionInput } from './DimensionInput';
 import { MarginAndPaddingInput } from './MarginAndPaddingInput';
 import { FontInput } from './FontInput';
+import { BorderInput } from './BorderInput';
 
 export type CSSUIPanelProps = {};
 
@@ -67,35 +68,7 @@ export const CSSUIPanel = () => {
       {
         key: 'border',
         label: 'Border',
-        children: (
-          <div>
-            <Row>
-              <Col
-                span={12}
-                style={{
-                  display: 'flex',
-                }}
-              >
-                <span className={styles.label}>width:</span>
-                <CSSSizeInput
-                  style={{
-                    width: '90px',
-                  }}
-                  size="small"
-                />
-              </Col>
-              <Col span={12}>
-                <span className={styles.label}>height:</span>
-                <CSSSizeInput
-                  style={{
-                    width: '90px',
-                  }}
-                  size="small"
-                />
-              </Col>
-            </Row>
-          </div>
-        ),
+        children: <BorderInput />,
       },
       {
         key: 'shadow',
@@ -175,7 +148,7 @@ export const CSSUIPanel = () => {
     >
       <Collapse
         items={items}
-        defaultActiveKey={['dimension', 'font']}
+        defaultActiveKey={['dimension', 'font', 'border']}
         style={{
           marginBottom: '10px',
         }}

@@ -45,7 +45,6 @@ export const FontInput = (props: FontInputProps) => {
         ...oldVal,
         ...newVal,
       };
-      console.log('🚀 ~ file: index.tsx:45 ~ setInnerVal ~ finalVal:', finalVal);
 
       props.onChange?.(finalVal);
       return finalVal;
@@ -67,7 +66,6 @@ export const FontInput = (props: FontInputProps) => {
           <span className={clsx([styles.label])}>Color:</span>
           <ColorPicker
             showText={true}
-            allowClear
             size="small"
             value={realValue.color}
             onChangeComplete={(color) => {
