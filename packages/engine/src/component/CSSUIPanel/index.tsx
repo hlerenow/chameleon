@@ -131,7 +131,6 @@ export const CSSUIPanel = forwardRef<CSSUIPanelRef, CSSUIPanelProps>(({ value, i
           <BorderInput
             ref={borderRef}
             initialValue={initialVal as any}
-            value={value as any}
             onChange={(val) => {
               onValueChange?.({ ...value, ...val });
             }}

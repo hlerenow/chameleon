@@ -45,14 +45,15 @@ export const FontInput = forwardRef<InputCommonRef, FontInputProps>((props, ref)
   );
 
   const updateInnerVal = useCallback(
-    (newVal: Partial<Value>) => {
+    (newVal: Partial<Value>, noTrigger?: boolean) => {
       setInnerVal((oldVal) => {
         const finalVal = {
           ...oldVal,
           ...newVal,
         };
-
-        props.onChange?.(finalVal);
+        if (noTrigger !== true) {
+          props.onChange?.(finalVal);
+        }
         return finalVal;
       });
     },
@@ -63,7 +64,9 @@ export const FontInput = forwardRef<InputCommonRef, FontInputProps>((props, ref)
     ref,
     () => {
       return {
-        setValue: updateInnerVal,
+        setValue: (newVal) => {
+          updateInnerVal(newVal, true);
+        },
       };
     },
     [updateInnerVal]

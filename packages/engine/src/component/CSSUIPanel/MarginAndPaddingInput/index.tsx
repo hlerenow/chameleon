@@ -4,8 +4,9 @@ import { Row, Col } from 'antd';
 import styles from '../style.module.scss';
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 'react';
 import { InputCommonRef } from '../type';
+import clsx from 'clsx';
 
-type Value = Record<'left' | 'right' | 'top' | 'bottom', string>;
+type Value = Record<'left' | 'right' | 'top' | 'bottom' | 'all', string>;
 
 export type MarginAndPaddingInputProps = {
   value?: Value;
@@ -21,6 +22,8 @@ const maxVal = {
   rem: 100,
 };
 
+const inputW = '100px';
+
 export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPaddingInputProps>((props, ref) => {
   const [innerVal, setInnerVal] = useState<Value>(
     props.initialValue ?? {
@@ -28,6 +31,7 @@ export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPadding
       right: '',
       top: '',
       bottom: '',
+      all: '',
     }
   );
 
@@ -39,11 +43,16 @@ export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPadding
           ...newVal,
         };
         const outVal = Object.keys(finalVal).reduce((res, k) => {
-          res[`${props.prefix}-${k}`] = (finalVal as unknown as any)?.[k];
+          if (k === 'all') {
+            res[`${props.prefix}`] = (finalVal as unknown as any)?.[k];
+          } else {
+            res[`${props.prefix}-${k}`] = (finalVal as unknown as any)?.[k];
+          }
           return res;
         }, {} as any);
         if (noTrigger !== true) {
           props.onChange?.(outVal);
+          console.log('🚀 ~ file: index.tsx:55 ~ setInnerVal ~ outVal:', outVal);
         }
         return finalVal;
       });
@@ -54,24 +63,34 @@ export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPadding
     ref,
     () => {
       return {
-        setValue: (newVal) => updateInnerVal(newVal, true),
+        setValue: (newVal) => {
+          updateInnerVal(formatValue(newVal, props.prefix), true);
+        },
       };
     },
-    [updateInnerVal]
+    [props.prefix, updateInnerVal]
   );
 
-  const realValue = useMemo(() => {
-    const targetKeyList = Object.keys(props.value || {}).filter((k) => k.includes(props.prefix));
+  const formatValue = (obj: Record<string, any>, prefix: string) => {
+    const targetKeyList = Object.keys(obj || {}).filter((k) => k.includes(prefix));
     const tempVal = targetKeyList.reduce((res, k) => {
-      res[k.replace(`${props.prefix}-`, '')] = (props.value as unknown as any)?.[k];
+      if (k.replace(`${props.prefix}`, '') === '') {
+        res['all'] = (obj as unknown as any)?.[k];
+      } else {
+        res[k.replace(`${props.prefix}-`, '')] = (obj as unknown as any)?.[k];
+      }
       return res;
     }, {} as any);
+    return tempVal;
+  };
 
+  const realValue = useMemo(() => {
+    const tempVal = formatValue(props.value || {}, props.prefix);
     if (props.value === undefined) {
       return innerVal;
     }
     return tempVal;
-  }, [props.value, innerVal]);
+  }, [props.value, props.prefix, innerVal]);
 
   return (
     <div>
@@ -82,7 +101,7 @@ export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPadding
             display: 'flex',
           }}
         >
-          <span className={styles.label}>Top:</span>
+          <span className={clsx([styles.label, styles['m-p']])}>T:</span>
           <CSSSizeInput
             min={0}
             max={maxVal}
@@ -93,13 +112,13 @@ export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPadding
               });
             }}
             style={{
-              width: '90px',
+              width: inputW,
             }}
             size="small"
           />
         </Col>
         <Col span={12}>
-          <span className={styles.label}>Left:</span>
+          <span className={clsx([styles.label, styles['m-p']])}>L:</span>
           <CSSSizeInput
             min={0}
             max={maxVal}
@@ -110,7 +129,7 @@ export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPadding
               });
             }}
             style={{
-              width: '90px',
+              width: inputW,
             }}
             size="small"
           />
@@ -119,7 +138,7 @@ export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPadding
       <div>
         <Row className={styles.row}>
           <Col span={12}>
-            <span className={styles.label}>Bottom:</span>
+            <span className={clsx([styles.label, styles['m-p']])}>B:</span>
             <CSSSizeInput
               min={0}
               max={maxVal}
@@ -130,7 +149,7 @@ export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPadding
                 });
               }}
               style={{
-                width: '90px',
+                width: inputW,
               }}
               size="small"
             />
@@ -141,10 +160,10 @@ export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPadding
               display: 'flex',
             }}
           >
-            <span className={styles.label}>Right:</span>
+            <span className={clsx([styles.label, styles['m-p']])}>R:</span>
             <CSSSizeInput
               style={{
-                width: '90px',
+                width: inputW,
               }}
               min={0}
               max={maxVal}

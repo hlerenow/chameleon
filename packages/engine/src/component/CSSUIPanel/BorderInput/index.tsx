@@ -6,11 +6,9 @@ import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 
 import { DEFAULT_PRESET_COLORS } from '@/config/colorPickerColorList';
 import clsx from 'clsx';
 import { InputCommonRef } from '../type';
+import { CloseCircleOutlined } from '@ant-design/icons';
 
-type Value = Record<
-  'border' | 'border-left' | 'border-right' | 'border-top' | 'border-bottom' | 'border-radius',
-  string
->;
+type Value = Record<'border' | 'border-radius', string>;
 
 const maxVal = {
   px: 100,
@@ -29,10 +27,6 @@ export const BorderInput = forwardRef<InputCommonRef, BorderInputProps>((props, 
   const [innerVal, setInnerVal] = useState<Value>(
     props.initialValue ?? {
       border: '',
-      'border-left': '',
-      'border-right': '',
-      'border-top': '',
-      'border-bottom': '',
       'border-radius': '',
     }
   );
@@ -63,25 +57,19 @@ export const BorderInput = forwardRef<InputCommonRef, BorderInputProps>((props, 
     [updateInnerVal]
   );
 
-  const [currentSelectPos, setCurrentSelectPos] = useState('border');
-
-  const realValue = useMemo(() => {
-    return props.value ?? innerVal;
-  }, [props.value, innerVal]);
-
   const currentEditVal = useMemo(() => {
-    const tempVal = realValue[currentSelectPos as unknown as keyof Value] || '';
+    const tempVal = innerVal['border'] || '';
     const list = tempVal.split(' ');
     return {
       size: list[0] || '',
       type: list[1] || '',
       color: tempVal.replace(' ', '').replace(list[0], '').replace(list[1], ''),
     };
-  }, [realValue, currentSelectPos]);
+  }, [innerVal]);
 
   const updateSingleBorderVal = (newBorderVal: typeof currentEditVal) => {
     updateInnerVal({
-      [currentSelectPos]: `${newBorderVal.size || '0px'} ${newBorderVal.type || 'none'} ${
+      border: `${newBorderVal.size || '0px'} ${newBorderVal.type || 'none'} ${
         newBorderVal.color || 'transparent'
       }`.trim(),
     });
@@ -90,24 +78,26 @@ export const BorderInput = forwardRef<InputCommonRef, BorderInputProps>((props, 
   return (
     <div>
       <Row className={styles.row}>
-        <span className={clsx([styles.label])}>Position:</span>
-        <Radio.Group
-          size="small"
-          defaultValue={currentSelectPos}
-          buttonStyle="solid"
-          onChange={(newVal) => {
-            setCurrentSelectPos(newVal.target.value);
+        <Col
+          style={{
+            position: 'relative',
           }}
+          span={24}
         >
-          <Radio.Button value="border">All</Radio.Button>
-          <Radio.Button value="border-top">Top</Radio.Button>
-          <Radio.Button value="border-right">Right</Radio.Button>
-          <Radio.Button value="border-bottom">Bottom</Radio.Button>
-          <Radio.Button value="border-left">Left</Radio.Button>
-        </Radio.Group>
-      </Row>
-      <Row className={styles.row}>
-        <Col>
+          <CloseCircleOutlined
+            style={{
+              position: 'absolute',
+              right: 0,
+              top: '5px',
+              color: '#4e4e4e',
+              cursor: 'pointer',
+            }}
+            onClick={() => {
+              updateInnerVal({
+                border: undefined,
+              });
+            }}
+          />
           <span className={styles.label}>Size:</span>
           <CSSSizeInput
             min={0}
@@ -116,10 +106,11 @@ export const BorderInput = forwardRef<InputCommonRef, BorderInputProps>((props, 
             style={{
               width: '100px',
             }}
+            unitList={['px']}
             onValueChange={(val) => {
               updateSingleBorderVal({
                 ...currentEditVal,
-                size: val,
+                size: val || '',
               });
             }}
             size="small"
@@ -135,7 +126,6 @@ export const BorderInput = forwardRef<InputCommonRef, BorderInputProps>((props, 
           <span className={clsx([styles.label])}>Color:</span>
           <ColorPicker
             showText={true}
-            allowClear
             size="small"
             value={currentEditVal.color || ''}
             onChangeComplete={(color) => {
@@ -178,7 +168,7 @@ export const BorderInput = forwardRef<InputCommonRef, BorderInputProps>((props, 
           <CSSSizeInput
             min={0}
             max={maxVal}
-            value={realValue['border-radius']}
+            value={innerVal['border-radius']}
             onValueChange={(val) => {
               updateInnerVal({
                 'border-radius': val,
