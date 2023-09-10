@@ -44,7 +44,7 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
     updatePanelValue();
     node.emitter.on('onNodeChange', updatePanelValue);
     node.emitter.on('onReloadPage', updatePanelValue);
-    () => {
+    return () => {
       node.emitter.off('onNodeChange', updatePanelValue);
       node.emitter.off('onReloadPage', updatePanelValue);
     };
