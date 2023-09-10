@@ -41,19 +41,19 @@ const customAttributesMeta: CMaterialPropsType[number] = {
   ],
 };
 
-const widthPropsMeta: CMaterialPropsType[number] = {
-  name: 'width',
-  title: '宽度',
-  valueType: 'string',
-  setters: ['StringSetter', 'ExpressionSetter'],
-};
+// const widthPropsMeta: CMaterialPropsType[number] = {
+//   name: 'width',
+//   title: '宽度',
+//   valueType: 'string',
+//   setters: ['StringSetter', 'ExpressionSetter'],
+// };
 
-const heightPropsMeta: CMaterialPropsType[number] = {
-  name: 'height',
-  title: '高度',
-  valueType: 'string',
-  setters: ['StringSetter', 'ExpressionSetter'],
-};
+// const heightPropsMeta: CMaterialPropsType[number] = {
+//   name: 'height',
+//   title: '高度',
+//   valueType: 'string',
+//   setters: ['StringSetter', 'ExpressionSetter'],
+// };
 
 const htmlNativeComponentMeta = HTMl_TAGS.map((tag) => {
   const DivMeta: CMaterialType = {
@@ -71,8 +71,6 @@ const BaseComponentMeta: CMaterialType[] = [
     title: '块',
     componentName: 'CBlock',
     props: [
-      widthPropsMeta,
-      heightPropsMeta,
       {
         name: 'children',
         title: '文本',
@@ -89,10 +87,18 @@ const BaseComponentMeta: CMaterialType[] = [
         category: '基础组件',
         schema: {
           props: {},
-          style: {
-            background: 'white',
-            width: '100%',
-            height: '100px',
+          css: {
+            value: [
+              {
+                state: 'normal',
+                media: [],
+                style: {
+                  background: 'white',
+                  width: '100%',
+                  height: '100px',
+                },
+              },
+            ],
           },
         },
       },
@@ -103,8 +109,6 @@ const BaseComponentMeta: CMaterialType[] = [
     componentName: 'CContainer',
     isContainer: true,
     props: [
-      widthPropsMeta,
-      heightPropsMeta,
       {
         name: 'afterMount',
         title: '渲染之后',
@@ -126,9 +130,18 @@ const BaseComponentMeta: CMaterialType[] = [
         snapshotText: 'Con',
         category: '基础组件',
         schema: {
-          props: {
-            width: '100%',
-            height: '100px',
+          css: {
+            value: [
+              {
+                state: 'normal',
+                media: [],
+                style: {
+                  background: 'white',
+                  width: '100%',
+                  height: '100px',
+                },
+              },
+            ],
           },
         },
       },
@@ -144,8 +157,6 @@ const BaseComponentMeta: CMaterialType[] = [
         valueType: 'string',
         setters: ['StringSetter', 'ExpressionSetter'],
       },
-      widthPropsMeta,
-      heightPropsMeta,
       customAttributesMeta,
     ],
     groupName: '原子组件',
@@ -155,9 +166,18 @@ const BaseComponentMeta: CMaterialType[] = [
         snapshotText: 'Img',
         category: '基础组件',
         schema: {
-          props: {
-            width: '300px',
-            height: '150px',
+          css: {
+            value: [
+              {
+                state: 'normal',
+                media: [],
+                style: {
+                  background: 'white',
+                  width: '300px',
+                  height: '150px',
+                },
+              },
+            ],
           },
         },
       },
@@ -185,8 +205,6 @@ const BaseComponentMeta: CMaterialType[] = [
         valueType: 'string',
         setters: ['BooleanSetter', 'ExpressionSetter'],
       },
-      widthPropsMeta,
-      heightPropsMeta,
       customAttributesMeta,
     ],
     fixedProps: {
@@ -216,9 +234,20 @@ const BaseComponentMeta: CMaterialType[] = [
         category: '基础组件',
         schema: {
           props: {
-            width: '300px',
-            height: '150px',
             src: 'https://vjs.zencdn.net/v/oceans.mp4',
+          },
+          css: {
+            value: [
+              {
+                state: 'normal',
+                media: [],
+                style: {
+                  background: 'white',
+                  width: '300px',
+                  height: '150px',
+                },
+              },
+            ],
           },
         },
       },
@@ -247,8 +276,6 @@ const BaseComponentMeta: CMaterialType[] = [
         valueType: 'string',
         setters: ['BooleanSetter', 'ExpressionSetter'],
       },
-      widthPropsMeta,
-      heightPropsMeta,
       customAttributesMeta,
     ],
     advanceCustom: {
@@ -317,8 +344,6 @@ const BaseComponentMeta: CMaterialType[] = [
     title: 'Canvas',
     componentName: 'CCanvas',
     props: [
-      widthPropsMeta,
-      heightPropsMeta,
       {
         name: 'afterMount',
         title: '渲染之后',

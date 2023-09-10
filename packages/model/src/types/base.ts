@@ -76,16 +76,16 @@ export type MaterialAssetPackage = {
 export type CSSValue = {
   /**  'normal' | 'hover' | 'active' | 'focus' etc */
   state: string;
-  media: {
+  media?: {
     type: 'max-width';
     value: string;
     style: Record<string, string>;
   }[];
-  style: Record<string, string>;
+  style?: Record<string, string>;
 };
 
 export type CSSType = {
-  class: string;
+  class?: string;
   value: CSSValue[];
 };
 

@@ -11,7 +11,7 @@ export default {
    * See https://storybook.js.org/docs/react/configure/overview#configure-story-loading
    * to learn how to generate automatic titles
    */
-  title: 'InputNumberPlus',
+  title: 'CSSSizeInput',
   component: TargetComponent,
   decorators: [
     (Story) => (
@@ -24,6 +24,7 @@ export default {
 
 const Template: StoryFn<typeof TargetComponent> = (args) => {
   const [val, setVal] = useState('100px');
+  console.log('🚀 ~ file: inputPlus.stories.tsx:27 ~ val:', val);
   return (
     <>
       <TargetComponent

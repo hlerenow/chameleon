@@ -291,6 +291,9 @@ importers:
       antd:
         specifier: ^5.8.5
         version: 5.8.5(react-dom@18.2.0)(react@18.2.0)
+      color:
+        specifier: ^4.2.3
+        version: 4.2.3
       consola:
         specifier: ^2.15.3
         version: 2.15.3
@@ -349,6 +352,9 @@ importers:
       '@storybook/testing-library':
         specifier: ^0.2.0
         version: 0.2.0
+      '@types/color':
+        specifier: ^3.0.4
+        version: 3.0.4
       '@types/consola':
         specifier: ^2.2.5
         version: 2.2.5
@@ -6888,6 +6894,22 @@ packages:
     dependencies:
       '@types/node': 18.15.9
 
+  /@types/color-convert@2.0.1:
+    resolution: {integrity: sha512-GwXanrvq/tBHJtudbl1lSy9Ybt7KS9+rA+YY3bcuIIM+d6jSHUr+5yjO83gtiRpuaPiBccwFjSnAK2qSrIPA7w==}
+    dependencies:
+      '@types/color-name': 1.1.1
+    dev: true
+
+  /@types/color-name@1.1.1:
+    resolution: {integrity: sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==}
+    dev: true
+
+  /@types/color@3.0.4:
+    resolution: {integrity: sha512-OpisS4bqJJwbkkQRrMvURf3DOxBoAg9mysHYI7WgrWpSYHqHGKYBULHdz4ih77SILcLDo/zyHGFyfIl9yb8NZQ==}
+    dependencies:
+      '@types/color-convert': 2.0.1
+    dev: true
+
   /@types/connect-history-api-fallback@1.5.0:
     resolution: {integrity: sha512-4x5FkPpLipqwthjPsF7ZRbOv3uoLUFkTA9G9v583qi4pACvq0uTELrB8OLUzPWUI4IJIyvM85vzkV1nyiI2Lig==}
     dependencies:
@@ -8897,10 +8919,25 @@ packages:
   /color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
 
+  /color-string@1.9.1:
+    resolution: {integrity: sha512-shrVawQFojnZv6xM40anx4CkoDP+fZsw/ZerEMsW/pyzsRbElpsL/DBVW7q3ExxwusdNXI3lXpuhEZkzs8p5Eg==}
+    dependencies:
+      color-name: 1.1.4
+      simple-swizzle: 0.2.2
+    dev: false
+
   /color-support@1.1.3:
     resolution: {integrity: sha512-qiBjkpbMLO/HL68y+lh4q0/O1MZFj2RX6X/KmMa3+gJD3z+WwI1ZzDHysvqHGS3mP6mznPckpXmw1nI9cJjyRg==}
     hasBin: true
     dev: true
+
+  /color@4.2.3:
+    resolution: {integrity: sha512-1rXeuUUiGGrykh+CeBdu5Ie7OJwinCgQY0bc7GCRxy5xVHy+moaqkpL/jqQq0MtQOeYcrqEz4abc5f0KtU7W4A==}
+    engines: {node: '>=12.5.0'}
+    dependencies:
+      color-convert: 2.0.1
+      color-string: 1.9.1
+    dev: false
 
   /colord@2.9.3:
     resolution: {integrity: sha512-jeC1axXpnb0/2nn/Y1LPuLdgXBLH7aDcHu4KEKfqw3CUhX7ZpfBSlPKyqXE6btIgEzfWtrX3/tyBCaCvXvMkOw==}
@@ -11914,6 +11951,10 @@ packages:
 
   /is-arrayish@0.2.1:
     resolution: {integrity: sha512-zz06S8t0ozoDXMG+ube26zeCTNXcKIPJZJi8hBrF4idCLms4CG9QtK7qBl1boi5ODzFpjswb5JPmHCbMpjaYzg==}
+
+  /is-arrayish@0.3.2:
+    resolution: {integrity: sha512-eVRqCvVlZbuw3GrM63ovNSNAeA1K16kaR/LRY/92w0zxQ5/1YzwblUX652i4Xs9RwAGjW9d9y6X88t8OaAJfWQ==}
+    dev: false
 
   /is-bigint@1.0.4:
     resolution: {integrity: sha512-zB9CruMamjym81i2JZ3UMn54PKGsQzsJeo6xvN3HJJ4CAsQNB6iRutp2To77OfCNuoxspsIhzaPoO1zyCEhFOg==}
@@ -17591,6 +17632,12 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /simple-swizzle@0.2.2:
+    resolution: {integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==}
+    dependencies:
+      is-arrayish: 0.3.2
+    dev: false
 
   /simple-update-notifier@2.0.0:
     resolution: {integrity: sha512-a2B9Y0KlNXl9u/vsW6sTIu9vGEpfKu2wRV6l1H3XEas/0gUIzGzBoP/IouTcUQbm9JWZLH3COxyn03TYlFax6w==}

@@ -4,5 +4,7 @@ declare const classNames: typeof globalClassNames & {
   readonly font: 'font';
   readonly fontOption: 'fontOption';
   readonly row: 'row';
+  readonly CSSUIPanel: 'CSSUIPanel';
+  readonly 'ant-radio-button-wrapper': 'ant-radio-button-wrapper';
 };
 export = classNames;

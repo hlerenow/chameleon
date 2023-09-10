@@ -1,16 +1,16 @@
+/* eslint-disable react/display-name */
 import { CSSSizeInput } from '@/component/CSSSizeInput';
 import { Row, Col, ColorPicker, Radio } from 'antd';
 import styles from '../style.module.scss';
-import { useMemo, useState } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 'react';
 import { DEFAULT_PRESET_COLORS } from '@/config/colorPickerColorList';
 import clsx from 'clsx';
+import { InputCommonRef } from '../type';
 
-type Value = Record<'border' | 'border-left' | 'border-right' | 'border-top' | 'border-bottom', string>;
-
-export type BorderInputProps = {
-  value?: Value;
-  onChange?: (newVal: Value) => void;
-};
+type Value = Record<
+  'border' | 'border-left' | 'border-right' | 'border-top' | 'border-bottom' | 'border-radius',
+  string
+>;
 
 const maxVal = {
   px: 100,
@@ -19,32 +19,49 @@ const maxVal = {
   rem: 100,
 };
 
-const alignOptions = [
-  { label: <span className={styles.fontOption}>Left</span>, value: 'left' },
-  { label: <span className={styles.fontOption}>Center</span>, value: 'center' },
-  { label: <span className={styles.fontOption}>Right</span>, value: 'Right' },
-];
+export type BorderInputProps = {
+  value?: Value;
+  initialValue?: Value;
+  onChange?: (newVal: Value) => void;
+};
 
-export const BorderInput = (props: BorderInputProps) => {
-  const [innerVal, setInnerVal] = useState<Value>({
-    border: '',
-    'border-left': '',
-    'border-right': '',
-    'border-top': '',
-    'border-bottom': '',
-  });
+export const BorderInput = forwardRef<InputCommonRef, BorderInputProps>((props, ref) => {
+  const [innerVal, setInnerVal] = useState<Value>(
+    props.initialValue ?? {
+      border: '',
+      'border-left': '',
+      'border-right': '',
+      'border-top': '',
+      'border-bottom': '',
+      'border-radius': '',
+    }
+  );
 
-  const updateInnerVal = (newVal: Partial<Value>) => {
-    setInnerVal((oldVal) => {
-      const finalVal = {
-        ...oldVal,
-        ...newVal,
+  const updateInnerVal = useCallback(
+    (newVal: Partial<Value>, noTrigger?: boolean) => {
+      setInnerVal((oldVal) => {
+        const finalVal = {
+          ...oldVal,
+          ...newVal,
+        };
+        if (noTrigger !== true) {
+          props.onChange?.(finalVal);
+        }
+        return finalVal;
+      });
+    },
+    [props]
+  );
+
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        setValue: (newVal) => updateInnerVal(newVal, true),
       };
-
-      props.onChange?.(finalVal);
-      return finalVal;
-    });
-  };
+    },
+    [updateInnerVal]
+  );
 
   const [currentSelectPos, setCurrentSelectPos] = useState('border');
 
@@ -155,6 +172,25 @@ export const BorderInput = (props: BorderInputProps) => {
           </Radio.Group>
         </Col>
       </Row>
+      <Row className={styles.row}>
+        <Col>
+          <span className={styles.label}>Radius:</span>
+          <CSSSizeInput
+            min={0}
+            max={maxVal}
+            value={realValue['border-radius']}
+            onValueChange={(val) => {
+              updateInnerVal({
+                'border-radius': val,
+              });
+            }}
+            style={{
+              width: '158px',
+            }}
+            size="small"
+          />
+        </Col>
+      </Row>
     </div>
   );
-};
+});

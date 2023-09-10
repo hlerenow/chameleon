@@ -1,7 +1,8 @@
-import { ConfigProvider, InputNumber, InputProps, Select } from 'antd';
+import { ConfigProvider, InputProps, Select } from 'antd';
 import { MouseEventHandler, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './style.module.scss';
 import { addEventListenerReturnCancel } from '@chamn/layout';
+import { InputNumberPlus } from '../InputNumberPlus';
 
 type CumulativeInfoType = {
   x: number;
@@ -10,10 +11,22 @@ type CumulativeInfoType = {
   cumulativeY: number;
 };
 
+const UNIT_LIST = [
+  { value: 'px', label: 'px' },
+  { value: '%', label: '%' },
+  { value: 'vw', label: 'vw' },
+  { value: 'vh', label: 'vh' },
+  { value: 'rem', label: 'rem' },
+];
+
 export const useDragSize = function (options?: {
   onStart?: (data: CumulativeInfoType) => void;
   onChange?: (data: CumulativeInfoType) => void;
   onEnd?: (data: CumulativeInfoType) => void;
+  limitCumulative?: {
+    x?: [number | undefined, number | undefined];
+    y?: [number | undefined, number | undefined];
+  };
 }) {
   const cumulativeInfo = useRef<{
     status: 'running' | '';
@@ -37,52 +50,71 @@ export const useDragSize = function (options?: {
     mouseDown: false,
   });
 
+  const processEnd: MouseEventHandler<any> = useCallback(
+    (e) => {
+      cumulativeInfo.current.mouseDown = false;
+      const { processing } = cumulativeInfo.current;
+
+      options?.onEnd?.({ ...processing });
+      cumulativeInfo.current.status = '';
+      cumulativeInfo.current.processing.cumulativeX = 0;
+      cumulativeInfo.current.processing.cumulativeY = 0;
+    },
+    [options]
+  );
+
   const onMouseDown: MouseEventHandler<any> = useCallback((e) => {
-    const startInfo = cumulativeInfo.current.start;
-    startInfo.x = e.clientX;
-    startInfo.y = e.clientY;
     cumulativeInfo.current.mouseDown = true;
-    options?.onStart?.({ ...startInfo });
   }, []);
 
-  const processMove: MouseEventHandler<any> = (e) => {
-    if (!cumulativeInfo.current.mouseDown) {
-      return;
-    }
-    const { start, processing } = cumulativeInfo.current;
-    // 判断是否是拖拽
-    const tempCumulativeX = e.clientX - start.x;
-    const tempCumulativeY = e.clientY - start.y;
+  const processMove: MouseEventHandler<any> = useCallback(
+    (e) => {
+      if (!cumulativeInfo.current.mouseDown) {
+        return;
+      }
+      const { start, processing } = cumulativeInfo.current;
+      // 判断是否是拖拽
+      const tempCumulativeX = e.clientX - start.x;
+      const tempCumulativeY = e.clientY - start.y;
 
-    const shakeDIstance = 5;
-    if (
-      cumulativeInfo.current.status !== 'running' &&
-      (Math.abs(tempCumulativeX) > shakeDIstance || Math.abs(tempCumulativeY) > shakeDIstance)
-    ) {
-      cumulativeInfo.current.status = 'running';
-    }
+      const shakeDIstance = 10;
+      if (
+        cumulativeInfo.current.status !== 'running' &&
+        (Math.abs(tempCumulativeX) > shakeDIstance || Math.abs(tempCumulativeY) > shakeDIstance)
+      ) {
+        cumulativeInfo.current.status = 'running';
+        const startInfo = cumulativeInfo.current.start;
+        startInfo.x = e.clientX;
+        startInfo.y = e.clientY;
+        options?.onStart?.({ ...startInfo });
+      }
 
-    if (cumulativeInfo.current.status !== 'running') {
-      return;
-    }
-    processing.x = e.clientX;
-    processing.y = e.clientY;
+      if (cumulativeInfo.current.status !== 'running') {
+        return;
+      }
+      processing.x = e.clientX;
+      processing.y = e.clientY;
 
-    processing.cumulativeX = e.clientX - start.x;
-    processing.cumulativeY = e.clientY - start.y;
+      processing.cumulativeX = e.clientX - start.x;
+      processing.cumulativeY = e.clientY - start.y;
 
-    options?.onChange?.({ ...processing });
-  };
+      // 超出最大累积便宜，直接结束拖拽
+      const [minX, maxX] = options?.limitCumulative?.x || [];
+      if (minX !== undefined && processing.cumulativeX < minX) {
+        processEnd(e);
+        return;
+      }
 
-  const processEnd: MouseEventHandler<any> = (e) => {
-    cumulativeInfo.current.mouseDown = false;
-    const { processing } = cumulativeInfo.current;
+      if (maxX !== undefined && processing.cumulativeX > maxX) {
+        processEnd(e);
+        return;
+      }
 
-    if (cumulativeInfo.current.status === 'running') {
-      options?.onEnd?.({ ...processing });
-    }
-    cumulativeInfo.current.status = '';
-  };
+      options?.onChange?.({ ...processing });
+    },
+    [options, processEnd]
+  );
+
   useEffect(() => {
     const globalMoveDispose = addEventListenerReturnCancel(document.body, 'mousemove', (e) => {
       processMove(e as any);
@@ -100,7 +132,7 @@ export const useDragSize = function (options?: {
       globalUpDispose();
       globalLeaveDispose();
     };
-  }, []);
+  }, [processEnd, processMove]);
 
   return {
     onMouseDown,
@@ -116,7 +148,7 @@ type MinMaxType = {
 
 export type CSSSizeInputProps = {
   value?: string;
-  onValueChange?: (newVal: string) => void;
+  onValueChange?: (newVal: string | undefined) => void;
   min?: MinMaxType | number;
   max?: MinMaxType | number;
   size?: InputProps['size'];
@@ -124,6 +156,7 @@ export type CSSSizeInputProps = {
   unit?: boolean;
   /** 累计的偏移量，映射为具体的值，默认 1:1 */
   cumulativeTransform?: (params: CumulativeInfoType) => CumulativeInfoType;
+  unitList?: (keyof MinMaxType)[];
 };
 
 export const CSSSizeInput = (props: CSSSizeInputProps) => {
@@ -135,23 +168,41 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
 
   const originalValObj = useMemo(() => {
     const res: {
-      value: string;
+      value: number | undefined;
       unit: keyof MinMaxType;
     } = {
-      value: '',
+      value: undefined,
       unit: 'px',
     };
+
+    if (props.value === undefined) {
+      return res;
+    }
     const tempVal = parseFloat(props.value || '');
     if (!isNaN(tempVal)) {
-      res.value = String(tempVal);
+      res.value = tempVal;
     }
 
-    const unit = outValue.replace(res.value, '').trim() as keyof MinMaxType;
+    let unit: keyof MinMaxType = 'px';
+    if (res.value !== undefined) {
+      unit = outValue.replace(String(res.value), '').trim() as keyof MinMaxType;
+    }
     if (['px', '%', 'rem', 'vw', 'vx'].includes(unit)) {
       res.unit = unit || 'px';
     }
     return res;
-  }, [props.value]);
+  }, [outValue, props.value]);
+
+  const currentUnitList = useMemo<typeof UNIT_LIST>(() => {
+    if (!props.unitList) {
+      return UNIT_LIST;
+    }
+    return props.unitList
+      .map((el) => {
+        return UNIT_LIST.find((it) => it.value === el);
+      })
+      .filter(Boolean) as typeof UNIT_LIST;
+  }, [props.unitList]);
 
   const currentMinMix = useMemo(() => {
     return {
@@ -163,34 +214,46 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
   const valObj = useMemo(() => {
     const res = { ...originalValObj };
     if (dragSizing.status === 'dragging') {
-      res.value = String(dragSizing.value);
+      res.value = dragSizing.value;
     }
+
     return res;
   }, [originalValObj, dragSizing]);
 
-  const updateValue = (val: { value: string; unit: string }) => {
-    props.onValueChange?.(`${val.value}${val.unit}`);
-  };
+  const updateValue = useCallback(
+    (val: { value: number | undefined; unit: string }) => {
+      let valStr: string | undefined = `${val.value}${val.unit}`;
+      if (val.value === undefined) {
+        valStr = undefined;
+      }
+      props.onValueChange?.(valStr);
+    },
+    [props]
+  );
 
-  const processNewVal = (cumulativeData: CumulativeInfoType, value: string) => {
-    let data = { ...cumulativeData };
-    if (props.cumulativeTransform) {
-      data = props.cumulativeTransform(data);
-    }
-    let num = parseFloat(value);
-    if (isNaN(num)) {
-      num = 0;
-    }
-    let newVal = num + data.cumulativeX;
+  const processNewVal = useCallback(
+    (cumulativeData: CumulativeInfoType, value: number | undefined) => {
+      let data = { ...cumulativeData };
+      if (props.cumulativeTransform) {
+        data = props.cumulativeTransform(data);
+      }
 
-    if (currentMinMix.min !== undefined) {
-      newVal = Math.max(newVal, currentMinMix.min);
-    }
-    if (currentMinMix.max !== undefined) {
-      newVal = Math.min(newVal, currentMinMix.max);
-    }
-    return newVal;
-  };
+      let num = value ?? 0;
+      if (isNaN(num)) {
+        num = 0;
+      }
+      let newVal = num + data.cumulativeX;
+
+      if (currentMinMix.min !== undefined) {
+        newVal = Math.max(newVal, currentMinMix.min);
+      }
+      if (currentMinMix.max !== undefined) {
+        newVal = Math.min(newVal, currentMinMix.max);
+      }
+      return newVal;
+    },
+    [currentMinMix.max, currentMinMix.min, props]
+  );
 
   const onDragStart = useCallback(
     (data: CumulativeInfoType) => {
@@ -199,24 +262,29 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
         value: processNewVal(data, originalValObj.value),
       });
     },
-    [originalValObj]
+    [originalValObj.value, processNewVal]
   );
 
   const onDragMoveChange = useCallback(
     (data: CumulativeInfoType) => {
+      const nV = processNewVal(data, originalValObj.value);
       setDragSizing({
         status: 'dragging',
-        value: processNewVal(data, originalValObj.value),
+        value: nV,
       });
     },
-    [originalValObj]
+    [originalValObj.unit, originalValObj.value]
   );
 
   const onDragEnd = useCallback(
     (data: CumulativeInfoType) => {
       const newVal = processNewVal(data, originalValObj.value);
+      if (dragSizing.status !== 'dragging') {
+        return;
+      }
+
       updateValue({
-        value: String(newVal),
+        value: newVal,
         unit: originalValObj.unit,
       });
       setDragSizing({
@@ -224,7 +292,7 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
         value: 0,
       });
     },
-    [originalValObj]
+    [dragSizing.status, originalValObj, processNewVal, updateValue]
   );
   const handleRef = useRef({
     onStart: onDragStart,
@@ -241,11 +309,15 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
     onStart: (data) => handleRef.current.onStart(data),
     onChange: (data) => handleRef.current.onChange(data),
     onEnd: (data) => handleRef.current.onEnd(data),
+    limitCumulative: {
+      x: [-60, undefined],
+    },
   });
   const unitSelect = (
     <span className={styles.unitSelect}>
       <Select
         size={props.size}
+        disabled={valObj.value === undefined}
         defaultValue="px"
         value={valObj.unit}
         onChange={(val) => {
@@ -258,13 +330,7 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
           width: '40px',
         }}
         popupMatchSelectWidth={false}
-        options={[
-          { value: 'px', label: 'px' },
-          { value: '%', label: '%' },
-          { value: 'vw', label: 'vw' },
-          { value: 'vh', label: 'vh' },
-          { value: 'rem', label: 'rem' },
-        ]}
+        options={currentUnitList}
       />
     </span>
   );
@@ -277,15 +343,15 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
       }}
     >
       <div className={styles.cssSizeInput} {...dragSizeHandle} style={props.style}>
-        <InputNumber
+        <InputNumberPlus
           size={props.size}
-          value={Number(valObj.value)}
+          value={valObj.value}
           addonAfter={props.unit === false ? '' : unitSelect}
           min={currentMinMix.min}
           max={currentMinMix.max}
           onChange={(val) => {
             updateValue({
-              value: String(val),
+              value: val,
               unit: valObj.unit,
             });
           }}

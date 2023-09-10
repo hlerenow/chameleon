@@ -1,19 +1,22 @@
+/* eslint-disable react/display-name */
 import { CSSSizeInput } from '@/component/CSSSizeInput';
 import { Row, Col, ColorPicker, Radio } from 'antd';
 import styles from '../style.module.scss';
-import { useMemo, useState } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 'react';
 import { DEFAULT_PRESET_COLORS } from '@/config/colorPickerColorList';
 import clsx from 'clsx';
+import { InputCommonRef } from '../type';
 
 type Value = Record<'font-size' | 'color' | 'text-align' | 'font-weight', string>;
 
 export type FontInputProps = {
+  initialValue?: Value;
   value?: Value;
   onChange?: (newVal: Value) => void;
 };
 
 const maxVal = {
-  px: 2048,
+  px: 100,
   vw: 100,
   vh: 100,
   rem: 100,
@@ -31,25 +34,40 @@ const fontWeightOptions = [
   { label: <span className={styles.fontOption}>Bold</span>, value: '700' },
 ];
 
-export const FontInput = (props: FontInputProps) => {
-  const [innerVal, setInnerVal] = useState<Value>({
-    'font-size': '',
-    color: '',
-    'text-align': '',
-    'font-weight': '',
-  });
+export const FontInput = forwardRef<InputCommonRef, FontInputProps>((props, ref) => {
+  const [innerVal, setInnerVal] = useState<Value>(
+    props.initialValue ?? {
+      'font-size': '',
+      color: '',
+      'text-align': '',
+      'font-weight': '',
+    }
+  );
 
-  const updateInnerVal = (newVal: Partial<Value>) => {
-    setInnerVal((oldVal) => {
-      const finalVal = {
-        ...oldVal,
-        ...newVal,
+  const updateInnerVal = useCallback(
+    (newVal: Partial<Value>) => {
+      setInnerVal((oldVal) => {
+        const finalVal = {
+          ...oldVal,
+          ...newVal,
+        };
+
+        props.onChange?.(finalVal);
+        return finalVal;
+      });
+    },
+    [props]
+  );
+
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        setValue: updateInnerVal,
       };
-
-      props.onChange?.(finalVal);
-      return finalVal;
-    });
-  };
+    },
+    [updateInnerVal]
+  );
 
   const realValue = useMemo(() => {
     return props.value ?? innerVal;
@@ -67,7 +85,7 @@ export const FontInput = (props: FontInputProps) => {
           <ColorPicker
             showText={true}
             size="small"
-            value={realValue.color}
+            value={realValue.color || ''}
             onChangeComplete={(color) => {
               updateInnerVal({
                 color: color.toRgbString(),
@@ -122,4 +140,4 @@ export const FontInput = (props: FontInputProps) => {
       </Row>
     </div>
   );
-};
+});

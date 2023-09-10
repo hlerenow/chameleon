@@ -1,7 +1,9 @@
+/* eslint-disable react/display-name */
 import { CSSSizeInput } from '@/component/CSSSizeInput';
-import { Row, Col, Input, InputNumber } from 'antd';
+import { Row, Col } from 'antd';
 import styles from '../style.module.scss';
-import { useMemo, useState } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 'react';
+import { InputCommonRef } from '../type';
 
 const keyList = ['width', 'height', 'min-width', 'max-width', 'min-height', 'max-height', 'flex'] as const;
 
@@ -9,6 +11,7 @@ type Value = Record<typeof keyList[number], string>;
 
 export type DimensionInputProps = {
   value?: Value;
+  initialValue?: Value;
   onChange?: (newVal: Value) => void;
 };
 
@@ -28,20 +31,42 @@ const maxVal = {
   rem: 100,
 };
 
-export const DimensionInput = (props: DimensionInputProps) => {
-  const [innerVal, setInnerVal] = useState<Value>(getDefaultValue(keyList as any));
+export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((props, ref) => {
+  const [innerVal, setInnerVal] = useState<Value>(props.initialValue ?? getDefaultValue(keyList as any));
 
-  const updateInnerVal = (newVal: Partial<Value>) => {
-    setInnerVal((oldVal) => {
-      const finalVal = {
-        ...oldVal,
-        ...newVal,
+  const updateInnerVal = useCallback(
+    (newVal: Partial<Value>, noTrigger?: boolean) => {
+      setInnerVal((oldVal) => {
+        const finalVal = {
+          ...oldVal,
+          ...newVal,
+        };
+
+        if (noTrigger !== true) {
+          props.onChange?.(finalVal);
+        }
+        return finalVal;
+      });
+    },
+    [props]
+  );
+
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        setValue: (newVal) =>
+          updateInnerVal(
+            {
+              ...getDefaultValue(keyList as any),
+              ...newVal,
+            },
+            true
+          ),
       };
-
-      props.onChange?.(finalVal);
-      return finalVal;
-    });
-  };
+    },
+    [updateInnerVal]
+  );
 
   const realValue = useMemo(() => {
     return props.value ?? innerVal;
@@ -201,4 +226,4 @@ export const DimensionInput = (props: DimensionInputProps) => {
       </div>
     </div>
   );
-};
+});

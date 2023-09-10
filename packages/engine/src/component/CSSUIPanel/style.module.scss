@@ -3,6 +3,7 @@
   display: inline-block;
   color: $fontColor;
   font-size: 14px;
+  flex-shrink: 0;
   &.font {
     width: 50px;
   }
@@ -15,4 +16,12 @@
 
 .row {
   padding-bottom: 10px;
+}
+
+.CSSUIPanel {
+  :global {
+    .ant-radio-button-wrapper {
+      font-size: 12px !important;
+    }
+  }
 }

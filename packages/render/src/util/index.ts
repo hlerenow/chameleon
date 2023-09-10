@@ -2,7 +2,7 @@ import { capitalize } from 'lodash-es';
 import { Component, createElement } from 'react';
 import { ContextType } from '../core/adapter';
 import { StoreManager } from '../core/storeManager';
-import { AssetPackage, ComponentMetaType, LibMetaType } from '@chamn/model';
+import { AssetPackage, CNode, CRootNode, ComponentMetaType, LibMetaType } from '@chamn/model';
 
 export const isClass = function (val: any) {
   if (!val) {
@@ -207,4 +207,9 @@ export const getComponentsLibs = (libs: Record<string, any>, list: ComponentMeta
 
 export const getThirdLibs = (libs: Record<string, any>, list: LibMetaType[]) => {
   return getLibsByList(libs, list);
+};
+
+export const getNodeCssClassName = (node: CNode | CRootNode) => {
+  const nodeClassName = node.value.css?.class || `c_${node.id}`;
+  return nodeClassName;
 };

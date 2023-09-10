@@ -10,10 +10,9 @@ export type ComponentStatePanelProps = {
 };
 
 export const ComponentStatePanel = (props: ComponentStatePanelProps) => {
-  const { node } = props;
-  if (!node) {
-    return <></>;
-  }
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const node = props.node!;
+
   const nodeState = node.value.state || {};
   const editorRef = useRef<MonacoEditorInstance | null>(null);
   useEffect(() => {
@@ -58,7 +57,12 @@ export const ComponentStatePanel = (props: ComponentStatePanelProps) => {
 export const ComponentStatePanelConfig: CRightPanelItem = {
   key: 'State',
   name: 'State',
-  view: ({ node, pluginCtx }) => <ComponentStatePanel node={node} pluginCtx={pluginCtx} />,
+  view: ({ node, pluginCtx }) => {
+    if (!node) {
+      return <></>;
+    }
+    return <ComponentStatePanel node={node} pluginCtx={pluginCtx} />;
+  },
   show: (props) => {
     return props.node?.material?.value.advanceCustom?.rightPanel?.state !== false;
   },

@@ -1,0 +1,13 @@
+.inputNumberPlus {
+  display: flex;
+  &:hover {
+    .delIcon {
+      display: block;
+    }
+  }
+
+  .delIcon {
+    cursor: pointer;
+    display: none;
+  }
+}

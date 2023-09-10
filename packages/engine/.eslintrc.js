@@ -14,6 +14,7 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:react/jsx-runtime',
+    'plugin:react-hooks/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -23,7 +24,7 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: ['react', '@typescript-eslint', 'react-hooks'],
+  plugins: ['react', '@typescript-eslint'],
   rules: {
     'no-debugger': 0,
     indent: ['error', 2],

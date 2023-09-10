@@ -1,13 +1,17 @@
+/* eslint-disable react/display-name */
 import { CSSSizeInput } from '@/component/CSSSizeInput';
 import { Row, Col } from 'antd';
 import styles from '../style.module.scss';
-import { useMemo, useState } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 'react';
+import { InputCommonRef } from '../type';
 
 type Value = Record<'left' | 'right' | 'top' | 'bottom', string>;
 
 export type MarginAndPaddingInputProps = {
   value?: Value;
+  initialValue?: Value;
   onChange?: (newVal: Value) => void;
+  prefix: 'margin' | 'padding';
 };
 
 const maxVal = {
@@ -17,28 +21,56 @@ const maxVal = {
   rem: 100,
 };
 
-export const MarginAndPaddingInput = (props: MarginAndPaddingInputProps) => {
-  const [innerVal, setInnerVal] = useState<Value>({
-    left: '',
-    right: '',
-    top: '',
-    bottom: '',
-  });
+export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPaddingInputProps>((props, ref) => {
+  const [innerVal, setInnerVal] = useState<Value>(
+    props.initialValue ?? {
+      left: '',
+      right: '',
+      top: '',
+      bottom: '',
+    }
+  );
 
-  const updateInnerVal = (newVal: Partial<Value>) => {
-    setInnerVal((oldVal) => {
-      const finalVal = {
-        ...oldVal,
-        ...newVal,
+  const updateInnerVal = useCallback(
+    (newVal: Partial<Value>, noTrigger?: boolean) => {
+      setInnerVal((oldVal) => {
+        const finalVal = {
+          ...oldVal,
+          ...newVal,
+        };
+        const outVal = Object.keys(finalVal).reduce((res, k) => {
+          res[`${props.prefix}-${k}`] = (finalVal as unknown as any)?.[k];
+          return res;
+        }, {} as any);
+        if (noTrigger !== true) {
+          props.onChange?.(outVal);
+        }
+        return finalVal;
+      });
+    },
+    [props]
+  );
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        setValue: (newVal) => updateInnerVal(newVal, true),
       };
-
-      props.onChange?.(finalVal);
-      return finalVal;
-    });
-  };
+    },
+    [updateInnerVal]
+  );
 
   const realValue = useMemo(() => {
-    return props.value ?? innerVal;
+    const targetKeyList = Object.keys(props.value || {}).filter((k) => k.includes(props.prefix));
+    const tempVal = targetKeyList.reduce((res, k) => {
+      res[k.replace(`${props.prefix}-`, '')] = (props.value as unknown as any)?.[k];
+      return res;
+    }, {} as any);
+
+    if (props.value === undefined) {
+      return innerVal;
+    }
+    return tempVal;
   }, [props.value, innerVal]);
 
   return (
@@ -129,4 +161,4 @@ export const MarginAndPaddingInput = (props: MarginAndPaddingInputProps) => {
       </div>
     </div>
   );
-};
+});
