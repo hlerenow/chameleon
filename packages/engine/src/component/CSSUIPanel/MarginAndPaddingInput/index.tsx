@@ -52,7 +52,6 @@ export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPadding
         }, {} as any);
         if (noTrigger !== true) {
           props.onChange?.(outVal);
-          console.log('🚀 ~ file: index.tsx:55 ~ setInnerVal ~ outVal:', outVal);
         }
         return finalVal;
       });

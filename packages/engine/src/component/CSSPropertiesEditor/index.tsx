@@ -12,19 +12,19 @@ export const defaultPropertyOptions = CSSPropertyList.map((el) => {
 });
 
 export type CSSPropertiesEditorProps = {
-  initialValue?: { key: string; value: string }[];
-  onValueChange?: (val: { key: string; value: string }[]) => void;
+  initialValue?: { property: string; value: string }[];
+  onValueChange?: (val: { property: string; value: string }[]) => void;
 };
 
 export type CSSPropertiesEditorRef = {
-  setValue: (val: { key: string; value: string }[]) => void;
+  setValue: (val: { property: string; value: string }[]) => void;
 };
 
 export const CSSPropertiesEditor = forwardRef<CSSPropertiesEditorRef, CSSPropertiesEditorProps>(
   function CSSPropertiesEditorCore(props, ref) {
-    const [propertyList, setPropertyList] = useState<{ key: string; value: any }[]>([]);
+    const [propertyList, setPropertyList] = useState<{ id?: string; property: string; value: any }[]>([]);
     const [newAddVal, setNewAddVal] = useState({
-      key: '',
+      property: '',
       value: '',
     });
     useImperativeHandle(
@@ -32,21 +32,7 @@ export const CSSPropertiesEditor = forwardRef<CSSPropertiesEditorRef, CSSPropert
       () => {
         return {
           setValue: (val) => {
-            // 按照内部的顺序更新数据
-            setPropertyList((oldVal) => {
-              const newVal: typeof oldVal = [];
-              const tempNewVal = [...val];
-              oldVal.forEach((el) => {
-                const targetItem = tempNewVal.find((it) => it.key === el.key);
-                if (targetItem) {
-                  newVal.push({
-                    ...targetItem,
-                  });
-                }
-              });
-              const newAddList = tempNewVal.filter((el) => el.value);
-              return newAddList;
-            });
+            setPropertyList(val);
           },
         };
       },
@@ -104,18 +90,17 @@ export const CSSPropertiesEditor = forwardRef<CSSPropertiesEditorRef, CSSPropert
             value={newAddVal}
             ref={createPropertyRef}
             onValueChange={(newCssVal) => {
-              console.log('create newVal', newCssVal);
               setNewAddVal({
                 ...newCssVal,
               });
             }}
             onCreate={(newVal) => {
-              if (newVal.key && newVal.value) {
-                const newList = propertyList.filter((el) => el.key !== newVal.key);
+              if (newVal.property && newVal.value) {
+                const newList = [...propertyList];
                 newList.push(newVal);
                 setPropertyList(newList);
                 setNewAddVal({
-                  key: '',
+                  property: '',
                   value: '',
                 });
                 innerOnValueChange(newList);

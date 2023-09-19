@@ -37,7 +37,7 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
 
     formRef.current?.setValue([...allProperty]);
     cssEditorRef.current?.setValue(fCss);
-    cssUIRef.current?.setValue(normalCss || {});
+    // cssUIRef.current?.setValue(normalCss || {});
   }, [node]);
   useEffect(() => {
     updatePanelValue();
@@ -53,11 +53,12 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
     // merge style
     const newStyle = styleArr2Obj([...styleArr]);
     setStyle(newStyle);
-    node.value.style = newStyle;
-    node.updateValue();
+    // node.value.style = newStyle;
+    // node.updateValue();
   };
 
   const onUpdateCss = (val: CSSVal) => {
+    console.log('🚀 ~ file: index.tsx:61 ~ onUpdateCss ~ val:', val);
     // class name 不能以数字开头，这里使用c_前缀
     node.value.css = formatCssToNodeVal(`c_${node.id}`, val);
     node.updateValue();
@@ -66,18 +67,18 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
   // 只更新 normal 状态下的 normal css
   const onUpdateNormalCss = (newVal: Record<string, string>) => {
     const targetVal = node.value.css?.value.find((el) => el.state === 'normal');
-    if (targetVal) {
-      targetVal.style = targetVal.style || {};
-      Object.assign(targetVal.style, newVal);
-    } else {
-      node.value.css = { value: [] };
-      node.value.css?.value.push({
-        state: 'normal',
-        media: [],
-        style: newVal,
-      });
-    }
-    node.updateValue();
+    // if (targetVal) {
+    //   targetVal.style = targetVal.style || {};
+    //   Object.assign(targetVal.style, newVal);
+    // } else {
+    //   node.value.css = { value: [] };
+    //   node.value.css?.value.push({
+    //     state: 'normal',
+    //     media: [],
+    //     style: newVal,
+    //   });
+    // }
+    // node.updateValue();
   };
 
   return (
@@ -87,14 +88,14 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
           marginBottom: '10px',
         }}
       >
-        <CSSUIPanel
+        {/* <CSSUIPanel
           ref={cssUIRef}
           onValueChange={(newNormaCss) => {
             onUpdateNormalCss(newNormaCss);
           }}
-        />
+        /> */}
         <CSSEditor handler={cssEditorRef} onValueChange={onUpdateCss} />
-        <div
+        {/* <div
           style={{
             paddingTop: '10px',
           }}
@@ -105,9 +106,9 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
               node.updateValue();
             }}
           />
-        </div>
+        </div> */}
 
-        <Collapse
+        {/* <Collapse
           bordered={false}
           style={{
             marginBottom: '10px',
@@ -133,7 +134,7 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
               ),
             },
           ]}
-        ></Collapse>
+        ></Collapse> */}
       </div>
     </div>
   );

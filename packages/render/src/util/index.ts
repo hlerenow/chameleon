@@ -138,7 +138,7 @@ export const formatSourceStylePropertyName = (style: Record<string, string>) => 
 
 export const getCSSTextValue = (cssObj: Record<string, string>) => {
   let res = '';
-  Object.keys(cssObj).forEach((key) => {
+  Object.keys(cssObj || {}).forEach((key) => {
     res += `${key}:${cssObj[key]};`;
   });
   return res;

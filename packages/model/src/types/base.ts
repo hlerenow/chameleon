@@ -79,9 +79,10 @@ export type CSSValue = {
   media?: {
     type: 'max-width';
     value: string;
-    style: Record<string, string>;
+    text?: string;
   }[];
-  style?: Record<string, string>;
+  // css 样式字符串
+  text?: string;
 };
 
 export type CSSType = {

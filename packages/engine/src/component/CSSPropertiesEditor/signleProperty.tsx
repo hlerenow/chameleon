@@ -11,15 +11,15 @@ import styles from './style.module.scss';
 export type SinglePropertyEditorProps = {
   mode: 'create' | 'edit';
   value?: {
-    key: string;
+    property: string;
     value: string;
   };
   allValues: {
-    key: string;
+    property: string;
     value: string;
   }[];
-  onValueChange?: (value: { key: string; value: string }) => void;
-  onCreate?: (value: { key: string; value: string }) => void;
+  onValueChange?: (value: { property: string; value: string }) => void;
+  onCreate?: (value: { property: string; value: string }) => void;
   onDelete?: () => void;
 };
 
@@ -52,7 +52,7 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
 
     const updateValueOptions = () => {
       let res: any[] = [];
-      const tempProperty = CSSProperties[innerValue?.key as unknown as CSSPropertiesKey];
+      const tempProperty = CSSProperties[innerValue?.property as unknown as CSSPropertiesKey];
 
       if (tempProperty) {
         res =
@@ -78,7 +78,7 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
 
     const updateKeyValue = (keyVal: string) => {
       props.onValueChange?.({
-        key: keyVal,
+        property: keyVal,
         value: innerValue?.value || '',
       });
       return true;
@@ -125,7 +125,7 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
             onSearch={onSearch}
             status={keyFormatStatus}
             popupMatchSelectWidth={200}
-            value={innerValue?.key}
+            value={innerValue?.property}
             onChange={(val) => {
               updateKeyValue(val);
             }}
@@ -165,7 +165,7 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
               padding: '0 2px',
             }}
           >
-            {innerValue?.key}
+            {innerValue?.property}
           </span>
         </div>
         <span
@@ -184,7 +184,7 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
           onChange={(val) => {
             updateValueOptions();
             props.onValueChange?.({
-              key: innerValue?.key || '',
+              property: innerValue?.property || '',
               value: val || '',
             });
           }}
@@ -211,7 +211,7 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
             if (e.code === 'Enter') {
               if (isCreate) {
                 props.onCreate?.({
-                  key: innerValue?.key || '',
+                  property: innerValue?.property || '',
                   value: innerValue?.value || '',
                 });
               }
@@ -250,7 +250,7 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
               }
               onClick={() => {
                 props.onCreate?.({
-                  key: innerValue?.key || '',
+                  property: innerValue?.property || '',
                   value: innerValue?.value || '',
                 });
               }}

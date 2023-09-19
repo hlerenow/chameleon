@@ -1,16 +1,25 @@
 import { CSSVal } from '@/component/CSSEditor';
-import { CSSType, CSSValue, JSExpressionPropType, isExpression } from '@chamn/model';
+import { CSSType, CSSValue, JSExpressionPropType, getRandomStr, isExpression } from '@chamn/model';
 import Color from 'color';
+import { parse, Rule, Declaration } from 'css';
 
 export type StyleArr = {
-  key: string;
+  property: string;
   value: any;
 }[];
 
 export const styleArr2Obj = (val: StyleArr) => {
   const res: Record<string, any> = {};
   val.forEach((item) => {
-    res[item.key] = item.value;
+    res[item.property] = item.value;
+  });
+  return res;
+};
+
+export const styleList2Text = (val: StyleArr) => {
+  let res = '';
+  val.forEach((item) => {
+    res += `${item.property}:${item.value};`;
   });
   return res;
 };
@@ -41,6 +50,22 @@ export const formatCSSProperty = (cssVal: Record<string, any>) => {
   return res;
 };
 
+export const formatCSSTextProperty = (cssText: string) => {
+  const cssAst = parse(`.node {${cssText}}`);
+  const cssRule = cssAst.stylesheet?.rules[0] as Rule;
+  const cssList =
+    cssRule.declarations?.map((el: Declaration) => {
+      return {
+        id: getRandomStr(),
+        property: el.property || '',
+        value: el.value || '',
+      };
+    }) || [];
+  return cssList;
+};
+
+formatCSSTextProperty('');
+
 export const formatCssToNodeVal = (className: string, val: CSSVal): CSSType => {
   type StateType = keyof CSSVal;
   const res: CSSType = {
@@ -53,14 +78,15 @@ export const formatCssToNodeVal = (className: string, val: CSSVal): CSSType => {
     const tempVal: CSSValue = {
       state: state,
       media: [],
-      style: currentStateCss?.['normal'] || {},
+      text: currentStateCss?.['normal'] || '',
     };
     Object.keys(currentStateCss || ({} as any)).forEach((mediaKey) => {
+      tempVal.media = tempVal.media || [];
       if (mediaKey !== 'normal') {
         tempVal.media.push({
           type: 'max-width',
           value: mediaKey,
-          style: currentStateCss?.[mediaKey] || {},
+          text: currentStateCss?.[mediaKey] || '',
         });
       }
     });
@@ -78,11 +104,11 @@ export const formatNodeValToEditor = (val?: CSSType): CSSVal => {
   const res: CSSVal = {};
 
   list.forEach((el) => {
-    const currentStateCss: Record<string, Record<string, string>> = {
-      normal: el.style,
+    const currentStateCss: Record<string, string> = {
+      normal: el.text || '',
     };
-    el.media.forEach((it) => {
-      currentStateCss[it.value] = it.style;
+    el.media?.forEach((it) => {
+      currentStateCss[it.value] = it.text || '';
     });
     res[el.state as keyof CSSVal] = currentStateCss;
   });
