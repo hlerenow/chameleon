@@ -145,7 +145,7 @@ export type CNodeDataType = {
   css?: CSSType;
   /** css 属性有顺序 */
   style?: {
-    name: string;
+    property: string;
     value: JSExpressionPropType | string;
   }[];
   // 组件引用的唯一id

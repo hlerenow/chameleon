@@ -1,7 +1,8 @@
 import { CSSVal } from '@/component/CSSEditor';
-import { CSSType, CSSValue, JSExpressionPropType, getRandomStr, isExpression } from '@chamn/model';
+import { CNodeModelDataType, CSSType, CSSValue, JSExpressionPropType, getRandomStr, isExpression } from '@chamn/model';
 import Color from 'color';
 import { parse, Rule, Declaration } from 'css';
+import { isObject, isPlainObject } from 'lodash-es';
 
 export type StyleArr = {
   property: string;
@@ -24,22 +25,37 @@ export const styleList2Text = (val: StyleArr) => {
   return res;
 };
 
-export const formatCSSProperty = (cssVal: Record<string, any>) => {
-  const normalProperty: { key: string; value: string }[] = [];
-  const expressionProperty: { key: string; value: JSExpressionPropType }[] = [];
-  const allProperty: { key: string; value: any }[] = [];
-  Object.keys(cssVal).forEach((key) => {
-    const val = cssVal[key];
+export const formatStyleProperty = (styleList: CNodeModelDataType['style'] = []) => {
+  // 遗留数据结构兼容, 正式版本会移除
+  if (isPlainObject(styleList)) {
+    styleList = Object.keys(styleList).map((key) => {
+      return {
+        property: key,
+        value: (styleList as any)[key],
+      };
+    });
+  }
+  const normalProperty: { property: string; value: string }[] = [];
+  const expressionProperty: { property: string; value: JSExpressionPropType }[] = [];
+  const allProperty: { property: string; value: any }[] = [];
+  styleList.forEach((it) => {
+    const val = it.value;
     const obj = {
-      key,
+      property: it.property,
       value: val,
     };
 
     allProperty.push(obj);
     if (isExpression(val)) {
-      expressionProperty.push(obj);
+      expressionProperty.push({
+        ...obj,
+        value: val as unknown as JSExpressionPropType,
+      });
     } else {
-      normalProperty.push(obj);
+      normalProperty.push({
+        ...obj,
+        value: val as unknown as string,
+      });
     }
   });
   const res = {
@@ -104,6 +120,15 @@ export const formatNodeValToEditor = (val?: CSSType): CSSVal => {
   const res: CSSVal = {};
 
   list.forEach((el) => {
+    const tempStyle = (el as any).style;
+    // 遗留数据兼容，正式版本会移除
+    if (!el.text && tempStyle) {
+      el.text = Object.keys(tempStyle).reduce((cssText, key) => {
+        cssText += `${key}: ${tempStyle[key]};`;
+        return cssText;
+      }, '');
+    }
+
     const currentStateCss: Record<string, string> = {
       normal: el.text || '',
     };

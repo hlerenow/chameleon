@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { CNode, CRootNode } from '@chamn/model';
+import { CNode, CNodeModelDataType, CRootNode } from '@chamn/model';
 import { CRightPanelItem, RightPanelOptions } from '../RightPanel/view';
 
 import styles from './style.module.scss';
@@ -8,37 +8,39 @@ import {
   CSSPropertiesVariableBindEditorRef,
 } from '../../component/CSSPropertiesVariableBindEditor';
 import { Collapse } from 'antd';
-import { ClassNameEditor } from '@/component/ClassNameEditor';
+import { ClassNameEditor, ClassNameEditorRef } from '@/component/ClassNameEditor';
 import { CSSEditor, CSSEditorRef, CSSVal } from '@/component/CSSEditor';
-import { formatCSSProperty, formatCssToNodeVal, formatNodeValToEditor, StyleArr, styleArr2Obj } from '@/utils/css';
+import { formatStyleProperty, formatCssToNodeVal, formatNodeValToEditor, StyleArr } from '@/utils/css';
 import { CSSUIPanel, CSSUIPanelRef } from '@/component/CSSUIPanel';
 
 export const VisualPanelPlus = (props: RightPanelOptions) => {
-  const formRef = useRef<CSSPropertiesVariableBindEditorRef>(null);
+  const styleVariableRef = useRef<CSSPropertiesVariableBindEditorRef>(null);
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const node = props.node!;
-
+  const classNameList = useMemo(() => {
+    const tempList = node.value.classNames || [];
+    return tempList;
+  }, [node]);
   const cssEditorRef = useRef<CSSEditorRef>(null);
   const cssUIRef = useRef<CSSUIPanelRef>(null);
-  const [style, setStyle] = useState<Record<string, any>>({});
+  const classNameEditorRef = useRef<ClassNameEditorRef>(null);
   const formatStyle = useMemo(() => {
-    return formatCSSProperty(style);
-  }, [style]);
+    return formatStyleProperty(node.value.style || []);
+  }, [node.value.style]);
 
   const lastNode = useRef<CNode | CRootNode>();
 
   const updatePanelValue = useCallback(() => {
     lastNode.current = node;
-    const newStyle = node.value.style || {};
-    setStyle(newStyle);
-    const { allProperty } = formatCSSProperty(newStyle);
+    const newStyle = node.value.style || [];
+    const { expressionProperty } = formatStyleProperty(newStyle);
     const fCss = formatNodeValToEditor(node.value.css);
-    const normalCss = fCss.normal?.normal;
-
-    formRef.current?.setValue([...allProperty]);
+    styleVariableRef.current?.setValue([...expressionProperty]);
     cssEditorRef.current?.setValue(fCss);
+    classNameEditorRef.current?.setValue(node.value.classNames || []);
     // cssUIRef.current?.setValue(normalCss || {});
   }, [node]);
+
   useEffect(() => {
     updatePanelValue();
     node.emitter.on('onNodeChange', updatePanelValue);
@@ -51,34 +53,15 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
 
   const onUpdateStyle = (styleArr: StyleArr) => {
     // merge style
-    const newStyle = styleArr2Obj([...styleArr]);
-    setStyle(newStyle);
-    // node.value.style = newStyle;
-    // node.updateValue();
-  };
-
-  const onUpdateCss = (val: CSSVal) => {
-    console.log('🚀 ~ file: index.tsx:61 ~ onUpdateCss ~ val:', val);
-    // class name 不能以数字开头，这里使用c_前缀
-    node.value.css = formatCssToNodeVal(`c_${node.id}`, val);
+    const newStyleList = [...formatStyle.normalProperty, ...styleArr];
+    node.value.style = newStyleList;
     node.updateValue();
   };
 
-  // 只更新 normal 状态下的 normal css
-  const onUpdateNormalCss = (newVal: Record<string, string>) => {
-    const targetVal = node.value.css?.value.find((el) => el.state === 'normal');
-    // if (targetVal) {
-    //   targetVal.style = targetVal.style || {};
-    //   Object.assign(targetVal.style, newVal);
-    // } else {
-    //   node.value.css = { value: [] };
-    //   node.value.css?.value.push({
-    //     state: 'normal',
-    //     media: [],
-    //     style: newVal,
-    //   });
-    // }
-    // node.updateValue();
+  const onUpdateCss = (val: CSSVal) => {
+    // class name 不能以数字开头，这里使用c_前缀
+    node.value.css = formatCssToNodeVal(`c_${node.id}`, val);
+    node.updateValue();
   };
 
   return (
@@ -94,28 +77,13 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
             onUpdateNormalCss(newNormaCss);
           }}
         /> */}
-        <CSSEditor handler={cssEditorRef} onValueChange={onUpdateCss} />
-        {/* <div
-          style={{
-            paddingTop: '10px',
-          }}
-        >
-          <ClassNameEditor
-            onValueChange={(newVal) => {
-              node.value.classNames = newVal;
-              node.updateValue();
-            }}
-          />
-        </div> */}
-
-        {/* <Collapse
+        <Collapse
           bordered={false}
           style={{
             marginBottom: '10px',
           }}
           onChange={(val) => {
             if (val.length) {
-              console.log('Style Variable change');
               updatePanelValue();
             }
           }}
@@ -125,16 +93,31 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
               label: <span className={styles.header}>Style Variable</span>,
               children: (
                 <CSSPropertiesVariableBindEditor
-                  ref={formRef}
+                  ref={styleVariableRef}
                   initialValue={formatStyle.expressionProperty}
                   onValueChange={(val) => {
-                    onUpdateStyle([...val]);
+                    onUpdateStyle(val);
                   }}
                 />
               ),
             },
           ]}
-        ></Collapse> */}
+        ></Collapse>
+        <div
+          style={{
+            paddingTop: '10px',
+          }}
+        >
+          <ClassNameEditor
+            initialValue={classNameList}
+            ref={classNameEditorRef}
+            onValueChange={(newVal) => {
+              node.value.classNames = newVal;
+              node.updateValue();
+            }}
+          />
+        </div>
+        <CSSEditor handler={cssEditorRef} onValueChange={onUpdateCss} />
       </div>
     </div>
   );

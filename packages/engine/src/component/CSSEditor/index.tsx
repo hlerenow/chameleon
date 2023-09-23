@@ -56,7 +56,6 @@ export type CSSEditorProps = {
 };
 
 export const CSSEditor = (props: CSSEditorProps) => {
-  console.log('update');
   const [selectedStateTag, setSelectedStateTag] = useState<DomCSSStatusType>('normal');
   const [mediaQueryList] = useState<MediaQueryItem[]>([
     {
