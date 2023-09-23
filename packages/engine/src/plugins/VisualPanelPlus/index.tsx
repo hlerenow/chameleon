@@ -10,7 +10,14 @@ import {
 import { Collapse } from 'antd';
 import { ClassNameEditor, ClassNameEditorRef } from '@/component/ClassNameEditor';
 import { CSSEditor, CSSEditorRef, CSSVal } from '@/component/CSSEditor';
-import { formatStyleProperty, formatCssToNodeVal, formatNodeValToEditor, StyleArr } from '@/utils/css';
+import {
+  formatStyleProperty,
+  formatCssToNodeVal,
+  formatNodeValToEditor,
+  StyleArr,
+  styleArr2Obj,
+  styleObjToArr,
+} from '@/utils/css';
 import { CSSUIPanel, CSSUIPanelRef } from '@/component/CSSUIPanel';
 
 export const VisualPanelPlus = (props: RightPanelOptions) => {
@@ -33,12 +40,12 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
   const updatePanelValue = useCallback(() => {
     lastNode.current = node;
     const newStyle = node.value.style || [];
-    const { expressionProperty } = formatStyleProperty(newStyle);
+    const { expressionProperty, normalProperty } = formatStyleProperty(newStyle);
     const fCss = formatNodeValToEditor(node.value.css);
     styleVariableRef.current?.setValue([...expressionProperty]);
     cssEditorRef.current?.setValue(fCss);
     classNameEditorRef.current?.setValue(node.value.classNames || []);
-    // cssUIRef.current?.setValue(normalCss || {});
+    cssUIRef.current?.setValue(styleArr2Obj(normalProperty) || {});
   }, [node]);
 
   useEffect(() => {
@@ -51,9 +58,16 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
     };
   }, [node.emitter, node.id, props.activeTab, updatePanelValue]);
 
-  const onUpdateStyle = (styleArr: StyleArr) => {
+  const onUpdateStyleVariable = (styleArr: StyleArr) => {
     // merge style
     const newStyleList = [...formatStyle.normalProperty, ...styleArr];
+    node.value.style = newStyleList;
+    node.updateValue();
+  };
+
+  const onUpdateStyle = (styleArr: StyleArr) => {
+    // merge style
+    const newStyleList = [...styleArr, ...formatStyle.expressionProperty];
     node.value.style = newStyleList;
     node.updateValue();
   };
@@ -71,12 +85,12 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
           marginBottom: '10px',
         }}
       >
-        {/* <CSSUIPanel
+        <CSSUIPanel
           ref={cssUIRef}
           onValueChange={(newNormaCss) => {
-            onUpdateNormalCss(newNormaCss);
+            onUpdateStyle(styleObjToArr(newNormaCss));
           }}
-        /> */}
+        />
         <Collapse
           bordered={false}
           style={{
@@ -96,7 +110,7 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
                   ref={styleVariableRef}
                   initialValue={formatStyle.expressionProperty}
                   onValueChange={(val) => {
-                    onUpdateStyle(val);
+                    onUpdateStyleVariable(val);
                   }}
                 />
               ),

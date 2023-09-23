@@ -2,7 +2,7 @@ import { CSSVal } from '@/component/CSSEditor';
 import { CNodeModelDataType, CSSType, CSSValue, JSExpressionPropType, getRandomStr, isExpression } from '@chamn/model';
 import Color from 'color';
 import { parse, Rule, Declaration } from 'css';
-import { isObject, isPlainObject } from 'lodash-es';
+import { isPlainObject } from 'lodash-es';
 
 export type StyleArr = {
   property: string;
@@ -14,6 +14,20 @@ export const styleArr2Obj = (val: StyleArr) => {
   val.forEach((item) => {
     res[item.property] = item.value;
   });
+  return res;
+};
+
+export const styleObjToArr = (obj: Record<string, any> = {}) => {
+  const res: StyleArr = Object.keys(obj).reduce((tempRes, key) => {
+    return [
+      ...tempRes,
+      {
+        property: key,
+        value: obj[key],
+      },
+    ];
+  }, [] as StyleArr);
+
   return res;
 };
 
