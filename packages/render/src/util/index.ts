@@ -2,7 +2,7 @@ import { capitalize } from 'lodash-es';
 import { Component, createElement } from 'react';
 import { ContextType } from '../core/adapter';
 import { StoreManager } from '../core/storeManager';
-import { AssetPackage, ComponentMetaType, LibMetaType } from '@chamn/model';
+import { AssetPackage, CNode, CNodeModelDataType, CRootNode, ComponentMetaType, LibMetaType } from '@chamn/model';
 
 export const isClass = function (val: any) {
   if (!val) {
@@ -112,9 +112,9 @@ export const getObjFromArrayMap = (args: any[], argsName: string[]) => {
   return params;
 };
 
-export const formatSourceStylePropertyName = (style: Record<string, string>) => {
+export const formatSourceStylePropertyName = (styleList: CNodeModelDataType['style'] = []) => {
   const newStyle: Record<string, string> = {};
-  Object.keys(style).forEach((key) => {
+  styleList.forEach(({ property: key, value }) => {
     // 处理 css 前缀
     let preKey = key.replace('-webkit', 'Webkit');
     preKey = preKey.replace('-ms', 'ms');
@@ -130,7 +130,7 @@ export const formatSourceStylePropertyName = (style: Record<string, string>) => 
         }
       });
     }
-    newStyle[newKey.join('')] = style[key];
+    newStyle[newKey.join('')] = value as string;
   });
 
   return newStyle;
@@ -138,7 +138,7 @@ export const formatSourceStylePropertyName = (style: Record<string, string>) => 
 
 export const getCSSTextValue = (cssObj: Record<string, string>) => {
   let res = '';
-  Object.keys(cssObj).forEach((key) => {
+  Object.keys(cssObj || {}).forEach((key) => {
     res += `${key}:${cssObj[key]};`;
   });
   return res;
@@ -207,4 +207,9 @@ export const getComponentsLibs = (libs: Record<string, any>, list: ComponentMeta
 
 export const getThirdLibs = (libs: Record<string, any>, list: LibMetaType[]) => {
   return getLibsByList(libs, list);
+};
+
+export const getNodeCssClassName = (node: CNode | CRootNode) => {
+  const nodeClassName = node.value.css?.class || `c_${node.id}`;
+  return nodeClassName;
 };

@@ -1,5 +1,5 @@
 import { waitReactUpdate } from '@/utils';
-import { formatCSSProperty, StyleArr, styleArr2Obj } from '@/utils/css';
+import { formatCSSTextProperty, StyleArr, styleList2Text } from '@/utils/css';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Card, Collapse, Dropdown, Space } from 'antd';
 import CheckableTag from 'antd/es/tag/CheckableTag';
@@ -40,7 +40,7 @@ export type CSSVal = Partial<
     Record<
       /** media query key */
       string,
-      Record<string, string>
+      string
     >
   >
 >;
@@ -78,7 +78,7 @@ export const CSSEditor = (props: CSSEditorProps) => {
   const handleChange = (tag: DomCSSStatusType) => {
     setSelectedStateTag(tag);
   };
-  const [domStatusList, setDomStatusList] = useState<string[]>(['normal']);
+  const [domStatusList, setDomStatusList] = useState<string[]>([]);
   const cssStatusList = useMemo(() => {
     return DOM_CSS_STATUS_LIST.filter((el) => {
       return !domStatusList.includes(el.key);
@@ -103,9 +103,9 @@ export const CSSEditor = (props: CSSEditorProps) => {
     if (!res) {
       return {};
     }
-    const newVal: Record<string, { key: string; value: string }[]> = {};
+    const newVal: Record<string, ReturnType<typeof formatCSSTextProperty>> = {};
     Object.keys(res).forEach((key) => {
-      newVal[key] = formatCSSProperty(res[key] || {}).normalProperty;
+      newVal[key] = formatCSSTextProperty(res[key] || '');
     });
 
     return newVal;
@@ -136,20 +136,20 @@ export const CSSEditor = (props: CSSEditorProps) => {
   // 初始化赋值
   useEffect(() => {
     initVal();
-  }, [selectedStateTag]);
+  }, [initVal, selectedStateTag]);
 
-  const updateCssVal = useCallback(
+  const updateCss = useCallback(
     (mediaKey: string, val: StyleArr) => {
       const newVal = {
         ...cssVal,
         [selectedStateTag]: {
           ...(cssVal[selectedStateTag] || {}),
-          [mediaKey]: styleArr2Obj(val),
+          [mediaKey]: styleList2Text(val),
         },
       };
       props.onValueChange?.(newVal);
     },
-    [cssVal, selectedStateTag]
+    [cssVal, props, selectedStateTag]
   );
 
   return (
@@ -228,7 +228,7 @@ export const CSSEditor = (props: CSSEditorProps) => {
                   ref={(ref) => {
                     cssPropertyRefMap.current['normal'] = ref;
                   }}
-                  onValueChange={(val) => updateCssVal('normal', val)}
+                  onValueChange={(val) => updateCss('normal', val)}
                   initialValue={currentCssStateVal['normal']}
                 />
               ),
@@ -242,7 +242,7 @@ export const CSSEditor = (props: CSSEditorProps) => {
                     ref={(ref) => {
                       cssPropertyRefMap.current[el.key] = ref;
                     }}
-                    onValueChange={(val) => updateCssVal(el.key, val)}
+                    onValueChange={(val) => updateCss(el.key, val)}
                   />
                 ),
               };

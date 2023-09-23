@@ -3,7 +3,19 @@
   .unitSelect {
     :global {
       .ant-select-focused .ant-select-selector {
-        color: rgba(0, 0, 0, 0.85);
+        color: rgba(0, 0, 0, 0.675);
+      }
+
+      .ant-select-selector {
+        color: #585858 !important;
+        padding: 0 0 0 3px !important;
+        font-size: 12px;
+      }
+      .ant-select-selection-item {
+        padding-inline-end: 10px !important;
+      }
+      .ant-select-arrow {
+        inset-inline-end: 3px !important;
       }
     }
   }

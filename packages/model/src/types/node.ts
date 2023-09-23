@@ -143,7 +143,11 @@ export type CNodeDataType = {
   };
   classNames?: ClassNameType[];
   css?: CSSType;
-  style?: Record<string, string | JSExpressionPropType>;
+  /** css 属性有顺序 */
+  style?: {
+    property: string;
+    value: JSExpressionPropType | string;
+  }[];
   // 组件引用的唯一id
   refId?: string;
   methods?: {

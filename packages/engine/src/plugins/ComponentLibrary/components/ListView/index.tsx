@@ -1,9 +1,8 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { SnippetsType } from '@chamn/model';
 import { Collapse } from 'antd';
 import { DragComponentItem } from '../DragItem';
 import styles from './style.module.scss';
-const { Panel } = Collapse;
 
 export type ListViewProps = {
   dataSource: {
@@ -14,9 +13,6 @@ export type ListViewProps = {
 export const ListView = (props: ListViewProps) => {
   const { dataSource } = props;
   const defaultActiveKey = dataSource.map((el) => el.name || '');
-  if (!dataSource.length) {
-    return null;
-  }
 
   const items = useMemo(() => {
     return dataSource.map((el) => {
@@ -44,7 +40,11 @@ export const ListView = (props: ListViewProps) => {
         children: contentView,
       };
     });
-  }, []);
+  }, [dataSource]);
+
+  if (!dataSource.length) {
+    return null;
+  }
 
   return (
     <div className={styles.ListBox}>

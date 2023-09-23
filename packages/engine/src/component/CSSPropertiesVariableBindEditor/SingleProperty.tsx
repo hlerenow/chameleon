@@ -18,12 +18,12 @@ const defaultPropertyOptions = CSSPropertyList.map((el) => {
 
 export type InnerSinglePropertyEditorProps = {
   value?: {
-    key: string;
+    property: string;
     value: JSExpressionPropType | string;
   };
-  onValueChange: (value: { key: string; value: JSExpressionPropType | string }) => void;
+  onValueChange: (value: { property: string; value: JSExpressionPropType | string }) => void;
   onDelete?: () => void;
-  onCreate?: (value: { key: string; value: JSExpressionPropType | string }) => {
+  onCreate?: (value: { property: string; value: JSExpressionPropType | string }) => {
     errorKey?: string[];
   } | void;
   mod?: 'create' | 'edit';
@@ -41,10 +41,10 @@ export const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, Inn
     const { mod = 'create' } = props;
 
     const [innerValue, setInnerVal] = useState<{
-      key: string;
+      property: string;
       value: JSExpressionPropType | string;
     }>({
-      key: props.value?.key || '',
+      property: props.value?.property || '',
       value: props.value?.value || '',
     });
 
@@ -66,6 +66,7 @@ export const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, Inn
 
     const innerValueObj = useMemo(() => {
       return parseValue(props.value);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.value]);
 
     useEffect(() => {
@@ -99,7 +100,7 @@ export const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, Inn
         return {
           reset: () => {
             setInnerVal({
-              key: '',
+              property: '',
               value: {
                 type: CNodePropsTypeEnum.EXPRESSION,
                 value: '',
@@ -114,7 +115,7 @@ export const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, Inn
 
     /// 创建时
     const innerOnCreate = () => {
-      if (innerValue.key === '') {
+      if (innerValue.property === '') {
         setKeyFormatStatus('error');
         return;
       }
@@ -140,14 +141,14 @@ export const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, Inn
       if (innerValueObj.isExp && key === 'text') {
         props.onValueChange({
           ...props.value,
-          key: props.value?.key || '',
+          property: props.value?.property || '',
           value: (props.value?.value as any).value || '',
         });
       }
 
       if (!innerValueObj.isExp && key === 'expression') {
         props.onValueChange({
-          key: props.value?.key || '',
+          property: props.value?.property || '',
           value: {
             type: CNodePropsTypeEnum.EXPRESSION,
             value: (props.value?.value as string) || '',
@@ -168,12 +169,12 @@ export const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, Inn
                 ref={propertyKeyRef}
                 onSearch={onSearch}
                 popupMatchSelectWidth={200}
-                value={innerValue.key}
+                value={innerValue.property}
                 onChange={(val) => {
                   setKeyFormatStatus('');
                   const newVal = {
                     ...innerValue,
-                    key: val,
+                    property: val,
                   };
                   setInnerVal(newVal);
                   updateOuterValue(newVal);
@@ -215,8 +216,11 @@ export const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, Inn
                   }}
                   onPressEnter={() => {
                     if (mod === 'create') {
-                      innerOnCreate();
-                      propertyKeyRef.current?.focus();
+                      // 延迟触发，否则 create 事件会比 onChange 事件先触发
+                      setTimeout(() => {
+                        innerOnCreate();
+                        propertyKeyRef.current?.focus();
+                      }, 0);
                     }
                   }}
                 />
@@ -271,7 +275,7 @@ export const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, Inn
                 e.stopPropagation();
               }}
             >
-              <Dropdown
+              {/* <Dropdown
                 trigger={['click']}
                 menu={{
                   selectable: true,
@@ -286,11 +290,11 @@ export const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, Inn
                     },
                   ],
                   onClick: onChooseSetter,
-                  defaultSelectedKeys: [],
+                  defaultSelectedKeys: [innerValueObj.isExp ? 'expression' : 'text'],
                 }}
               >
                 <SwapOutlined />
-              </Dropdown>
+              </Dropdown> */}
             </div>
           </div>
         </div>

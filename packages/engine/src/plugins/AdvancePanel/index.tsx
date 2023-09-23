@@ -149,9 +149,7 @@ const properties: CMaterialPropsType = [
 
 export const AdvancePanel = (props: AdvancePanelProps) => {
   const { node } = props;
-  if (!node) {
-    return <></>;
-  }
+
   const onSetterChange: CustomSchemaFormProps['onSetterChange'] = (keyPaths, setterName) => {
     node.value.configure = node.value.configure || {};
     node.value.configure.advanceSetter = node.value.configure.advanceSetter || {};
@@ -208,7 +206,12 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
 export const AdvancePanelConfig: CRightPanelItem = {
   key: 'Advance',
   name: 'Advance',
-  view: ({ node, pluginCtx }) => <AdvancePanel node={node} pluginCtx={pluginCtx} />,
+  view: ({ node, pluginCtx }) => {
+    if (!node) {
+      return <></>;
+    }
+    return <AdvancePanel node={node} pluginCtx={pluginCtx} />;
+  },
   show: (props) => {
     return props.node?.material?.value.advanceCustom?.rightPanel?.advance !== false;
   },

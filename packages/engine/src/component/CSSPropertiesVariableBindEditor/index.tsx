@@ -6,18 +6,18 @@ import styles from './style.module.scss';
 import { InnerSinglePropertyEditorRef, SinglePropertyEditor } from './SingleProperty';
 
 export type CSSPropertiesVariableBindEditorProps = {
-  initialValue?: { key: string; value: string | JSExpressionPropType }[];
-  onValueChange?: (val: { key: string; value: string }[]) => void;
+  initialValue?: { property: string; value: string | JSExpressionPropType }[];
+  onValueChange?: (val: { property: string; value: string }[]) => void;
 };
 export type CSSPropertiesVariableBindEditorRef = {
-  setValue: (val: { key: string; value: string | JSExpressionPropType }[]) => void;
+  setValue: (val: { property: string; value: string | JSExpressionPropType }[]) => void;
 };
 
 export const CSSPropertiesVariableBindEditor = forwardRef<
   CSSPropertiesVariableBindEditorRef,
   CSSPropertiesVariableBindEditorProps
 >(function CSSPropertiesVariableBindEditorCore(props, ref) {
-  const [propertyList, setPropertyList] = useState<{ key: string; value: any }[]>([]);
+  const [propertyList, setPropertyList] = useState<{ property: string; value: any }[]>([]);
   useImperativeHandle(
     ref,
     () => {
@@ -37,11 +37,14 @@ export const CSSPropertiesVariableBindEditor = forwardRef<
   }, []);
 
   const [newProperty, setNewProperty] = useState<{
-    key: string;
+    property: string;
     value: JSExpressionPropType | string;
   }>({
-    key: '',
-    value: '',
+    property: '',
+    value: {
+      type: 'EXPRESSION',
+      value: '',
+    },
   });
 
   const innerOnValueChange = (val: typeof propertyList) => {
@@ -65,9 +68,7 @@ export const CSSPropertiesVariableBindEditor = forwardRef<
                 value={el}
                 mod={'edit'}
                 onValueChange={(newVal) => {
-                  console.log('🚀 ~ file: index.tsx: edit ~ CSSPropertiesVariableBindEditorCore ~ newVal:', newVal);
-
-                  if (newVal.key === '') {
+                  if (newVal.property === '') {
                     propertyList.splice(index, 1);
                     setPropertyList([...propertyList]);
                     return;
@@ -91,23 +92,25 @@ export const CSSPropertiesVariableBindEditor = forwardRef<
           ref={createPropertyRef}
           mod="create"
           onValueChange={(newVal) => {
-            console.log('🚀 ~ file: index.tsx:411 ~ CSSPropertiesVariableBindEditorCore ~ newVal:', newVal);
             setNewProperty(newVal);
           }}
           onCreate={(val) => {
-            const hasExits = propertyList.find((el) => el.key === val.key);
+            const hasExits = propertyList.find((el) => el.property === val.property);
             if (hasExits) {
               message.error('The attribute name already exists, please replace');
               return {
-                errorKey: ['key'],
+                errorKey: [val.property],
               };
             }
             propertyList.push(val);
             setPropertyList([...propertyList]);
             innerOnValueChange(propertyList);
             setNewProperty({
-              key: '',
-              value: '',
+              property: '',
+              value: {
+                type: 'EXPRESSION',
+                value: '',
+              },
             });
           }}
         />
