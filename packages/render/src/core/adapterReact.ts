@@ -420,9 +420,9 @@ export class DefineReactAdapter {
           if (el.state !== 'normal') {
             className = `${className}:${el.state}`;
           }
-          if (Object.keys(el.style || {}).length !== 0) {
+          if (el.text) {
             const styleEl = this.getStyleDomById(normalId);
-            styleEl.innerText = `.${className} { ${getCSSTextValue(el.style || {})} }`;
+            styleEl.innerText = `.${className} { ${el.text} }`;
             header?.appendChild(styleEl);
           }
 
@@ -431,7 +431,7 @@ export class DefineReactAdapter {
               const mediaId = `${normalId}_${it.type}_${it.value}`;
               const styleDom = this.getStyleDomById(mediaId);
               styleDom.media = `screen and (${it.type}:${it.value}px)`;
-              styleDom.innerHTML = `.${className} { ${getCSSTextValue(it.style)} }`;
+              styleDom.innerHTML = `.${className} { ${it.text} }`;
               header?.appendChild(styleDom);
             });
           }
@@ -447,6 +447,7 @@ export class DefineReactAdapter {
       };
 
       componentDidMount(): void {
+        console.log('componentDidMount', this.nodeName);
         this.addMediaCSS();
         if (that.onGetRef) {
           that.onGetRef(this.targetComponentRef, nodeModel, this as any);
@@ -479,6 +480,8 @@ export class DefineReactAdapter {
       }
 
       render(): React.ReactNode {
+        console.log('rerender', this.nodeName);
+
         const { $$context, ...props } = this.props;
         const nodeName = nodeModel.value.nodeName || nodeModel.id;
         const newOriginalProps = {
@@ -583,12 +586,17 @@ export class DefineReactAdapter {
             newProps.className = finalClsx;
 
             // 处理 style
-            const newStyle: Record<string, any> = that.transformProps(nodeModel.value.style, {
-              $$context: loopContext,
-            });
+            const newStyle = that.transformProps(
+              {
+                style: nodeModel.value.style,
+              },
+              {
+                $$context: loopContext,
+              }
+            );
             // font-size to fontSize
             if (nodeModel.value.style) {
-              newProps.style = formatSourceStylePropertyName(newStyle || {});
+              newProps.style = formatSourceStylePropertyName(newStyle.style || []);
             }
 
             const { children } = newProps;
@@ -673,12 +681,15 @@ export class DefineReactAdapter {
 
         newProps.className = finalClsx;
         // 处理 style
-        const newStyle: Record<string, any> = that.transformProps(nodeModel.value.style, {
-          $$context: newContext,
-        });
+        const newStyle: Record<string, any> = that.transformProps(
+          { style: nodeModel.value.style },
+          {
+            $$context: newContext,
+          }
+        );
         // font-size to fontSize
         if (nodeModel.value.style) {
-          newProps.style = formatSourceStylePropertyName(newStyle || {});
+          newProps.style = formatSourceStylePropertyName(newStyle.style || []);
         }
 
         // handle children

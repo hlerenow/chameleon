@@ -61,13 +61,16 @@ export const BasePage: CPageDataType = {
                       height: '100px',
                       $$attributes: [],
                     },
-                    style: {
-                      transform: {
-                        type: 'EXPRESSION',
-                        value:
-                          '`translateX(-${($$context.stateManager.bannerState.state.currentPage) * 100}%) translateZ(0) `',
+                    style: [
+                      {
+                        property: 'transform',
+                        value: {
+                          type: 'EXPRESSION',
+                          value:
+                            '`translateX(-${($$context.stateManager.bannerState.state.currentPage) * 100}%) translateZ(0) `',
+                        },
                       },
-                    },
+                    ],
                     componentName: 'CContainer',
                     id: '69079u',
                     children: [
@@ -77,19 +80,43 @@ export const BasePage: CPageDataType = {
                           height: '100px',
                           $$attributes: [],
                         },
-                        style: {
-                          width: '100%',
-                          'background-repeat': 'no-repeat',
-                          'background-position': 'center',
-                          'background-size': 'cover',
-                          'flex-shrink': '0',
-                          height: '100%',
-                          'Webkit-transform': 'translate3d(0, 0, 0)',
-                          'background-image': {
-                            type: 'EXPRESSION',
-                            value: '`url("${$$context.loopData.item}")`',
+                        style: [
+                          {
+                            property: 'width',
+                            value: '100%',
                           },
-                        },
+                          {
+                            property: 'background-repeat',
+                            value: 'no-repeat',
+                          },
+                          {
+                            property: 'background-position',
+                            value: 'center',
+                          },
+                          {
+                            property: 'background-size',
+                            value: 'cover',
+                          },
+                          {
+                            property: 'flex-shrink',
+                            value: '0',
+                          },
+                          {
+                            property: 'height',
+                            value: '100%',
+                          },
+                          {
+                            property: 'Webkit-transform',
+                            value: 'translate3d(0, 0, 0)',
+                          },
+                          {
+                            property: 'background-image',
+                            value: {
+                              type: 'EXPRESSION',
+                              value: '`url("${$$context.loopData.item}")`',
+                            },
+                          },
+                        ],
                         componentName: 'CBlock',
                         id: 'v59d71',
                         configure: {
@@ -141,21 +168,12 @@ export const BasePage: CPageDataType = {
                                 {
                                   type: 'max-width',
                                   value: '991',
-                                  style: {
-                                    'align-content': '1233',
-                                  },
                                 },
                               ],
-                              style: {
-                                'align-content': '12323123',
-                              },
                             },
                             {
                               state: 'hover',
                               media: [],
-                              style: {
-                                'animation-duration': '123',
-                              },
                             },
                           ],
                         },
@@ -182,14 +200,14 @@ export const BasePage: CPageDataType = {
                         {
                           state: 'normal',
                           media: [],
-                          style: {
-                            display: 'flex',
-                            width: '100%',
-                            position: 'absolute',
-                            transition: 'all 0.3s',
-                            height: '100%',
-                            'Webkit-backface-visibility': 'hidden',
-                          },
+                          text: `
+                          display: flex;
+                          width: 100%;
+                          position: absolute;
+                          transition: all 0.3s;
+                          height: 100%;
+                          Webkit-backface-visibility: hidden
+                          `,
                         },
                       ],
                     },
@@ -235,18 +253,7 @@ export const BasePage: CPageDataType = {
                         {
                           state: 'normal',
                           media: [],
-                          style: {
-                            width: '50px',
-                            height: '50px',
-                            'background-color': 'rgba(0,0,0,0.5)',
-                            position: 'absolute',
-                            'z-index': '999',
-                            top: '50%',
-                            transform: 'translateY(-50%)',
-                            cursor: 'pointer',
-                            'border-radius': '4px',
-                            left: '10px',
-                          },
+                          text: `width: 50px;height: 50px;background-color: rgba(0,0,0,0.5);position: absolute;z-index: 999;top: 50%;transform: translateY(-50%);cursor: pointer;border-radius: 4px;left: 10px;`,
                         },
                       ],
                     },
@@ -258,18 +265,7 @@ export const BasePage: CPageDataType = {
                         {
                           state: 'normal',
                           media: [],
-                          style: {
-                            width: '50px',
-                            height: '50px',
-                            'background-color': 'rgba(0,0,0,0.5)',
-                            position: 'absolute',
-                            'z-index': '999',
-                            top: '50%',
-                            transform: 'translateY(-50%)',
-                            right: '10px',
-                            cursor: 'pointer',
-                            'border-radius': '4px',
-                          },
+                          text: `width: 50px;height: 50px;background-color: rgba(0,0,0,0.5);position: absolute;z-index: 999;top: 50%;transform: translateY(-50%);right: 10px;cursor: pointer;border-radius: 4px; `,
                         },
                       ],
                     },
@@ -301,20 +297,23 @@ export const BasePage: CPageDataType = {
                     id: 'je9fi5',
                   },
                   {
-                    style: {
-                      position: 'absolute',
-                      bottom: '10px',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      height: '20px',
-                      display: 'flex',
-                      'align-items': 'center',
-                      'background-color': 'rgba(0,0,0,0.5)',
-                      'border-radius': '10px',
-                      padding: '0 10px',
-                      'justify-content': 'space-around',
-                      width: '80px',
-                    },
+                    style: [
+                      { value: 'absolute', property: 'position' },
+                      { value: '10px', property: 'bottom' },
+                      { value: '50%', property: 'left' },
+                      { value: 'translateX(-50%)', property: 'transform' },
+                      { value: '20px', property: 'height' },
+                      { value: 'flex', property: 'display' },
+                      { value: 'center', property: 'align-items' },
+                      {
+                        value: 'rgba(0,0,0,0.5)',
+                        property: 'background-color',
+                      },
+                      { value: '10px', property: 'border-radius' },
+                      { value: '0 10px', property: 'padding' },
+                      { value: 'space-around', property: 'justify-content' },
+                      { value: '80px', property: 'width' },
+                    ],
                     props: {
                       width: '100px',
                       height: '100px',
@@ -372,13 +371,16 @@ export const BasePage: CPageDataType = {
                         condition: true,
                         children: [
                           {
-                            style: {
-                              background: {
-                                type: 'EXPRESSION',
-                                value:
-                                  "$$context.stateManager.bannerState.state.currentPage === $$context.loopData.index ? 'white' : 'rgba(0,0,0,0.3)'",
+                            style: [
+                              {
+                                value: {
+                                  type: 'EXPRESSION',
+                                  value:
+                                    "$$context.stateManager.bannerState.state.currentPage === $$context.loopData.index ? 'white' : 'rgba(0,0,0,0.3)'",
+                                },
+                                property: 'background',
                               },
-                            },
+                            ],
                             props: {
                               width: '',
                               height: '',
@@ -435,11 +437,7 @@ export const BasePage: CPageDataType = {
                                 {
                                   state: 'normal',
                                   media: [],
-                                  style: {
-                                    'border-radius': '4px',
-                                    width: '10px',
-                                    height: '10px',
-                                  },
+                                  text: `border-radius: 4px;width: 10px;height: 10px; `,
                                 },
                               ],
                             },
@@ -451,12 +449,7 @@ export const BasePage: CPageDataType = {
                             {
                               state: 'normal',
                               media: [],
-                              style: {
-                                width: '10px',
-                                height: '10px',
-                                'background-color': 'rgba(200,200,200,0.5)',
-                                'border-radius': '4px',
-                              },
+                              text: `width: 10px;height: 10px;background-color: rgba(200,200,200,0.5);border-radius: 4px; `,
                             },
                           ],
                         },
@@ -482,9 +475,7 @@ export const BasePage: CPageDataType = {
                         {
                           state: 'normal',
                           media: [],
-                          style: {
-                            'animation-duration': '1',
-                          },
+                          text: `animation-duration: 1;`,
                         },
                       ],
                     },
@@ -518,14 +509,7 @@ export const BasePage: CPageDataType = {
                     {
                       state: 'normal',
                       media: [],
-                      style: {
-                        height: '500px',
-                        position: 'relative',
-                        width: '100%',
-                        overflow: 'hidden',
-                        margin: '0 auto',
-                        'border-radius': '10px',
-                      },
+                      text: `height: 500px;position: relative;width: 100%;overflow: hidden;margin: 0 auto;border-radius: 10px; `,
                     },
                   ],
                 },
@@ -542,9 +526,7 @@ export const BasePage: CPageDataType = {
                 {
                   state: 'normal',
                   media: [],
-                  style: {
-                    padding: '20px 40px',
-                  },
+                  text: `padding: 20px 40px;`,
                 },
               ],
             },
@@ -577,44 +559,26 @@ export const BasePage: CPageDataType = {
                     {
                       type: 'max-width',
                       value: '767',
-                      style: {
-                        color: 'pink',
-                      },
+                      text: ` color: pink;`,
                     },
                     {
                       type: 'max-width',
                       value: '991',
-                      style: {},
                     },
                   ],
-                  style: {
-                    'text-align': 'center',
-                    width: '100%',
-                    display: 'inline-block',
-                    'font-size': '80px',
-                    padding: '20px',
-                    'box-sizing': 'border-box',
-                    'font-weight': 'bold',
-                    'background-image':
-                      'linear-gradient(         45deg,         #CA4246 16.666%,          #E16541 16.666%,          #E16541 33.333%,          #F18F43 33.333%,          #F18F43 50%,          #8B9862 50%,          #8B9862 66.666%,          #476098 66.666%,          #476098 83.333%,          #A7489B 83.333%)',
-                    'background-color': '#CA4246',
-                    'background-size': '100%',
-                    'background-repeat': 'repeat',
-                    color: 'transparent',
-                    '-webkit-background-clip': 'text',
-                  },
+                  text: `text-align: center;width: 100%;display: inline-block;font-size: 80px;padding: 20px;box-sizing: border-box;font-weight: bold;background-image: linear-gradient(         45deg,         #CA4246 16.666%,          #E16541 16.666%,          #E16541 33.333%,          #F18F43 33.333%,          #F18F43 50%,          #8B9862 50%,          #8B9862 66.666%,          #476098 66.666%,          #476098 83.333%,          #A7489B 83.333%);background-color: #CA4246;background-size: 100%;background-repeat: repeat;color: transparent;-webkit-background-clip: text; `,
                 },
               ],
             },
           },
           {
-            style: {
-              margin: '20px 40px',
-              'border-radius': '20px',
-              overflow: 'hidden',
-              'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
-              'Webkit-backface-visibility': 'hidden',
-            },
+            style: [
+              { value: '20px 40px', property: 'margin' },
+              { value: '20px', property: 'border-radius' },
+              { value: 'hidden', property: 'overflow' },
+              { value: '2px 2px 5px rgba(0,0,0,0.2)', property: 'box-shadow' },
+              { value: 'hidden', property: 'Webkit-backface-visibility' },
+            ],
             props: {
               width: '100px',
               height: '100px',
@@ -652,10 +616,7 @@ export const BasePage: CPageDataType = {
                     {
                       state: 'normal',
                       media: [],
-                      style: {
-                        margin: 'auto',
-                        display: 'block',
-                      },
+                      text: `margin: auto;display: block; `,
                     },
                   ],
                 },
@@ -689,11 +650,7 @@ export const BasePage: CPageDataType = {
             {
               state: 'normal',
               media: [],
-              style: {
-                'background-color': 'white',
-                width: '100%',
-                overflow: 'auto',
-              },
+              text: `background-color: white;width: 100%;overflow: auto; `,
             },
           ],
         },

@@ -44,7 +44,6 @@ export class StoreManager {
     const store = this.storeMap.get(name);
     if (store) {
       return store.subscribe(cb);
-      store;
     } else {
       console.warn('store not exits');
       // eslint-disable-next-line @typescript-eslint/no-empty-function
