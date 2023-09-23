@@ -17,6 +17,11 @@ const maxVal = {
   rem: 100,
 };
 
+const getEmptyVal = () => ({
+  border: '',
+  'border-radius': '',
+});
+
 export type BorderInputProps = {
   value?: Value;
   initialValue?: Value;
@@ -24,12 +29,7 @@ export type BorderInputProps = {
 };
 
 export const BorderInput = forwardRef<InputCommonRef, BorderInputProps>((props, ref) => {
-  const [innerVal, setInnerVal] = useState<Value>(
-    props.initialValue ?? {
-      border: '',
-      'border-radius': '',
-    }
-  );
+  const [innerVal, setInnerVal] = useState<Value>(props.initialValue ?? getEmptyVal());
 
   const updateInnerVal = useCallback(
     (newVal: Partial<Value>, noTrigger?: boolean) => {
@@ -51,7 +51,20 @@ export const BorderInput = forwardRef<InputCommonRef, BorderInputProps>((props, 
     ref,
     () => {
       return {
-        setValue: (newVal) => updateInnerVal(newVal, true),
+        setValue: (newVal) => {
+          const emptyVal = getEmptyVal();
+          if (Object.keys(newVal).length) {
+            updateInnerVal(
+              {
+                ...emptyVal,
+                ...newVal,
+              },
+              true
+            );
+          } else {
+            updateInnerVal(emptyVal, true);
+          }
+        },
       };
     },
     [updateInnerVal]

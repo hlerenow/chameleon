@@ -14,15 +14,17 @@ export type BackgroundInputProps = {
   onChange?: (newVal: Value) => void;
 };
 
+const getEmptyVal = () => {
+  return {
+    'background-color': '',
+    'background-image': '',
+    'background-size': '',
+    'background-repeat': '',
+  };
+};
+
 export const BackgroundInput = forwardRef<InputCommonRef, BackgroundInputProps>((props, ref) => {
-  const [innerVal, setInnerVal] = useState<Value>(
-    props.initialValue ?? {
-      'background-color': '',
-      'background-image': '',
-      'background-size': '',
-      'background-repeat': '',
-    }
-  );
+  const [innerVal, setInnerVal] = useState<Value>(props.initialValue ?? getEmptyVal());
 
   const updateInnerVal = useCallback(
     (newVal: Partial<Value>, noTrigger?: boolean) => {
@@ -44,7 +46,20 @@ export const BackgroundInput = forwardRef<InputCommonRef, BackgroundInputProps>(
     ref,
     () => {
       return {
-        setValue: (newVal) => updateInnerVal(newVal, true),
+        setValue: (newVal) => {
+          const emptyVal = getEmptyVal();
+          if (Object.keys(newVal).length) {
+            updateInnerVal(
+              {
+                ...emptyVal,
+                ...newVal,
+              },
+              true
+            );
+          } else {
+            updateInnerVal(emptyVal, true);
+          }
+        },
       };
     },
     [updateInnerVal]

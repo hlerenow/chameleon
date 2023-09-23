@@ -1,11 +1,11 @@
 /* eslint-disable react/display-name */
 import { CSSSizeInput } from '@/component/CSSSizeInput';
-import { Row, Col } from 'antd';
+import { Row, Col, Radio } from 'antd';
 import styles from '../style.module.scss';
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 'react';
 import { InputCommonRef } from '../type';
 
-const keyList = ['width', 'height', 'min-width', 'max-width', 'min-height', 'max-height', 'flex'] as const;
+const keyList = ['width', 'height', 'min-width', 'max-width', 'min-height', 'max-height', 'flex', 'display'] as const;
 
 type Value = Record<typeof keyList[number], string>;
 
@@ -74,6 +74,31 @@ export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((p
 
   return (
     <div>
+      <Row className={styles.row}>
+        <Col
+          span={24}
+          style={{
+            display: 'flex',
+          }}
+        >
+          <span className={styles.label}>layout:</span>
+          <Radio.Group
+            value={realValue.display}
+            size="small"
+            buttonStyle="solid"
+            onChange={(e) => {
+              updateInnerVal({
+                display: e.target.value,
+              });
+            }}
+          >
+            <Radio.Button value="block">Block</Radio.Button>
+            <Radio.Button value="inline-block">InlineB</Radio.Button>
+            <Radio.Button value="inline">Inline</Radio.Button>
+            <Radio.Button value="none">None</Radio.Button>
+          </Radio.Group>
+        </Col>
+      </Row>
       <Row className={styles.row}>
         <Col
           span={12}

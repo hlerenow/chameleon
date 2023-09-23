@@ -10,6 +10,10 @@ import { InputCommonRef } from '../type';
 
 type Value = Record<'box-shadow', string>;
 
+const getEmptyVal = () => ({
+  'box-shadow': '',
+});
+
 export type ShadowInputProps = {
   value?: Value;
   initialValue?: Value;
@@ -17,11 +21,7 @@ export type ShadowInputProps = {
 };
 
 export const ShadowInput = forwardRef<InputCommonRef, ShadowInputProps>((props, ref) => {
-  const [innerVal, setInnerVal] = useState<Value>(
-    props.initialValue ?? {
-      'box-shadow': '',
-    }
-  );
+  const [innerVal, setInnerVal] = useState<Value>(props.initialValue ?? getEmptyVal());
 
   const realValue = useMemo(() => {
     const tempVal = props.value?.['box-shadow'] ?? innerVal['box-shadow'];
@@ -62,6 +62,7 @@ export const ShadowInput = forwardRef<InputCommonRef, ShadowInputProps>((props, 
         setValue: (newVal) => {
           updateInnerVal(
             {
+              ...getEmptyVal(),
               ...parseBoxShadowString(newVal['box-shadow'] || '')[0],
             },
             true

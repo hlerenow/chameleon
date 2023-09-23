@@ -24,16 +24,16 @@ const maxVal = {
 
 const inputW = '100px';
 
+const getEmptyVal = () => ({
+  left: '',
+  right: '',
+  top: '',
+  bottom: '',
+  all: '',
+});
+
 export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPaddingInputProps>((props, ref) => {
-  const [innerVal, setInnerVal] = useState<Value>(
-    props.initialValue ?? {
-      left: '',
-      right: '',
-      top: '',
-      bottom: '',
-      all: '',
-    }
-  );
+  const [innerVal, setInnerVal] = useState<Value>(props.initialValue ?? getEmptyVal());
 
   const updateInnerVal = useCallback(
     (newVal: Partial<Value>, noTrigger?: boolean) => {
@@ -63,7 +63,13 @@ export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPadding
     () => {
       return {
         setValue: (newVal) => {
-          updateInnerVal(formatValue(newVal, props.prefix), true);
+          updateInnerVal(
+            {
+              ...getEmptyVal(),
+              ...formatValue(newVal, props.prefix),
+            },
+            true
+          );
         },
       };
     },

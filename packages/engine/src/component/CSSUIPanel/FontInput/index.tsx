@@ -34,15 +34,15 @@ const fontWeightOptions = [
   { label: <span className={styles.fontOption}>Bold</span>, value: '700' },
 ];
 
+const getEmptyVal = () => ({
+  'font-size': '',
+  color: '',
+  'text-align': '',
+  'font-weight': '',
+});
+
 export const FontInput = forwardRef<InputCommonRef, FontInputProps>((props, ref) => {
-  const [innerVal, setInnerVal] = useState<Value>(
-    props.initialValue ?? {
-      'font-size': '',
-      color: '',
-      'text-align': '',
-      'font-weight': '',
-    }
-  );
+  const [innerVal, setInnerVal] = useState<Value>(props.initialValue ?? getEmptyVal());
 
   const updateInnerVal = useCallback(
     (newVal: Partial<Value>, noTrigger?: boolean) => {
@@ -65,7 +65,14 @@ export const FontInput = forwardRef<InputCommonRef, FontInputProps>((props, ref)
     () => {
       return {
         setValue: (newVal) => {
-          updateInnerVal(newVal, true);
+          console.log('🚀 ~ file: index.tsx:68 ~ FontInput ~ newVal:', newVal);
+          updateInnerVal(
+            {
+              ...getEmptyVal(),
+              ...newVal,
+            },
+            true
+          );
         },
       };
     },
@@ -75,6 +82,7 @@ export const FontInput = forwardRef<InputCommonRef, FontInputProps>((props, ref)
   const realValue = useMemo(() => {
     return props.value ?? innerVal;
   }, [props.value, innerVal]);
+  console.log('🚀 ~ file: index.tsx:85 ~ realValue ~ realValue:', realValue);
 
   return (
     <div>
@@ -86,6 +94,7 @@ export const FontInput = forwardRef<InputCommonRef, FontInputProps>((props, ref)
         >
           <span className={clsx([styles.label])}>Color:</span>
           <ColorPicker
+            key={realValue.color}
             showText={true}
             size="small"
             value={realValue.color || ''}
