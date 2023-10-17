@@ -1,5 +1,5 @@
-import * as antD from 'antd';
 import React from 'react';
+import * as antD from 'antd';
 
 export const components = {
   ...antD,

@@ -82,7 +82,6 @@ export const FontInput = forwardRef<InputCommonRef, FontInputProps>((props, ref)
   const realValue = useMemo(() => {
     return props.value ?? innerVal;
   }, [props.value, innerVal]);
-  console.log('🚀 ~ file: index.tsx:85 ~ realValue ~ realValue:', realValue);
 
   return (
     <div>

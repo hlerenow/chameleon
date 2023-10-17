@@ -22,7 +22,6 @@ import {
   compWrapper,
   convertCodeStringToFunction,
   formatSourceStylePropertyName,
-  getCSSTextValue,
   getMatchVal,
   getNodeCssClassName,
   getObjFromArrayMap,
@@ -34,13 +33,14 @@ import { StoreApi } from 'zustand/vanilla';
 import { StoreManager } from './storeManager';
 import { VariableManager } from './variableManager';
 
+const ALL_CHILD_CACHE_MAP: Record<string, any> = {};
 export class DefineReactAdapter {
   renderMode: AdapterOptionType['renderMode'] = 'normal';
   components: AdapterOptionType['components'] = {};
   storeManager = new StoreManager();
   // 存储节点的变量或者方法
   variableManager = new VariableManager();
-  runtimeComponentCache = new Map();
+  runtimeComponentCache = new Map<string, { component: any }>();
   onGetRef?: AdapterOptionType['onGetRef'];
   onGetComponent: AdapterOptionType['onGetComponent'];
   onComponentMount: AdapterOptionType['onComponentMount'];
@@ -177,12 +177,14 @@ export class DefineReactAdapter {
               const isClassComponent = shouldConstruct(renderItem.component);
 
               if (isClassComponent) {
-                return React.createElement(renderItem.component, {
+                const comp = renderItem.component as any;
+                return React.createElement(comp, {
                   $$context: parentContext,
                   key: renderItem.key,
                 });
               } else {
-                return renderItem.component(...args);
+                const comp = renderItem.component as any;
+                return comp?.(...args);
               }
             });
           };
@@ -447,7 +449,6 @@ export class DefineReactAdapter {
       };
 
       componentDidMount(): void {
-        console.log('componentDidMount', this.nodeName);
         this.addMediaCSS();
         if (that.onGetRef) {
           that.onGetRef(this.targetComponentRef, nodeModel, this as any);
@@ -635,6 +636,7 @@ export class DefineReactAdapter {
           // 结束循环渲染
           return loopRes;
         }
+        // 处理循环结束
 
         // handle props
         const newProps: Record<string, any> = that.transformProps(newOriginalProps, {
@@ -643,20 +645,29 @@ export class DefineReactAdapter {
 
         const { children } = newProps;
         let newChildren: React.ReactNode[] = [];
-        if (children !== undefined) {
-          delete newProps.children;
-          newChildren = Array.isArray(children) ? children : [children];
-        } else {
-          const children: React.ReactNode[] = [];
-          const childModel = nodeModel.value.children;
-          childModel.forEach((node, index) => {
-            const child = that.buildComponent(node, {
-              $$context: newContext,
-              idx: index,
+        // 判断是否有 child 缓存
+        const cacheChild = ALL_CHILD_CACHE_MAP[nodeModel.id];
+        if (!cacheChild) {
+          // 处理 children
+          if (children !== undefined) {
+            // 优先使用 props 中的 children
+            delete newProps.children;
+            newChildren = Array.isArray(children) ? children : [children];
+          } else {
+            const children: React.ReactNode[] = [];
+            const childModel = nodeModel.value.children;
+            childModel.forEach((node, index) => {
+              const child = that.buildComponent(node, {
+                $$context: newContext,
+                idx: index,
+              });
+              children.push(child);
             });
-            children.push(child);
-          });
-          newChildren = children;
+            newChildren = children;
+          }
+          ALL_CHILD_CACHE_MAP[nodeModel.id] = newChildren;
+        } else {
+          newChildren = cacheChild;
         }
 
         newProps.ref = this.targetComponentRef;
@@ -753,17 +764,20 @@ export class DefineReactAdapter {
       const nodeId = currentNode.value.id;
       let component = null;
       if (runtimeComponentCache.get(nodeId)) {
-        component = runtimeComponentCache.get(nodeId);
+        const cacheInfo = runtimeComponentCache.get(nodeId);
+        component = cacheInfo?.component;
       } else {
         const originalComponent = this.getComponent(currentNode);
-
         component = this.convertModelToComponent(originalComponent, currentNode);
+
+        // cache runtime component
+        if (!runtimeComponentCache.get(nodeId) && this.renderMode !== 'design') {
+          runtimeComponentCache.set(nodeId, {
+            component: component,
+          });
+        }
       }
 
-      // cache runtime component
-      if (!runtimeComponentCache.get(nodeId) && this.renderMode !== 'design') {
-        runtimeComponentCache.set(nodeId, component);
-      }
       const key = `${nodeId}-${DYNAMIC_COMPONENT_TYPE}`;
       const props: Record<string, any> = {
         $$context,
