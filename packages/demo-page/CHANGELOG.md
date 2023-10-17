@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.29](https://github.com/ByteCrazy/chameleon/compare/v0.0.28...v0.0.29) (2023-10-17)
+
+### ✨ Features | 新功能
+
+* **demo-page, engine, model:** 🎸 add ant color setter ([830de46](https://github.com/ByteCrazy/chameleon/commit/830de46babdf40a740248c37d8e6dc2043db1434))
+* **demo-page, engine, model:** 🎸 add ColorSetter ([e72b7f1](https://github.com/ByteCrazy/chameleon/commit/e72b7f15dd8bba498b776226d5debd07c8fd4234))
+* **demo-page, engine, model:** 🎸 add radio setter ([e6f9b1d](https://github.com/ByteCrazy/chameleon/commit/e6f9b1d9dba7cd3a9a82116bf5a1068c06a5a1d6))
+* **demo-page, engine:** 🎸 add cssSize setter ([74bf136](https://github.com/ByteCrazy/chameleon/commit/74bf136047000a67795e1360f2a923902366a513))
+* **demo-page, engine:** 🎸 add slider setter ([0fe1d29](https://github.com/ByteCrazy/chameleon/commit/0fe1d29257f214e69ca9fed6e5e4c11ccccb56bb))
+* **demo-page, render:** 🎸 compatible new style schema ([8165453](https://github.com/ByteCrazy/chameleon/commit/816545302e4d88a0976e8fdf3b17ed8a9a2978bd))
+
 ## [0.0.28](https://github.com/ByteCrazy/chameleon/compare/v0.0.27...v0.0.28) (2023-08-29)
 
 **Note:** Version bump only for package @chamn/demo-page

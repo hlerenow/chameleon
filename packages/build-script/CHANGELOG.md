@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.29](https://github.com/ByteCrazy/chameleon/compare/v0.0.28...v0.0.29) (2023-10-17)
+
+### ✨ Features | 新功能
+
+* **build-script, engine:** 🎸 optimize css editor ([66c0541](https://github.com/ByteCrazy/chameleon/commit/66c0541eaee12b2eb0ceb4fb3a7748e1bf69768d))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **build-script, engine:** 🐛 recocer build-script bin file ([5a2ca69](https://github.com/ByteCrazy/chameleon/commit/5a2ca69c4e5c48b3b0686478f6e5c40cd21c08ad))
+
 ## [0.0.28](https://github.com/ByteCrazy/chameleon/compare/v0.0.27...v0.0.28) (2023-08-29)
 
 **Note:** Version bump only for package @chamn/build-script

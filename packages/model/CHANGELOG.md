@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.29](https://github.com/ByteCrazy/chameleon/compare/v0.0.28...v0.0.29) (2023-10-17)
+
+### ✨ Features | 新功能
+
+* **demo-page, engine, model:** 🎸 add ant color setter ([830de46](https://github.com/ByteCrazy/chameleon/commit/830de46babdf40a740248c37d8e6dc2043db1434))
+* **demo-page, engine, model:** 🎸 add ColorSetter ([e72b7f1](https://github.com/ByteCrazy/chameleon/commit/e72b7f15dd8bba498b776226d5debd07c8fd4234))
+* **demo-page, engine, model:** 🎸 add radio setter ([e6f9b1d](https://github.com/ByteCrazy/chameleon/commit/e6f9b1d9dba7cd3a9a82116bf5a1068c06a5a1d6))
+* **engine, model, render:** 🎸 cssEditor support cssText ([3dc74b4](https://github.com/ByteCrazy/chameleon/commit/3dc74b4895d414a718c00911a39d8491fafcfaee))
+* **engine, model:** 🎸 optimize style editor ([9c660ce](https://github.com/ByteCrazy/chameleon/commit/9c660ce694a32059450f19c824bcde9889049db8))
+* **engine, model:** 🎸 style varible、c s scss editor support styles text ([c988fcf](https://github.com/ByteCrazy/chameleon/commit/c988fcf17a2dbbc486e809a03c642726f02cf547))
+
 ## [0.0.28](https://github.com/ByteCrazy/chameleon/compare/v0.0.27...v0.0.28) (2023-08-29)
 
 ### ✨ Features | 新功能

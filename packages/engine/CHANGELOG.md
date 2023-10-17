@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.29](https://github.com/ByteCrazy/chameleon/compare/v0.0.28...v0.0.29) (2023-10-17)
+
+### ✨ Features | 新功能
+
+* **build-script, engine:** 🎸 optimize css editor ([66c0541](https://github.com/ByteCrazy/chameleon/commit/66c0541eaee12b2eb0ceb4fb3a7748e1bf69768d))
+* **demo-page, engine, model:** 🎸 add ant color setter ([830de46](https://github.com/ByteCrazy/chameleon/commit/830de46babdf40a740248c37d8e6dc2043db1434))
+* **demo-page, engine, model:** 🎸 add ColorSetter ([e72b7f1](https://github.com/ByteCrazy/chameleon/commit/e72b7f15dd8bba498b776226d5debd07c8fd4234))
+* **demo-page, engine, model:** 🎸 add radio setter ([e6f9b1d](https://github.com/ByteCrazy/chameleon/commit/e6f9b1d9dba7cd3a9a82116bf5a1068c06a5a1d6))
+* **demo-page, engine:** 🎸 add cssSize setter ([74bf136](https://github.com/ByteCrazy/chameleon/commit/74bf136047000a67795e1360f2a923902366a513))
+* **demo-page, engine:** 🎸 add slider setter ([0fe1d29](https://github.com/ByteCrazy/chameleon/commit/0fe1d29257f214e69ca9fed6e5e4c11ccccb56bb))
+* **engine, model, render:** 🎸 cssEditor support cssText ([3dc74b4](https://github.com/ByteCrazy/chameleon/commit/3dc74b4895d414a718c00911a39d8491fafcfaee))
+* **engine, model:** 🎸 optimize style editor ([9c660ce](https://github.com/ByteCrazy/chameleon/commit/9c660ce694a32059450f19c824bcde9889049db8))
+* **engine, model:** 🎸 style varible、c s scss editor support styles text ([c988fcf](https://github.com/ByteCrazy/chameleon/commit/c988fcf17a2dbbc486e809a03c642726f02cf547))
+* **engine:** 🎸 add border input ([ae7d3c3](https://github.com/ByteCrazy/chameleon/commit/ae7d3c3e1c07bf68cfa74ef15ab8f499c9b7afc3))
+* **engine:** 🎸 add CSSSizeInput componrnt ([cd70933](https://github.com/ByteCrazy/chameleon/commit/cd70933fbb044058b65c402465a69139da4d8a4a))
+* **engine:** 🎸 add DimensionInput、FontInput、MarginInput、PaddingInput ([08aa4e5](https://github.com/ByteCrazy/chameleon/commit/08aa4e5a959ace882312b77a15ab5c973d2015b8))
+* **engine:** 🎸 CSSUI editor sync value ([549fa7e](https://github.com/ByteCrazy/chameleon/commit/549fa7ea676d9f31d10e3b78888ec2318df2cdc2))
+* **engine:** 🎸 optimize style setter ([eba569c](https://github.com/ByteCrazy/chameleon/commit/eba569cb5871f6cf8cce459c69d3d3beb7e0459a))
+* **engine:** 🎸 style UI finish ([a38fb84](https://github.com/ByteCrazy/chameleon/commit/a38fb846475631caa1a6253af7de11fd30027c48))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **build-script, engine:** 🐛 recocer build-script bin file ([5a2ca69](https://github.com/ByteCrazy/chameleon/commit/5a2ca69c4e5c48b3b0686478f6e5c40cd21c08ad))
+* **engine, render:** 🐛 fixed build error and add child cache for render ([9026474](https://github.com/ByteCrazy/chameleon/commit/90264746fe99b8cdd4d055f2d778e67aae38af87))
+* **engine:** 🐛 fixed MonacoEditor not trigger value change event ([0f6c3ee](https://github.com/ByteCrazy/chameleon/commit/0f6c3ee82a31b1a23388486f4cb12f9d7424ae66))
+
 ## [0.0.28](https://github.com/ByteCrazy/chameleon/compare/v0.0.27...v0.0.28) (2023-08-29)
 
 ### 🐛 Bug Fixes | Bug 修复

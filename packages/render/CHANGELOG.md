@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.29](https://github.com/ByteCrazy/chameleon/compare/v0.0.28...v0.0.29) (2023-10-17)
+
+### ✨ Features | 新功能
+
+* **demo-page, render:** 🎸 compatible new style schema ([8165453](https://github.com/ByteCrazy/chameleon/commit/816545302e4d88a0976e8fdf3b17ed8a9a2978bd))
+* **engine, model, render:** 🎸 cssEditor support cssText ([3dc74b4](https://github.com/ByteCrazy/chameleon/commit/3dc74b4895d414a718c00911a39d8491fafcfaee))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, render:** 🐛 fixed build error and add child cache for render ([9026474](https://github.com/ByteCrazy/chameleon/commit/90264746fe99b8cdd4d055f2d778e67aae38af87))
+
 ## [0.0.28](https://github.com/ByteCrazy/chameleon/compare/v0.0.27...v0.0.28) (2023-08-29)
 
 ### ✨ Features | 新功能
