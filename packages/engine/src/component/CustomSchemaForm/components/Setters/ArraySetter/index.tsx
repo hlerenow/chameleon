@@ -90,7 +90,7 @@ export const ArraySetter = ({
             setters={innerSetters}
             onDelete={() => {
               const newVal = [...listValue];
-              newVal.splice(index);
+              newVal.splice(index, 1);
               onValueChange?.(newVal);
             }}
           />
