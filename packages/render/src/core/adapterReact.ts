@@ -33,7 +33,6 @@ import { StoreApi } from 'zustand/vanilla';
 import { StoreManager } from './storeManager';
 import { VariableManager } from './variableManager';
 
-const ALL_CHILD_CACHE_MAP: Record<string, any> = {};
 export class DefineReactAdapter {
   renderMode: AdapterOptionType['renderMode'] = 'normal';
   components: AdapterOptionType['components'] = {};
@@ -646,28 +645,23 @@ export class DefineReactAdapter {
         const { children } = newProps;
         let newChildren: React.ReactNode[] = [];
         // 判断是否有 child 缓存
-        const cacheChild = ALL_CHILD_CACHE_MAP[nodeModel.id];
-        if (!cacheChild) {
-          // 处理 children
-          if (children !== undefined) {
-            // 优先使用 props 中的 children
-            delete newProps.children;
-            newChildren = Array.isArray(children) ? children : [children];
-          } else {
-            const children: React.ReactNode[] = [];
-            const childModel = nodeModel.value.children;
-            childModel.forEach((node, index) => {
-              const child = that.buildComponent(node, {
-                $$context: newContext,
-                idx: index,
-              });
-              children.push(child);
-            });
-            newChildren = children;
-          }
-          ALL_CHILD_CACHE_MAP[nodeModel.id] = newChildren;
+
+        // 处理 children
+        if (children !== undefined) {
+          // 优先使用 props 中的 children
+          delete newProps.children;
+          newChildren = Array.isArray(children) ? children : [children];
         } else {
-          newChildren = cacheChild;
+          const children: React.ReactNode[] = [];
+          const childModel = nodeModel.value.children;
+          childModel.forEach((node, index) => {
+            const child = that.buildComponent(node, {
+              $$context: newContext,
+              idx: index,
+            });
+            children.push(child);
+          });
+          newChildren = children;
         }
 
         newProps.ref = this.targetComponentRef;
