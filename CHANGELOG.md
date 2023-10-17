@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.31](https://github.com/ByteCrazy/chameleon/compare/v0.0.30...v0.0.31) (2023-10-17)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine:** 🐛 fixed arraySetter delete bug ([1b53538](https://github.com/ByteCrazy/chameleon/commit/1b53538a67ff35a6cfedffe661126f6912e78bbf))
+
 ## [0.0.30](https://github.com/ByteCrazy/chameleon/compare/v0.0.29...v0.0.30) (2023-10-17)
 
 ### 🐛 Bug Fixes | Bug 修复
