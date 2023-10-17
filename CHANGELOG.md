@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.30](https://github.com/ByteCrazy/chameleon/compare/v0.0.29...v0.0.30) (2023-10-17)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **render:** 🐛 remove child node cache ([0bca7b6](https://github.com/ByteCrazy/chameleon/commit/0bca7b6b1577c79e219f57ff9699b49000bb17ab))
+
 ## [0.0.29](https://github.com/ByteCrazy/chameleon/compare/v0.0.28...v0.0.29) (2023-10-17)
 
 ### ✨ Features | 新功能
