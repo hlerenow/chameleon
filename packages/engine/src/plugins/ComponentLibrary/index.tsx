@@ -57,18 +57,10 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
     }
   };
 
-  async componentDidMount() {
+  updateComponentsList() {
     const { pluginCtx } = this.props;
-    const { pageModel, i18n } = pluginCtx;
+    const { pageModel } = pluginCtx;
     const { materialsModel } = pageModel;
-    await this.props.pluginCtx.pluginManager.onPluginReadyOk('Designer');
-    this.registerDragEvent();
-
-    Object.keys(localize).forEach((lng) => {
-      i18n.addResourceBundle(lng, i18nNamespace, localize[lng], true, true);
-    });
-
-    i18n.update();
     const allSnippets = materialsModel.getAllSnippets();
 
     if (allSnippets.length && allSnippets[0].name === 'default') {
@@ -80,6 +72,22 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
 
     this.setState({
       componentsList: allSnippets,
+    });
+  }
+
+  async componentDidMount() {
+    await this.props.pluginCtx.pluginManager.onPluginReadyOk('Designer');
+    this.registerDragEvent();
+    const { pluginCtx } = this.props;
+    const { i18n } = pluginCtx;
+    Object.keys(localize).forEach((lng) => {
+      i18n.addResourceBundle(lng, i18nNamespace, localize[lng], true, true);
+    });
+
+    i18n.update();
+    this.updateComponentsList();
+    pluginCtx.globalEmitter.on('updateMaterials', () => {
+      this.updateComponentsList();
     });
   }
 

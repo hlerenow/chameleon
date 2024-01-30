@@ -258,6 +258,34 @@ export const App = () => {
       plugins={DEFAULT_PLUGIN_LIST}
       components={TestComponents}
       schema={page}
+      onMount={(ctx) => {
+        setTimeout(async () => {
+          const res = await ctx.engine.updateMaterials(
+            [],
+            [
+              {
+                package: 'lodash',
+                globalName: 'lodash',
+                resources: [
+                  {
+                    src: 'https://cdn.bootcdn.net/ajax/libs/lodash.js/4.17.21/lodash.js',
+                  },
+                ],
+              },
+              {
+                package: 'dayjs',
+                globalName: 'dayjs',
+                resources: [
+                  {
+                    src: 'https://cdn.bootcdn.net/ajax/libs/dayjs/1.11.9/dayjs.min.js',
+                  },
+                ],
+              },
+            ]
+          );
+          console.log('add material successfully');
+        }, 2 * 1000);
+      }}
       // 传入组件物料
       material={[...InnerComponentMeta, ...Material]}
       // 组件物料对应的 js 运行库，只能使用 umd 模式的 js

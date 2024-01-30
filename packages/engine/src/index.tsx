@@ -8,6 +8,7 @@ import { AssetPackage, CMaterialType, CNode, CPage, CPageDataType, CRootNode, Em
 import { getDefaultRender, beforeInitRender } from './utils/defaultEngineConfig';
 import { DesignerPluginInstance } from './plugins/Designer/type';
 import clsx from 'clsx';
+import { AssetLoader } from '@chamn/render';
 
 export type EnginContext = {
   pluginManager: PluginManager;
@@ -127,22 +128,18 @@ export class Engine extends React.Component<EngineProps> {
   }
 
   updatePage = (page: CPageDataType) => {
-    this.emitter.emit('updatePage');
-    console.log(page);
+    this.pageModel.updatePage(page);
   };
 
-  updateDesignerAssets = (assets: AssetPackage[]) => {
-    console.log('updateDesignerAssets', assets);
+  updateMaterials = async (materials: CMaterialType[], assetPackagesList: AssetPackage[]) => {
+    const assetLoader = new AssetLoader(assetPackagesList);
+    await assetLoader.load();
+    this.pageModel.materialsModel.addMaterials(materials);
+    this.emitter.emit('updateMaterials');
   };
 
-  updateMaterial = (material: CMaterialType[]) => {
-    this.emitter.emit('updateMaterial');
-    console.log(material);
-  };
-
-  refresh = () => {
-    this.emitter.emit('refresh');
-    console.log('refresh engine');
+  refresh = async () => {
+    this.pageModel.reloadPage(this.pageModel.export('design'));
   };
 
   getWorkbench = () => {

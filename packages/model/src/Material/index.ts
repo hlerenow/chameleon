@@ -92,6 +92,19 @@ export class CMaterials {
     this.data = parseMaterials(data);
   }
 
+  addMaterials(data: CMaterialType[]) {
+    const appendMaterial = parseMaterials(data);
+    // TODO: check 是否重复的组件名
+    this.data.push(...appendMaterial);
+  }
+
+  removeMaterial(componentNames: string[]) {
+    const newData = this.data.filter((el) => {
+      return !componentNames.includes(el.componentName);
+    });
+    this.data = newData;
+  }
+
   findByComponentName(componentName: string) {
     const target = this.data.find((el) => el.componentName === componentName);
     return target;

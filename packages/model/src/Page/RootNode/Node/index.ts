@@ -251,11 +251,12 @@ export class CNode {
     if (this.material) {
       this.materialsModel.usedMaterials.push(this.material);
     }
-    let newRes: any = {
+    let newRes: CNodeDataType = {
       ...data,
       configure,
       props: props,
       children,
+      condition: data.condition,
     };
     if (mode === 'design') {
       delete newRes.id;

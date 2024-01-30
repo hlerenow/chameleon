@@ -13,17 +13,17 @@ type GlobalStatePanelProps = {
   pluginCtx: CPluginCtx;
 };
 
+let triggerChangeBySelf = false;
+
 const GlobalStatePanel = (props: GlobalStatePanelProps) => {
   const { pluginCtx } = props;
   const rootState = pluginCtx.pageModel.value.componentsTree.value.state || {};
   // 表示是不是自己触发的值更新
-  let triggerChangeBySelf = false;
   const editorRef = useRef<MonacoEditorInstance | null>(null);
   useEffect(() => {
     editorRef?.current?.setValue(JSON.stringify(rootState, null, 2));
     // 正常情况下, 只有 reloadPage  才需要同步数据
     pluginCtx.pageModel.emitter.on('onReloadPage', (e) => {
-      console.log(e);
       if (triggerChangeBySelf) {
         triggerChangeBySelf = false;
         return;

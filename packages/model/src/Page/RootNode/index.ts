@@ -199,6 +199,7 @@ export class CRootNode {
       ...data,
       props: props,
       children: children.filter((el) => el),
+      condition: data.condition,
     };
     let finalRes: any = omit(tempData, ['id']);
     finalRes = clearSchema(finalRes);

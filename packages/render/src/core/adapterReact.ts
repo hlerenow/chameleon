@@ -480,8 +480,6 @@ export class DefineReactAdapter {
       }
 
       render(): React.ReactNode {
-        console.log('rerender', this.nodeName);
-
         const { $$context, ...props } = this.props;
         const nodeName = nodeModel.value.nodeName || nodeModel.id;
         const newOriginalProps = {

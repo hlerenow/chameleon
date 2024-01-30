@@ -284,7 +284,6 @@ export class CPage {
     }
   }
 
-  // TODO
   export(mode: ExportType = ExportTypeEnum.SAVE): CPageDataType {
     const componentsTree = this.data.componentsTree.export(mode);
 
@@ -303,7 +302,7 @@ export class CPage {
         ...cloneDeep(it.value.npm || {}),
       } as ComponentMetaType;
     });
-    // 剔除不合法的meta
+    // 剔除不合法的 meta
     const finalComponentsMetaList = componentsMetaList.filter((el) => {
       if (el.componentName && el.package && el.version) {
         return true;
