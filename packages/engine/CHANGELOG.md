@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.32](https://github.com/ByteCrazy/chameleon/compare/v0.0.31...v0.0.32) (2024-01-30)
+
+### ✨ Features | 新功能
+
+* **docs-website, engine, model, render:** 🎸 add updateMaterials、updatePage methods ([39ed2b6](https://github.com/ByteCrazy/chameleon/commit/39ed2b692a8a7379a79b96cb3fd8cdb76a4f01f2))
+
 ## [0.0.31](https://github.com/ByteCrazy/chameleon/compare/v0.0.30...v0.0.31) (2023-10-17)
 
 ### 🐛 Bug Fixes | Bug 修复
