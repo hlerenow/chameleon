@@ -1,6 +1,6 @@
 import { waitReactUpdate } from '@/utils';
 import { CPageDataType } from '@chamn/model';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, debounce } from 'lodash-es';
 import { CPluginCtx } from '../../core/pluginManager';
 import { HistoryPluginType } from './type';
 
@@ -84,12 +84,16 @@ export const HistoryPlugin: HistoryPluginType = (ctx) => {
     },
   };
 
+  const debounceAddStep = debounce(() => {
+    resObj.addStep();
+  }, 500);
+
   return {
     name: PLUGIN_NAME,
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     async init(ctx) {
       ctx.pageModel.emitter.on('onNodeChange', () => {
-        resObj.addStep();
+        debounceAddStep();
       });
       ctx.pageModel.emitter.on('onPageChange', () => {
         resObj.addStep();

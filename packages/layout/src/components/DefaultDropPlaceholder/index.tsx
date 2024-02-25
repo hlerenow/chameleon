@@ -11,6 +11,8 @@ export const DefaultDropPlaceholder = (props: {
   return (
     <span
       style={{
+        margin: 0,
+        padding: 0,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

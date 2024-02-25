@@ -77,6 +77,8 @@ export const DefaultDropPlaceholder: React.FC<{ node: CNode | CRootNode }> = (pr
     'div',
     {
       style: {
+        margin: 0,
+        padding: 0,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
