@@ -219,6 +219,10 @@ export const CSSEditor = (props: CSSEditorProps) => {
           style={{
             marginBottom: '10px',
           }}
+          onChange={async () => {
+            await waitReactUpdate();
+            initRef.current?.();
+          }}
           items={[
             {
               key: 'normal',
