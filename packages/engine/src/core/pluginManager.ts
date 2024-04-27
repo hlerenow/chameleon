@@ -139,19 +139,19 @@ export class PluginManager {
   }
 
   onPluginReadyOk(pluginName: string, cb?: (pluginHandle: PluginInstance) => void) {
-    const pluginObj = this.plugins.get(pluginName);
-    if (pluginObj?.ready) {
-      return;
-    } else if (pluginObj === undefined) {
-      console.warn(`plugin: ${pluginName} not found.`);
-    }
-
     return new Promise<PluginInstance>((resolve) => {
+      const pluginObj = this.plugins.get(pluginName);
+      if (pluginObj?.ready) {
+        resolve(pluginObj);
+      } else if (pluginObj === undefined) {
+        console.warn(`plugin: ${pluginName} not found.`);
+      }
       this.emitter.on(`${pluginName}:ready`, () => {
-        if (pluginObj) {
-          pluginObj.ready = true;
-          cb?.(pluginObj);
-          resolve(pluginObj);
+        const newPluginObj = this.plugins.get(pluginName);
+        if (newPluginObj) {
+          newPluginObj.ready = true;
+          cb?.(newPluginObj);
+          resolve(newPluginObj);
         }
       });
     });
