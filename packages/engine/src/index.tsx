@@ -10,6 +10,7 @@ import { DesignerPluginInstance } from './plugins/Designer/type';
 import clsx from 'clsx';
 import { AssetLoader, ComponentsType, collectVariable } from '@chamn/render';
 import { AssetsPackageListManager } from './core/assetPackagesListManage';
+import { flatObject } from '@chamn/render';
 
 export type EnginContext = {
   pluginManager: PluginManager;
@@ -157,12 +158,14 @@ export class Engine extends React.Component<EngineProps> {
     // 从子窗口获取物料对象
     const assetLoader = new AssetLoader(assetPackagesList, subWin);
     await assetLoader.load();
-    let componentCollection = collectVariable(assetPackagesList, subWin);
+    const componentCollection = collectVariable(assetPackagesList, subWin);
+    // 排平
+    let newComponents = flatObject(componentCollection);
     if (options?.formatComponents) {
-      componentCollection = options.formatComponents(componentCollection);
+      newComponents = options.formatComponents(newComponents);
     }
     // 更新 render 中的组件库
-    designerPluginExport?.updateRenderComponents(componentCollection);
+    designerPluginExport?.updateRenderComponents(newComponents);
     this.pageModel.materialsModel.addMaterials(materials);
     this.emitter.emit('updateMaterials');
   };
