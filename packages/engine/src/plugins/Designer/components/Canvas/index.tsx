@@ -78,6 +78,29 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     };
   };
 
+  /**
+   * 更新 render 中的 components ;
+   */
+  async updateRenderComponents(newComponentMap: Record<string, any> = {}) {
+    const oldComponents = this.props.pluginCtx.config.components || {};
+    const newComponents = {
+      ...oldComponents,
+      ...newComponentMap,
+    };
+    this.props.pluginCtx.config.components = newComponents;
+    const { layoutRef } = this;
+    if (!layoutRef.current) {
+      console.warn('layout not ready ok');
+      return;
+    }
+
+    await layoutRef.current.ready();
+
+    const layoutInstance = layoutRef.current;
+    // 直接修改到 render 中去
+    layoutInstance?.designRenderRef?.current?.updateComponents(newComponents);
+  }
+
   componentDidMount(): void {
     const { i18n } = this.props.pluginCtx;
     Object.keys(localize).forEach((lng) => {

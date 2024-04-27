@@ -17,6 +17,7 @@ export type DesignerExport = {
   getDynamicComponentInstances: (id: string) => RenderInstance;
   getLayoutRef: () => React.RefObject<Layout>;
   getDesignerWindow: () => Window | null;
+  updateRenderComponents: (newComponentMap: Record<string, string>) => void;
 };
 
 export type DesignerPluginConfig = Omit<

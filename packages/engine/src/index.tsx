@@ -8,7 +8,7 @@ import { AssetPackage, CMaterialType, CNode, CPage, CPageDataType, CRootNode, Em
 import { getDefaultRender, beforeInitRender } from './utils/defaultEngineConfig';
 import { DesignerPluginInstance } from './plugins/Designer/type';
 import clsx from 'clsx';
-import { AssetLoader } from '@chamn/render';
+import { AssetLoader, collectVariable } from '@chamn/render';
 
 export type EnginContext = {
   pluginManager: PluginManager;
@@ -132,8 +132,22 @@ export class Engine extends React.Component<EngineProps> {
   };
 
   updateMaterials = async (materials: CMaterialType[], assetPackagesList: AssetPackage[]) => {
-    const assetLoader = new AssetLoader(assetPackagesList);
+    const designerPlugin = await this.pluginManager.get<DesignerPluginInstance>('Designer');
+    const designerPluginExport = designerPlugin?.export;
+
+    const subWin = designerPluginExport?.getDesignerWindow();
+
+    if (!subWin) {
+      console.warn('subWin not exits');
+      return;
+    }
+
+    // 从子窗口获取物料对象
+    const assetLoader = new AssetLoader(assetPackagesList, subWin);
     await assetLoader.load();
+    const componentCollection = collectVariable(assetPackagesList, subWin);
+    // 更新 render 中的组件库
+    designerPluginExport?.updateRenderComponents(componentCollection);
     this.pageModel.materialsModel.addMaterials(materials);
     this.emitter.emit('updateMaterials');
   };

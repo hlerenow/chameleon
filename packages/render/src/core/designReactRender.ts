@@ -101,16 +101,24 @@ export class DesignRender extends React.Component<DesignRenderProp> {
   instanceManager = new ComponentInstanceManager();
   renderRef: React.MutableRefObject<Render | null>;
   dropPlaceholder: Required<DesignRenderProp>['dropPlaceholder'] = DefaultDropPlaceholder;
+  _components: Record<string, any> = {};
 
   constructor(props: DesignRenderProp) {
     super(props);
+    this.updateComponents(this.props.components);
     this.renderRef = React.createRef<Render>();
     if (props.dropPlaceholder) {
       this.dropPlaceholder = props.dropPlaceholder;
     }
   }
 
+  updateComponents(newComponents: Record<string, string> = {}) {
+    this._components = Object.assign(this._components, newComponents);
+    this.forceUpdate();
+  }
+
   componentDidMount(): void {
+    this.updateComponents(this.props.components);
     this.props.onMount?.(this);
   }
   getPageModel() {
@@ -246,9 +254,11 @@ export class DesignRender extends React.Component<DesignRenderProp> {
     if (render) {
       render.ref.current = this;
     }
+
     return React.createElement(Render, {
       onGetComponent,
       ...renderProps,
+      components: this._components,
       // 拦截特殊属性配置, 配合开发模式使用
       processNodeConfigHook: (config, node) => {
         if (node.nodeType !== 'NODE') {

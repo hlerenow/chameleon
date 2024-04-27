@@ -10,6 +10,7 @@ export const DesignerPlugin: DesignerPluginType = (ctx) => {
   return {
     name: PLUGIN_NAME,
     async init(ctx) {
+      ctx.name = PLUGIN_NAME;
       const workbench = ctx.getWorkbench();
       workbench.replaceBodyView(<Designer ref={designerRef} pluginCtx={ctx} />);
     },
@@ -52,10 +53,13 @@ export const DesignerPlugin: DesignerPluginType = (ctx) => {
           return map?.get(id) || ([] as any);
         },
         getLayoutRef: () => {
-          return designerRef.current?.layoutRef;
+          return designerRef.current?.layoutRef as any;
         },
         getDesignerWindow: () => {
-          return designerRef.current?.layoutRef.current?.iframeContainer.getWindow();
+          return designerRef.current?.layoutRef.current?.iframeContainer.getWindow() as any;
+        },
+        updateRenderComponents: (newComponents: Record<string, string>) => {
+          return designerRef.current?.updateRenderComponents(newComponents);
         },
       };
     },

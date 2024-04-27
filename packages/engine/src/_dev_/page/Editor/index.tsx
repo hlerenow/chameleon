@@ -37,7 +37,6 @@ const customRender: LayoutPropsType['customRender'] = async ({
   const IframeReact = iframeWindow.React!;
   const IframeReactDOM = iframeWindow.ReactDOMClient!;
   const CRender = iframeWindow.CRender!;
-
   // 从子窗口获取物料对象
   const componentCollection = collectVariable(assets, iframeWindow);
   const components = flatObject(componentCollection);

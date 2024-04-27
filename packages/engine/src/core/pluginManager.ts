@@ -32,6 +32,7 @@ type PluginManagerOptions = {
 };
 
 export type CPluginCtx<C = any> = {
+  name?: string;
   globalEmitter: Emitter<any>;
   /** 当前插件外部传入的配置 **/
   config: C;
