@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.33](https://github.com/ByteCrazy/chameleon/compare/v0.0.32...v0.0.33) (2024-04-27)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine:** 🐛 fix css editor initial value not correct problem ([96c3e58](https://github.com/ByteCrazy/chameleon/commit/96c3e58755ed4fdfa3e200f3049b5024cb9c6719))
+
+### ✨ Features | 新功能
+
+* **engine, layout, render:** 🎸 optimize history step save ([dca964a](https://github.com/ByteCrazy/chameleon/commit/dca964a990a3cc0c5fd853d853a55a4957999644))
+* **engine, render:** 🎸 designer plugin add  updateComponent method ([f161177](https://github.com/ByteCrazy/chameleon/commit/f16117793402681a1eda8f8cba9c06e2ee5247ad))
+
 ## [0.0.32](https://github.com/ByteCrazy/chameleon/compare/v0.0.31...v0.0.32) (2024-01-30)
 
 ### ✨ Features | 新功能
