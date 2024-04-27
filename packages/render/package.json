@@ -4,7 +4,7 @@
   "files": [
     "dist"
   ],
-  "version": "0.0.35",
+  "version": "0.0.36",
   "publishConfig": {
     "access": "public"
   },
@@ -25,16 +25,16 @@
     "react-dom": ">=16.9.0"
   },
   "dependencies": {
-    "@chamn/model": "^0.0.35",
+    "@chamn/model": "^0.0.36",
     "html-tag-names": "^2.0.1",
     "loadjs": "4.3.0-rc1",
     "lodash-es": "^4.17.21",
     "zustand": "^4.3.8"
   },
   "devDependencies": {
-    "@chamn/build-script": "^0.0.35",
-    "@chamn/demo-page": "^0.0.35",
-    "@chamn/material": "^0.0.35",
+    "@chamn/build-script": "^0.0.36",
+    "@chamn/demo-page": "^0.0.36",
+    "@chamn/material": "^0.0.36",
     "@types/loadjs": "^4.0.1",
     "@types/lodash-es": "^4.17.6",
     "@types/node": "^18.15.9",

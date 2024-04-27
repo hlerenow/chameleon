@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.36](https://github.com/ByteCrazy/chameleon/compare/v0.0.35...v0.0.36) (2024-04-27)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **render:** 🐛 fixed collectVariable method bug ([d5b7c5f](https://github.com/ByteCrazy/chameleon/commit/d5b7c5f274da52de09875cb9a9acf263ff051e59))
+
 ## [0.0.35](https://github.com/ByteCrazy/chameleon/compare/v0.0.34...v0.0.35) (2024-04-27)
 
 ### 🐛 Bug Fixes | Bug 修复

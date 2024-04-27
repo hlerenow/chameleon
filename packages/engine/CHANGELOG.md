@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.36](https://github.com/ByteCrazy/chameleon/compare/v0.0.35...v0.0.36) (2024-04-27)
+
+**Note:** Version bump only for package @chamn/engine
+
 ## [0.0.35](https://github.com/ByteCrazy/chameleon/compare/v0.0.34...v0.0.35) (2024-04-27)
 
 ### 🐛 Bug Fixes | Bug 修复
