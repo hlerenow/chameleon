@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.38](https://github.com/ByteCrazy/chameleon/compare/v0.0.37...v0.0.38) (2024-04-27)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, layout:** 🐛 fixed assets load iuess when relaod ([3eccc60](https://github.com/ByteCrazy/chameleon/commit/3eccc60bb7be5a469704a9c4f769161e525481f4))
+
 ## [0.0.37](https://github.com/ByteCrazy/chameleon/compare/v0.0.36...v0.0.37) (2024-04-27)
 
 ### 🐛 Bug Fixes | Bug 修复
