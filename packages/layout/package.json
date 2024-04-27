@@ -1,6 +1,6 @@
 {
   "name": "@chamn/layout",
-  "version": "0.0.33",
+  "version": "0.0.34",
   "publishConfig": {
     "access": "public"
   },
@@ -24,15 +24,15 @@
     "react-dom": ">=16.9.0"
   },
   "dependencies": {
-    "@chamn/model": "^0.0.33",
-    "@chamn/render": "^0.0.33",
+    "@chamn/model": "^0.0.34",
+    "@chamn/render": "^0.0.34",
     "lodash-es": "^4.17.21",
     "mitt": "^3.0.0",
     "re-resizable": "^6.9.9"
   },
   "devDependencies": {
-    "@chamn/build-script": "^0.0.33",
-    "@chamn/demo-page": "^0.0.33",
+    "@chamn/build-script": "^0.0.34",
+    "@chamn/demo-page": "^0.0.34",
     "@types/lodash-es": "^4.17.6",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",

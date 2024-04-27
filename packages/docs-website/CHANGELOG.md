@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.34](https://github.com/ByteCrazy/chameleon/compare/v0.0.33...v0.0.34) (2024-04-27)
+
+### ✨ Features | 新功能
+
+* **docs-website, engine, model:** 🎸 add update assetsPackageList logic ([2bce2f4](https://github.com/ByteCrazy/chameleon/commit/2bce2f4758b203695ec119d6e201e3186d7fab84))
+
 ## [0.0.33](https://github.com/ByteCrazy/chameleon/compare/v0.0.32...v0.0.33) (2024-04-27)
 
 **Note:** Version bump only for package @chamn/docs
