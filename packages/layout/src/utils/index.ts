@@ -50,19 +50,6 @@ export const animationFrame = (stepCb: () => void) => {
   };
 };
 
-export const collectVariable = (assetPackages: AssetPackage[], win: Window) => {
-  const res: Record<string, any> = {};
-  assetPackages.forEach((el) => {
-    if (el.globalName) {
-      const target = (win as any)[el.globalName];
-      if (target) {
-        res[el.globalName] = target;
-      }
-    }
-  });
-  return res;
-};
-
 export const flatObject = (obj: Record<string, any>, level = 1) => {
   let count = 0;
   let currentObj = obj;

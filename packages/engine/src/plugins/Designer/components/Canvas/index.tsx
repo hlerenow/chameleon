@@ -35,7 +35,6 @@ type DesignerStateType = {
   dropViewRender: AdvanceCustom['dropViewRender'] | null;
   ghostView: React.ReactNode;
   portalView: React.ReactNode;
-  assets: AssetPackage[];
 };
 
 export class Designer extends React.Component<DesignerPropsType, DesignerStateType> {
@@ -49,7 +48,6 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       hoverToolbarView: null,
       selectToolbarView: null,
       ghostView: null,
-      assets: props.pluginCtx.assetsPackageListManager.getList() || ([] as AssetPackage[]),
       portalView: null,
       selectRectViewRender: null,
       hoverRectViewRender: null,
@@ -107,12 +105,6 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       i18n.addResourceBundle(lng, `plugin:${PLUGIN_NAME}`, localize[lng], true, true);
     });
     this.init();
-  }
-
-  updateAssets(assets: AssetPackage[]) {
-    this.setState({
-      assets: assets,
-    });
   }
 
   reloadRender({ assets }: { assets?: AssetPackage[] }) {
@@ -499,13 +491,16 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       hoverToolbarView,
       selectToolbarView,
       ghostView,
-      assets,
       portalView,
       selectRectViewRender,
       hoverRectViewRender,
       dropViewRender,
     } = this.state;
+
     const { pluginCtx } = props;
+    const assets = pluginCtx.assetsPackageListManager.getList() || ([] as AssetPackage[]);
+    console.log('🚀 ~ Designer ~ render ~ assets:', assets);
+
     const renderJSUrl = pluginCtx.engine.props.renderJSUrl || './render.umd.js';
     const advanceCustomProps: LayoutPropsType = {};
 

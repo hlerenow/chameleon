@@ -126,7 +126,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     this.designRenderRef = React.createRef<DesignRender | null>();
     this.iframeContainer = new IFrameContainer();
     this.eventExposeHandler = [];
-    this.assets = props.assets || [];
     this.isCancelDrag = false;
     this.state = {
       isDragging: false,
@@ -193,10 +192,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     }
   };
 
-  reload({ assets }: { assets?: AssetPackage[] }) {
-    if (assets) {
-      this.assets = assets;
-    }
+  reload() {
     return this.init();
   }
 

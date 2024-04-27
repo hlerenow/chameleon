@@ -11,6 +11,22 @@ export class AssetsPackageListManager {
   }
 
   setList(newAssets: AssetPackage[]) {
-    this._assets = [...newAssets, ...this._assets];
+    const tempList = [...newAssets, ...this._assets];
+    const newList = getUniqueAssetsList(tempList);
+    // 去重复
+    this._assets = newList;
   }
 }
+
+export const getUniqueAssetsList = (tempList: AssetPackage[]) => {
+  const newList: AssetPackage[] = [];
+  const idMap: Record<string, any> = {};
+  tempList.forEach((el) => {
+    if (!idMap[el.package]) {
+      idMap[el.package] = el;
+      newList.push(el);
+    }
+  });
+
+  return newList;
+};

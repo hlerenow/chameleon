@@ -1,5 +1,6 @@
-import { LayoutPropsType, collectVariable, flatObject } from '@chamn/layout';
-import { getThirdLibs } from '@chamn/render';
+import { getUniqueAssetsList } from '@/core/assetPackagesListManage';
+import { LayoutPropsType, flatObject } from '@chamn/layout';
+import { collectVariable, getThirdLibs } from '@chamn/render';
 
 /** 默认使用 react 18 模式渲染 */
 export const beforeInitRender: LayoutPropsType['beforeInitRender'] = async ({ iframe }) => {
@@ -35,7 +36,7 @@ export const getDefaultRender = (components: Record<string, any>) => {
       console.log('page schema is empty');
       return;
     }
-    const allAssets = [...assets, ...(pageInfo.assets || [])];
+    const allAssets = getUniqueAssetsList([...assets, ...(pageInfo.assets || [])]);
     // 注入组件物料资源
     const assetLoader = new CRender.AssetLoader(allAssets, {
       window: iframeContainer.getWindow()!,

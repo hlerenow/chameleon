@@ -138,7 +138,7 @@ export class Engine extends React.Component<EngineProps> {
   updateMaterials = async (
     materials: CMaterialType[],
     assetPackagesList: AssetPackage[],
-    options: {
+    options?: {
       formatComponents?: (componentMap: ComponentsType) => ComponentsType;
     }
   ) => {
