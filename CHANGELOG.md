@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.37](https://github.com/ByteCrazy/chameleon/compare/v0.0.36...v0.0.37) (2024-04-27)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine:** 🐛 fixed updateMaterials components map problem ([b868e88](https://github.com/ByteCrazy/chameleon/commit/b868e884a9b65021effdee8872a462fd8539c9c4))
+
 ## [0.0.36](https://github.com/ByteCrazy/chameleon/compare/v0.0.35...v0.0.36) (2024-04-27)
 
 ### 🐛 Bug Fixes | Bug 修复
