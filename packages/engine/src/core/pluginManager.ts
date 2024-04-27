@@ -4,6 +4,7 @@ import { i18n } from 'i18next';
 import mitt, { Emitter } from 'mitt';
 import { Workbench } from '../component/Workbench';
 import { CustomI18n } from '../i18n';
+import { AssetsPackageListManager } from './assetPackagesListManage';
 
 export type PluginObj<C, E = any> = {
   name: string;
@@ -27,7 +28,7 @@ type PluginManagerOptions = {
   emitter: Emitter<any>;
   pageModel: CPage;
   i18n: CustomI18n;
-  assets: AssetPackage[];
+  assetsPackageListManager: AssetsPackageListManager;
   engine: Engine;
 };
 
@@ -55,16 +56,16 @@ export class PluginManager {
   getWorkbench!: () => Workbench;
   pageModel!: CPage;
   i18n: CustomI18n;
-  assets: AssetPackage[];
+  assetsPackageListManager: AssetsPackageListManager;
   engine: Engine;
   customPluginHooks: Record<string, CustomPluginHook[]> = {};
 
-  constructor({ getWorkbench, emitter, pageModel, i18n, assets, engine }: PluginManagerOptions) {
+  constructor({ getWorkbench, emitter, pageModel, i18n, assetsPackageListManager, engine }: PluginManagerOptions) {
     this.getWorkbench = getWorkbench;
     this.emitter = emitter;
     this.pageModel = pageModel;
     this.i18n = i18n;
-    this.assets = assets;
+    this.assetsPackageListManager = assetsPackageListManager;
     this.engine = engine;
   }
 
@@ -86,7 +87,7 @@ export class PluginManager {
       pluginManager: this,
       pageModel: this.pageModel,
       i18n: this.i18n,
-      assets: this.assets,
+      assetsPackageListManager: this.assetsPackageListManager,
       engine: this.engine,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       pluginReadyOk: () => {},

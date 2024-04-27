@@ -49,7 +49,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       hoverToolbarView: null,
       selectToolbarView: null,
       ghostView: null,
-      assets: props.pluginCtx.assets || ([] as AssetPackage[]),
+      assets: props.pluginCtx.assetsPackageListManager.getList() || ([] as AssetPackage[]),
       portalView: null,
       selectRectViewRender: null,
       hoverRectViewRender: null,

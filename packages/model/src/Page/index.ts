@@ -307,6 +307,7 @@ export class CPage {
       if (el.componentName && el.package && el.version) {
         return true;
       }
+      console.warn(`${el} not a valid material info`);
       return false;
     });
     this.materialsModel.usedMaterials = [];

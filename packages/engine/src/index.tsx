@@ -8,7 +8,8 @@ import { AssetPackage, CMaterialType, CNode, CPage, CPageDataType, CRootNode, Em
 import { getDefaultRender, beforeInitRender } from './utils/defaultEngineConfig';
 import { DesignerPluginInstance } from './plugins/Designer/type';
 import clsx from 'clsx';
-import { AssetLoader, collectVariable } from '@chamn/render';
+import { AssetLoader, ComponentsType, collectVariable } from '@chamn/render';
+import { AssetsPackageListManager } from './core/assetPackagesListManage';
 
 export type EnginContext = {
   pluginManager: PluginManager;
@@ -41,6 +42,7 @@ export class Engine extends React.Component<EngineProps> {
   pageModel: CPage;
   material: CMaterialType[] | undefined;
   emitter: Emitter<any>;
+  assetsPackageListManager: AssetsPackageListManager;
 
   constructor(props: EngineProps) {
     super(props);
@@ -48,6 +50,7 @@ export class Engine extends React.Component<EngineProps> {
     this.material = props.material;
     this.currentSelectNode = null;
     (window as any).__CHAMELEON_ENG__ = this;
+    this.assetsPackageListManager = new AssetsPackageListManager(props.assetPackagesList || []);
 
     try {
       this.pageModel = new CPage(this.pageSchema, {
@@ -77,7 +80,7 @@ export class Engine extends React.Component<EngineProps> {
       emitter: this.emitter,
       pageModel: this.pageModel,
       i18n,
-      assets: this.props.assetPackagesList || [],
+      assetsPackageListManager: this.assetsPackageListManager,
     });
     this.pluginManager = pluginManager;
     // 使用默认的渲染策略
@@ -131,9 +134,18 @@ export class Engine extends React.Component<EngineProps> {
     this.pageModel.updatePage(page);
   };
 
-  updateMaterials = async (materials: CMaterialType[], assetPackagesList: AssetPackage[]) => {
+  updateMaterials = async (
+    materials: CMaterialType[],
+    assetPackagesList: AssetPackage[],
+    options: {
+      formatComponents?: (componentMap: ComponentsType) => ComponentsType;
+    }
+  ) => {
     const designerPlugin = await this.pluginManager.get<DesignerPluginInstance>('Designer');
     const designerPluginExport = designerPlugin?.export;
+
+    this.pluginManager.assetsPackageListManager.setList(assetPackagesList);
+    this.pageModel.assetPackagesList = this.pluginManager.assetsPackageListManager.getList();
 
     const subWin = designerPluginExport?.getDesignerWindow();
 
@@ -145,7 +157,10 @@ export class Engine extends React.Component<EngineProps> {
     // 从子窗口获取物料对象
     const assetLoader = new AssetLoader(assetPackagesList, subWin);
     await assetLoader.load();
-    const componentCollection = collectVariable(assetPackagesList, subWin);
+    let componentCollection = collectVariable(assetPackagesList, subWin);
+    if (options?.formatComponents) {
+      componentCollection = options.formatComponents(componentCollection);
+    }
     // 更新 render 中的组件库
     designerPluginExport?.updateRenderComponents(componentCollection);
     this.pageModel.materialsModel.addMaterials(materials);
