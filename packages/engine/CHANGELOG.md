@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.35](https://github.com/ByteCrazy/chameleon/compare/v0.0.34...v0.0.35) (2024-04-27)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine:** 🐛 fixed onPluginReadyOk return value ([8550591](https://github.com/ByteCrazy/chameleon/commit/85505913af29459882caef5b83d17c2a8aca45b3))
+
 ## [0.0.34](https://github.com/ByteCrazy/chameleon/compare/v0.0.33...v0.0.34) (2024-04-27)
 
 ### ✨ Features | 新功能
