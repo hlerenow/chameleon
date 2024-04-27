@@ -4,11 +4,11 @@ import ReactDOMAll from 'react-dom';
 import { BasePage, Material } from '@chamn/demo-page';
 import { Layout, LayoutDragAndDropExtraDataType, LayoutPropsType } from '..';
 import * as antD from 'antd';
-import { Sensor, SensorEventObjType } from '../core/dragAndDrop/sensor';
+import { Sensor } from '../core/dragAndDrop/sensor';
 import { AssetPackage, CNode, CPage } from '@chamn/model';
-import { collectVariable, flatObject } from '../utils';
 
 import './dev.css';
+import { collectVariable, flatObject } from '@chamn/render';
 
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOMAll;

@@ -49,24 +49,3 @@ export const animationFrame = (stepCb: () => void) => {
     handle = false;
   };
 };
-
-export const flatObject = (obj: Record<string, any>, level = 1) => {
-  let count = 0;
-  let currentObj = obj;
-  let newObj: Record<string, any> = {};
-  let res = {};
-  while (count < level) {
-    Object.keys(currentObj).forEach((key) => {
-      newObj = {
-        ...newObj,
-        ...currentObj[key],
-      };
-    });
-    res = newObj;
-    currentObj = newObj;
-    newObj = {};
-    count += 1;
-  }
-
-  return res;
-};

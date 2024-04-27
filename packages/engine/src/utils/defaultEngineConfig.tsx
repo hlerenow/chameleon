@@ -1,6 +1,6 @@
 import { getUniqueAssetsList } from '@/core/assetPackagesListManage';
-import { LayoutPropsType, flatObject } from '@chamn/layout';
-import { collectVariable, getThirdLibs } from '@chamn/render';
+import { LayoutPropsType } from '@chamn/layout';
+import { collectVariable, flatObject, getThirdLibs } from '@chamn/render';
 
 /** 默认使用 react 18 模式渲染 */
 export const beforeInitRender: LayoutPropsType['beforeInitRender'] = async ({ iframe }) => {

@@ -10,10 +10,10 @@ import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 import { InnerComponentMeta } from '../../../material/innerMaterial';
 import { RollbackOutlined } from '@ant-design/icons';
 import * as TestComponents from '@/_dev_/lib';
-import { collectVariable, flatObject, LayoutPropsType } from '@chamn/layout';
+import { LayoutPropsType } from '@chamn/layout';
 
 import renderAsURL from '../../../../node_modules/@chamn/render/dist/index.umd.js?url';
-import { getThirdLibs } from '@chamn/render';
+import { collectVariable, flatObject, getThirdLibs } from '@chamn/render';
 import { HistoryPluginInstance } from '@/plugins/History/type';
 
 const win = window as any;
