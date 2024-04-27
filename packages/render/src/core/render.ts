@@ -2,7 +2,7 @@ import { checkPage, CPage, CPageDataType } from '@chamn/model';
 import { isPlainObject } from 'lodash-es';
 import React, { useRef } from 'react';
 import { InnerComponent } from '../commonComponent';
-import { AdapterOptionType, AdapterType } from './adapter';
+import { AdapterOptionType, AdapterType, ComponentsType } from './adapter';
 import { RefManager } from './refManager';
 import { RenderInstance } from './type';
 

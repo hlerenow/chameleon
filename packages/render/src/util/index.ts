@@ -151,6 +151,9 @@ export const collectVariable = (assetPackages: AssetPackage[], win: Window) => {
       const target = (win as any)[el.globalName];
       if (target) {
         res[el.globalName] = target;
+        if (target.__esModule) {
+          res[el.globalName] = target.__esModule;
+        }
       }
     }
   });
@@ -212,4 +215,17 @@ export const getThirdLibs = (libs: Record<string, any>, list: LibMetaType[]) => 
 export const getNodeCssClassName = (node: CNode | CRootNode) => {
   const nodeClassName = node.value.css?.class || `c_${node.id}`;
   return nodeClassName;
+};
+
+export const findComponentByChainRefer = (componentReferPath: string, components: Record<string, any>) => {
+  const componentPath = componentReferPath.split('.');
+  let res;
+  let tempMap = components;
+
+  componentPath.forEach((key) => {
+    res = tempMap?.[key];
+    tempMap = res;
+  });
+
+  return res || (() => `Component [${componentReferPath}] not found`);
 };

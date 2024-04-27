@@ -21,6 +21,7 @@ import {
   canAcceptsRef,
   compWrapper,
   convertCodeStringToFunction,
+  findComponentByChainRefer,
   formatSourceStylePropertyName,
   getMatchVal,
   getNodeCssClassName,
@@ -50,7 +51,8 @@ export class DefineReactAdapter {
   processNodeConfigHook?: AdapterOptionType['processNodeConfigHook'];
   getComponent(currentNode: CNode | CRootNode) {
     const componentName = currentNode.value.componentName;
-    let res: any = this.components[componentName] || (() => `Component [${componentName}] not found`);
+    // support chain find
+    let res: any = findComponentByChainRefer(componentName, this.components);
     // check component can accept ref
     if (!canAcceptsRef(res)) {
       res = compWrapper(res);
