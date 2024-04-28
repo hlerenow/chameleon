@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.40](https://github.com/ByteCrazy/chameleon/compare/v0.0.39...v0.0.40) (2024-04-28)
+
+**Note:** Version bump only for package @chamn/build-script
+
 ## [0.0.39](https://github.com/ByteCrazy/chameleon/compare/v0.0.38...v0.0.39) (2024-04-27)
 
 ### 🐛 Bug Fixes | Bug 修复
