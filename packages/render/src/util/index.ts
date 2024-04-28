@@ -151,7 +151,7 @@ export const collectVariable = (assetPackages: AssetPackage[], win: Window) => {
       const target = (win as any)[el.globalName];
       if (target) {
         res[el.globalName] = target;
-        if (target.__esModule) {
+        if (target.__esModule && target.default) {
           res[el.globalName] = target.default;
         }
       }
