@@ -3,7 +3,7 @@ import path from 'path';
 import react from '@vitejs/plugin-react';
 import eslint from 'vite-plugin-eslint';
 import sassDts from 'vite-plugin-sass-dts';
-import { PROJECT_ROOT, getCustomConfig } from './base';
+import { CLI_ARGS_OBJ, PROJECT_ROOT, getCustomConfig } from './base';
 
 // https://vitejs.dev/config/
 export const getCommonConfig = async () => {
@@ -15,7 +15,7 @@ export const getCommonConfig = async () => {
   const commonConfigJson = defineConfig({
     root: PROJECT_ROOT,
     build: {
-      sourcemap: true,
+      sourcemap: CLI_ARGS_OBJ.sourcemap ?? true,
       lib: {
         name: CUSTOM_CONFIG.libName,
         entry: path.resolve(PROJECT_ROOT, CUSTOM_CONFIG.entry),
@@ -33,7 +33,7 @@ export const getCommonConfig = async () => {
     },
     plugins: [
       sassDts({
-        enabledMode: ['development', 'production'],
+        enabledMode: ['development'],
         global: {
           generate: true,
           outFile: path.resolve(PROJECT_ROOT, './src/style.d.ts'),

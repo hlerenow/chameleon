@@ -8,6 +8,8 @@ const cliArgs: {
   build: boolean;
   watch: boolean;
   analyze: boolean;
+  generateDTS: boolean;
+  sourcemap: boolean;
 } = argv(process.argv.slice(2)) as any;
 
 export const CLI_ARGS_OBJ = cliArgs;
@@ -40,11 +42,7 @@ export const getCustomConfig = async () => {
   }
 
   if (fs.pathExistsSync(customConfigPath)) {
-    const customConfig = await loadConfigFromFile(
-      {} as any,
-      customConfigPath,
-      PROJECT_ROOT
-    );
+    const customConfig = await loadConfigFromFile({} as any, customConfigPath, PROJECT_ROOT);
     CUSTOM_CONFIG = customConfig?.config as BuildScriptConfig;
     return customConfig?.config as BuildScriptConfig;
   }

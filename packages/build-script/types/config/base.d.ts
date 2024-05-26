@@ -4,6 +4,8 @@ export declare const CLI_ARGS_OBJ: {
     build: boolean;
     watch: boolean;
     analyze: boolean;
+    generateDTS: boolean;
+    sourcemap: boolean;
 };
 export declare const PROJECT_ROOT: string;
 export type BuildScriptConfig = {

@@ -22,7 +22,10 @@ export class AssetLoader {
     }
   }
 
-  load() {
+  load(options?: {
+    /** 是否并行加载资源 */
+    async: boolean;
+  }) {
     const assets = this.assets || [];
     const ids: string[] = [];
 
@@ -35,7 +38,7 @@ export class AssetLoader {
       const srcList = item.resources.map((el) => el.src);
       if (srcList.length) {
         loadjs(srcList, item.id, {
-          async: false,
+          async: options?.async ?? false,
           before: (_path, scriptEl) => {
             this.win.document.body.appendChild(scriptEl);
             /* return `false` to bypass default DOM insertion mechanism */

@@ -5,14 +5,19 @@ import { visualizer } from 'rollup-plugin-visualizer';
 import dts from 'vite-plugin-dts';
 import path from 'path';
 
-const plugins: any[] = [
-  dts({
-    entryRoot: path.resolve(PROJECT_ROOT, './src'),
-    compilerOptions: {
-      skipDefaultLibCheck: false,
-    },
-  }),
-];
+const generateDTS = CLI_ARGS_OBJ.generateDTS;
+const plugins: any[] = [];
+
+if (generateDTS) {
+  plugins.push(
+    dts({
+      entryRoot: path.resolve(PROJECT_ROOT, './src'),
+      compilerOptions: {
+        skipDefaultLibCheck: false,
+      },
+    })
+  );
+}
 
 if (CLI_ARGS_OBJ.analyze) {
   plugins.push(
