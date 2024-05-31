@@ -1,9 +1,9 @@
 import { AssetPackage } from '@chamn/model';
 
 export function addEventListenerReturnCancel<K extends keyof HTMLElementEventMap>(
-  dom: HTMLElement,
+  dom: HTMLElement | Document | Window,
   type: K,
-  listener: (ev: HTMLElementEventMap[K]) => any,
+  listener: (ev: MouseEvent) => any,
   options?: boolean | AddEventListenerOptions
 ) {
   dom.addEventListener(
@@ -13,12 +13,12 @@ export function addEventListenerReturnCancel<K extends keyof HTMLElementEventMap
       if ((e as any)?.fixed) {
         return;
       }
-      listener(e);
+      listener(e as MouseEvent);
     },
     options
   );
   return () => {
-    dom.removeEventListener(type, listener);
+    dom.removeEventListener(type, listener as any);
   };
 }
 

@@ -31,14 +31,17 @@ export type SensorEventType<E extends Record<string, any> = any> = {
 export type SensorEventNameType = keyof SensorEventType<any>;
 
 export class Sensor<E extends Record<string, any> = any> extends DEmitter<SensorEventType<E>> {
-  // TODO: 用于处理感应区重叠时，事件触发的优先级, 暂时未实现相关功能
+  /** TODO: 用于处理感应区重叠时，事件触发的优先级, 暂时未实现相关功能 */
   eventPriority = 0;
+  /** 感应区在主窗口的便宜量 */
   private offset: SensorOffsetType = {
     x: 0,
     y: 0,
   };
 
-  container: HTMLElement;
+  /** 感应区的容器元素 */
+  container: HTMLElement | Window | Document;
+  /** 在主窗口的感应器区的 dom元素 */
   offsetDom?: HTMLElement | null;
 
   canDrag: (params: SensorEventObjType<E>) => Promise<SensorEventObjType<E> | null | undefined | boolean> = (params) =>
@@ -54,6 +57,8 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
     offset?: Sensor['offset'];
     offsetDom?: Sensor['offsetDom'];
     eventPriority?: number;
+    /** 主窗口的文档对象用于获取dom 元素根据 clientX, clientY */
+    mainDocument: Document;
     isIframe?: boolean;
   }) {
     super();
@@ -89,7 +94,7 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
   }
 
   registerEvent() {
-    const container = this.container as unknown as HTMLElement;
+    const container = this.container;
     this.eventDisposeQueue.push(
       addEventListenerReturnCancel(container, 'mouseenter', (e) => {
         this.emitter.emit('mouseEnter', {
@@ -153,6 +158,7 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
         container,
         'mousemove',
         (e) => {
+          console.log(this.name, 'mouseMove', e);
           this.emitter.emit('mouseMove', {
             sensor: this,
             pointer: this.getPointer(e),

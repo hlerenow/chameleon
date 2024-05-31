@@ -114,7 +114,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   highlightHoverCanvasRef: React.RefObject<HighlightCanvasRefType>;
   highlightDropAnchorCanvasRef: React.RefObject<HighlightCanvasRefType>;
   readyCbList: ((layoutInstance: Layout) => void)[] = [];
-  assets: AssetPackage[];
+  assets: AssetPackage[] = [];
   dragStartNode: CNode | CRootNode | null = null;
   realTimeSelectNodeInstanceTimer = 0;
   iframeDomId: string;
@@ -146,8 +146,10 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     this.highlightCanvasRef = React.createRef<HighlightCanvasRefType>();
     this.highlightHoverCanvasRef = React.createRef<HighlightCanvasRefType>();
     this.highlightDropAnchorCanvasRef = React.createRef<HighlightCanvasRefType>();
+
     const dnd = new DragAndDrop({
       doc: document,
+      win: window,
     });
 
     this.dnd = dnd;
@@ -435,14 +437,16 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     this.dnd.cancelDrag();
   }
 
+  /** 注册 iframe 中的感应区事件 */
   registerDragAndDropEvent() {
     const dnd = this.dnd;
     const iframeDoc = this.iframeContainer.getDocument()!;
 
     const sensor = new Sensor<LayoutDragAndDropExtraDataType>({
       name: 'layout',
-      container: iframeDoc.body,
+      container: iframeDoc,
       offsetDom: document.getElementById(this.iframeDomId),
+      mainDocument: document,
     });
 
     sensor.setCanDrag(async (eventObj) => {

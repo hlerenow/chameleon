@@ -25,33 +25,40 @@ export class DragAndDrop<E = Record<string, any>> {
     x: 0,
     y: 0,
   };
+  /** 触发 dragStart 的移动距离 */
   shakeDistance = 4;
   eventHandler: EmptyFunc[] = [];
   currentSensor: Sensor | null = null;
   currentState: 'NORMAL' | 'DRAGGING' | 'CANCEL' = 'NORMAL';
   dragStartObj: SensorEventType['mouseDown'] | null = null;
   emitter = mitt<DragAndDropEventType<E>>();
-  // 拖动结束后是否可以触发点击事件
+  /** 拖动结束后是否可以触发点击事件 */
   canTriggerClick = true;
   /** 存储需要被恢复的事件列表 */
   recoverEventList: { name: string; event: Event }[] = [];
   /** 鼠标按压状态 */
   mousePressStatus: 'DOWN' | 'UP' = 'UP';
+  /** 主窗口的 window 对象，有且只能有一个主窗口 */
+  win: Window;
+  globalSenor: Sensor<any>;
   constructor(options: {
+    win: Window;
     doc: Document;
     dragConfig?: {
       shakeDistance?: number;
     };
   }) {
     this.doc = options.doc;
+    this.win = options.win;
     if (options.dragConfig?.shakeDistance !== undefined) {
       this.shakeDistance = options.dragConfig?.shakeDistance;
     }
 
-    // global sensor
+    // global sensor, 不需要推入到 sensors 中
     const sensor = new Sensor({
       name: 'globalSensor',
-      container: this.doc as unknown as HTMLElement,
+      container: options.win,
+      mainDocument: document,
     });
 
     sensor.setCanDrag(async () => {
@@ -66,6 +73,7 @@ export class DragAndDrop<E = Record<string, any>> {
     });
 
     sensor.emitter.on('mouseMove', async (mouseMoveEventObj) => {
+      console.log('🚀 ~ DragAndDrop<E ~ sensor.emitter.on ~ mouseMoveEventObj:', mouseMoveEventObj);
       if (!(this.currentState === 'DRAGGING' && this.currentSensor === null)) {
         return;
       }
@@ -111,6 +119,8 @@ export class DragAndDrop<E = Record<string, any>> {
       this.dragStartObj = null;
       this.batchSensorEmit('dragEnd', {} as any);
     });
+
+    this.globalSenor = sensor;
   }
 
   batchSensorEmit(eventName: keyof SensorEventType, eventObj: SensorEventType[keyof SensorEventType]) {

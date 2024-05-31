@@ -8,7 +8,7 @@ import path from 'path';
 const generateDTS = CLI_ARGS_OBJ.generateDTS;
 const plugins: any[] = [];
 
-if (generateDTS) {
+if (generateDTS !== false) {
   plugins.push(
     dts({
       entryRoot: path.resolve(PROJECT_ROOT, './src'),

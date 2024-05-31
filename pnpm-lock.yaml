@@ -155,10 +155,10 @@ importers:
   packages/demo-page:
     devDependencies:
       '@chamn/build-script':
-        specifier: ^0.0.40
+        specifier: ^0.0.41
         version: link:../build-script
       '@chamn/model':
-        specifier: ^0.0.40
+        specifier: ^0.0.41
         version: link:../model
       '@types/react':
         specifier: ^18.0.15
