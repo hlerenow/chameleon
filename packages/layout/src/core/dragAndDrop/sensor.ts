@@ -40,7 +40,7 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
   };
 
   /** 感应区的容器元素 */
-  container: HTMLElement | Window | Document;
+  container: HTMLElement | Document;
   /** 在主窗口的感应器区的 dom元素 */
   offsetDom?: HTMLElement | null;
 
@@ -51,6 +51,10 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
 
   private eventDisposeQueue: (() => void)[] = [];
   name: string;
+
+  /** 由 dragAndDrop 传入，用于修正 跨 iframe */
+  getTargetSensor?: (options: { sensor: Sensor; event: MouseEvent }) => { sensor: Sensor; event: MouseEvent };
+
   constructor(options: {
     name: string;
     container: Sensor['container'];
@@ -97,19 +101,30 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
     const container = this.container;
     this.eventDisposeQueue.push(
       addEventListenerReturnCancel(container, 'mouseenter', (e) => {
-        this.emitter.emit('mouseEnter', {
+        const fixedSensorInfo = this.getTargetSensor?.({
           sensor: this,
           event: e,
-          pointer: this.getPointer(e),
+        }) || { sensor: this, event: e };
+        const newSensor = fixedSensorInfo.sensor as this;
+        newSensor.emitter.emit('mouseEnter', {
+          sensor: fixedSensorInfo.sensor,
+          event: fixedSensorInfo.event,
+          pointer: fixedSensorInfo.sensor.getPointer(fixedSensorInfo.event),
         });
       })
     );
     this.eventDisposeQueue.push(
       addEventListenerReturnCancel(container, 'mouseleave', (e) => {
-        this.emitter.emit('mouseLeave', {
+        const fixedSensorInfo = this.getTargetSensor?.({
           sensor: this,
           event: e,
-          pointer: this.getPointer(e),
+        }) || { sensor: this, event: e };
+        const newSensor = fixedSensorInfo.sensor as this;
+
+        newSensor.emitter.emit('mouseLeave', {
+          sensor: fixedSensorInfo.sensor,
+          event: fixedSensorInfo.event,
+          pointer: fixedSensorInfo.sensor.getPointer(fixedSensorInfo.event),
         });
       })
     );
@@ -118,16 +133,22 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
         container,
         'mousedown',
         (e) => {
-          this.emitter.emit('mouseChange', {
+          const fixedSensorInfo = this.getTargetSensor?.({
             sensor: this,
-            pointer: this.getPointer(e),
             event: e,
+          }) || { sensor: this, event: e };
+          const newSensor = fixedSensorInfo.sensor as this;
+
+          newSensor.emitter.emit('mouseChange', {
+            sensor: fixedSensorInfo.sensor,
+            event: fixedSensorInfo.event,
+            pointer: fixedSensorInfo.sensor.getPointer(fixedSensorInfo.event),
           });
 
-          this.emitter.emit('mouseDown', {
-            sensor: this,
-            pointer: this.getPointer(e),
-            event: e,
+          newSensor.emitter.emit('mouseDown', {
+            sensor: fixedSensorInfo.sensor,
+            event: fixedSensorInfo.event,
+            pointer: fixedSensorInfo.sensor.getPointer(fixedSensorInfo.event),
           });
         },
         true
@@ -138,15 +159,21 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
         container,
         'mouseup',
         (e) => {
-          this.emitter.emit('mouseChange', {
+          const fixedSensorInfo = this.getTargetSensor?.({
             sensor: this,
-            pointer: this.getPointer(e),
             event: e,
+          }) || { sensor: this, event: e };
+          const newSensor = fixedSensorInfo.sensor as this;
+
+          newSensor.emitter.emit('mouseChange', {
+            sensor: fixedSensorInfo.sensor,
+            event: fixedSensorInfo.event,
+            pointer: fixedSensorInfo.sensor.getPointer(fixedSensorInfo.event),
           });
-          this.emitter.emit('mouseUp', {
-            sensor: this,
-            pointer: this.getPointer(e),
-            event: e,
+          newSensor.emitter.emit('mouseUp', {
+            sensor: fixedSensorInfo.sensor,
+            event: fixedSensorInfo.event,
+            pointer: fixedSensorInfo.sensor.getPointer(fixedSensorInfo.event),
           });
         },
         true
@@ -158,16 +185,21 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
         container,
         'mousemove',
         (e) => {
-          console.log(this.name, 'mouseMove', e);
-          this.emitter.emit('mouseMove', {
+          const fixedSensorInfo = this.getTargetSensor?.({
             sensor: this,
-            pointer: this.getPointer(e),
             event: e,
+          }) || { sensor: this, event: e };
+          const newSensor = fixedSensorInfo.sensor as this;
+
+          newSensor.emitter.emit('mouseMove', {
+            sensor: fixedSensorInfo.sensor,
+            event: fixedSensorInfo.event,
+            pointer: fixedSensorInfo.sensor.getPointer(fixedSensorInfo.event),
           });
-          this.emitter.emit('mouseChange', {
-            sensor: this,
-            pointer: this.getPointer(e),
-            event: e,
+          newSensor.emitter.emit('mouseChange', {
+            sensor: fixedSensorInfo.sensor,
+            event: fixedSensorInfo.event,
+            pointer: fixedSensorInfo.sensor.getPointer(fixedSensorInfo.event),
           });
         },
         true
@@ -179,10 +211,15 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
         container,
         'click',
         (e) => {
-          this.emitter.emit('click', {
+          const fixedSensorInfo = this.getTargetSensor?.({
             sensor: this,
             event: e,
-            pointer: this.getPointer(e),
+          }) || { sensor: this, event: e };
+          const newSensor = fixedSensorInfo.sensor as this;
+          newSensor.emitter.emit('click', {
+            sensor: fixedSensorInfo.sensor,
+            event: fixedSensorInfo.event,
+            pointer: fixedSensorInfo.sensor.getPointer(fixedSensorInfo.event),
           });
         },
         true
@@ -190,7 +227,7 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
     );
   }
 
-  getPointer(e: MouseEvent) {
+  getPointer(e: { clientX: number; clientY: number }) {
     return {
       x: this.offset.x + e.clientX,
       y: this.offset.y + e.clientY,

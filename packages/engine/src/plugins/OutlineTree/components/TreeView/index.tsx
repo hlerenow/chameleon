@@ -182,12 +182,14 @@ export class TreeView extends React.Component<
       container: this.domRef.current,
       name: 'OutlineTree',
       eventPriority: 999,
+      mainDocument: document,
     });
     const { pluginCtx } = this.props;
 
     const pageModel = pluginCtx.pageModel;
     const designerExport = await this.getDesignerHandler();
     const dnd = designerExport!.getDnd()!;
+
     sensor.setCanDrag(async (eventObj) => {
       const targetDom = eventObj.event.target as HTMLDivElement;
       if (!targetDom) {

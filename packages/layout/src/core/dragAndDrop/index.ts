@@ -5,12 +5,15 @@ import { BaseDragAndDropEventType } from '../../types/dragAndDrop';
 import { debounce } from 'lodash-es';
 
 type EmptyFunc = () => void;
+
 export type DragAndDropEventType<E> = {
   click: SensorEventObjType;
   mouseMove: SensorEventObjType;
   mouseDown: SensorEventObjType;
   mouseUp: SensorEventObjType;
 } & BaseDragAndDropEventType<E>;
+
+/** 目前只支持一个 iframe 的拖拽，不能多个 iframe 拖拽共存 */
 export class DragAndDrop<E = Record<string, any>> {
   senors: Sensor[] = [];
   senorEventPriorityQueueMap: Record<
@@ -57,7 +60,7 @@ export class DragAndDrop<E = Record<string, any>> {
     // global sensor, 不需要推入到 sensors 中
     const sensor = new Sensor({
       name: 'globalSensor',
-      container: options.win,
+      container: options.doc,
       mainDocument: document,
     });
 
@@ -73,12 +76,11 @@ export class DragAndDrop<E = Record<string, any>> {
     });
 
     sensor.emitter.on('mouseMove', async (mouseMoveEventObj) => {
-      console.log('🚀 ~ DragAndDrop<E ~ sensor.emitter.on ~ mouseMoveEventObj:', mouseMoveEventObj);
+      this.emitter.emit('mouseMove', mouseMoveEventObj);
       if (!(this.currentState === 'DRAGGING' && this.currentSensor === null)) {
         return;
       }
 
-      this.emitter.emit('mouseMove', mouseMoveEventObj);
       const canDrop = await sensor.canDrop({
         ...mouseMoveEventObj,
         extraData: {
@@ -131,6 +133,7 @@ export class DragAndDrop<E = Record<string, any>> {
   }
 
   registerSensor(sensor: Sensor) {
+    sensor.getTargetSensor = this.getTargetSensor.bind(this);
     this.senors.push(sensor);
     sensor.emitter.on('click', (eventObj) => {
       if (this.canTriggerClick) {
@@ -352,6 +355,7 @@ export class DragAndDrop<E = Record<string, any>> {
   cancelDrag() {
     this.currentState = 'CANCEL';
   }
+
   resetDrag() {
     this.currentState = 'NORMAL';
   }
@@ -360,6 +364,58 @@ export class DragAndDrop<E = Record<string, any>> {
     const oldSensors = this.senors;
     this.senors = [];
     oldSensors.forEach((el) => el.destroy());
+  }
+
+  /** 通过 sensor 以及event 判断应该有那个 sensor 触发事件，并修正事件的 出发 dom 以及 mousePos */
+  getTargetSensor(options: { sensor: Sensor; event: MouseEvent }) {
+    const { sensor, event } = options;
+    // 判断坐标是否为负数
+
+    const clientX = event.clientX;
+    const clientY = event.clientY;
+    const newEvent = {
+      clientX,
+      clientY,
+      target: event.target,
+      sourceEvent: event,
+    };
+    let newSensor: Sensor = sensor;
+    if (clientX < 0 || clientY < 0) {
+      const offset = sensor.getOffset();
+
+      const newX = clientX + offset.x;
+      const newY = clientY + offset.y;
+
+      newEvent.clientX = newX;
+      newEvent.clientY = newY;
+
+      const targetDom = document.elementFromPoint(newX, newY);
+      if (targetDom) {
+        newEvent.target = targetDom;
+        const tempSensor = this.findSensorByDom(targetDom);
+        if (tempSensor) {
+          newSensor = tempSensor;
+        } else {
+          newSensor = this.globalSenor;
+        }
+      } else {
+        newSensor = this.globalSenor;
+      }
+    }
+
+    return {
+      sensor: newSensor,
+      event: newEvent as unknown as MouseEvent,
+    };
+  }
+
+  findSensorByDom(dom: Element) {
+    const senors = this.senors;
+    const res = senors.find((el) => {
+      const container = el.container;
+      return container.contains(dom);
+    });
+    return res;
   }
 }
 

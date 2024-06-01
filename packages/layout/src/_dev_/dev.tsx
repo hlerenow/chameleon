@@ -156,12 +156,7 @@ const App = () => {
           layoutRef.current?.clearSelectNode();
         }
       });
-      boxSensor.emitter.on('dragging', (eventObj) => {
-        // console.log('box dragging', eventObj);
-      });
-      boxSensor.emitter.on('dragEnd', (eventObj) => {
-        // console.log('box dragEnd', eventObj);
-      });
+
       boxSensor.emitter.on('drop', (eventObj) => {
         const pageModel = layoutRef.current?.getPageModel();
         const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
