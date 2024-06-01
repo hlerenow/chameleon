@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.42](https://github.com/ByteCrazy/chameleon/compare/v0.0.41...v0.0.42) (2024-06-01)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, layout:** 🐛 fixed drag and drop problem on chrome ([5c655c3](https://github.com/ByteCrazy/chameleon/commit/5c655c3a2f288bd90b70212f0f114adf3c23f8a1))
+
 ## [0.0.41](https://github.com/ByteCrazy/chameleon/compare/v0.0.40...v0.0.41) (2024-05-26)
 
 ### ✨ Features | 新功能

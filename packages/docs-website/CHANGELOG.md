@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.42](https://github.com/ByteCrazy/chameleon/compare/v0.0.41...v0.0.42) (2024-06-01)
+
+**Note:** Version bump only for package @chamn/docs
+
 ## [0.0.41](https://github.com/ByteCrazy/chameleon/compare/v0.0.40...v0.0.41) (2024-05-26)
 
 **Note:** Version bump only for package @chamn/docs
