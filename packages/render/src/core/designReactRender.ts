@@ -110,6 +110,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
     if (props.dropPlaceholder) {
       this.dropPlaceholder = props.dropPlaceholder;
     }
+    console.log('instanceManager', this.instanceManager);
   }
 
   updateComponents(newComponents: Record<string, string> = {}) {
@@ -144,6 +145,8 @@ export class DesignRender extends React.Component<DesignRenderProp> {
       _UNIQUE_ID = `${node.id}_${getRandomStr()}`;
       _STATUS?: 'DESTROY';
 
+      _dom?: HTMLElement | null;
+
       componentDidMount(): void {
         self.instanceManager.add(node.id, this);
       }
@@ -176,7 +179,21 @@ export class DesignRender extends React.Component<DesignRenderProp> {
           return newChildren;
         }
 
-        return React.createElement(innerComp, restProps, ...newChildren);
+        const coreEl = React.createElement(innerComp, restProps, ...newChildren);
+
+        return React.createElement(
+          'div',
+          {
+            style: {
+              display: 'contents',
+            },
+            ref: (ref) => {
+              this._dom = ref;
+              console.log('ref', ref);
+            },
+          },
+          [coreEl]
+        );
       }
     }
     return React.forwardRef(function ErrorWrap(props: any, ref) {
