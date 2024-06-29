@@ -2,7 +2,6 @@ import { defineConfig, UserConfig } from 'vite';
 import path from 'path';
 import react from '@vitejs/plugin-react';
 import eslint from 'vite-plugin-eslint';
-import sassDts from 'vite-plugin-sass-dts';
 import { CLI_ARGS_OBJ, PROJECT_ROOT, getCustomConfig } from './base';
 
 // https://vitejs.dev/config/
@@ -31,17 +30,7 @@ export const getCommonConfig = async () => {
         },
       },
     },
-    plugins: [
-      sassDts({
-        enabledMode: ['development'],
-        global: {
-          generate: true,
-          outFile: path.resolve(PROJECT_ROOT, './src/style.d.ts'),
-        },
-      }),
-      react(),
-      eslint(),
-    ],
+    plugins: [react(), eslint()],
   }) as UserConfig;
 
   if (CUSTOM_CONFIG.libMode === false) {
