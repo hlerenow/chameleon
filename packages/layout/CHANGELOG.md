@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.43](https://github.com/ByteCrazy/chameleon/compare/v0.0.42...v0.0.43) (2024-06-29)
+
+### ✨ Features | 新功能
+
+* **build-script, engine, layout:** 🎸 remove scss dts generate ([9ba7af3](https://github.com/ByteCrazy/chameleon/commit/9ba7af30601804f94e90a0408745fd48de38d8b5))
+
 ## [0.0.42](https://github.com/ByteCrazy/chameleon/compare/v0.0.41...v0.0.42) (2024-06-01)
 
 ### 🐛 Bug Fixes | Bug 修复
