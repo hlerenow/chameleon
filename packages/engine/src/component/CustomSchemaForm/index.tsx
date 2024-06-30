@@ -39,6 +39,7 @@ const CustomSchemaFormCore = (props: CustomSchemaFormProps, ref: Ref<CustomSchem
     <CCustomSchemaFormContext.Provider
       value={{
         defaultSetterConfig,
+        customSetterMap,
         onSetterChange,
         formRef: ref,
         pluginCtx: pluginCtx,
