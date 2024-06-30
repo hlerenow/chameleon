@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.45](https://github.com/ByteCrazy/chameleon/compare/v0.0.44...v0.0.45) (2024-06-30)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **model:** 🐛 fixed addMaterials method logic ([b7b1d14](https://github.com/ByteCrazy/chameleon/commit/b7b1d14737b2b25362809fc15a7b9ae25cba18fc))
+
 ## [0.0.44](https://github.com/ByteCrazy/chameleon/compare/v0.0.43...v0.0.44) (2024-06-30)
 
 ### ✨ Features | 新功能
