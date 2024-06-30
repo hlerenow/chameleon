@@ -34,5 +34,6 @@ describe('CMaterials', () => {
     expect(mat.value.length).toBe(3);
     expect(mat.value[0].componentName).toEqual('A');
     expect(mat.value[0].value.title).toEqual('AB');
+    expect(mat.value[2].value.title).toEqual('D');
   });
 });

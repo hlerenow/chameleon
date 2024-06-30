@@ -104,7 +104,7 @@ export class CMaterials {
       return el;
     });
     const needAppend = appendMaterial.filter((el, index) => {
-      return updateItemIndex.includes(index);
+      return !updateItemIndex.includes(index);
     });
 
     this.data = [...newList, ...needAppend];
