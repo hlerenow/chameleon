@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.46](https://github.com/ByteCrazy/chameleon/compare/v0.0.45...v0.0.46) (2024-06-30)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine:** 🐛 fixed registerCustomSetter method not valid ([9bdaa3b](https://github.com/ByteCrazy/chameleon/commit/9bdaa3b9feb1610a754b9aaa0925530f474dd3c3))
+
 ## [0.0.45](https://github.com/ByteCrazy/chameleon/compare/v0.0.44...v0.0.45) (2024-06-30)
 
 ### 🐛 Bug Fixes | Bug 修复
