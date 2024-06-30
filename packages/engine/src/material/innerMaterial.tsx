@@ -92,11 +92,7 @@ const BaseComponentMeta: CMaterialType[] = [
               {
                 state: 'normal',
                 media: [],
-                style: {
-                  background: 'white',
-                  width: '100%',
-                  height: '100px',
-                },
+                text: 'background: white ; width: 100%; height: 100px',
               },
             ],
           },
@@ -135,11 +131,7 @@ const BaseComponentMeta: CMaterialType[] = [
               {
                 state: 'normal',
                 media: [],
-                style: {
-                  background: 'white',
-                  width: '100%',
-                  height: '100px',
-                },
+                text: 'background: white;width: 100%;',
               },
             ],
           },
@@ -169,15 +161,14 @@ const BaseComponentMeta: CMaterialType[] = [
           css: {
             value: [
               {
-                state: 'normal',
+                text: 'background:white;width:500px;height:300px;overflow:auto;',
                 media: [],
-                style: {
-                  background: 'white',
-                  width: '300px',
-                  height: '150px',
-                },
+                state: 'normal',
               },
             ],
+          },
+          props: {
+            src: 'https://images.unsplash.com/photo-1584080277544-2db5b2c2d9dd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
           },
         },
       },
@@ -215,13 +206,29 @@ const BaseComponentMeta: CMaterialType[] = [
         return (props) => {
           //  原生的控制面板会阻断页面级别的事件监听，导致拖拽失效，这里在编辑态禁用 video 的控制面板相关事件触发
           return (
-            <Comp
-              {...props}
+            <div
               style={{
-                pointerEvents: 'none',
                 ...props.style,
+                display: 'inline-block',
+                position: 'relative',
               }}
-            ></Comp>
+            >
+              <Comp
+                {...props}
+                style={{
+                  ...props.style,
+                }}
+              ></Comp>
+              <div
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                }}
+              ></div>
+            </div>
           );
         };
       },
@@ -241,11 +248,7 @@ const BaseComponentMeta: CMaterialType[] = [
               {
                 state: 'normal',
                 media: [],
-                style: {
-                  background: 'white',
-                  width: '300px',
-                  height: '150px',
-                },
+                text: 'background:white;width:300px;height:150px;',
               },
             ],
           },

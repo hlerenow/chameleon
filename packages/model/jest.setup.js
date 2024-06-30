@@ -12,3 +12,7 @@ jest.mock('mitt', () => {
     },
   };
 });
+
+jest.mock('html-tag-names', () => {
+  return [];
+});

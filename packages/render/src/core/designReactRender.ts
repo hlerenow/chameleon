@@ -88,6 +88,7 @@ export const DefaultDropPlaceholder: React.FC<{ node: CNode | CRootNode }> = (pr
         fontSize: '14px',
         color: 'gray',
         cursor: 'default',
+        minHeight: '50px',
         width: width,
         height: height,
         ...style,

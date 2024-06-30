@@ -94,8 +94,26 @@ export class CMaterials {
 
   addMaterials(data: CMaterialType[]) {
     const appendMaterial = parseMaterials(data);
-    // TODO: check 是否重复的组件名
-    this.data.push(...appendMaterial);
+    const updateItemIndex: number[] = [];
+    const newList = this.data.map((el) => {
+      const targetItemIndex = appendMaterial.findIndex((it) => it.componentName === el.componentName);
+      if (targetItemIndex >= 0) {
+        updateItemIndex.push(targetItemIndex);
+        return appendMaterial[targetItemIndex];
+      }
+      return el;
+    });
+    const needAppend = appendMaterial.filter((el, index) => {
+      return updateItemIndex.includes(index);
+    });
+
+    this.data = [...newList, ...needAppend];
+  }
+
+  // 使用新的物料整个替换现有的物料列表
+  replaceMaterials(data: CMaterialType[]) {
+    const appendMaterial = parseMaterials(data);
+    this.data = [...appendMaterial];
   }
 
   removeMaterial(componentNames: string[]) {

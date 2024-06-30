@@ -30,6 +30,9 @@ importers:
       '@storybook/preset-scss':
         specifier: ^1.0.3
         version: 1.0.3(css-loader@5.2.7)(sass-loader@10.1.1)(style-loader@2.0.0)
+      '@types/jest':
+        specifier: ^28.1.6
+        version: 28.1.6
       clsx:
         specifier: ^1.1.1
         version: 1.2.1
@@ -51,6 +54,9 @@ importers:
       lint-staged:
         specifier: ^13.0.3
         version: 13.0.3
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       prettier:
         specifier: 2.7.1
         version: 2.7.1
@@ -63,6 +69,9 @@ importers:
       style-loader:
         specifier: 2.0.0
         version: 2.0.0(webpack@5.88.2)
+      ts-jest:
+        specifier: ^28.0.7
+        version: 28.0.7(@babel/core@7.22.11)(esbuild@0.14.51)(jest@28.1.3)(typescript@4.9.5)
 
   packages/build-script:
     dependencies:
@@ -8411,7 +8420,6 @@ packages:
     engines: {node: '>= 6'}
     dependencies:
       fast-json-stable-stringify: 2.1.0
-    dev: false
 
   /bser@2.1.1:
     resolution: {integrity: sha512-gQxTNE/GAfIIrmHLUE3oJyp5FO6HRBfhjnw4/wMmA63ZGDJnWBmgY/lyQBpnDUkGmAhbSe39tx2d/iTOAfglwQ==}
@@ -17803,8 +17811,7 @@ packages:
       make-error: 1.3.6
       semver: 7.5.4
       typescript: 4.9.5
-      yargs-parser: 21.0.1
-    dev: false
+      yargs-parser: 21.1.1
 
   /ts-morph@17.0.1:
     resolution: {integrity: sha512-10PkHyXmrtsTvZSL+cqtJLTgFXkU43Gd0JCc0Rw6GchWbqKe0Rwgt1v3ouobTZwQzF1mGhDeAlWYBMGRV7y+3g==}

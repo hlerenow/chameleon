@@ -1,11 +1,5 @@
 import { CMaterials } from '../../src/Material/index';
-import {
-  AdvanceDataType,
-  BaseDataType,
-  CMaterialType,
-  ShapeDataType,
-  SpecialDataType,
-} from '../../src/types/material';
+import { AdvanceDataType, BaseDataType, CMaterialType, ShapeDataType, SpecialDataType } from '../../src/types/material';
 
 const mockMaterialData: CMaterialType[] = [
   {
