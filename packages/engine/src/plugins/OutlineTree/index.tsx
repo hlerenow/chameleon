@@ -21,7 +21,7 @@ export const OutlineTreePlugin: CPlugin = {
     workbench.addLeftPanel({
       title: <Title />,
       name: PLUGIN_NAME,
-      icon: <ApartmentOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />,
+      icon: <ApartmentOutlined />,
       render: <TreeViewWithLocalize pluginCtx={ctx} />,
     });
   },

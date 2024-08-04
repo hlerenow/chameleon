@@ -108,6 +108,7 @@ const App = () => {
       const boxSensor = new Sensor<LayoutDragAndDropExtraDataType>({
         name: 'widgetListBox',
         container: leftBoxRef.current!,
+        mainDocument: document,
       });
       boxSensor.setCanDrag(async (eventObj) => {
         const pageModel = layoutRef.current?.getPageModel();
@@ -221,6 +222,17 @@ const App = () => {
           ghostView={ghostView}
           beforeInitRender={beforeInitRender}
           customRender={customRender}
+          selectToolbarView={
+            <div
+              style={{
+                width: '100px',
+                height: '20px',
+                backgroundColor: 'red',
+              }}
+            >
+              toolBar
+            </div>
+          }
         />
       </div>
     </div>

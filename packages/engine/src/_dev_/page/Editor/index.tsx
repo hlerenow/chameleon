@@ -149,7 +149,7 @@ export const App = () => {
 
         <Select
           defaultValue={lang}
-          style={{ width: 70, marginRight: '10px' }}
+          style={{ width: 100, marginRight: '10px' }}
           onChange={(val) => {
             setLang(val);
             engineRef.current?.engine.getI18n()?.changeLanguage(val);
@@ -157,11 +157,11 @@ export const App = () => {
           options={[
             {
               value: 'zh_CN',
-              label: 'CN',
+              label: 'Chinese',
             },
             {
               value: 'en_US',
-              label: 'EN',
+              label: 'English',
             },
           ]}
         />
@@ -179,7 +179,7 @@ export const App = () => {
             res?.export.preStep();
           }}
         >
-          <RollbackOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
+          <RollbackOutlined />
         </Button>
         <Button
           style={{ marginRight: '10px' }}
@@ -192,8 +192,6 @@ export const App = () => {
             style={{
               transform: 'rotateY(180deg)',
             }}
-            onPointerEnterCapture={undefined}
-            onPointerLeaveCapture={undefined}
           />
         </Button>
 

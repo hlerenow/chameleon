@@ -15,7 +15,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@ant-design/icons": "^4.8.0",
+    "@ant-design/icons": "^5.4.0",
     "@chamn/demo-page": "workspace:^",
     "@chamn/engine": "workspace:^",
     "@chamn/model": "workspace:^",

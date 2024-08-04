@@ -37,7 +37,7 @@
     "react-dom": ">=16.9.0"
   },
   "dependencies": {
-    "@ant-design/icons": "^4.8.0",
+    "@ant-design/icons": "^5.4.0",
     "@chamn/layout": "workspace:*",
     "@chamn/model": "workspace:*",
     "@chamn/render": "workspace:*",

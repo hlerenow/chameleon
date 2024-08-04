@@ -72,17 +72,22 @@ export const HighlightBox = ({
 
   const updateToolBoxPosition = useCallback((targetRect: DOMRect) => {
     if (toolBoxRef.current) {
-      const toolBoxRect = toolBoxRef.current?.getBoundingClientRect();
+      const contentDom = toolBoxRef.current?.children?.[0] || toolBoxRef.current;
+
+      const toolBoxRect = contentDom.getBoundingClientRect();
 
       const height = toolBoxRect?.height || 0;
-
-      const isOutsideViewport = targetRect.top - height < 0;
-
-      if (isOutsideViewport) {
+      const width = toolBoxRect?.width || 0;
+      const isOutsideViewportY = targetRect.top - height < 0;
+      if (isOutsideViewportY) {
         // 向下取整 + 整个高度  + outline 2px * 2
         toolBoxRef.current.style.top = `calc( 100% + ${Math.floor(height)}px + 4px)`;
       } else {
         toolBoxRef.current.style.top = 'auto';
+      }
+
+      if (toolBoxRect.width > parseInt(getComputedStyle(toolBoxRef.current).width)) {
+        toolBoxRef.current.style.width = `${width}px`;
       }
     }
   }, []);

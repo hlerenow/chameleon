@@ -86,7 +86,7 @@ export const GlobalStatePanelPlugin: CPlugin = {
     workbench.addLeftPanel({
       title: <Title />,
       name: PLUGIN_NAME,
-      icon: <DatabaseOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />,
+      icon: <DatabaseOutlined />,
       render: <GlobalStatePanelWithLocalize pluginCtx={ctx} />,
     });
   },
