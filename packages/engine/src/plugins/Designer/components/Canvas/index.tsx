@@ -499,7 +499,6 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
 
     const { pluginCtx } = props;
     const assets = pluginCtx.assetsPackageListManager.getList() || ([] as AssetPackage[]);
-    console.log('🚀 ~ Designer ~ render ~ assets:', assets);
 
     const renderJSUrl = pluginCtx.engine.props.renderJSUrl || './render.umd.js';
     const advanceCustomProps: LayoutPropsType = {};

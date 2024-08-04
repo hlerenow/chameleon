@@ -55,9 +55,16 @@ const GlobalStatePanel = (props: GlobalStatePanelProps) => {
           quickSuggestions: false,
           suggestOnTriggerCharacters: false,
           folding: false,
+          comments: {},
         }}
         onDidMount={(editor) => {
           editorRef.current = editor;
+        }}
+        beforeMount={(monaco) => {
+          // monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+          //   validate: true,
+          //   allowComments: true, // 启用注释
+          // });
         }}
         onChange={onValueChange}
       />
@@ -79,7 +86,7 @@ export const GlobalStatePanelPlugin: CPlugin = {
     workbench.addLeftPanel({
       title: <Title />,
       name: PLUGIN_NAME,
-      icon: <DatabaseOutlined />,
+      icon: <DatabaseOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />,
       render: <GlobalStatePanelWithLocalize pluginCtx={ctx} />,
     });
   },

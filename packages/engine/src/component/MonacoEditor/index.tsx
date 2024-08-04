@@ -19,6 +19,7 @@ export const MonacoEditor = (props: MonacoEditorProps) => {
   };
 
   const handleEditorDidMount: EditorType['onMount'] = (editor) => {
+    editor;
     props.onDidMount?.(editor);
   };
 

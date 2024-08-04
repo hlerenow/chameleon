@@ -75,7 +75,7 @@
     "@types/consola": "^2.2.5",
     "@types/css": "^0.0.34",
     "@types/lodash-es": "^4.17.6",
-    "@types/react": "^18.0.15",
+    "@types/react": "^18.2.0",
     "@types/react-color": "^3.0.6",
     "@types/react-dom": "^18.0.6",
     "babel-loader": "^8.3.0",

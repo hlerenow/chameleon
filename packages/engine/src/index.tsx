@@ -11,6 +11,7 @@ import clsx from 'clsx';
 import { AssetLoader, ComponentsType, collectVariable } from '@chamn/render';
 import { AssetsPackageListManager } from './core/assetPackagesListManage';
 import { flatObject } from '@chamn/render';
+import customI18n from './i18n/index';
 
 export type EnginContext = {
   pluginManager: PluginManager;
@@ -177,6 +178,11 @@ export class Engine extends React.Component<EngineProps> {
   getWorkbench = () => {
     return this.workbenchRef.current;
   };
+
+  /** return i18n object */
+  getI18n() {
+    return customI18n;
+  }
 
   render() {
     return (

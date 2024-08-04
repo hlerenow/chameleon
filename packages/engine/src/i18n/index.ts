@@ -36,4 +36,6 @@ customI18n.update = () => {
   }, 0);
 };
 
+customI18n.changeLanguage('en_US');
+
 export default customI18n;

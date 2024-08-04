@@ -1,6 +1,6 @@
 import { BasePage, Material } from '@chamn/demo-page';
-import { Button, message, Modal } from 'antd';
-import React, { useCallback, useEffect, useState } from 'react';
+import { Button, message, Modal, Select } from 'antd';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';
 import { Engine, EnginContext } from '../../..';
@@ -83,6 +83,12 @@ const assetPackagesList: any[] = [
 export const App = () => {
   const [ready, setReady] = useState(false);
   const [page, setPage] = useState(BasePage);
+  const [lang, setLang] = useState(() => {
+    const lang = localStorage.getItem('lang') || 'zh_CN';
+    return lang;
+  });
+
+  const engineRef = useRef<EnginContext>();
 
   useEffect(() => {
     // check 本地版本号，如果不一致直接覆盖本地所有的
@@ -99,6 +105,9 @@ export const App = () => {
     setReady(true);
   }, []);
   const onReady = useCallback(async (ctx: EnginContext) => {
+    engineRef.current = ctx;
+    engineRef.current?.engine.getI18n()?.changeLanguage(lang);
+
     const designer = await ctx.pluginManager.onPluginReadyOk('Designer');
     const reloadPage = async () => {
       setTimeout(() => {
@@ -137,6 +146,25 @@ export const App = () => {
         }}
       >
         <div className="logo">Chameleon EG</div>
+
+        <Select
+          defaultValue={lang}
+          style={{ width: 70, marginRight: '10px' }}
+          onChange={(val) => {
+            setLang(val);
+            engineRef.current?.engine.getI18n()?.changeLanguage(val);
+          }}
+          options={[
+            {
+              value: 'zh_CN',
+              label: 'CN',
+            },
+            {
+              value: 'en_US',
+              label: 'EN',
+            },
+          ]}
+        />
         <a target="_blank" href="https://hlerenow.github.io/chameleon/documents/" rel="noreferrer">
           <Button style={{ marginRight: '10px' }}>Documents </Button>
         </a>
@@ -151,7 +179,7 @@ export const App = () => {
             res?.export.preStep();
           }}
         >
-          <RollbackOutlined />
+          <RollbackOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
         </Button>
         <Button
           style={{ marginRight: '10px' }}
@@ -164,6 +192,8 @@ export const App = () => {
             style={{
               transform: 'rotateY(180deg)',
             }}
+            onPointerEnterCapture={undefined}
+            onPointerLeaveCapture={undefined}
           />
         </Button>
 
