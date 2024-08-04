@@ -19,6 +19,21 @@ export const DesignerPlugin: DesignerPluginType = (ctx) => {
     },
     export: () => {
       return {
+        setCanvasWidth(width: number | string) {
+          const iframeContainer = designerRef.current?.getIframeDom();
+
+          if (iframeContainer?.containerDom) {
+            let newW = width;
+            if (typeof width === 'number') {
+              newW = `${width}px`;
+            }
+            iframeContainer.containerDom.style.width = newW;
+            iframeContainer.containerDom.style.margin = '0 auto';
+          }
+        },
+        getIframeDom() {
+          return designerRef.current?.getIframeDom();
+        },
         getInstance: () => {
           return designerRef.current;
         },

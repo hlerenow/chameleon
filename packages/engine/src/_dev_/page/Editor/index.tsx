@@ -15,6 +15,7 @@ import { LayoutPropsType } from '@chamn/layout';
 import renderAsURL from '../../../../node_modules/@chamn/render/dist/index.umd.js?url';
 import { collectVariable, flatObject, getThirdLibs } from '@chamn/render';
 import { HistoryPluginInstance } from '@/plugins/History/type';
+import { DesignerPluginInstance, DesignerPluginType } from '@/plugins/Designer/type';
 
 const win = window as any;
 win.React = React;
@@ -108,7 +109,17 @@ export const App = () => {
     engineRef.current = ctx;
     engineRef.current?.engine.getI18n()?.changeLanguage(lang);
 
-    const designer = await ctx.pluginManager.onPluginReadyOk('Designer');
+    const designer: DesignerPluginInstance = await ctx.pluginManager.onPluginReadyOk('Designer');
+
+    const iframeContainer = designer.export.getIframeDom();
+    console.log('🚀 ~ onReady ~ iframeContainer:', iframeContainer);
+    console.log('🚀 ~ onReady ~ iframeContainer:', iframeContainer);
+
+    if (iframeContainer?.containerDom) {
+      iframeContainer.containerDom.style.width = '350px';
+      iframeContainer.containerDom.style.margin = '0 auto';
+    }
+
     const reloadPage = async () => {
       setTimeout(() => {
         const designerExport = designer?.export;

@@ -9,6 +9,7 @@ export class IFrameContainer {
   readyQueue: (() => void)[] = [];
   errorQueue: ((e: { msg: string }) => void)[] = [];
   loadError: any;
+  containerDom?: HTMLDivElement;
   constructor() {
     this.iframe = this.createIframe();
     this.iframeStatus = 'INIT';
@@ -47,6 +48,7 @@ export class IFrameContainer {
   }
 
   load(containerDom: HTMLElement) {
+    this.containerDom = containerDom;
     if (this.iframe) {
       containerDom.appendChild(this.iframe);
     } else {

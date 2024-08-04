@@ -107,6 +107,10 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     this.init();
   }
 
+  getIframeDom() {
+    return this.layoutRef.current?.iframeContainer;
+  }
+
   reloadRender({ assets }: { assets?: AssetPackage[] }) {
     this.layoutRef.current?.reload({ assets });
   }
