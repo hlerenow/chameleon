@@ -1,5 +1,5 @@
 import { BasePage, Material } from '@chamn/demo-page';
-import { Button, message, Modal, Select } from 'antd';
+import { Button, message, Modal, Segmented, Select } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';
@@ -8,14 +8,14 @@ import '../../index.css';
 import { DEFAULT_PLUGIN_LIST } from '../../../plugins';
 import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 import { InnerComponentMeta } from '../../../material/innerMaterial';
-import { RollbackOutlined } from '@ant-design/icons';
+import { DesktopOutlined, MobileOutlined, RollbackOutlined } from '@ant-design/icons';
 import * as TestComponents from '@/_dev_/lib';
 import { LayoutPropsType } from '@chamn/layout';
 
 import renderAsURL from '../../../../node_modules/@chamn/render/dist/index.umd.js?url';
 import { collectVariable, flatObject, getThirdLibs } from '@chamn/render';
 import { HistoryPluginInstance } from '@/plugins/History/type';
-import { DesignerPluginInstance, DesignerPluginType } from '@/plugins/Designer/type';
+import { DesignerPluginInstance } from '@/plugins/Designer/type';
 
 const win = window as any;
 win.React = React;
@@ -111,15 +111,6 @@ export const App = () => {
 
     const designer: DesignerPluginInstance = await ctx.pluginManager.onPluginReadyOk('Designer');
 
-    const iframeContainer = designer.export.getIframeDom();
-    console.log('🚀 ~ onReady ~ iframeContainer:', iframeContainer);
-    console.log('🚀 ~ onReady ~ iframeContainer:', iframeContainer);
-
-    if (iframeContainer?.containerDom) {
-      iframeContainer.containerDom.style.width = '350px';
-      iframeContainer.containerDom.style.margin = '0 auto';
-    }
-
     const reloadPage = async () => {
       setTimeout(() => {
         const designerExport = designer?.export;
@@ -157,7 +148,37 @@ export const App = () => {
         }}
       >
         <div className="logo">Chameleon EG</div>
-
+        <div
+          style={{
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: '10px',
+          }}
+        >
+          <Segmented
+            defaultValue="PC"
+            onChange={(value) => {
+              console.log('value', value);
+              if (value === 'PC') {
+                designer.export.setCanvasWidth('100%');
+              } else {
+                designer.export.setCanvasWidth(350);
+              }
+            }}
+            options={[
+              {
+                label: <DesktopOutlined />,
+                value: 'PC',
+              },
+              {
+                label: <MobileOutlined />,
+                value: 'MOBILE',
+              },
+            ]}
+          />
+        </div>
         <Select
           defaultValue={lang}
           style={{ width: 100, marginRight: '10px' }}
