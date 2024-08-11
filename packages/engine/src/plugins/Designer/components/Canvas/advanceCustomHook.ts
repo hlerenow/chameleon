@@ -73,6 +73,11 @@ export class AdvanceCustomHook {
       } else {
         return res;
       }
+    } else if (nodeAdvanceCustom?.canAcceptNode) {
+      const canAcceptFlag = await nodeAdvanceCustom?.canAcceptNode(dragNode!, {
+        ...commonParams,
+      });
+      return canAcceptFlag;
     }
     return true;
   }

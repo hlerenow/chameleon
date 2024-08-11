@@ -189,7 +189,6 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
           if (selectedNode.isContainer()) {
             pos = 'CHILD_END';
             dropNode = selectedNode;
-            pageModel.addNode(newNode, selectedNode as never, pos);
           } else {
             pos = 'AFTER';
             dropNode = selectedNode;

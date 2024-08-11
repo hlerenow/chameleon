@@ -281,6 +281,12 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       extra: extraData,
     };
 
+    const canDragFlag = await dragNode.material?.value.advanceCustom?.canDragNode?.(dragNode);
+
+    if (canDragFlag === false) {
+      return canDragFlag;
+    }
+
     const dragFlag = await dragNode.material?.value.advanceCustom?.onDragStart?.(dragNode, { ...commonParam });
     if (dragFlag === false) {
       return dragFlag;
