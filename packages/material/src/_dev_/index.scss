@@ -1,0 +1,18 @@
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+.logo {
+  height: 100%;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+  font-weight: bolder;
+  margin-right: auto;
+}

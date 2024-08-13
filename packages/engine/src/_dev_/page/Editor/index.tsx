@@ -1,4 +1,4 @@
-import { BasePage, Material } from '@chamn/demo-page';
+import { BasePage } from '@chamn/demo-page';
 import { Button, message, Modal, Segmented, Select } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
@@ -9,13 +9,16 @@ import { DEFAULT_PLUGIN_LIST } from '../../../plugins';
 import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 import { InnerComponentMeta } from '../../../material/innerMaterial';
 import { DesktopOutlined, MobileOutlined, RollbackOutlined } from '@ant-design/icons';
-import * as TestComponents from '@/_dev_/lib';
 import { LayoutPropsType } from '@chamn/layout';
 
 import renderAsURL from '../../../../node_modules/@chamn/render/dist/index.umd.js?url';
 import { collectVariable, flatObject, getThirdLibs } from '@chamn/render';
 import { HistoryPluginInstance } from '@/plugins/History/type';
 import { DesignerPluginInstance } from '@/plugins/Designer/type';
+import commonMeta from '@chamn/material/dist/meta';
+
+import commonComponentUrl from '@chamn/material/dist/index.umd.js?url';
+import commonComponentCSS from '@chamn/material/dist/style.css?url';
 
 const win = window as any;
 win.React = React;
@@ -38,18 +41,19 @@ const customRender: LayoutPropsType['customRender'] = async ({
   const IframeReact = iframeWindow.React!;
   const IframeReactDOM = iframeWindow.ReactDOMClient!;
   const CRender = iframeWindow.CRender!;
+  await new CRender.AssetLoader(assets, {
+    window: iframeWindow,
+  }).load();
   // 从子窗口获取物料对象
   const componentCollection = collectVariable(assets, iframeWindow);
   const components = flatObject(componentCollection);
   const thirdLibs = getThirdLibs(componentCollection, page?.thirdLibs || []);
-
   const App = IframeReact?.createElement(CRender.DesignRender, {
     adapter: CRender?.ReactAdapter,
     page: page,
     pageModel: pageModel,
     components: {
       ...components,
-      ...(iframeWindow as any).testComponent,
     },
     $$context: {
       thirdLibs,
@@ -64,19 +68,16 @@ const customRender: LayoutPropsType['customRender'] = async ({
 
 const buildVersion = `t_${__BUILD_VERSION__}`;
 
-const assetPackagesList: any[] = [
+const assetPackagesList = [
   {
-    package: 'antd',
-    globalName: 'antd',
+    package: commonMeta.package,
+    globalName: commonMeta.globalName,
     resources: [
       {
-        src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/reset.css',
+        src: commonComponentUrl,
       },
       {
-        src: 'https://cdn.bootcdn.net/ajax/libs/dayjs/1.11.7/dayjs.min.js',
-      },
-      {
-        src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/antd.js',
+        src: commonComponentCSS,
       },
     ],
   },
@@ -315,7 +316,6 @@ export const App = () => {
   return (
     <Engine
       plugins={DEFAULT_PLUGIN_LIST}
-      components={TestComponents}
       schema={page}
       onMount={(ctx) => {
         setTimeout(async () => {
@@ -346,7 +346,7 @@ export const App = () => {
         }, 2 * 1000);
       }}
       // 传入组件物料
-      material={[...InnerComponentMeta, ...Material]}
+      material={[...InnerComponentMeta, ...commonMeta.meta]}
       // 组件物料对应的 js 运行库，只能使用 umd 模式的 js
       assetPackagesList={assetPackagesList}
       renderJSUrl={renderAsURL}

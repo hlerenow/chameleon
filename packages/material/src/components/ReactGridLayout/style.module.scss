@@ -1,0 +1,10 @@
+:global(.grid-stack-item) {
+  .dragIcon {
+    display: none;
+  }
+  &:hover {
+    .dragIcon {
+      display: block;
+    }
+  }
+}

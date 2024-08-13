@@ -1,15 +1,6 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import ReactDOMAll from 'react-dom';
-import * as antd from 'antd';
-import * as testComponent from './lib/index';
+import renderAsURL from '../../node_modules/@chamn/render/dist/index.umd.js?url';
+import loadjs from 'loadjs';
 
-import * as CRender from '@chamn/render';
-
-window.React = React;
-(window as any).ReactDOM = ReactDOMAll;
-(window as any).ReactDOMClient = ReactDOM;
-
-(window as any).testComponent = testComponent;
-(window as any).antd = antd;
-(window as any).CRender = CRender;
+loadjs([renderAsURL], () => {
+  console.log('load render.umd.js success');
+});

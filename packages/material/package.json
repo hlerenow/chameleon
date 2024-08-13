@@ -8,13 +8,15 @@
     "dist"
   ],
   "version": "0.0.46",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "start": "build-script",
-    "build": "build-script --build",
-    "build:w": "build-script --build --watch",
+    "start": "cross-env DEV=true build-script",
+    "dev": "cross-env DEV=true build-script",
+    "build": "pnpm run build:lib && pnpm run build:meta",
+    "build:lib": "cross-env LIB_NAME=comp  build-script --build",
+    "build:meta": "cross-env LIB_NAME=meta build-script --build",
     "lint": "eslint --ext .tsx,.ts src/",
     "prettier": "prettier --write ./src",
     "test": "jest"
@@ -24,15 +26,32 @@
     "react-dom": ">=16.9.0"
   },
   "dependencies": {
-    "antd": "^5.6.3"
+    "antd": "^5.6.3",
+    "clsx": "^2.1.1",
+    "gridstack": "^10.3.1",
+    "loadjs": "^4.3.0",
+    "lodash-es": "^4.17.21",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@chamn/build-script": "workspace:*",
-    "@types/react": "^18.0.15",
-    "@types/react-dom": "^18.0.6",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "sass": "^1.54.0"
+    "@ant-design/icons": "^5.0.1",
+    "@chamn/build-script": "^0.0.46",
+    "@chamn/engine": "^0.0.46",
+    "@chamn/model": "^0.0.46",
+    "@chamn/render": "^0.0.46",
+    "@monaco-editor/react": "^4.5.1",
+    "@types/loadjs": "^4.0.4",
+    "@types/lodash-es": "^4.17.12",
+    "@types/node": "^18.19.44",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@vitejs/plugin-react": "^3.1.0",
+    "cross-env": "^7.0.3",
+    "react-router-dom": "^6.10.0",
+    "sass": "^1.62.0",
+    "typescript": "^4.9.3",
+    "vite": "^4.2.0"
   },
   "config": {},
   "gitHead": "dc3e55fdeb903a8012f6ebd3ebc018ed61ad89db"
