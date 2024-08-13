@@ -11,7 +11,6 @@ import { InnerComponentMeta } from '../../../material/innerMaterial';
 import { DesktopOutlined, MobileOutlined, RollbackOutlined } from '@ant-design/icons';
 import { LayoutPropsType } from '@chamn/layout';
 
-import renderAsURL from '../../../../node_modules/@chamn/render/dist/index.umd.js?url';
 import { collectVariable, flatObject, getThirdLibs } from '@chamn/render';
 import { HistoryPluginInstance } from '@/plugins/History/type';
 import { DesignerPluginInstance } from '@/plugins/Designer/type';
@@ -349,7 +348,6 @@ export const App = () => {
       material={[...InnerComponentMeta, ...commonMeta.meta]}
       // 组件物料对应的 js 运行库，只能使用 umd 模式的 js
       assetPackagesList={assetPackagesList}
-      renderJSUrl={renderAsURL}
       beforePluginRun={({ pluginManager }) => {
         pluginManager.customPlugin('RightPanel', (pluginInstance) => {
           pluginInstance.ctx.config.customPropertySetterMap = {
