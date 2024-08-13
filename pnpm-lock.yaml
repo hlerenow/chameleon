@@ -519,16 +519,16 @@ importers:
         specifier: ^5.0.1
         version: 5.4.0(react-dom@18.2.0)(react@18.2.0)
       '@chamn/build-script':
-        specifier: ^0.0.46
+        specifier: workspace:*
         version: link:../build-script
       '@chamn/engine':
-        specifier: ^0.0.46
+        specifier: workspace:*
         version: link:../engine
       '@chamn/model':
-        specifier: ^0.0.46
+        specifier: workspace:*
         version: link:../model
       '@chamn/render':
-        specifier: ^0.0.46
+        specifier: workspace:*
         version: link:../render
       '@monaco-editor/react':
         specifier: ^4.5.1
