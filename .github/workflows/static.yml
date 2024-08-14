@@ -38,11 +38,6 @@ jobs:
           version: 8
       - run: |
           pnpm i
-          cd packages/build-script
-          pwd
-          pnpm run build
-          pnpm link -g
-          cd ../../
           pnpm run build
           cd packages/engine
           pwd
