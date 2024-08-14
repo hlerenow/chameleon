@@ -27,15 +27,15 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Use Node.js 20.x
+      - name: Use Node.js 16.x
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 16.14.0
       - name: Checkout
         uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 7
       - run: |
           pnpm i
           pnpm run build
