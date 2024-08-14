@@ -33,15 +33,15 @@ if (process.env.BUILD_TYPE === 'APP') {
 }
 
 const mainConfig = {
-  libMode: true,
   entry: './src/index.tsx',
   fileName: 'index',
-  external: ['react', 'react-dom', 'monaco-editor', 'antd', '@chamn/model', '@chamn/layout'],
-  global: {
-    react: 'React',
-    'react-dom': 'ReactDOM',
-  },
+  external: [],
   vite: {
+    base: '/chameleon/',
+    build: {
+      outDir: './dist',
+      copyPublicDir: true,
+    },
     plugins: plugins,
     ...commonConfig,
     define: {
