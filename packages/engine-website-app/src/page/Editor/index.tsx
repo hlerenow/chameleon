@@ -5,61 +5,18 @@ import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';
 import '../../index.css';
 import { DesktopOutlined, MobileOutlined, RollbackOutlined } from '@ant-design/icons';
-import { LayoutPropsType } from '@chamn/layout';
 
-import { collectVariable, flatObject, getThirdLibs } from '@chamn/render';
 import commonMeta from '@chamn/material/dist/meta';
 
 import commonComponentUrl from '@chamn/material/dist/index.umd.js?url';
 import commonComponentCSS from '@chamn/material/dist/style.css?url';
-import { EnginContext, Engine, InnerComponentMeta } from '@chamn/engine';
-import { DisplaySourceSchema } from '@chamn/engine/dist/plugins';
+import { DEFAULT_PLUGIN_LIST, DisplaySourceSchema, EnginContext, Engine, InnerComponentMeta } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
 
 const win = window as any;
 win.React = React;
 win.ReactDOM = ReactDOM;
 win.ReactDOMClient = ReactDOMClient;
-
-const customRender: LayoutPropsType['customRender'] = async ({
-  iframe: iframeContainer,
-  assets,
-  page,
-  pageModel,
-  beforeInitRender,
-  ready,
-}) => {
-  await iframeContainer.loadUrl('/src/_dev_/render.html');
-  // must call
-  beforeInitRender?.();
-  const iframeWindow = iframeContainer.getWindow()!;
-  const iframeDoc = iframeContainer.getDocument()!;
-  const IframeReact = iframeWindow.React!;
-  const IframeReactDOM = iframeWindow.ReactDOMClient!;
-  const CRender = iframeWindow.CRender!;
-  await new CRender.AssetLoader(assets, {
-    window: iframeWindow,
-  }).load();
-  // 从子窗口获取物料对象
-  const componentCollection = collectVariable(assets, iframeWindow);
-  const components = flatObject(componentCollection);
-  const thirdLibs = getThirdLibs(componentCollection, page?.thirdLibs || []);
-  const App = IframeReact?.createElement(CRender.DesignRender, {
-    adapter: CRender?.ReactAdapter,
-    page: page,
-    pageModel: pageModel,
-    components: {
-      ...components,
-    },
-    $$context: {
-      thirdLibs,
-    },
-    onMount: (designRenderInstance) => {
-      ready(designRenderInstance);
-    },
-  });
-
-  IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
-};
 
 const buildVersion = `t_${__BUILD_VERSION__}`;
 
@@ -363,9 +320,6 @@ export const App = () => {
         });
 
         pluginManager.customPlugin('Designer', (pluginInstance) => {
-          if (__RUN_MODE__ !== 'APP') {
-            pluginInstance.ctx.config.customRender = customRender;
-          }
           return pluginInstance;
         });
       }}

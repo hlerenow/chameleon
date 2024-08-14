@@ -10,10 +10,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "exports": {
-    ".": "./dist/index.js",
-    "./dist": "./dist/feature.js"
-  },
   "homepage": "https://github.com/hlerenow/chameleon",
   "keywords": [
     "engine",

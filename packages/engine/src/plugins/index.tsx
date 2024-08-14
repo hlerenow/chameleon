@@ -24,3 +24,15 @@ export {
   HistoryPlugin,
   DisplaySourceSchema,
 };
+
+export * from './AdvancePanel/index';
+export * from './ComponentLibrary/index';
+export * from './ComponentStatePanel/index';
+export * from './Designer/index';
+export * from './DisplaySourceSchema/index';
+export * from './GlobalStatePanel/index';
+export * from './History';
+export * from './OutlineTree';
+export * from './PropertyPanel';
+export * from './RightPanel';
+export * from './VisualPanelPlus';

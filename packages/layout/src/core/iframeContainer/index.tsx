@@ -47,7 +47,7 @@ export class IFrameContainer {
     return template;
   }
 
-  load(containerDom: HTMLElement) {
+  load(containerDom: HTMLDivElement) {
     this.containerDom = containerDom;
     if (this.iframe) {
       containerDom.appendChild(this.iframe);

@@ -131,6 +131,7 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
     const boxSensor = new Sensor<LayoutDragAndDropExtraDataType>({
       name: 'ComponentListBox',
       container: containerRef.current,
+      mainDocument: document,
     });
 
     this.boxSensor = boxSensor;

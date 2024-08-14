@@ -194,6 +194,7 @@ export class Engine extends React.Component<EngineProps> {
 }
 
 export * as plugins from './plugins';
+export * from './plugins';
 export * from '@chamn/layout';
 
 export * from './material/innerMaterial';
