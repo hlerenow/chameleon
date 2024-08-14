@@ -39,10 +39,8 @@ jobs:
       - run: |
           pnpm i
           pnpm run build
-          cd packages/engine
+          cd packages/engine-website-app/dist
           pwd
-          pnpm run build:app
-          cd example
           mkdir documents
           cp -r  ../../docs-website/build/* ./documents
       - name: current path
@@ -53,7 +51,7 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload entire repository
-          path: 'packages/engine/example'
+          path: 'packages/engine-website-app/dist'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1

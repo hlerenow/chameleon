@@ -6,7 +6,7 @@ import { CRootNodeDataType, CRootNodeDataTypeDescribe, InnerComponentNameEnum } 
 import { clearSchema, getNode, getRandomStr } from '../../util';
 import { checkComplexData } from '../../util/dataCheck';
 import { isArray, isPlainObject } from '../../util/lodash';
-import { DataModelEmitter, DataModelEventType } from '../../util/modelEmitter';
+import { DataModelEmitter, DataModelEmitterType, DataModelEventType } from '../../util/modelEmitter';
 import { CNode } from './Node/index';
 import { CProp } from './Node/prop';
 
@@ -91,7 +91,7 @@ export class CRootNode {
   private rawData: CRootNodeDataType;
   private data: CRootNodeModelDataType;
   nodeType = InnerComponentNameEnum.ROOT_CONTAINER;
-  emitter = DataModelEmitter;
+  emitter: DataModelEmitterType = DataModelEmitter;
   materialsModel: CMaterials;
   listenerHandle: (() => void)[];
   onChangeCbQueue: OnNodeChangeType[];

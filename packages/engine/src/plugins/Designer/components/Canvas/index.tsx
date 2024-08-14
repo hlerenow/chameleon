@@ -111,8 +111,8 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     return this.layoutRef.current?.iframeContainer;
   }
 
-  reloadRender({ assets }: { assets?: AssetPackage[] }) {
-    this.layoutRef.current?.reload({ assets });
+  reloadRender() {
+    this.layoutRef.current?.reload();
   }
 
   async init() {
@@ -281,7 +281,12 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       extra: extraData,
     };
 
-    const canDragFlag = await dragNode.material?.value.advanceCustom?.canDragNode?.(dragNode);
+    const canDragFlag = await dragNode.material?.value.advanceCustom?.canDragNode?.(dragNode, {
+      context: this.props.pluginCtx,
+      viewPortal: this.getPortalViewCtx(),
+      event: e,
+      extra: {},
+    });
 
     if (canDragFlag === false) {
       return canDragFlag;

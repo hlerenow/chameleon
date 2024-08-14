@@ -27,7 +27,7 @@ export const DesignerPlugin: DesignerPluginType = (ctx) => {
             if (typeof width === 'number') {
               newW = `${width}px`;
             }
-            iframeContainer.containerDom.style.width = newW;
+            iframeContainer.containerDom.style.width = String(newW);
             iframeContainer.containerDom.style.margin = '0 auto';
           }
         },
@@ -55,8 +55,8 @@ export const DesignerPlugin: DesignerPluginType = (ctx) => {
         updatePage: (page: CPageDataType | CPage) => {
           designerRef.current?.layoutRef.current?.designRenderRef?.current?.rerender(page);
         },
-        reload: ({ assets } = {}) => {
-          designerRef.current?.reloadRender({ assets });
+        reload: () => {
+          designerRef.current?.reloadRender();
         },
         getComponentInstances: (id: string) => {
           return designerRef.current?.layoutRef.current?.designRenderRef.current?.getInstancesById(id) || [];

@@ -206,7 +206,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     (window as any).___CHAMELEON_DESIGNER_RENDER___ = this.designRenderRef;
     const iframeContainer = this.iframeContainer;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    iframeContainer.load(document.getElementById(this.iframeDomId)!);
+    iframeContainer.load(document.getElementById(this.iframeDomId)! as any);
     iframeContainer.onLoadFailed((e) => {
       console.error('iframe canvas load failed', e);
     });

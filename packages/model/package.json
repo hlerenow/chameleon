@@ -33,6 +33,7 @@
     "@chamn/build-script": "workspace:*",
     "@types/lodash": "^4.14.192",
     "@types/lodash-es": "^4.17.6",
+    "@types/react": "^18.2.0",
     "jest": "^28.1.3",
     "sass": "^1.54.0"
   },

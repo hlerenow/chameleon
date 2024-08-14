@@ -3,67 +3,37 @@ import { Button, message, Modal, Segmented, Select } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';
-import { Engine, EnginContext } from '../../..';
 import '../../index.css';
-import { DEFAULT_PLUGIN_LIST } from '../../../plugins';
-import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
-import { InnerComponentMeta } from '../../../material/innerMaterial';
 import { DesktopOutlined, MobileOutlined, RollbackOutlined } from '@ant-design/icons';
-import { LayoutPropsType } from '@chamn/layout';
 
-import { collectVariable, flatObject, getThirdLibs } from '@chamn/render';
-import { HistoryPluginInstance } from '@/plugins/History/type';
-import { DesignerPluginInstance } from '@/plugins/Designer/type';
+import commonMeta from '@chamn/material/dist/meta';
+
+import commonComponentUrl from '@chamn/material/dist/index.umd.js?url';
+import commonComponentCSS from '@chamn/material/dist/style.css?url';
+import { DEFAULT_PLUGIN_LIST, DisplaySourceSchema, EnginContext, Engine, InnerComponentMeta } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
 
 const win = window as any;
 win.React = React;
 win.ReactDOM = ReactDOM;
 win.ReactDOMClient = ReactDOMClient;
 
-const customRender: LayoutPropsType['customRender'] = async ({
-  iframe: iframeContainer,
-  assets,
-  page,
-  pageModel,
-  beforeInitRender,
-  ready,
-}) => {
-  await iframeContainer.loadUrl('/src/_dev_/render.html');
-  // must call
-  beforeInitRender?.();
-  const iframeWindow = iframeContainer.getWindow()!;
-  const iframeDoc = iframeContainer.getDocument()!;
-  const IframeReact = iframeWindow.React!;
-  const IframeReactDOM = iframeWindow.ReactDOMClient!;
-  const CRender = iframeWindow.CRender!;
-  await new CRender.AssetLoader(assets, {
-    window: iframeWindow,
-  }).load();
-  // 从子窗口获取物料对象
-  const componentCollection = collectVariable(assets, iframeWindow);
-  const components = flatObject(componentCollection);
-  const thirdLibs = getThirdLibs(componentCollection, page?.thirdLibs || []);
-  const App = IframeReact?.createElement(CRender.DesignRender, {
-    adapter: CRender?.ReactAdapter,
-    page: page,
-    pageModel: pageModel,
-    components: {
-      ...components,
-    },
-    $$context: {
-      thirdLibs,
-    },
-    onMount: (designRenderInstance) => {
-      ready(designRenderInstance);
-    },
-  });
-
-  IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
-};
-
 const buildVersion = `t_${__BUILD_VERSION__}`;
 
-const assetPackagesList = [] as any[];
+const assetPackagesList = [
+  {
+    package: commonMeta.package,
+    globalName: commonMeta.globalName,
+    resources: [
+      {
+        src: commonComponentUrl,
+      },
+      {
+        src: commonComponentCSS,
+      },
+    ],
+  },
+];
 export const App = () => {
   const [ready, setReady] = useState(false);
   const [page, setPage] = useState(BasePage);
@@ -92,7 +62,7 @@ export const App = () => {
     engineRef.current = ctx;
     engineRef.current?.engine.getI18n()?.changeLanguage(lang);
 
-    const designer: DesignerPluginInstance = await ctx.pluginManager.onPluginReadyOk('Designer');
+    const designer: any = await ctx.pluginManager.onPluginReadyOk('Designer');
 
     const reloadPage = async () => {
       setTimeout(() => {
@@ -190,7 +160,7 @@ export const App = () => {
         <Button
           style={{ marginRight: '10px' }}
           onClick={async () => {
-            const res = await ctx.pluginManager.get<HistoryPluginInstance>('History');
+            const res = await ctx.pluginManager.get<any>('History');
             res?.export.preStep();
           }}
         >
@@ -199,7 +169,7 @@ export const App = () => {
         <Button
           style={{ marginRight: '10px' }}
           onClick={async () => {
-            const res = await ctx.pluginManager.get<HistoryPluginInstance>('History');
+            const res = await ctx.pluginManager.get<any>('History');
             res?.export.nextStep();
           }}
         >
@@ -328,7 +298,7 @@ export const App = () => {
         }, 2 * 1000);
       }}
       // 传入组件物料
-      material={[...InnerComponentMeta]}
+      material={[...InnerComponentMeta, ...commonMeta.meta]}
       // 组件物料对应的 js 运行库，只能使用 umd 模式的 js
       assetPackagesList={assetPackagesList}
       beforePluginRun={({ pluginManager }) => {
@@ -350,9 +320,6 @@ export const App = () => {
         });
 
         pluginManager.customPlugin('Designer', (pluginInstance) => {
-          if (__RUN_MODE__ !== 'APP') {
-            pluginInstance.ctx.config.customRender = customRender;
-          }
           return pluginInstance;
         });
       }}

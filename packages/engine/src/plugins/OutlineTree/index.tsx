@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import { TreeView } from './components/TreeView';
 import localize from './localize';
 
-export const PLUGIN_NAME = 'OutlineTree';
+const PLUGIN_NAME = 'OutlineTree';
 const i18nNamespace = `plugin:${PLUGIN_NAME}`;
 
 export const OutlineTreePlugin: CPlugin = {

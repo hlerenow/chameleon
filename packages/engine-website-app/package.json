@@ -1,16 +1,9 @@
 {
-  "name": "@chamn/engine",
+  "name": "@chamn/engine-website-app",
+  "private": true,
   "version": "0.0.46",
-  "files": [
-    "dist"
-  ],
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
-  "publishConfig": {
-    "access": "public"
-  },
   "homepage": "https://github.com/hlerenow/chameleon",
+  "main": "./src/index.tsx",
   "keywords": [
     "engine",
     "lowcode",
@@ -21,11 +14,8 @@
   ],
   "scripts": {
     "start": "build-script",
-    "build": "cross-env BUILD_TYPE=PKG build-script --build",
-    "build:analyze": "cross-env BUILD_TYPE=PKG  build-script --build --analyze",
-    "build:app": "export NODE_OPTIONS=--max-old-space-size=32768 && cross-env BUILD_TYPE=APP build-script --build",
-    "build:app:analyze": "cross-env BUILD_TYPE=APP build-script --build --analyze",
-    "copyAssets": "",
+    "build": "export NODE_OPTIONS=--max-old-space-size=32768 && build-script --build",
+    "build:analyze": "build-script --build --analyze",
     "lint": "eslint --ext .tsx,.ts src/",
     "prettier": "prettier --write ./src",
     "test": "jest",
@@ -38,14 +28,11 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.4.0",
+    "@chamn/engine": "workspace:*",
     "@chamn/layout": "workspace:*",
+    "@chamn/material": "workspace:*",
     "@chamn/model": "workspace:*",
     "@chamn/render": "workspace:*",
-    "@dnd-kit/core": "^6.0.7",
-    "@dnd-kit/modifiers": "^6.0.1",
-    "@dnd-kit/sortable": "^7.0.2",
-    "@dnd-kit/utilities": "^3.2.1",
-    "@monaco-editor/react": "^4.5.1",
     "ahooks": "^3.7.4",
     "antd": "^5.8.5",
     "color": "^4.2.3",
@@ -55,7 +42,6 @@
     "loadjs": "^4.3.0",
     "lodash-es": "^4.17.21",
     "mitt": "^3.0.0",
-    "monaco-editor": "^0.41.0",
     "react-color": "^2.19.3",
     "vite-plugin-static-copy": "^0.17.0"
   },
@@ -95,6 +81,5 @@
     "sass": "^1.54.0",
     "storybook": "^7.4.0"
   },
-  "config": {},
-  "gitHead": "dc3e55fdeb903a8012f6ebd3ebc018ed61ad89db"
+  "config": {}
 }

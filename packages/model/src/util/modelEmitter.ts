@@ -1,4 +1,4 @@
-import mitt from 'mitt';
+import mitt, { Emitter } from 'mitt';
 import { CRootNode, CRootNodeModelDataType } from '../Page/RootNode';
 import { CNode, CNodeModelDataType } from '../Page/RootNode/Node';
 import { CProp } from '../Page/RootNode//Node/prop';
@@ -30,4 +30,5 @@ export type DataModelEventType = {
   };
 };
 
-export const DataModelEmitter = mitt<DataModelEventType>();
+export const DataModelEmitter: Emitter<DataModelEventType> = mitt<DataModelEventType>();
+export type DataModelEmitterType = Emitter<DataModelEventType>;

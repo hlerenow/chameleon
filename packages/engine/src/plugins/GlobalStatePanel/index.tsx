@@ -6,7 +6,7 @@ import localize from './localize';
 import { MonacoEditor, MonacoEditorInstance } from '../../component/MonacoEditor';
 import styles from './style.module.scss';
 
-export const PLUGIN_NAME = 'GlobalState';
+const PLUGIN_NAME = 'GlobalState';
 const i18nNamespace = `plugin:${PLUGIN_NAME}`;
 
 type GlobalStatePanelProps = {
