@@ -37,7 +37,7 @@ jobs:
         with:
           version: 7
       - run: |
-          pnpm i
+          pnpm install --no-frozen-lockfile
           pnpm run build
           cd packages/engine-website-app/dist
           pwd
