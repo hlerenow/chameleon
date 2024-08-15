@@ -45,7 +45,7 @@ jobs:
           cd packages/engine-website-app/dist
           pwd
           mkdir documents
-          cp -r  ../../docs-website/build/* ./documents
+          cp -r  ../../docs-app/dist/* ./documents
       - name: current path
         run: pwd
       - name: Setup Pages

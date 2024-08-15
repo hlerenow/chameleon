@@ -1,0 +1,190 @@
+---
+sidebar:
+  order: 3
+title: Setter
+---
+
+## 什么是 setter ？
+
+Setter 是一个输入控件，用于在组件物料协议中描述组件 props 的输入方式，同时提供对应的输入控件让用户可以准确的输入组件的 props 值
+
+## 内置 Setter 列表
+
+### StringSetter
+
+[code link](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/component/CustomSchemaForm/components/Setters/StringSetter)
+
+### ArraySetter
+
+[code link](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/component/CustomSchemaForm/components/Setters/ArraySetter/index.tsx)
+
+Example:
+
+```tsx
+const customAttributesMeta: CMaterialPropsType[number] = {
+  name: '$$attributes',
+  title: '属性',
+  valueType: 'object',
+  setters: [
+    {
+      componentName: 'ArraySetter',
+      props: {
+        item: {
+          setters: [
+            {
+              componentName: 'ShapeSetter',
+              props: {
+                elements: [
+                  {
+                    name: 'key',
+                    title: '属性名',
+                    valueType: 'string',
+                    setters: ['StringSetter'],
+                  },
+                  {
+                    name: 'value',
+                    title: '值',
+                    valueType: 'string',
+                    setters: ['StringSetter', 'NumberSetter', 'JSONSetter', 'FunctionSetter', 'ExpressionSetter'],
+                  },
+                ],
+                collapse: false,
+              },
+              initialValue: {},
+            },
+          ],
+          initialValue: {},
+        },
+      },
+      initialValue: [],
+    },
+  ],
+};
+```
+
+### ShapeSetter
+
+[code link](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/component/CustomSchemaForm/components/Setters/ShapeSetter/index.tsx)
+
+Example:
+
+```tsx
+const CSSBindPropsSchema: CMaterialPropsType<'CSSValueSetter'> = [
+  {
+    name: 'css',
+    title: 'CSS Variable Bind',
+    valueType: 'array',
+    setters: [
+      {
+        componentName: 'ArraySetter',
+        props: {
+          item: {
+            setters: [
+              {
+                componentName: 'ShapeSetter',
+                props: {
+                  elements: [
+                    {
+                      name: 'key',
+                      title: '属性',
+                      valueType: 'string',
+                      setters: ['StringSetter'],
+                      description: '',
+                    },
+                    {
+                      name: 'value',
+                      title: '置',
+                      valueType: 'string',
+                      setters: ['ExpressionSetter'],
+                      description: '',
+                    },
+                  ],
+                  collapse: false,
+                },
+                initialValue: {
+                  key: '',
+                  value: {
+                    type: CNodePropsTypeEnum.EXPRESSION,
+                    value: '',
+                  },
+                },
+              },
+            ],
+            initialValue: {
+              key: '',
+              value: {
+                type: CNodePropsTypeEnum.EXPRESSION,
+                value: '',
+              },
+            },
+          },
+        },
+        initialValue: [],
+      },
+    ],
+  },
+];
+```
+
+### NumberSetter
+
+[code link](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/component/CustomSchemaForm/components/Setters/NumberSetter/index.tsx)
+
+### ExpressionSetter
+
+[code link](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/component/CustomSchemaForm/components/Setters/ExpressionSetter/index.tsx)
+
+### BooleanSetter
+
+[code link](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/component/CustomSchemaForm/components/Setters/BooleanSetter/index.tsx)
+
+### SelectSetter
+
+[code link](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/component/CustomSchemaForm/components/Setters/BoolSelectSettereanSetter/index.tsx)
+
+```tsx
+  {
+    title: 'HTML 标签',
+    componentName: 'CNativeTag',
+    props: [
+      {
+        name: 'htmlTag',
+        title: '标签名',
+        valueType: 'string',
+        setters: [
+          {
+            componentName: 'SelectSetter',
+            props: {
+              options: HTMl_TAGS.map((tag) => {
+                return {
+                  name: tag,
+                  value: tag,
+                };
+              }),
+            },
+          },
+        ],
+      },
+      customAttributesMeta,
+    ],
+```
+
+### JSONSetter
+
+[code link](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/component/CustomSchemaForm/components/Setters/JSONSetter/index.tsx)
+
+### FunctionSetter
+
+[code link](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/component/CustomSchemaForm/components/Setters/FunctionSetter/index.tsx)
+
+### TextAreaSetter
+
+[code link](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/component/CustomSchemaForm/components/Setters/TextAreaSetter/index.tsx)
+
+### CSSValueSetter
+
+[code link](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/component/CustomSchemaForm/components/Setters/CSSValueSetter/index.tsx)
+
+## 自定义 Setter
+
+参考 [自定义 Setter](/plugin/custom-setter)

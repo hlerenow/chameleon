@@ -1,0 +1,42 @@
+---
+title: 什么是组件物料？
+sidebar:
+  order: 1
+---
+
+import { Code } from '@astrojs/starlight/components';
+import MetarialImg from './assets/material.png';
+import ButtonMeta from '../../../../codeSnippets/ButtonMeta.tsx?raw';
+
+<img
+  style={{
+    marginBottom: '20px',
+    border: '1px solid #ededed',
+    height: '324px',
+  }}
+  src={MetarialImg.src}
+  alt="Component Metarial"
+/>
+
+组件物料包括两部分:
+
+- 组件库
+- 组件描述
+
+组件库和组件描述之间 通过 componentName 来一一绑定对应
+
+## 组件库
+
+组件库就是组件的 JS 运行库, 比如 Ant Design、ElemtnUI、Vant UI 等等，它们是可以被运行的 JS 代码库。
+
+## 组件描述
+
+如果想要编辑器知道组件的具体功能，比如支持那些属性，那些事件等等，则需要一份对应的描述文件详细描述了组件的 props 的各种行为，以及数据结构，这样编辑器才能对组件进行控制编辑。这份描述文件就是组件描述。
+
+物料协议请参考 Schema 文档
+
+### Example:
+
+对 Ant Design UI 库的 Button 组件的物料描述:
+
+<Code code={ButtonMeta} lang="tsx" title="Editor.tsx" showLineNumbers></Code>
