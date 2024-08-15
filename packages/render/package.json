@@ -36,7 +36,7 @@
     "@chamn/demo-page": "workspace:*",
     "@types/loadjs": "^4.0.1",
     "@types/lodash-es": "^4.17.6",
-    "@types/node": "^18.15.9",
+    "@types/node": "~18.15.9",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.0.6",
     "antd": "^5.0.0",

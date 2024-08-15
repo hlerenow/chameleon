@@ -37,6 +37,9 @@ jobs:
         with:
           version: 7
       - run: |
+          pnpm -v
+          node -v
+          npm -v
           pnpm install --no-frozen-lockfile
           pnpm run build
           cd packages/engine-website-app/dist
