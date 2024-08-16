@@ -7,7 +7,7 @@ console.log('🚀 ~ isProd:', isProd);
 
 // https://astro.build/config
 export default defineConfig({
-  base: isProd ? '/chameleon/documents' : '/documents/',
+  base: isProd ? '/chameleon/documents' : '/documents',
   integrations: [
     starlight({
       title: 'Chameleon Docs',
