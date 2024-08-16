@@ -187,6 +187,9 @@ importers:
 
   packages/docs-app:
     dependencies:
+      '@ant-design/icons':
+        specifier: ^5.4.0
+        version: 5.4.0(react-dom@18.3.1)(react@18.2.0)
       '@astrojs/check':
         specifier: ^0.9.2
         version: 0.9.2(prettier@2.7.1)(typescript@5.5.4)
@@ -196,6 +199,15 @@ importers:
       '@astrojs/starlight':
         specifier: ^0.25.5
         version: 0.25.5(astro@4.13.4)
+      '@chamn/demo-page':
+        specifier: workspace:^
+        version: link:../demo-page
+      '@chamn/engine':
+        specifier: workspace:^
+        version: link:../engine
+      '@chamn/model':
+        specifier: workspace:^
+        version: link:../model
       '@chamn/render':
         specifier: workspace:^
         version: link:../render
@@ -205,6 +217,9 @@ importers:
       '@types/react-dom':
         specifier: ^18.3.0
         version: 18.3.0
+      antd:
+        specifier: ^5.20.1
+        version: 5.20.1(react-dom@18.3.1)(react@18.2.0)
       astro:
         specifier: ^4.10.2
         version: 4.13.4(sass@1.77.8)(typescript@5.5.4)

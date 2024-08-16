@@ -3,6 +3,7 @@ import starlight from '@astrojs/starlight';
 
 import react from '@astrojs/react';
 const isProd = process.env.NODE_ENV === 'production';
+console.log('🚀 ~ isProd:', isProd);
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,7 +12,7 @@ export default defineConfig({
     starlight({
       title: 'Chameleon Docs',
       social: {
-        github: 'https://github.dev/hlerenow/chameleon',
+        github: 'https://github.com/hlerenow/chameleon',
       },
       sidebar: [
         {

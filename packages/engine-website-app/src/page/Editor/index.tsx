@@ -279,7 +279,7 @@ export const App = () => {
                 globalName: 'lodash',
                 resources: [
                   {
-                    src: 'https://cdn.bootcdn.net/ajax/libs/lodash.js/4.17.21/lodash.js',
+                    src: 'https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js',
                   },
                 ],
               },
@@ -288,7 +288,7 @@ export const App = () => {
                 globalName: 'dayjs',
                 resources: [
                   {
-                    src: 'https://cdn.bootcdn.net/ajax/libs/dayjs/1.11.9/dayjs.min.js',
+                    src: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.12/dayjs.min.js',
                   },
                 ],
               },

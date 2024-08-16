@@ -17,20 +17,21 @@ hero:
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Link } from '../../components/Link.tsx';
 
 ## Next steps
 
 <CardGrid stagger>
   <Card title="Material Develop" icon="pencil">
-    Learn more in [Docs](/reference/material/introduction/).
+    How to develop a component that can be used in the editor? <Link url="reference/material/introduction/">Doc</Link>
   </Card>
   <Card title="Schema Defined" icon="add-document">
-    Learn more in [Docs](/reference/pageschema/page/).
+    Definition of page protocol <Link url="reference/pageschema/page/">Doc</Link>
   </Card>
   <Card title="Plugins" icon="setting">
-    Learn more in [Docs](/reference/pageschema/page/).
+    How to develop editor plugins? <Link url="reference/plugin/plugin-develop">Doc</Link>
   </Card>
   <Card title="API" icon="open-book">
-    Learn more in [Docs](/guides/).
+    API Description, Learn more in <Link url="guides">Doc</Link>
   </Card>
 </CardGrid>
