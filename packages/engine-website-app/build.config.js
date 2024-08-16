@@ -35,7 +35,7 @@ const mainConfig = {
   fileName: 'index',
   external: [],
   vite: {
-    base: '/',
+    base: '/chameleon/',
     build: {
       outDir: './dist',
       copyPublicDir: true,
