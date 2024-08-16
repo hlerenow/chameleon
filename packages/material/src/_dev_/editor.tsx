@@ -23,7 +23,7 @@ import * as componentLibs from '../components/index';
 
 loader.config({
   paths: {
-    vs: 'https://cdn.bootcdn.net/ajax/libs/monaco-editor/0.37.1/min/vs',
+    vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.37.1/min/vs',
   },
 });
 loader.init();
@@ -42,7 +42,6 @@ const customRender: LayoutPropsType['customRender'] = async ({
   beforeInitRender?.();
   const iframeWindow = iframeContainer.getWindow()!;
   const iframeDoc = iframeContainer.getDocument()!;
-
   (iframeWindow as any).ChamnCustomComponent = componentLibs;
 
   const IframeReact = iframeWindow.React!;
@@ -262,11 +261,3 @@ export const Editor = () => {
     />
   );
 };
-
-if (import.meta.hot) {
-  // !!! do not delete newModule param, else hot reload will not trigger
-  // import.meta.hot.accept(['../meta'], (newModule) => {
-  //   console.log('met change');
-  //   location.reload();
-  // });
-}

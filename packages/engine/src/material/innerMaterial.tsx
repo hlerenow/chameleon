@@ -208,8 +208,7 @@ const BaseComponentMeta: CMaterialType[] = [
           return (
             <div
               style={{
-                ...props.style,
-                display: 'inline-block',
+                display: 'content',
                 position: 'relative',
               }}
             >

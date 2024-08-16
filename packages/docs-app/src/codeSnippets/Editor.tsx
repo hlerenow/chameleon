@@ -15,25 +15,6 @@ win.React = React;
 win.ReactDOM = ReactDOM;
 win.ReactDOMClient = ReactDOMClient;
 
-// 你可以使用自定的物料组件库
-const assetPackagesList = [
-  {
-    package: '@chamn/mock-material',
-    globalName: 'antd',
-    resources: [
-      {
-        src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/reset.css',
-      },
-      {
-        src: 'https://cdn.bootcdn.net/ajax/libs/dayjs/1.11.7/dayjs.min.js',
-      },
-      {
-        src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/antd.js',
-      },
-    ],
-  },
-];
-
 export const App = () => {
   const [ready, setReady] = useState(false);
   const [page, setPage] = useState(BasePage);

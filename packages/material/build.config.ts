@@ -30,7 +30,7 @@ if (LIB_NAME) {
     },
     // 额外的 vite 配置
     vite: {
-      define: {},
+      define: envDefine,
     },
   };
 

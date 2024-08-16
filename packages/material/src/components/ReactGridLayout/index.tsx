@@ -21,7 +21,7 @@ export type ReactGridLayoutPropsType = {
   animate?: boolean;
 };
 
-export const ReactGridLayout = ({
+export const GridLayout = ({
   subWin,
   staticGrid,
   animate,

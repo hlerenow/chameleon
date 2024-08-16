@@ -1,24 +1,24 @@
+import React from 'react';
 import { CMaterialType, CNode } from '@chamn/model';
 import { snippets, snippetsGridItem } from './snippets';
 import { LayoutWrap } from './edit/layoutWrap';
 import { useEffect, useState } from 'react';
 import { EnginContext } from '@chamn/engine';
 import { DesignerPluginInstance } from '@chamn/engine/dist/plugins/Designer/type';
-import React from 'react';
 
 export const ReactGridLayoutMeta: CMaterialType = {
-  componentName: 'RGridLayout',
+  componentName: 'GridLayout',
   title: '高级布局',
   props: [],
   isContainer: true,
   category: '布局',
   groupName: '高级布局',
   npm: {
-    name: 'ReactGridLayout',
+    name: 'GridLayout',
     package: __PACKAGE_NAME__ || '',
     version: __PACKAGE_VERSION__,
     destructuring: true,
-    exportName: 'ReactGridLayout',
+    exportName: 'GridLayout',
   },
   snippets: snippets,
   advanceCustom: {
@@ -82,7 +82,7 @@ export const ReactGridItemMeta: CMaterialType = {
       if (!dropNode) {
         return false;
       }
-      if (dropNode.value.componentName === 'ReactGridLayout') {
+      if (dropNode.value.componentName === 'GridLayout') {
         return true;
       }
 
@@ -98,7 +98,7 @@ export const ReactGridItemMeta: CMaterialType = {
       if (!dropNode) {
         return false;
       }
-      if (dropNode.value.componentName === 'ReactGridLayout') {
+      if (dropNode.value.componentName === 'GridLayout') {
         return true;
       }
 

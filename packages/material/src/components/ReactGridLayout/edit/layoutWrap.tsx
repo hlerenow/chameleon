@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { ReactGridLayout, ReactGridLayoutPropsType } from '..';
+import { useRef } from 'react';
+import { GridLayout, ReactGridLayoutPropsType } from '..';
 import { GridStack } from 'gridstack';
 import { breakpoints } from '../config';
 import { debounce } from 'lodash-es';
@@ -18,7 +18,7 @@ type ChangeLayoutEvent = {
 
 export const LayoutWrap = (
   props: ReactGridLayoutPropsType & {
-    targetComp: typeof ReactGridLayout;
+    targetComp: typeof GridLayout;
   }
 ) => {
   const { targetComp: Comp, ...restProps } = props;

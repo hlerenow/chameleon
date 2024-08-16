@@ -675,10 +675,10 @@ export const BasePage: CPageDataType = {
       package: 'antd',
       resources: [
         {
-          src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.4.4/antd.js',
+          src: 'https://cdn.jsdelivr.net/npm/antd@5.20.1/dist/antd.min.js',
         },
         {
-          src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.4.4/reset.css',
+          src: 'https://cdn.jsdelivr.net/npm/antd@5.20.1/dist/reset.min.css',
         },
       ],
     },
@@ -687,7 +687,7 @@ export const BasePage: CPageDataType = {
       package: 'dayjs',
       resources: [
         {
-          src: 'https://cdn.bootcdn.net/ajax/libs/dayjs/1.11.7/dayjs.min.js',
+          src: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.12/dayjs.min.js',
         },
       ],
     },

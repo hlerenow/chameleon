@@ -20,13 +20,13 @@ const assets: AssetPackage[] = [
     globalName: 'antd',
     resources: [
       {
-        src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/reset.css',
+        src: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.12/dayjs.min.js',
       },
       {
-        src: 'https://cdn.bootcdn.net/ajax/libs/dayjs/1.11.7/dayjs.min.js',
+        src: 'https://cdn.jsdelivr.net/npm/antd@5.20.1/dist/antd.min.js',
       },
       {
-        src: 'https://cdn.bootcdn.net/ajax/libs/antd/5.1.2/antd.js',
+        src: 'https://cdn.jsdelivr.net/npm/antd@5.20.1/dist/reset.min.css',
       },
     ],
   },

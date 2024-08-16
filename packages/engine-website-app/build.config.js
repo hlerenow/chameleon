@@ -35,7 +35,7 @@ const mainConfig = {
   fileName: 'index',
   external: [],
   vite: {
-    base: '/chameleon/',
+    base: '/',
     build: {
       outDir: './dist',
       copyPublicDir: true,
@@ -43,8 +43,7 @@ const mainConfig = {
     plugins: plugins,
     ...commonConfig,
     define: {
-      'process.env': JSON.stringify('{}'),
-      'process.env.NODE_ENV': JSON.stringify('production'),
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       __RUN_MODE__: JSON.stringify(process.env.BUILD_TYPE),
       __PACKAGE_VERSION__: JSON.stringify(pkg.version),
       __BUILD_VERSION__: JSON.stringify(Date.now()),
