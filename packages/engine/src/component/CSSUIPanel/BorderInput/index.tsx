@@ -7,8 +7,12 @@ import { DEFAULT_PRESET_COLORS } from '@/config/colorPickerColorList';
 import clsx from 'clsx';
 import { InputCommonRef } from '../type';
 import { CloseCircleOutlined } from '@ant-design/icons';
+import { pick } from 'lodash-es';
 
-type Value = Record<'border' | 'border-radius', string>;
+const CSS_BORDER_KEY_LIST = ['border', 'border-radius'] as const;
+
+type CSSBorderKeyType = typeof CSS_BORDER_KEY_LIST[number];
+type Value = Record<CSSBorderKeyType, string>;
 
 const maxVal = {
   px: 100,
@@ -57,13 +61,21 @@ export const BorderInput = forwardRef<InputCommonRef, BorderInputProps>((props, 
             updateInnerVal(
               {
                 ...emptyVal,
-                ...newVal,
+                ...pick(newVal, CSS_BORDER_KEY_LIST),
               },
               true
             );
           } else {
             updateInnerVal(emptyVal, true);
           }
+        },
+        setEmptyValue: () => {
+          updateInnerVal(
+            {
+              ...getEmptyVal(),
+            },
+            true
+          );
         },
       };
     },

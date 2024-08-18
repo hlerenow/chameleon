@@ -4,6 +4,7 @@ import { Row, Col, Radio } from 'antd';
 import styles from '../style.module.scss';
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 'react';
 import { InputCommonRef } from '../type';
+import { pick } from 'lodash-es';
 
 const keyList = ['width', 'height', 'min-width', 'max-width', 'min-height', 'max-height', 'flex', 'display'] as const;
 
@@ -39,7 +40,7 @@ export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((p
       setInnerVal((oldVal) => {
         const finalVal = {
           ...oldVal,
-          ...newVal,
+          ...pick(newVal, keyList),
         };
 
         if (noTrigger !== true) {
@@ -63,6 +64,9 @@ export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((p
             },
             true
           ),
+        setEmptyValue: () => {
+          setInnerVal(getDefaultValue(keyList as any));
+        },
       };
     },
     [updateInnerVal]

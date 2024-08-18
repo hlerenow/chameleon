@@ -144,9 +144,14 @@ export class DesignRender extends React.Component<DesignRenderProp> {
       _NODE_ID = node.id;
       _UNIQUE_ID = `${node.id}_${getRandomStr()}`;
       _STATUS?: 'DESTROY';
+      _design_target_component: any;
 
       componentDidMount(): void {
         self.instanceManager.add(node.id, this);
+      }
+
+      getTargetComponentRef() {
+        return this._design_target_component;
       }
 
       componentWillUnmount(): void {
@@ -177,7 +182,13 @@ export class DesignRender extends React.Component<DesignRenderProp> {
           return newChildren;
         }
 
-        return React.createElement(innerComp, restProps, ...newChildren);
+        return React.createElement(
+          innerComp,
+          {
+            ...restProps,
+          },
+          ...newChildren
+        );
       }
     }
     return React.forwardRef(function ErrorWrap(props: any, ref) {

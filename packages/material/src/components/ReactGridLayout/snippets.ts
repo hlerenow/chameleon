@@ -1,4 +1,5 @@
 import { SnippetsType } from '@chamn/model';
+import { breakpoints, defaultItemResponsive } from './config';
 
 export const snippets: SnippetsType[] = [
   {
@@ -6,7 +7,9 @@ export const snippets: SnippetsType[] = [
     snapshotText: 'RGL',
     description: '高级布局',
     schema: {
-      props: {},
+      props: {
+        breakpoints: breakpoints,
+      },
     },
   },
 ];
@@ -18,8 +21,7 @@ export const snippetsGridItem: SnippetsType[] = [
     description: '高级布局容器',
     schema: {
       props: {
-        w: 6,
-        h: 5,
+        responsive: [{ ...defaultItemResponsive }],
       },
     },
   },

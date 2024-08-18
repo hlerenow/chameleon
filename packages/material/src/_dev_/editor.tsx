@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';
 import '@chamn/engine/dist/style.css';
 import customMaterial from '../meta';
-console.log('🚀 ~ customMaterial:', customMaterial);
 import {
   Engine,
   EnginContext,

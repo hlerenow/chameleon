@@ -22,10 +22,8 @@
   "scripts": {
     "start": "build-script",
     "build": "cross-env BUILD_TYPE=PKG build-script --build",
+    "build:w": "cross-env BUILD_TYPE=PKG build-script --build --watch",
     "build:analyze": "cross-env BUILD_TYPE=PKG  build-script --build --analyze",
-    "build:app": "export NODE_OPTIONS=--max-old-space-size=32768 && cross-env BUILD_TYPE=APP build-script --build",
-    "build:app:analyze": "cross-env BUILD_TYPE=APP build-script --build --analyze",
-    "copyAssets": "",
     "lint": "eslint --ext .tsx,.ts src/",
     "prettier": "prettier --write ./src",
     "test": "jest",

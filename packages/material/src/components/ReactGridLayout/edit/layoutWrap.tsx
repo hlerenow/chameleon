@@ -1,9 +1,11 @@
 import { useRef } from 'react';
 import { GridLayout, ReactGridLayoutPropsType } from '..';
-import { GridStack } from 'gridstack';
+import { GridStack, GridStackElementHandler } from 'gridstack';
 import { breakpoints } from '../config';
 import { debounce } from 'lodash-es';
 import React from 'react';
+import { GridItemPropsType } from '../GridItem';
+import { ResponsivePoint } from '../type';
 
 type ChangeLayoutEvent = {
   detail: {
@@ -25,35 +27,40 @@ export const LayoutWrap = (
   const ref = useRef<GridStack>();
 
   const initEditLogic = (grid: GridStack) => {
-    ref.current = grid;
-    grid.on('change', (changeLayout) => {
-      const res = grid.save(true, true);
+    const updateGridItemLayout: GridStackElementHandler = (changeLayout) => {
       const { detail }: ChangeLayoutEvent = changeLayout as any;
-
+      const sunWinW = props.subWin!.innerWidth;
+      const pointInfo = breakpoints.find((el) => el.w > sunWinW);
       detail.forEach((item) => {
         const nodeId = item.el.getAttribute('data-grid-id');
         const node = props.ctx.engine.pageModel.getNode(String(nodeId));
         if (node) {
+          const plainProps: GridItemPropsType = node.getPlainProps();
+          const newResponsive = plainProps.responsive;
+          let targetItem = newResponsive.find(
+            (el) => el.label === pointInfo!.label
+          );
+          if (!targetItem) {
+            targetItem = {
+              label: pointInfo!.label,
+              info: {} as any,
+            };
+            newResponsive.push(targetItem);
+          }
+          targetItem.info = {
+            x: item.x,
+            y: item.y,
+            w: item.w,
+            h: item.h,
+          };
+
           node.updateValue({
-            props: {
-              x: item.x,
-              y: item.y,
-              w: item.w,
-              h: item.h,
-            },
+            props: plainProps,
           });
         }
       });
-    });
-    const responseJudge = debounce(() => {
-      console.log('change sun reeize');
-      const sunWinW = props.subWin!.innerWidth;
-      const pointInfo = breakpoints.find((el) => el.w > sunWinW);
-      if (pointInfo?.c && grid.getColumn() !== pointInfo.c) {
-        grid.column(pointInfo?.c);
-      }
-    }, 200);
-    props.subWin?.addEventListener('resize', responseJudge);
+    };
+    grid.on('change', updateGridItemLayout);
   };
 
   return (
@@ -61,6 +68,7 @@ export const LayoutWrap = (
       {...restProps}
       animate={true}
       staticGrid={false}
+      subWin={props.subWin}
       onMount={(grid) => {
         ref.current = grid;
         initEditLogic(grid);

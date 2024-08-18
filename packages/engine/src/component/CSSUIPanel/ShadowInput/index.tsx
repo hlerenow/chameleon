@@ -68,6 +68,14 @@ export const ShadowInput = forwardRef<InputCommonRef, ShadowInputProps>((props, 
             true
           );
         },
+        setEmptyValue: () => {
+          updateInnerVal(
+            {
+              ...(getEmptyVal() as any),
+            },
+            true
+          );
+        },
       };
     },
     [updateInnerVal]

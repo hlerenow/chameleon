@@ -375,7 +375,14 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     const ToolbarView =
       this.customAdvanceHook.getToolbarViewRender(node) || this.props.pluginCtx.config.toolbarViewRender;
     if (ToolbarView) {
-      toolbarView = <ToolbarView node={node} context={this.context} toolBarItems={defaultToolbarItem} />;
+      toolbarView = (
+        <ToolbarView
+          node={node}
+          context={this.props.pluginCtx}
+          toolBarItems={defaultToolbarItem.map}
+          toolBarItemList={defaultToolbarItem.list}
+        />
+      );
     }
     return toolbarView;
   };

@@ -97,6 +97,8 @@ export type LayoutStateType = {
   dropEvent: DragAndDropEventType<LayoutDragAndDropExtraDataType>['dragging'] | null;
   dropInfo: DropPosType | null;
   canDrop: boolean;
+  /** 是否可以选中节点 */
+  canSelectNode: boolean;
   pointerEventsForHightLightBox: 'auto' | 'none';
 };
 
@@ -141,6 +143,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       dropEvent: null,
       dropInfo: null,
       canDrop: true,
+      canSelectNode: true,
       pointerEventsForHightLightBox: 'none',
     };
     this.highlightCanvasRef = React.createRef<HighlightCanvasRefType>();
@@ -251,6 +254,20 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
   }
 
+  /** 禁止节点选中 */
+  banSelectNode() {
+    this.setState({
+      canSelectNode: false,
+    });
+  }
+
+  /** 回复节点选中 */
+  recoverSelectNode() {
+    this.setState({
+      canSelectNode: true,
+    });
+  }
+
   getPageModel() {
     return this.designRenderRef?.current?.getPageModel();
   }
@@ -296,6 +313,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
           const res = await this.props.onSelectNode?.(componentInstance._NODE_MODEL, e as any);
           if (res === false) {
+            return;
+          }
+          if (!this.state.canSelectNode) {
             return;
           }
           this.disposeRealTimeUpdate();
@@ -393,7 +413,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     if (!iframeDoc || !subWin) {
       return;
     }
-    ['mousedown'].forEach((ev: any) => {
+    ['mousedown', 'mouseup'].forEach((ev: any) => {
       this.eventExposeHandler.push(
         addEventListenerReturnCancel<'mousedown'>(
           iframeDoc.body,
@@ -420,9 +440,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
                 }
               }
             }
-
-            e.stopPropagation();
-            e.preventDefault();
           },
           true
         )
@@ -766,6 +783,8 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       currentSelectInstance: null,
       selectComponentInstances: [],
     });
+    // 清空之前的选中
+    this.props.onSelectNode?.(null, null);
   }
 
   resetDrag = () => {

@@ -71,6 +71,14 @@ export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPadding
             true
           );
         },
+        setEmptyValue: () => {
+          updateInnerVal(
+            {
+              ...getEmptyVal(),
+            },
+            true
+          );
+        },
       };
     },
     [props.prefix, updateInnerVal]

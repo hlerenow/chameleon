@@ -46,6 +46,7 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
     cssEditorRef.current?.setValue(fCss);
     classNameEditorRef.current?.setValue(node.value.classNames || []);
     cssUIRef.current?.setValue(styleArr2Obj(normalProperty) || {});
+    console.log('🚀 ~ updatePanelValue ~ normalProperty:', normalProperty);
   }, [node]);
 
   useEffect(() => {

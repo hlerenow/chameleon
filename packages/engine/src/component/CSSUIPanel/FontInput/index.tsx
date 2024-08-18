@@ -6,8 +6,11 @@ import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 
 import { DEFAULT_PRESET_COLORS } from '@/config/colorPickerColorList';
 import clsx from 'clsx';
 import { InputCommonRef } from '../type';
+import { pick } from 'lodash-es';
 
-type Value = Record<'font-size' | 'color' | 'text-align' | 'font-weight', string>;
+const FONT_CSS_KEY_LIST = ['font-size', 'color', 'text-align', 'font-weight'] as const;
+type FontKeyType = typeof FONT_CSS_KEY_LIST[number];
+type Value = Record<FontKeyType, string>;
 
 export type FontInputProps = {
   initialValue?: Value;
@@ -65,11 +68,18 @@ export const FontInput = forwardRef<InputCommonRef, FontInputProps>((props, ref)
     () => {
       return {
         setValue: (newVal) => {
-          console.log('🚀 ~ file: index.tsx:68 ~ FontInput ~ newVal:', newVal);
           updateInnerVal(
             {
               ...getEmptyVal(),
-              ...newVal,
+              ...pick(newVal, FONT_CSS_KEY_LIST),
+            },
+            true
+          );
+        },
+        setEmptyValue: () => {
+          updateInnerVal(
+            {
+              ...getEmptyVal(),
             },
             true
           );

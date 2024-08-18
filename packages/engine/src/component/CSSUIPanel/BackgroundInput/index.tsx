@@ -5,8 +5,18 @@ import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 
 import { DEFAULT_PRESET_COLORS } from '@/config/colorPickerColorList';
 import clsx from 'clsx';
 import { InputCommonRef } from '../type';
+import { pick } from 'lodash-es';
 
-type Value = Record<'background-color' | 'background-image' | 'background-repeat' | 'background-size', string>;
+const CSS_BACKGROUND_KEY_LIST = [
+  'background-color',
+  'background-image',
+  'background-repeat',
+  'background-size',
+] as const;
+
+type CSSBackgroundKeyType = typeof CSS_BACKGROUND_KEY_LIST[number];
+
+type Value = Record<CSSBackgroundKeyType, string>;
 
 export type BackgroundInputProps = {
   value?: Value;
@@ -52,13 +62,17 @@ export const BackgroundInput = forwardRef<InputCommonRef, BackgroundInputProps>(
             updateInnerVal(
               {
                 ...emptyVal,
-                ...newVal,
+                ...pick(newVal, CSS_BACKGROUND_KEY_LIST),
               },
               true
             );
           } else {
             updateInnerVal(emptyVal, true);
           }
+        },
+        setEmptyValue: () => {
+          const emptyVal = getEmptyVal();
+          updateInnerVal(emptyVal, true);
         },
       };
     },

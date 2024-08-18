@@ -33,6 +33,7 @@ export const CSSUIPanel = forwardRef<CSSUIPanelRef, CSSUIPanelProps>(({ value, i
     const tempValue = tempValueRef.current ?? value;
 
     inputRefs.forEach((ref) => {
+      ref.current?.setEmptyValue();
       ref.current?.setValue(tempValue || {});
     });
   };
@@ -43,7 +44,13 @@ export const CSSUIPanel = forwardRef<CSSUIPanelRef, CSSUIPanelProps>(({ value, i
         setValue: (newVal) => {
           tempValueRef.current = newVal;
           inputRefs.forEach((ref) => {
+            ref.current?.setEmptyValue();
             ref.current?.setValue(newVal);
+          });
+        },
+        setEmptyValue: () => {
+          inputRefs.forEach((ref) => {
+            ref.current?.setEmptyValue();
           });
         },
       };

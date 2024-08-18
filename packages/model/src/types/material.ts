@@ -180,7 +180,11 @@ export type ShapeSetterObjType<T extends SetterBasicType = ''> = {
   props?: {
     elements: MaterialPropType<T>[];
     /** 是否可以收缩，默认： true  */
-    collapse?: boolean;
+    collapse?:
+      | boolean
+      | {
+          open?: boolean;
+        };
   } & {};
   initialValue: any;
   /** props reference CSetterProps<T> from engine */
@@ -191,6 +195,11 @@ export type ShapeSetterObjType<T extends SetterBasicType = ''> = {
 export type ArraySetterObjType<T extends SetterBasicType = ''> = {
   componentName: ComplexSetterTypeEnum.ARRAY_SETTER | `${ComplexSetterTypeEnum.ARRAY_SETTER}` | T | `${T}`;
   props?: {
+    collapse?:
+      | boolean
+      | {
+          open?: boolean;
+        };
     item: {
       setters: SetterType<T>[];
       initialValue: any;
@@ -476,6 +485,7 @@ export type AdvanceCustom = {
       visibleItem: React.ReactElement;
       nodeLayout: React.ReactElement;
     };
+    toolBarItemList: React.ReactElement[];
   }) => React.ReactElement;
   selectRectViewRender?: (props: CustomViewRenderProps) => React.ReactElement;
   hoverRectViewRender?: (props: CustomViewRenderProps) => React.ReactElement;
