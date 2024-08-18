@@ -119,6 +119,8 @@ export class DesignRender extends React.Component<DesignRenderProp> {
   }
 
   componentDidMount(): void {
+    // 添加特殊运行时标记
+    (window as any).__CHAMN_RENDER_MODE = 'DESIGN';
     this.updateComponents(this.props.components);
     this.props.onMount?.(this);
   }

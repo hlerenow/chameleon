@@ -43,7 +43,7 @@ export const BasePage: CPageDataType = {
                   afterMount: {
                     type: 'FUNCTION',
                     value:
-                      "function didRender() {\n  const staticVar = $$context.getStaticVar();\n  console.log('$$context', $$context)\n  let setTimer = function () {\n    const staticVar = $$context.getStaticVar();\n    if (staticVar.timer) {\n      clearInterval(staticVar.timer);\n    }\n    const timer = setInterval(() => {\n      const bannerStateObj = $$context.getStateObj();\n      console.log('bannerStateObj', bannerStateObj)\n      bannerStateObj.updateState((oldState) => {\n        const newPage = (oldState.currentPage + 1) % 3;\n        console.log('newPage', newPage, oldState)\n        return {\n          ...oldState,\n          currentPage: newPage\n        };\n      })\n    }, 2 * 1000);\n    staticVar.timer = timer;\n  }\n\n  staticVar.preScence = function leftClick(e) {\n    const staticVar = $$context.getStaticVar();\n    if (staticVar.timer) {\n      clearInterval(staticVar.timer);\n    }\n\n    const bannerStateObj = $$context.getStateObj();\n    console.log('currentStateObj', bannerStateObj, $$context, bannerStateObj);\n    if (bannerStateObj.state.currentPage === 0) {\n      setTimer();\n      return\n    }\n    const newPage = (bannerStateObj.state.currentPage - 1) % 3;\n    bannerStateObj.updateState({\n      currentPage: newPage\n    });\n    setTimer();\n  };\n\n  staticVar.nextScence = function rightClick(e) {\n    const staticVar = $$context.getStaticVar();\n    if (staticVar.timer) {\n      clearInterval(staticVar.timer);\n    }\n\n    console.log($$context, e);\n    const currentStateObj = $$context.getStateObj();\n    console.log('currentStateObj', currentStateObj);\n\n    if (currentStateObj.state.currentPage === 2) {\n      setTimer();\n      return\n    }\n    const newPage = (currentStateObj.state.currentPage + 1) % 3\n    currentStateObj.updateState({\n      currentPage: newPage\n    });\n    setTimer();\n  };\n\n  console.log('staticVar', staticVar)\n\n\n  setTimer();\n}",
+                      "function didRender() {\n  const staticVar = $$context.getStaticVar();\n  console.log('$$context', $$context)\n  let setTimer = function () {\n    const staticVar = $$context.getStaticVar();\n    if (staticVar.timer) {\n      clearInterval(staticVar.timer);\n    }\n    console.log('window.__CHAMN_RENDER_MODE ', window.__CHAMN_RENDER_MODE )\n    if(window.__CHAMN_RENDER_MODE === 'DESIGN') {\n      return;\n    }\n    const timer = setInterval(() => {\n      const bannerStateObj = $$context.getStateObj();\n      console.log('bannerStateObj', bannerStateObj)\n      bannerStateObj.updateState((oldState) => {\n        const newPage = (oldState.currentPage + 1) % 3;\n        console.log('newPage', newPage, oldState)\n        return {\n          ...oldState,\n          currentPage: newPage\n        };\n      })\n    }, 2 * 1000);\n    staticVar.timer = timer;\n  }\n\n  staticVar.preScence = function leftClick(e) {\n    const staticVar = $$context.getStaticVar();\n    if (staticVar.timer) {\n      clearInterval(staticVar.timer);\n    }\n\n    const bannerStateObj = $$context.getStateObj();\n    console.log('currentStateObj', bannerStateObj, $$context, bannerStateObj);\n    if (bannerStateObj.state.currentPage === 0) {\n      setTimer();\n      return\n    }\n    const newPage = (bannerStateObj.state.currentPage - 1) % 3;\n    bannerStateObj.updateState({\n      currentPage: newPage\n    });\n    setTimer();\n  };\n\n  staticVar.nextScence = function rightClick(e) {\n    const staticVar = $$context.getStaticVar();\n    if (staticVar.timer) {\n      clearInterval(staticVar.timer);\n    }\n\n    console.log($$context, e);\n    const currentStateObj = $$context.getStateObj();\n    console.log('currentStateObj', currentStateObj);\n\n    if (currentStateObj.state.currentPage === 2) {\n      setTimer();\n      return\n    }\n    const newPage = (currentStateObj.state.currentPage + 1) % 3\n    currentStateObj.updateState({\n      currentPage: newPage\n    });\n    setTimer();\n  };\n\n  console.log('staticVar', staticVar)\n\n\n  setTimer();\n}",
                   },
                   beforeDestroy: {
                     type: 'FUNCTION',
@@ -200,14 +200,7 @@ export const BasePage: CPageDataType = {
                         {
                           state: 'normal',
                           media: [],
-                          text: `
-                          display: flex;
-                          width: 100%;
-                          position: absolute;
-                          transition: all 0.3s;
-                          height: 100%;
-                          Webkit-backface-visibility: hidden
-                          `,
+                          text: '\n                          display: flex;\n                          width: 100%;\n                          position: absolute;\n                          transition: all 0.3s;\n                          height: 100%;\n                          Webkit-backface-visibility: hidden\n                          ',
                         },
                       ],
                     },
@@ -253,7 +246,7 @@ export const BasePage: CPageDataType = {
                         {
                           state: 'normal',
                           media: [],
-                          text: `width: 50px;height: 50px;background-color: rgba(0,0,0,0.5);position: absolute;z-index: 999;top: 50%;transform: translateY(-50%);cursor: pointer;border-radius: 4px;left: 10px;`,
+                          text: 'width: 50px;height: 50px;background-color: rgba(0,0,0,0.5);position: absolute;z-index: 999;top: 50%;transform: translateY(-50%);cursor: pointer;border-radius: 4px;left: 10px;',
                         },
                       ],
                     },
@@ -265,7 +258,7 @@ export const BasePage: CPageDataType = {
                         {
                           state: 'normal',
                           media: [],
-                          text: `width: 50px;height: 50px;background-color: rgba(0,0,0,0.5);position: absolute;z-index: 999;top: 50%;transform: translateY(-50%);right: 10px;cursor: pointer;border-radius: 4px; `,
+                          text: 'width: 50px;height: 50px;background-color: rgba(0,0,0,0.5);position: absolute;z-index: 999;top: 50%;transform: translateY(-50%);right: 10px;cursor: pointer;border-radius: 4px; ',
                         },
                       ],
                     },
@@ -298,21 +291,54 @@ export const BasePage: CPageDataType = {
                   },
                   {
                     style: [
-                      { value: 'absolute', property: 'position' },
-                      { value: '10px', property: 'bottom' },
-                      { value: '50%', property: 'left' },
-                      { value: 'translateX(-50%)', property: 'transform' },
-                      { value: '20px', property: 'height' },
-                      { value: 'flex', property: 'display' },
-                      { value: 'center', property: 'align-items' },
+                      {
+                        value: 'absolute',
+                        property: 'position',
+                      },
+                      {
+                        value: '10px',
+                        property: 'bottom',
+                      },
+                      {
+                        value: '50%',
+                        property: 'left',
+                      },
+                      {
+                        value: 'translateX(-50%)',
+                        property: 'transform',
+                      },
+                      {
+                        value: '20px',
+                        property: 'height',
+                      },
+                      {
+                        value: 'flex',
+                        property: 'display',
+                      },
+                      {
+                        value: 'center',
+                        property: 'align-items',
+                      },
                       {
                         value: 'rgba(0,0,0,0.5)',
                         property: 'background-color',
                       },
-                      { value: '10px', property: 'border-radius' },
-                      { value: '0 10px', property: 'padding' },
-                      { value: 'space-around', property: 'justify-content' },
-                      { value: '80px', property: 'width' },
+                      {
+                        value: '10px',
+                        property: 'border-radius',
+                      },
+                      {
+                        value: '0 10px',
+                        property: 'padding',
+                      },
+                      {
+                        value: 'space-around',
+                        property: 'justify-content',
+                      },
+                      {
+                        value: '80px',
+                        property: 'width',
+                      },
                     ],
                     props: {
                       width: '100px',
@@ -437,7 +463,7 @@ export const BasePage: CPageDataType = {
                                 {
                                   state: 'normal',
                                   media: [],
-                                  text: `border-radius: 4px;width: 10px;height: 10px; `,
+                                  text: 'border-radius: 4px;width: 10px;height: 10px; ',
                                 },
                               ],
                             },
@@ -449,7 +475,7 @@ export const BasePage: CPageDataType = {
                             {
                               state: 'normal',
                               media: [],
-                              text: `width: 10px;height: 10px;background-color: rgba(200,200,200,0.5);border-radius: 4px; `,
+                              text: 'width: 10px;height: 10px;background-color: rgba(200,200,200,0.5);border-radius: 4px; ',
                             },
                           ],
                         },
@@ -475,7 +501,7 @@ export const BasePage: CPageDataType = {
                         {
                           state: 'normal',
                           media: [],
-                          text: `animation-duration: 1;`,
+                          text: 'animation-duration: 1;',
                         },
                       ],
                     },
@@ -509,7 +535,7 @@ export const BasePage: CPageDataType = {
                     {
                       state: 'normal',
                       media: [],
-                      text: `height: 500px;position: relative;width: 100%;overflow: hidden;margin: 0 auto;border-radius: 10px; `,
+                      text: 'height: 500px;position: relative;width: 100%;overflow: hidden;margin: 0 auto;border-radius: 10px; ',
                     },
                   ],
                 },
@@ -526,7 +552,7 @@ export const BasePage: CPageDataType = {
                 {
                   state: 'normal',
                   media: [],
-                  text: `padding: 20px 40px;`,
+                  text: 'padding: 20px 40px;',
                 },
               ],
             },
@@ -559,25 +585,40 @@ export const BasePage: CPageDataType = {
                     {
                       type: 'max-width',
                       value: '767',
-                      text: ` color: pink;`,
+                      text: ' color: pink;',
                     },
                     {
                       type: 'max-width',
                       value: '991',
                     },
                   ],
-                  text: `text-align: center;width: 100%;display: inline-block;font-size: 80px;padding: 20px;box-sizing: border-box;font-weight: bold;background-image: linear-gradient(         45deg,         #CA4246 16.666%,          #E16541 16.666%,          #E16541 33.333%,          #F18F43 33.333%,          #F18F43 50%,          #8B9862 50%,          #8B9862 66.666%,          #476098 66.666%,          #476098 83.333%,          #A7489B 83.333%);background-color: #CA4246;background-size: 100%;background-repeat: repeat;color: transparent;-webkit-background-clip: text; `,
+                  text: 'text-align: center;width: 100%;display: inline-block;font-size: 80px;padding: 20px;box-sizing: border-box;font-weight: bold;background-image: linear-gradient(         45deg,         #CA4246 16.666%,          #E16541 16.666%,          #E16541 33.333%,          #F18F43 33.333%,          #F18F43 50%,          #8B9862 50%,          #8B9862 66.666%,          #476098 66.666%,          #476098 83.333%,          #A7489B 83.333%);background-color: #CA4246;background-size: 100%;background-repeat: repeat;color: transparent;-webkit-background-clip: text; ',
                 },
               ],
             },
           },
           {
             style: [
-              { value: '20px 40px', property: 'margin' },
-              { value: '20px', property: 'border-radius' },
-              { value: 'hidden', property: 'overflow' },
-              { value: '2px 2px 5px rgba(0,0,0,0.2)', property: 'box-shadow' },
-              { value: 'hidden', property: 'Webkit-backface-visibility' },
+              {
+                value: '20px 40px',
+                property: 'margin',
+              },
+              {
+                value: '20px',
+                property: 'border-radius',
+              },
+              {
+                value: 'hidden',
+                property: 'overflow',
+              },
+              {
+                value: '2px 2px 5px rgba(0,0,0,0.2)',
+                property: 'box-shadow',
+              },
+              {
+                value: 'hidden',
+                property: 'Webkit-backface-visibility',
+              },
             ],
             props: {
               width: '100px',
@@ -616,7 +657,7 @@ export const BasePage: CPageDataType = {
                     {
                       state: 'normal',
                       media: [],
-                      text: `margin: auto;display: block; `,
+                      text: 'margin: auto;display: block; ',
                     },
                   ],
                 },
@@ -650,7 +691,7 @@ export const BasePage: CPageDataType = {
             {
               state: 'normal',
               media: [],
-              text: `background-color: white;width: 100%;overflow: auto; `,
+              text: 'background-color: white;width: 100%;overflow: auto; ',
             },
           ],
         },
@@ -671,20 +712,8 @@ export const BasePage: CPageDataType = {
   ],
   assets: [
     {
-      globalName: 'antd',
-      package: 'antd',
-      resources: [
-        {
-          src: 'https://cdn.jsdelivr.net/npm/antd@5.20.1/dist/antd.min.js',
-        },
-        {
-          src: 'https://cdn.jsdelivr.net/npm/antd@5.20.1/dist/reset.min.css',
-        },
-      ],
-    },
-    {
-      globalName: 'dayjs',
       package: 'dayjs',
+      globalName: 'dayjs',
       resources: [
         {
           src: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.12/dayjs.min.js',
