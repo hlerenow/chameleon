@@ -56,7 +56,6 @@ export const GridItem = forwardRef<GridItemRefType, GridItemPropsType>(
       const targetItemDefault = props.responsive.find(
         (el) => el.label === DEFAULT_RESPONSIVE_SIZE
       );
-
       return {
         ...(targetItem || targetItemDefault || ({ info: {} } as any)),
       };

@@ -21,7 +21,7 @@ export const snippetsGridItem: SnippetsType[] = [
     description: '高级布局容器',
     schema: {
       props: {
-        responsive: [{ ...defaultItemResponsive }],
+        responsive: [...defaultItemResponsive],
       },
     },
   },

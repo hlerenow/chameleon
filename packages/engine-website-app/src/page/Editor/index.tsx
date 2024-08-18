@@ -1,10 +1,10 @@
 import { BasePage } from '@chamn/demo-page';
-import { Button, message, Modal, Segmented, Select } from 'antd';
+import { Button, Dropdown, message, Modal, Segmented, Select } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';
 import '../../index.css';
-import { DesktopOutlined, MobileOutlined, RollbackOutlined } from '@ant-design/icons';
+import { ArrowUpOutlined, DesktopOutlined, MobileOutlined, RollbackOutlined } from '@ant-design/icons';
 
 import commonMeta from '@chamn/material/dist/meta';
 
@@ -192,61 +192,95 @@ export const App = () => {
         >
           Refresh Page
         </Button>
-        <Button
-          style={{ marginRight: '10px' }}
-          onClick={() => {
-            let src = '/#/preview';
-            if (location.href.includes('hlerenow')) {
-              src = '/chameleon/#/preview';
-            }
 
-            Modal.info({
-              closable: true,
-              icon: null,
-              width: 'calc(100vw - 100px)',
-              centered: true,
-              title: (
-                <div>
-                  Preview
-                  <Button
-                    size="small"
-                    style={{
-                      float: 'right',
-                      marginRight: '30px',
-                    }}
-                    onClick={() => {
-                      window.open(src);
-                    }}
-                  >
-                    Open in new window
-                  </Button>
-                </div>
-              ),
-              content: (
-                <div
+        <Dropdown.Button
+          style={{ marginRight: '10px', width: '110px' }}
+          menu={{
+            items: [],
+          }}
+          buttonsRender={() => {
+            return [
+              <Button
+                onClick={() => {
+                  let src = '/#/preview';
+                  if (location.href.includes('hlerenow')) {
+                    src = '/chameleon/#/preview';
+                  }
+
+                  Modal.info({
+                    closable: true,
+                    icon: null,
+                    width: 'calc(100vw - 100px)',
+                    centered: true,
+                    title: (
+                      <div>
+                        Preview
+                        <Button
+                          size="small"
+                          style={{
+                            float: 'right',
+                            marginRight: '30px',
+                          }}
+                          onClick={() => {
+                            window.open(src);
+                          }}
+                        >
+                          Open in new window
+                        </Button>
+                      </div>
+                    ),
+                    content: (
+                      <div
+                        style={{
+                          width: '100%',
+                          height: 'calc(100vh - 200px)',
+                        }}
+                      >
+                        <iframe
+                          style={{
+                            border: '1px solid #e7e7e7',
+                            width: '100%',
+                            height: '100%',
+                            borderRadius: '4px',
+                            overflow: 'hidden',
+                          }}
+                          src={src}
+                        />
+                      </div>
+                    ),
+                    footer: <></>,
+                  });
+                }}
+                key={1}
+              >
+                Preview
+              </Button>,
+              <Button
+                key={2}
+                style={{
+                  padding: '0 8px',
+                }}
+                onClick={() => {
+                  let src = '/#/preview';
+                  if (location.href.includes('hlerenow')) {
+                    src = '/chameleon/#/preview';
+                  }
+                  window.open(src);
+                }}
+              >
+                <ArrowUpOutlined
                   style={{
-                    width: '100%',
-                    height: 'calc(100vh - 200px)',
+                    fontSize: '12px',
+                    transform: 'rotate(30deg)',
                   }}
-                >
-                  <iframe
-                    style={{
-                      border: '1px solid #e7e7e7',
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: '4px',
-                      overflow: 'hidden',
-                    }}
-                    src={src}
-                  />
-                </div>
-              ),
-              footer: <></>,
-            });
+                />
+              </Button>,
+            ];
           }}
         >
           Preview
-        </Button>
+        </Dropdown.Button>
+
         <Button
           type="primary"
           onClick={() => {
