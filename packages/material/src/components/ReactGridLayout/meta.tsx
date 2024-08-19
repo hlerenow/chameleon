@@ -9,6 +9,7 @@ import { GridStack } from 'gridstack';
 import { breakpoints } from './config';
 import { DesignerCtx } from '@chamn/engine/dist/plugins/Designer/components/Canvas';
 import { debounce } from 'lodash-es';
+import { GridItemPropsType } from './GridItem';
 
 export const ReactGridLayoutMeta: CMaterialType = {
   componentName: 'GridLayout',
@@ -356,8 +357,18 @@ export const ReactGridItemMeta: CMaterialType = {
       return false;
     },
     onCopy: async (node) => {
-      node.props.x.updateValue('');
-      node.props.y.updateValue('');
+      const newProps: GridItemPropsType = node.getPlainProps();
+      const newResponsive = newProps.responsive.map((el) => {
+        return {
+          ...el,
+          x: '',
+          y: '',
+        };
+      });
+      newProps.responsive = newResponsive;
+      node.updateValue({
+        props: newProps,
+      });
       return true;
     },
     onNewAdd: async (node, params) => {
