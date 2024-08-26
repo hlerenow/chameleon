@@ -273,7 +273,15 @@ export class DesignRender extends React.Component<DesignRenderProp> {
       onGetComponent,
       ...renderProps,
       components: this._components,
-      // 拦截特殊属性配置, 配合开发模式使用
+      // 拦截特殊属性配置, 配合设计模式使用
+      /**
+       * 可以对节点的一些配置数据做统一处理
+       * 比如: fixedProps 强制将 fixedProps 内的值覆盖 node 本省的配置
+       * 比如： 统一处理节点的 Condition 属性，控制节点是否显示
+       * @param config
+       * @param node
+       * @returns
+       */
       processNodeConfigHook: (config, node) => {
         if (node.nodeType !== 'NODE') {
           return config;

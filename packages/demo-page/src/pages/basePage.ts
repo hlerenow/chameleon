@@ -675,16 +675,7 @@ export const BasePage: CPageDataType = {
           advanceSetter: {},
         },
         title: 'bg-CContainer',
-        classNames: [
-          {
-            name: 'qwerty',
-            status: {
-              type: 'EXPRESSION',
-              value:
-                '$$context.stateManager.bannerState.state.currentPage === 1',
-            },
-          },
-        ],
+        classNames: [],
         css: {
           class: 'ckakcd',
           value: [

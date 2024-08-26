@@ -9,6 +9,7 @@ export type ContextType = {
   params?: Record<any, any>;
   /** 全局状态 */
   globalState?: Record<any, any>;
+  getGlobalState?: () => Record<any, any>;
   /** 更新全局状态 */
   updateGlobalState?: (newState: any) => void;
   /** 存储当前节点的数据，不具有响应性 **/
@@ -33,6 +34,7 @@ export type ContextType = {
     state?: Record<any, any>;
     updateState?: (newState: any) => void;
   };
+
   /**  用于访访问和管理页面被注册为全局的局部 state 快照，在闭包中使用会存在值不是最新的情况 */
   stateManager?: Record<string, any>;
   /** 循环数据 */
