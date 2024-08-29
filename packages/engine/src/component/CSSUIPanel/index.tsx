@@ -183,7 +183,10 @@ export const CSSUIPanel = forwardRef<CSSUIPanelRef, CSSUIPanelProps>(({ value, i
             initialValue={initialVal as any}
             value={value as any}
             onChange={(val) => {
-              onValueChange?.({ ...val });
+              onValueChange?.({
+                ...(tempValueRef.current || {}),
+                ...val,
+              });
             }}
           />
         ),

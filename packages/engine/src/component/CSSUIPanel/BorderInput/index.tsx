@@ -1,13 +1,14 @@
 /* eslint-disable react/display-name */
 import { CSSSizeInput } from '@/component/CSSSizeInput';
-import { Row, Col, ColorPicker, Radio } from 'antd';
+import { Row, Col, Radio } from 'antd';
 import styles from '../style.module.scss';
-import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { DEFAULT_PRESET_COLORS } from '@/config/colorPickerColorList';
 import clsx from 'clsx';
 import { InputCommonRef } from '../type';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import { pick } from 'lodash-es';
+import { CustomColorPicker, CustomColorPickerRef } from '@/component/CustomColorPicker';
 
 const CSS_BORDER_KEY_LIST = ['border', 'border-radius'] as const;
 
@@ -34,6 +35,7 @@ export type BorderInputProps = {
 
 export const BorderInput = forwardRef<InputCommonRef, BorderInputProps>((props, ref) => {
   const [innerVal, setInnerVal] = useState<Value>(props.initialValue ?? getEmptyVal());
+  const colorRef = useRef<CustomColorPickerRef>(null);
 
   const updateInnerVal = useCallback(
     (newVal: Partial<Value>, noTrigger?: boolean) => {
@@ -85,11 +87,14 @@ export const BorderInput = forwardRef<InputCommonRef, BorderInputProps>((props, 
   const currentEditVal = useMemo(() => {
     const tempVal = innerVal['border'] || '';
     const list = tempVal.split(' ');
-    return {
+    const tmpVal = {
       size: list[0] || '',
       type: list[1] || '',
       color: tempVal.replace(' ', '').replace(list[0], '').replace(list[1], ''),
     };
+    colorRef.current?.updateColor(tmpVal.color);
+
+    return tmpVal;
   }, [innerVal]);
 
   const updateSingleBorderVal = (newBorderVal: typeof currentEditVal) => {
@@ -149,14 +154,15 @@ export const BorderInput = forwardRef<InputCommonRef, BorderInputProps>((props, 
           }}
         >
           <span className={clsx([styles.label])}>Color:</span>
-          <ColorPicker
+          <CustomColorPicker
+            ref={colorRef}
             showText={true}
             size="small"
             value={currentEditVal.color || ''}
-            onChangeComplete={(color) => {
+            onChange={(color) => {
               updateSingleBorderVal({
                 ...currentEditVal,
-                color: color.toRgbString(),
+                color: color,
               });
             }}
             presets={DEFAULT_PRESET_COLORS}

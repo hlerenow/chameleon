@@ -1,12 +1,13 @@
 /* eslint-disable react/display-name */
 import { CSSSizeInput } from '@/component/CSSSizeInput';
-import { Row, Col, ColorPicker } from 'antd';
+import { Row, Col } from 'antd';
 import styles from '../style.module.scss';
-import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { DEFAULT_PRESET_COLORS } from '@/config/colorPickerColorList';
 import clsx from 'clsx';
 import { BoxShadowObjType, parseBoxShadowString } from '@/utils';
 import { InputCommonRef } from '../type';
+import { CustomColorPicker, CustomColorPickerRef } from '@/component/CustomColorPicker';
 
 type Value = Record<'box-shadow', string>;
 
@@ -22,10 +23,12 @@ export type ShadowInputProps = {
 
 export const ShadowInput = forwardRef<InputCommonRef, ShadowInputProps>((props, ref) => {
   const [innerVal, setInnerVal] = useState<Value>(props.initialValue ?? getEmptyVal());
+  const colorRef = useRef<CustomColorPickerRef>(null);
 
   const realValue = useMemo(() => {
     const tempVal = props.value?.['box-shadow'] ?? innerVal['box-shadow'];
     const obj = parseBoxShadowString(tempVal || '')[0] || {};
+    colorRef.current?.updateColor(obj.color || '');
     return obj;
   }, [props.value, innerVal]);
 
@@ -171,13 +174,13 @@ export const ShadowInput = forwardRef<InputCommonRef, ShadowInputProps>((props, 
           }}
         >
           <span className={clsx([styles.label])}>Color:</span>
-          <ColorPicker
+          <CustomColorPicker
+            ref={colorRef}
             showText={true}
             size="small"
-            value={realValue['color'] || ''}
-            onChangeComplete={(color) => {
+            onChange={(color) => {
               updateInnerVal({
-                color: color.toRgbString(),
+                color: color,
               });
             }}
             presets={DEFAULT_PRESET_COLORS}
