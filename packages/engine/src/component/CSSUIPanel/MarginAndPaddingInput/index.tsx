@@ -5,8 +5,9 @@ import styles from '../style.module.scss';
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 'react';
 import { InputCommonRef } from '../type';
 import clsx from 'clsx';
+import { pick } from 'lodash-es';
 
-type Value = Record<'left' | 'right' | 'top' | 'bottom' | 'all', string>;
+type Value = Record<string, string>;
 
 export type MarginAndPaddingInputProps = {
   value?: Value;
@@ -29,14 +30,16 @@ const getEmptyVal = () => ({
   right: '',
   top: '',
   bottom: '',
-  all: '',
 });
 
 export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPaddingInputProps>((props, ref) => {
   const [innerVal, setInnerVal] = useState<Value>(props.initialValue ?? getEmptyVal());
+  const keyList = useMemo(() => {
+    return ['left', 'top', 'right', 'bottom'].map((el) => `${props.prefix}-${el}`);
+  }, [props.prefix]);
 
   const updateInnerVal = useCallback(
-    (newVal: Partial<Value>, noTrigger?: boolean) => {
+    (newVal: Partial<any>, noTrigger?: boolean) => {
       setInnerVal((oldVal) => {
         const finalVal = {
           ...oldVal,
@@ -51,7 +54,7 @@ export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPadding
           return res;
         }, {} as any);
         if (noTrigger !== true) {
-          props.onChange?.(outVal);
+          props.onChange?.(pick(outVal, keyList));
         }
         return finalVal;
       });
