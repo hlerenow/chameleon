@@ -35,13 +35,13 @@ export const ShadowInput = forwardRef<InputCommonRef, ShadowInputProps>((props, 
   const updateInnerVal = useCallback(
     (newVal: Partial<BoxShadowObjType>, noTrigger?: boolean) => {
       setInnerVal((oldVal) => {
+        console.log('set val', oldVal, newVal);
         const tempVal = props.value?.['box-shadow'];
         const obj = parseBoxShadowString(tempVal || '')[0] || {};
         const newUpdateVal = {
           ...obj,
           ...newVal,
         };
-
         const boxShadowStr = `${newUpdateVal.offsetX || '0'} ${newUpdateVal.offsetY || '0'} ${
           newUpdateVal.blur || '0'
         } ${newUpdateVal.spread || '0'} ${newUpdateVal.color || 'transparent'}`;
@@ -96,6 +96,7 @@ export const ShadowInput = forwardRef<InputCommonRef, ShadowInputProps>((props, 
             value={realValue['offsetX']}
             onValueChange={(val) => {
               updateInnerVal({
+                ...realValue,
                 offsetX: val,
               });
             }}
@@ -116,6 +117,8 @@ export const ShadowInput = forwardRef<InputCommonRef, ShadowInputProps>((props, 
             value={realValue['offsetY']}
             onValueChange={(val) => {
               updateInnerVal({
+                ...realValue,
+
                 offsetY: val,
               });
             }}
@@ -136,6 +139,8 @@ export const ShadowInput = forwardRef<InputCommonRef, ShadowInputProps>((props, 
             value={realValue['blur']}
             onValueChange={(val) => {
               updateInnerVal({
+                ...realValue,
+
                 blur: val,
               });
             }}
@@ -156,6 +161,8 @@ export const ShadowInput = forwardRef<InputCommonRef, ShadowInputProps>((props, 
             value={realValue['spread']}
             onValueChange={(val) => {
               updateInnerVal({
+                ...realValue,
+
                 spread: val,
               });
             }}
@@ -180,6 +187,8 @@ export const ShadowInput = forwardRef<InputCommonRef, ShadowInputProps>((props, 
             size="small"
             onChange={(color) => {
               updateInnerVal({
+                ...realValue,
+
                 color: color,
               });
             }}
