@@ -48,6 +48,7 @@ export const GridItem = forwardRef<GridItemRefType, GridItemPropsType>(
         ctx.gridStack?.makeWidget(refDom.current!);
       }
     }, [ctx.ready]);
+
     const currentSizeAndPosInfo = useMemo<ResponsiveItemInfo>(() => {
       const currentResponsiveLabel = ctx.currentBreakpoint.label;
       const targetItem = props.responsive.find(
@@ -56,16 +57,24 @@ export const GridItem = forwardRef<GridItemRefType, GridItemPropsType>(
       const targetItemDefault = props.responsive.find(
         (el) => el.label === DEFAULT_RESPONSIVE_SIZE
       );
+      if (!ctx.ready) {
+        return {
+          info: {},
+        };
+      }
       return {
         ...(targetItem || targetItemDefault || ({ info: {} } as any)),
       };
     }, [props.responsive, ctx.currentBreakpoint.label]);
 
     useEffect(() => {
+      if (!ctx.ready) {
+        return;
+      }
       ctx.gridStack?.update(id, {
         ...currentSizeAndPosInfo?.info,
       });
-    }, [currentSizeAndPosInfo]);
+    }, [currentSizeAndPosInfo, ctx]);
     const specialRef = useRef<GridItemRefType>();
 
     specialRef.current = {
@@ -94,7 +103,6 @@ export const GridItem = forwardRef<GridItemRefType, GridItemPropsType>(
     if (!ctx.ready) {
       return <></>;
     }
-
     return (
       <div
         className="grid-stack-item"

@@ -88,7 +88,7 @@ export const GridLayout = ({
 
   const responseJudge = debounce(() => {
     const sunWinW = (subWin ?? window).innerWidth;
-    const pointInfo = breakpoints.find((el) => el.w > sunWinW);
+    const pointInfo = breakpoints.find((el) => el.w >= sunWinW);
     if (!pointInfo) {
       return;
     }

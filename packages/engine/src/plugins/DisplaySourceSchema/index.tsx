@@ -3,8 +3,8 @@ import { Modal } from 'antd';
 import { MonacoEditor, MonacoEditorInstance } from '../../component/MonacoEditor';
 import { CPage } from '@chamn/model';
 import { waitReactUpdate } from '../../utils';
-import { EnginContext } from '../../index';
 import { DesignerPluginInstance } from '../Designer/type';
+import { EnginContext } from '@/type';
 
 export type DisplaySourceSchemaProps = {
   pageModel: CPage;

@@ -2,7 +2,7 @@ import React from 'react';
 import { Workbench } from './component/Workbench';
 import styles from './Engine.module.scss';
 import i18n from './i18n/index';
-import { CPlugin, PluginManager } from './core/pluginManager';
+import { PluginManager } from './core/pluginManager';
 import mitt, { Emitter } from 'mitt';
 import { AssetPackage, CMaterialType, CNode, CPage, CPageDataType, CRootNode, EmptyPage } from '@chamn/model';
 import { getDefaultRender, beforeInitRender } from './utils/defaultEngineConfig';
@@ -12,27 +12,7 @@ import { AssetLoader, ComponentsType, collectVariable } from '@chamn/render';
 import { AssetsPackageListManager } from './core/assetPackagesListManage';
 import { flatObject } from '@chamn/render';
 import customI18n from './i18n/index';
-
-export type EnginContext = {
-  pluginManager: PluginManager;
-  engine: Engine;
-};
-
-export type EngineProps = {
-  plugins: CPlugin[];
-  schema: CPageDataType;
-  material?: CMaterialType[];
-  components?: Record<string, any>;
-  assetPackagesList?: AssetPackage[];
-  beforePluginRun?: (options: { pluginManager: PluginManager }) => void;
-  /** 所有的加插件加载完成 */
-  onReady?: (ctx: EnginContext) => void;
-  onMount?: (ctx: EnginContext) => void;
-  /** 渲染器 umd 格式 js 地址, 默认 ./render.umd.js */
-  renderJSUrl?: string;
-  style?: React.CSSProperties;
-  className?: string;
-};
+import { EngineProps } from './type';
 
 export class Engine extends React.Component<EngineProps> {
   static version = __PACKAGE_VERSION__;
@@ -195,6 +175,7 @@ export class Engine extends React.Component<EngineProps> {
 
 export * as plugins from './plugins';
 export * from './plugins';
+export * from './component';
 export * from '@chamn/layout';
 
 export * from './material/innerMaterial';

@@ -38,6 +38,7 @@
     "@ant-design/icons": "^5.4.0",
     "@chamn/layout": "workspace:*",
     "@chamn/model": "workspace:*",
+    "@chamn/material": "workspace:*",
     "@chamn/render": "workspace:*",
     "@dnd-kit/core": "^6.0.7",
     "@dnd-kit/modifiers": "^6.0.1",

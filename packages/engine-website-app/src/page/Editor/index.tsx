@@ -10,7 +10,14 @@ import commonMeta from '@chamn/material/dist/meta';
 
 import commonComponentUrl from '@chamn/material/dist/index.umd.js?url';
 import commonComponentCSS from '@chamn/material/dist/style.css?url';
-import { DEFAULT_PLUGIN_LIST, DisplaySourceSchema, EnginContext, Engine, InnerComponentMeta } from '@chamn/engine';
+import {
+  DEFAULT_PLUGIN_LIST,
+  DesignerSizer,
+  DisplaySourceSchema,
+  EnginContext,
+  Engine,
+  InnerComponentMeta,
+} from '@chamn/engine';
 import '@chamn/engine/dist/style.css';
 
 const win = window as any;
@@ -110,27 +117,7 @@ export const App = () => {
             marginRight: '10px',
           }}
         >
-          <Segmented
-            defaultValue="PC"
-            onChange={(value) => {
-              console.log('value', value);
-              if (value === 'PC') {
-                designer.export.setCanvasWidth('100%');
-              } else {
-                designer.export.setCanvasWidth(350);
-              }
-            }}
-            options={[
-              {
-                label: <DesktopOutlined />,
-                value: 'PC',
-              },
-              {
-                label: <MobileOutlined />,
-                value: 'MOBILE',
-              },
-            ]}
-          />
+          {ctx && <DesignerSizer ctx={ctx} />}
         </div>
         <Select
           defaultValue={lang}

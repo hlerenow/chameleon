@@ -3,17 +3,23 @@ import { Button, message, Modal, Segmented, Select } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';
-import { Engine, EnginContext } from '../../..';
+import { Engine } from '../../..';
 import '../../index.css';
 import { DEFAULT_PLUGIN_LIST } from '../../../plugins';
 import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 import { InnerComponentMeta } from '../../../material/innerMaterial';
-import { DesktopOutlined, MobileOutlined, RollbackOutlined } from '@ant-design/icons';
+import { RollbackOutlined } from '@ant-design/icons';
 import { LayoutPropsType } from '@chamn/layout';
 
 import { collectVariable, flatObject, getThirdLibs } from '@chamn/render';
 import { HistoryPluginInstance } from '@/plugins/History/type';
 import { DesignerPluginInstance } from '@/plugins/Designer/type';
+
+import commonComponentUrl from '@chamn/material/dist/index.umd.js?url';
+import commonComponentCSS from '@chamn/material/dist/style.css?url';
+import commonMeta from '@chamn/material/dist/meta';
+import { DesignerSizer } from '@/component/DesignerSizer';
+import { EnginContext } from '@/type';
 
 const win = window as any;
 win.React = React;
@@ -63,7 +69,20 @@ const customRender: LayoutPropsType['customRender'] = async ({
 
 const buildVersion = `t_${__BUILD_VERSION__}`;
 
-const assetPackagesList = [] as any[];
+const assetPackagesList = [
+  {
+    package: commonMeta.package,
+    globalName: commonMeta.globalName,
+    resources: [
+      {
+        src: commonComponentUrl,
+      },
+      {
+        src: commonComponentCSS,
+      },
+    ],
+  },
+] as any[];
 export const App = () => {
   const [ready, setReady] = useState(false);
   const [page, setPage] = useState(BasePage);
@@ -140,27 +159,7 @@ export const App = () => {
             marginRight: '10px',
           }}
         >
-          <Segmented
-            defaultValue="PC"
-            onChange={(value) => {
-              console.log('value', value);
-              if (value === 'PC') {
-                designer.export.setCanvasWidth('100%');
-              } else {
-                designer.export.setCanvasWidth(350);
-              }
-            }}
-            options={[
-              {
-                label: <DesktopOutlined />,
-                value: 'PC',
-              },
-              {
-                label: <MobileOutlined />,
-                value: 'MOBILE',
-              },
-            ]}
-          />
+          {ctx && <DesignerSizer ctx={ctx} />}
         </div>
         <Select
           defaultValue={lang}
@@ -328,7 +327,7 @@ export const App = () => {
         }, 2 * 1000);
       }}
       // 传入组件物料
-      material={[...InnerComponentMeta]}
+      material={[...InnerComponentMeta, ...commonMeta.meta]}
       // 组件物料对应的 js 运行库，只能使用 umd 模式的 js
       assetPackagesList={assetPackagesList}
       beforePluginRun={({ pluginManager }) => {

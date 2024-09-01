@@ -2,10 +2,7 @@ import { useRef } from 'react';
 import { GridLayout, ReactGridLayoutPropsType } from '..';
 import { GridStack, GridStackElementHandler } from 'gridstack';
 import { breakpoints } from '../config';
-import { debounce } from 'lodash-es';
-import React from 'react';
 import { GridItemPropsType } from '../GridItem';
-import { ResponsivePoint } from '../type';
 
 type ChangeLayoutEvent = {
   detail: {
@@ -30,7 +27,7 @@ export const LayoutWrap = (
     const updateGridItemLayout: GridStackElementHandler = (changeLayout) => {
       const { detail }: ChangeLayoutEvent = changeLayout as any;
       const sunWinW = props.subWin!.innerWidth;
-      const pointInfo = breakpoints.find((el) => el.w > sunWinW);
+      const pointInfo = breakpoints.find((el) => el.w >= sunWinW);
       detail.forEach((item) => {
         const nodeId = item.el.getAttribute('data-grid-id');
         const node = props.ctx.engine.pageModel.getNode(String(nodeId));
