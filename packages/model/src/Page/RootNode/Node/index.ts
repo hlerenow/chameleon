@@ -248,7 +248,11 @@ export class CNode {
     });
     configure.propsSetter = newPropsSetter;
     // handle configure props setter config, clear invalidate setter config end
-    if (this.material) {
+    // 避免重复的物料
+    const hasExitsMeta = this.materialsModel.usedMaterials.find(
+      (el) => el.componentName === this.material?.componentName
+    );
+    if (this.material && !hasExitsMeta) {
       this.materialsModel.usedMaterials.push(this.material);
     }
     let newRes: CNodeDataType = {
