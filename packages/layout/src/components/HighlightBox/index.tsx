@@ -77,7 +77,8 @@ export const HighlightBox = ({
       const toolBoxRect = contentDom.getBoundingClientRect();
 
       const height = toolBoxRect?.height || 0;
-      const width = toolBoxRect?.width || 0;
+      // 取最大宽度宽度
+      const width = Math.max(toolBoxRect?.width, targetRect.width) || 0;
       const isOutsideViewportY = targetRect.top - height < 0;
       if (isOutsideViewportY) {
         // 向下取整 + 整个高度  + outline 2px * 2
@@ -85,7 +86,6 @@ export const HighlightBox = ({
       } else {
         toolBoxRef.current.style.top = 'auto';
       }
-
       if (toolBoxRect.width > parseInt(getComputedStyle(toolBoxRef.current).width)) {
         toolBoxRef.current.style.width = `${width}px`;
       }

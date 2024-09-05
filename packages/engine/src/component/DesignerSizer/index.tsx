@@ -19,7 +19,7 @@ export const DesignerSizer = (props: { ctx: EnginContext }) => {
 
   useEffect(() => {
     let resizeHandler: any;
-    let subWin: any;
+    let subWin: Window | null;
     props.ctx.pluginManager.onPluginReadyOk('Designer').then((designer: DesignerPluginInstance) => {
       designerRef.current = designer;
       subWin = designer?.export.getDesignerWindow();
@@ -31,7 +31,7 @@ export const DesignerSizer = (props: { ctx: EnginContext }) => {
     });
 
     return () => {
-      subWin?.('resize', resizeHandler);
+      subWin?.removeEventListener('resize', resizeHandler);
     };
   }, []);
 
