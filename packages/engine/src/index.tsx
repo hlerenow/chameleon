@@ -184,3 +184,5 @@ export * from './utils/index';
 
 /** 注册自定义 setter */
 export { registerCustomSetter } from './component/CustomSchemaForm/components/Form';
+
+export * from './type';

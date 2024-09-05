@@ -60,12 +60,16 @@ export const GridItem = forwardRef<GridItemRefType, GridItemPropsType>(
       if (!ctx.ready) {
         return {
           info: {},
-        };
+        } as any;
       }
       return {
         ...(targetItem || targetItemDefault || ({ info: {} } as any)),
+        label: ctx.currentBreakpoint.label,
       };
     }, [props.responsive, ctx.currentBreakpoint.label]);
+
+    const currentSizeAndPosInfoRef = useRef<any>(currentSizeAndPosInfo);
+    currentSizeAndPosInfoRef.current = currentSizeAndPosInfo;
 
     useEffect(() => {
       if (!ctx.ready) {
@@ -80,7 +84,7 @@ export const GridItem = forwardRef<GridItemRefType, GridItemPropsType>(
     specialRef.current = {
       getCurrentPosAndSizeInfo: () => {
         return {
-          ...currentSizeAndPosInfo,
+          ...(currentSizeAndPosInfoRef.current || {}),
         };
       },
     };
@@ -97,7 +101,7 @@ export const GridItem = forwardRef<GridItemRefType, GridItemPropsType>(
           },
         };
       },
-      []
+      [currentSizeAndPosInfo]
     );
 
     if (!ctx.ready) {

@@ -1,10 +1,10 @@
 import { BasePage } from '@chamn/demo-page';
-import { Button, Dropdown, message, Modal, Segmented, Select } from 'antd';
+import { Button, Dropdown, message, Modal, Select } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';
 import '../../index.css';
-import { ArrowUpOutlined, DesktopOutlined, MobileOutlined, RollbackOutlined } from '@ant-design/icons';
+import { ArrowUpOutlined, RollbackOutlined } from '@ant-design/icons';
 
 import commonMeta from '@chamn/material/dist/meta';
 

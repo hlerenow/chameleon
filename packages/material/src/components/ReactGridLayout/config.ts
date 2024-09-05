@@ -1,10 +1,9 @@
 export const breakpoints = [
-  { w: 350, label: 'mobile' },
-  { w: 768, label: 'xs' },
-  { w: 992, label: 'sm' },
-  { w: 1200, label: 'md' },
-  { w: 1920, label: 'lg' },
-  { w: 3600, label: 'xl' },
+  { w: 567, label: 'xs' },
+  { w: 768, label: 'sm' },
+  { w: 992, label: 'md' },
+  { w: 1200, label: 'lg' },
+  { w: 9999, label: 'xl' },
 ];
 
 export const DEFAULT_RESPONSIVE_SIZE = 'lg';

@@ -6,6 +6,7 @@ import '@chamn/engine/dist/style.css';
 import customMaterial from '../meta';
 import {
   Engine,
+  DesignerSizer,
   EnginContext,
   InnerComponentMeta,
   plugins,
@@ -127,7 +128,17 @@ export const Editor = () => {
         }}
       >
         <div className="logo">Chameleon EG</div>
-
+        <div
+          style={{
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: '10px',
+          }}
+        >
+          {ctx && <DesignerSizer ctx={ctx} />}
+        </div>
         <a
           target="_blank"
           href="https://github.com/hlerenow/chameleon"
