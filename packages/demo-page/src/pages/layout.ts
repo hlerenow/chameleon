@@ -1,33 +1,9 @@
 import { CPageDataType } from '@chamn/model';
 
-export const EmptyPage: CPageDataType = {
+export const LayoutPage: CPageDataType = {
   version: '1.0.0',
-  name: 'BaseDemoPage',
+  name: 'LayoutPage',
   componentsMeta: [
-    {
-      componentName: 'GridItem',
-      name: 'GridItem',
-      package: '@chamn/material',
-      version: '0.0.46',
-      destructuring: true,
-      exportName: 'GridItem',
-    },
-    {
-      componentName: 'GridItem',
-      name: 'GridItem',
-      package: '@chamn/material',
-      version: '0.0.46',
-      destructuring: true,
-      exportName: 'GridItem',
-    },
-    {
-      componentName: 'GridItem',
-      name: 'GridItem',
-      package: '@chamn/material',
-      version: '0.0.46',
-      destructuring: true,
-      exportName: 'GridItem',
-    },
     {
       componentName: 'GridItem',
       name: 'GridItem',
@@ -135,15 +111,6 @@ export const EmptyPage: CPageDataType = {
                     h: 3,
                   },
                 },
-                {
-                  label: 'mobile',
-                  info: {
-                    x: 5,
-                    y: 7,
-                    w: 14,
-                    h: 3,
-                  },
-                },
               ],
             },
             componentName: 'GridItem',
@@ -214,15 +181,6 @@ export const EmptyPage: CPageDataType = {
                     h: 4,
                   },
                 },
-                {
-                  label: 'mobile',
-                  info: {
-                    x: 5,
-                    y: 5,
-                    w: 14,
-                    h: 2,
-                  },
-                },
               ],
             },
             componentName: 'GridItem',
@@ -290,15 +248,6 @@ export const EmptyPage: CPageDataType = {
                     x: 0,
                     y: 5,
                     w: 13,
-                    h: 2,
-                  },
-                },
-                {
-                  label: 'mobile',
-                  info: {
-                    x: 4,
-                    y: 3,
-                    w: 16,
                     h: 2,
                   },
                 },
@@ -372,15 +321,6 @@ export const EmptyPage: CPageDataType = {
                     h: 3,
                   },
                 },
-                {
-                  label: 'mobile',
-                  info: {
-                    x: 0,
-                    y: 0,
-                    w: 24,
-                    h: 3,
-                  },
-                },
               ],
             },
             componentName: 'GridItem',
@@ -438,15 +378,6 @@ export const EmptyPage: CPageDataType = {
         },
         {
           src: 'https://cdn.jsdelivr.net/npm/@chamn/material/dist/style.css',
-        },
-      ],
-    },
-    {
-      package: 'dayjs',
-      globalName: 'dayjs',
-      resources: [
-        {
-          src: 'https://cdn.bootcdn.net/ajax/libs/dayjs/1.11.9/dayjs.min.js',
         },
       ],
     },

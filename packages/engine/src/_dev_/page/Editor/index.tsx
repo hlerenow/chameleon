@@ -299,32 +299,32 @@ export const App = () => {
       plugins={DEFAULT_PLUGIN_LIST}
       schema={page}
       onMount={(ctx) => {
-        setTimeout(async () => {
-          const res = await ctx.engine.updateMaterials(
-            [],
-            [
-              {
-                package: 'lodash',
-                globalName: 'lodash',
-                resources: [
-                  {
-                    src: 'https://cdn.bootcdn.net/ajax/libs/lodash.js/4.17.21/lodash.js',
-                  },
-                ],
-              },
-              {
-                package: 'dayjs',
-                globalName: 'dayjs',
-                resources: [
-                  {
-                    src: 'https://cdn.bootcdn.net/ajax/libs/dayjs/1.11.9/dayjs.min.js',
-                  },
-                ],
-              },
-            ]
-          );
-          console.log('add material successfully');
-        }, 2 * 1000);
+        // setTimeout(async () => {
+        //   const res = await ctx.engine.updateMaterials(
+        //     [],
+        //     [
+        //       {
+        //         package: 'lodash',
+        //         globalName: 'lodash',
+        //         resources: [
+        //           {
+        //             src: 'https://cdn.bootcdn.net/ajax/libs/lodash.js/4.17.21/lodash.js',
+        //           },
+        //         ],
+        //       },
+        //       {
+        //         package: 'dayjs',
+        //         globalName: 'dayjs',
+        //         resources: [
+        //           {
+        //             src: 'https://cdn.bootcdn.net/ajax/libs/dayjs/1.11.9/dayjs.min.js',
+        //           },
+        //         ],
+        //       },
+        //     ]
+        //   );
+        //   console.log('add material successfully');
+        // }, 2 * 1000);
       }}
       // 传入组件物料
       material={[...InnerComponentMeta, ...commonMeta.meta]}

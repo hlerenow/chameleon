@@ -5,7 +5,7 @@ import { PLUGIN_NAME } from './config';
 import { Designer } from './components/Canvas';
 import { DesignerPluginType } from './type';
 
-export const DesignerPlugin: DesignerPluginType = (ctx) => {
+export const DesignerPlugin: DesignerPluginType = () => {
   const designerRef = React.createRef<Designer>();
   return {
     name: PLUGIN_NAME,

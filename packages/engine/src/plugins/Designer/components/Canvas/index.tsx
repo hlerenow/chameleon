@@ -113,6 +113,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
 
   reloadRender() {
     this.layoutRef.current?.reload();
+    this.props.pluginCtx.pageModel.reloadPage();
   }
 
   async init() {

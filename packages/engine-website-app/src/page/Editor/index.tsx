@@ -1,10 +1,10 @@
-import { BasePage } from '@chamn/demo-page';
-import { Button, Dropdown, message, Modal, Segmented, Select } from 'antd';
+import { BasePage, LayoutPage } from '@chamn/demo-page';
+import { Button, Dropdown, message, Modal, Select } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';
 import '../../index.css';
-import { ArrowUpOutlined, DesktopOutlined, MobileOutlined, RollbackOutlined } from '@ant-design/icons';
+import { ArrowUpOutlined, RollbackOutlined } from '@ant-design/icons';
 
 import commonMeta from '@chamn/material/dist/meta';
 
@@ -19,6 +19,7 @@ import {
   InnerComponentMeta,
 } from '@chamn/engine';
 import '@chamn/engine/dist/style.css';
+import { DesignerPluginInstance } from '@chamn/engine/dist/plugins/Designer/type';
 
 const win = window as any;
 win.React = React;
@@ -26,6 +27,11 @@ win.ReactDOM = ReactDOM;
 win.ReactDOMClient = ReactDOMClient;
 
 const buildVersion = `t_${__BUILD_VERSION__}`;
+
+const demoPageMap = {
+  LayoutPage,
+  BasePage,
+};
 
 const assetPackagesList = [
   {
@@ -41,6 +47,7 @@ const assetPackagesList = [
     ],
   },
 ];
+
 export const App = () => {
   const [ready, setReady] = useState(false);
   const [page, setPage] = useState(BasePage);
@@ -69,19 +76,19 @@ export const App = () => {
     engineRef.current = ctx;
     engineRef.current?.engine.getI18n()?.changeLanguage(lang);
 
-    const designer: any = await ctx.pluginManager.onPluginReadyOk('Designer');
+    const designer = await ctx.pluginManager.get<DesignerPluginInstance>('Designer');
 
     const reloadPage = async () => {
       setTimeout(() => {
         const designerExport = designer?.export;
         console.log('to reload');
-        designerExport.reload();
+        designerExport?.reload();
       }, 0);
     };
 
     const workbench = ctx.engine.getWorkbench();
 
-    // 添加自定义 view
+    // 添加自定义 view, 给组件使用，调用  disposeView 可以移除整个 view
     const disposeView = workbench?.addCustomView({
       key: 'testView',
       view: (
@@ -108,6 +115,28 @@ export const App = () => {
         }}
       >
         <div className="logo">Chameleon EG</div>
+
+        <Select
+          defaultValue={'BasePage'}
+          style={{ width: 200, marginRight: '10px' }}
+          onChange={(val) => {
+            const newPage = (demoPageMap as any)[val];
+            if (newPage) {
+              setPage(newPage);
+              ctx.engine.pageModel.reloadPage(newPage);
+            }
+          }}
+          options={[
+            {
+              value: 'BasePage',
+              label: 'Base Page',
+            },
+            {
+              value: 'LayoutPage',
+              label: 'Advance Layout Page',
+            },
+          ]}
+        />
         <div
           style={{
             height: '100%',

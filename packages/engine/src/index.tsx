@@ -88,6 +88,7 @@ export class Engine extends React.Component<EngineProps> {
     await Promise.all(pList);
 
     this.pageModel.emitter.on('onReloadPage', () => {
+      console.log('🚀 ~ Engine ~ this.pageModel.emitter.on ~ onReloadPage:');
       if (!this.currentSelectNode) {
         return;
       }
@@ -184,3 +185,5 @@ export * from './utils/index';
 
 /** 注册自定义 setter */
 export { registerCustomSetter } from './component/CustomSchemaForm/components/Form';
+
+export * from './type';

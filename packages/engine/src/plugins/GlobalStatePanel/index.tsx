@@ -24,6 +24,7 @@ const GlobalStatePanel = (props: GlobalStatePanelProps) => {
     editorRef?.current?.setValue(JSON.stringify(rootState, null, 2));
     // 正常情况下, 只有 reloadPage  才需要同步数据
     pluginCtx.pageModel.emitter.on('onReloadPage', (e) => {
+      console.log('onReloadPage 111');
       if (triggerChangeBySelf) {
         triggerChangeBySelf = false;
         return;
