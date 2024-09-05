@@ -19,7 +19,6 @@ export const HotkeysPlugin: CPlugin = {
 
     const subWin = designer?.export.getDesignerWindow();
 
-    console.log('🚀 ~ init ~ designer:', designer);
     const hotkeyManager = new HotKeysManager({
       elements: [window.document.body, subWin!.document.body],
     });
@@ -30,10 +29,6 @@ export const HotkeysPlugin: CPlugin = {
         hotkeyManager.addElement(subWin!.document.body);
       }, 1000);
     });
-
-    const keyCode = hotkeyManager.getKeyCodeByLabel('z');
-    const keyCode2 = hotkeyManager.getKeyCodeByLabel('ctrl');
-    console.log('🚀 ~ init ~ keyCode:', keyCode, keyCode2);
 
     hotkeyManager.addHotAction(['ctrl', 'c'], () => {
       console.log('复制');
@@ -73,6 +68,10 @@ export const HotkeysPlugin: CPlugin = {
 
     hotkeyManager.addHotAction([83], () => {
       console.log('down');
+    });
+
+    hotkeyManager.addHotAction(['backspace'], () => {
+      console.log('delete');
     });
 
     (ctx as any).hotkeyManager = hotkeyManager;

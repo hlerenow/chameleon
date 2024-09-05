@@ -1,4 +1,4 @@
-import { defaultGetCode } from './keymap';
+import { defaultGetCode, getKeyString } from './keymap';
 
 export class HotKeysManager {
   private splitStr = '_';
@@ -33,7 +33,6 @@ export class HotKeysManager {
       if (this.filterInputElement(event)) return;
 
       const key = event.keyCode || event.which || event.charCode;
-      console.log('🚀 ~ HotKeysManager ~ keydownCb ~ key:', key);
       if (!this.downKeyCodeList.includes(key)) {
         this.downKeyCodeList.push(key);
       }
@@ -75,17 +74,14 @@ export class HotKeysManager {
     this.hotActionMap[newKeysCode.join(this.splitStr)] = cb;
   }
 
-  /** 触发快捷操作，没 200 ms 处理一次 */
   triggerHotKey() {
     const hotActionId = this.downKeyCodeList.join(this.splitStr);
     // 本次快捷操作回合已经触发过，跳过触发
-
     const cb = this.hotActionMap[hotActionId];
     cb?.();
   }
 
   /**
-   *
    * @param time ms
    * @returns
    */
@@ -93,24 +89,13 @@ export class HotKeysManager {
     return this.triggerHotKey.bind(this);
   }
 
-  /**
-   * 根据已经按下的键值筛选需要触发的函数列表
-   * 优先级规则：
-   * 组合键的数量越多，优先级越高
-   */
-  getTargetHotKeyActionList() {
-    console.log('find ');
-  }
-
-  /** 根据按键事件获取当前的按键值: number */
-  getKeyCodeByEvent(event: KeyboardEvent) {
-    console.log('getKeyCodeByEvent');
-  }
-
   /** 根据可识别的字符串获取对应的键码 */
   getKeyCodeByLabel(label: string) {
-    console.log('getKeyCodeByLabel');
     return defaultGetCode(label);
+  }
+
+  getKeyString(code: number) {
+    return getKeyString(code);
   }
 
   /**

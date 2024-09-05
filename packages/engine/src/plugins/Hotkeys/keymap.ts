@@ -102,3 +102,10 @@ for (let k = 1; k < 20; k++) {
 // 返回键码
 export const defaultGetCode = (x: string) =>
   _keyMap[x.toLowerCase()] || _modifier[x.toLowerCase()] || x.toUpperCase().charCodeAt(0);
+
+const getKey = (x: number) => Object.keys(_keyMap).find((k) => _keyMap[k] === x);
+const getModifier = (x: number) => Object.keys(_modifier).find((k) => _modifier[k] === x);
+
+export const getKeyString = (c: number) => {
+  return getKey(c) || getModifier(c) || String.fromCharCode(c);
+};
