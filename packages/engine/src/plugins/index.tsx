@@ -6,6 +6,7 @@ import { RightPanelPlugin } from './RightPanel';
 import { GlobalStatePanelPlugin } from './GlobalStatePanel';
 import { DisplaySourceSchema } from './DisplaySourceSchema';
 import { HistoryPlugin } from './History';
+import { HotkeysPlugin } from './Hotkeys';
 
 export const DEFAULT_PLUGIN_LIST: CPlugin[] = [
   DesignerPlugin,
@@ -14,6 +15,7 @@ export const DEFAULT_PLUGIN_LIST: CPlugin[] = [
   GlobalStatePanelPlugin,
   RightPanelPlugin,
   HistoryPlugin,
+  HotkeysPlugin,
 ];
 
 export {
@@ -23,6 +25,7 @@ export {
   GlobalStatePanelPlugin,
   HistoryPlugin,
   DisplaySourceSchema,
+  HotkeysPlugin,
 };
 
 export * from './AdvancePanel/index';
@@ -36,3 +39,4 @@ export * from './OutlineTree';
 export * from './PropertyPanel';
 export * from './RightPanel';
 export * from './VisualPanelPlus';
+export * from './Hotkeys';

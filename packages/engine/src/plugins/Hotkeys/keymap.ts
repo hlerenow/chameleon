@@ -57,7 +57,7 @@ export const _keyMap: Record<string, number> = {
 };
 
 // Modifier Keys
-export const _modifier = {
+export const _modifier: any = {
   // shiftKey
   '⇧': 16,
   shift: 16,
@@ -93,9 +93,12 @@ export const _mods = {
   17: false,
   91: false,
 };
-const _handlers = {};
 
 // F1~F12 special key
 for (let k = 1; k < 20; k++) {
   _keyMap[`f${k}`] = 111 + k;
 }
+
+// 返回键码
+export const defaultGetCode = (x: string) =>
+  _keyMap[x.toLowerCase()] || _modifier[x.toLowerCase()] || x.toUpperCase().charCodeAt(0);
