@@ -80,7 +80,6 @@ export const HotkeysPlugin: CPlugin = {
     hotkeyManager?.destroy();
   },
   export: (ctx) => {
-    console.log('🚀 ~ ctx: 1111', ctx);
     const hotkeyManager: HotKeysManager = (ctx as any).hotkeyManager;
 
     return {
