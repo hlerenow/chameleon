@@ -512,6 +512,10 @@ export type AdvanceCustom = {
     visual?: boolean;
     state?: boolean;
     advance?: boolean;
+    advanceOptions?: {
+      /** 是否展示 loop 选项 */
+      loop?: boolean;
+    };
     property?: boolean;
     customTabs?: {
       /** 唯一标识 */

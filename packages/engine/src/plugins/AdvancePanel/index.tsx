@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { CMaterialPropsType, CNode, CRootNode } from '@chamn/model';
 import { CustomSchemaForm, CustomSchemaFormInstance, CustomSchemaFormProps } from '../../component/CustomSchemaForm';
 import { CPluginCtx } from '../../core/pluginManager';
@@ -150,6 +150,19 @@ const properties: CMaterialPropsType = [
 export const AdvancePanel = (props: AdvancePanelProps) => {
   const { node } = props;
 
+  const innerProperties = useMemo(() => {
+    // 如果元素是容器不允许 loop, 或者主动指定不然 loop
+    const canLoop =
+      !node?.material?.value.advanceCustom?.rightPanel?.advanceOptions?.loop === false ||
+      !node?.material?.value.isContainer;
+
+    if (!canLoop) {
+      return properties.filter((el) => (el as any)?.name !== 'loop');
+    }
+
+    return properties;
+  }, [node?.id]);
+
   const onSetterChange: CustomSchemaFormProps['onSetterChange'] = (keyPaths, setterName) => {
     if (!node) {
       return;
@@ -191,7 +204,6 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
     node.value.condition = newVal.condition;
     node.value.refId = newVal.refId;
     node.value.nodeName = newVal.nodeName;
-
     node.updateValue();
   };
   if (!node) {
@@ -204,7 +216,7 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
         key={node.id}
         defaultSetterConfig={node.value.configure?.advanceSetter || {}}
         onSetterChange={onSetterChange}
-        properties={properties}
+        properties={innerProperties}
         initialValue={{}}
         ref={formRef}
         onValueChange={onValueChange}
