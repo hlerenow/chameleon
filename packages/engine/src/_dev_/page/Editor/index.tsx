@@ -1,5 +1,5 @@
 import { BasePage } from '@chamn/demo-page';
-import { Button, message, Modal, Segmented, Select } from 'antd';
+import { Button, message, Modal, Select } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';
