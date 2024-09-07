@@ -6,8 +6,6 @@ A web visual programming engine, help to build a web page with 5 minutes. every 
 
 [Docs](https://hlerenow.github.io/chameleon/documents/) | [Demo](https://hlerenow.github.io/chameleon/)
 
-[Code Block(beta)](http://cb.hai-fe.com/): A online build web page platform
-
 ## Install
 
 ```shell
@@ -18,9 +16,12 @@ npm i @chamn/engine @chamn/model @chamn/render
 
 [Example Project](https://github.com/ByteCrazy/chameleon-demo)
 
-### ScreenSnapshoot
+### ScreenSnapshot
 
-![image](https://user-images.githubusercontent.com/13299648/218920616-302a9eb6-a71a-4f4b-8e77-d892972eee2f.png)
+<img width="1776" alt="image" src="https://github.com/user-attachments/assets/7b06dc4c-80a3-455d-bc91-14a1cf1fb331">
+
+
+![image](https://github.com/hlerenow/chameleon/blob/master/packages/engine/md-images/layout.gif)
 
 ![image](https://user-images.githubusercontent.com/13299648/218920783-0d1cc275-a238-4d80-a717-dbbbf54b4713.png)
 
