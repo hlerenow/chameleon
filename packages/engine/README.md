@@ -16,7 +16,11 @@ npm i @chamn/engine @chamn/model @chamn/render
 
 [Example Project](https://github.com/ByteCrazy/chameleon-demo)
 
-### ScreenSnapshoot
+### ScreenSnapshot
+
+#### layout
+
+![image](./md-images/layout.mp4)
 
 ![image](https://user-images.githubusercontent.com/13299648/218920616-302a9eb6-a71a-4f4b-8e77-d892972eee2f.png)
 
