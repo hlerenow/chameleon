@@ -15,9 +15,6 @@ import { collectVariable, flatObject, getThirdLibs } from '@chamn/render';
 import { HistoryPluginInstance } from '@/plugins/History/type';
 import { DesignerPluginInstance } from '@/plugins/Designer/type';
 
-import commonComponentUrl from '@chamn/material/dist/index.umd.js?url';
-import commonComponentCSS from '@chamn/material/dist/style.css?url';
-import commonMeta from '@chamn/material/dist/meta';
 import { DesignerSizer } from '@/component/DesignerSizer';
 import { EnginContext } from '@/type';
 
@@ -69,20 +66,7 @@ const customRender: LayoutPropsType['customRender'] = async ({
 
 const buildVersion = `t_${__BUILD_VERSION__}`;
 
-const assetPackagesList = [
-  {
-    package: commonMeta.package,
-    globalName: commonMeta.globalName,
-    resources: [
-      {
-        src: commonComponentUrl,
-      },
-      {
-        src: commonComponentCSS,
-      },
-    ],
-  },
-] as any[];
+const assetPackagesList = [] as any[];
 export const App = () => {
   const [ready, setReady] = useState(false);
   const [page, setPage] = useState(BasePage);
@@ -327,7 +311,7 @@ export const App = () => {
         // }, 2 * 1000);
       }}
       // 传入组件物料
-      material={[...InnerComponentMeta, ...commonMeta.meta]}
+      material={[...InnerComponentMeta]}
       // 组件物料对应的 js 运行库，只能使用 umd 模式的 js
       assetPackagesList={assetPackagesList}
       beforePluginRun={({ pluginManager }) => {
