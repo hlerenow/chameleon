@@ -20,7 +20,7 @@ npm i @chamn/engine @chamn/model @chamn/render
 
 #### layout
 
-![image](./md-images/layout.mp4)
+<video src="https://github.com/hlerenow/chameleon/blob/master/packages/engine/md-images/layout.mp4"></video>
 
 ![image](https://user-images.githubusercontent.com/13299648/218920616-302a9eb6-a71a-4f4b-8e77-d892972eee2f.png)
 
