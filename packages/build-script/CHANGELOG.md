@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.0](https://github.com/ByteCrazy/chameleon/compare/v0.0.46...v0.1.0) (2024-09-07)
+
+### ✨ Features | 新功能
+
+* **build-script, demo-page, engine, layout, render:** 🎸 add lang switch ([29da65e](https://github.com/ByteCrazy/chameleon/commit/29da65ee1aa09550d910ddfbbcb9d8b4db983373))
+
+### 👷 Continuous Integration | CI 配置
+
+* **build-script, docs-website, material, render:** 🎡 not build docs ([37aa10a](https://github.com/ByteCrazy/chameleon/commit/37aa10abf0324f3465a6921a9a014875e9500f8f))
+
 ## [0.0.46](https://github.com/ByteCrazy/chameleon/compare/v0.0.45...v0.0.46) (2024-06-30)
 
 **Note:** Version bump only for package @chamn/build-script

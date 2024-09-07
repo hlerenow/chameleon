@@ -3,6 +3,45 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.0](https://github.com/ByteCrazy/chameleon/compare/v0.0.46...v0.1.0) (2024-09-07)
+
+### 👷 Continuous Integration | CI 配置
+
+* **engine, engine-website-app, layout, model:** 🎡 update github ci ([259e9db](https://github.com/ByteCrazy/chameleon/commit/259e9db229576cd09c5aae1f28a2c228927011c7))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **demo-page, docs-app, engine, engine-website-app, layout, material:** 🐛 fixed material meta not correct ([55b755c](https://github.com/ByteCrazy/chameleon/commit/55b755ce0c833e594b46447b2d6608cf56f7a593))
+* **docs-website, engine, layout:** 🐛 fixed higligh toolbar pos ([0356109](https://github.com/ByteCrazy/chameleon/commit/0356109e8a11a5a85ab90d1610ef7ef8549db0a9))
+* **engine, engine-website-app, material:** 🐛 fixed ReactGridLayout edit mode lable not correct ([9801839](https://github.com/ByteCrazy/chameleon/commit/9801839d9ff6a6548b0e23f1e31850cd56e7fff0))
+* **engine, layout:** 🐛 fixed toolbox width not correct ([4dc159a](https://github.com/ByteCrazy/chameleon/commit/4dc159a1931a853ba4cdb664638f27ba71b1ecf2))
+* **engine:** 🐛 fixed advanceCustom hook logic ([5fb2619](https://github.com/ByteCrazy/chameleon/commit/5fb261962af141affef0e8e2cf1f0b62d16b0d45))
+* **engine:** 🐛 fixed BackgroundInput color input ([944517c](https://github.com/ByteCrazy/chameleon/commit/944517c9078b29c5076784a1df66752494125e9f))
+* **engine:** 🐛 fixed CSSUIPanel value not corrent ([1a4dc64](https://github.com/ByteCrazy/chameleon/commit/1a4dc645171253b261a3d2c9ebd3cf27ec692d34))
+* **engine:** 🐛 fixed github build ([a4ace81](https://github.com/ByteCrazy/chameleon/commit/a4ace818d20c657a255fd25d5771113e5191d55d))
+* **engine:** 🐛 fixed render url ([27736de](https://github.com/ByteCrazy/chameleon/commit/27736de41f239b4911535097c7334b73eea35224))
+* **engine:** 🐛 fixed shadow UI Input ([3fbb753](https://github.com/ByteCrazy/chameleon/commit/3fbb753bb26b03dd5a25bce0fc6621f2d8b778e1))
+
+### ✨ Features | 新功能
+
+* **build-script, demo-page, engine, layout, render:** 🎸 add lang switch ([29da65e](https://github.com/ByteCrazy/chameleon/commit/29da65ee1aa09550d910ddfbbcb9d8b4db983373))
+* **demo-page, engine, engine-website-app, material:** 🎸 add designerSizer and fixed GridItem bug ([4665aed](https://github.com/ByteCrazy/chameleon/commit/4665aed300d54c77be4abcb9a8cc0f1710ac2145))
+* **demo-page, engine, render:** 🎸 add getGlobalState and optimize node udpate ([4d3934f](https://github.com/ByteCrazy/chameleon/commit/4d3934fd8febe616a44e5d39da0e10964f3c800d))
+* **docs-app, engine, layout, material, model, render:** 🎸 optimize GL layout ([02274b4](https://github.com/ByteCrazy/chameleon/commit/02274b432903dc247c5613873f14715dd806decd))
+* **engine, layout:** 🎸 add set canvas width method ([a18369f](https://github.com/ByteCrazy/chameleon/commit/a18369f0d4bbb4bcf04ce2695be313d767d4bbe5))
+* **engine, material:** 🎸 add GRL meterial ([ae15c34](https://github.com/ByteCrazy/chameleon/commit/ae15c34a3f2736db61a933dc7d09166d9a619473))
+* **engine, model:** 🎸 add advanceOptions property ([d75f178](https://github.com/ByteCrazy/chameleon/commit/d75f178fa70d4c49b451dff9dddfb30d4c061196))
+* **engine, model:** 🎸 add hotKey plugin and fixed reloadPage event not trigge ([1cbf1e1](https://github.com/ByteCrazy/chameleon/commit/1cbf1e1a345d94c3b758b26cfbf1ecde69ce051c))
+* **engine:** 🎸 add canvas size change button ([19ebdf8](https://github.com/ByteCrazy/chameleon/commit/19ebdf8d635b6b412979db81dc5d4f1b43d793a9))
+* **engine:** 🎸 add hotAction ([c82bd21](https://github.com/ByteCrazy/chameleon/commit/c82bd21243aed9371a8576f572f600f1894f60bf))
+* **engine:** 🎸 add width input ([c38422d](https://github.com/ByteCrazy/chameleon/commit/c38422d0848c4d60e8cb5b5b480671515c1d6101))
+* **engine:** 🎸 optimize hotkeys methods ([bc83dba](https://github.com/ByteCrazy/chameleon/commit/bc83dba17fa4a23fa25548a284bbd69858bf15a0))
+
+### 📝 Documentation | 文档
+
+* **engine:** ✏️ add layout resource ([15f4325](https://github.com/ByteCrazy/chameleon/commit/15f4325e418d63bb3f046d58766e9bb1d2c96344))
+* **engine:** ✏️ update md resource ([de95460](https://github.com/ByteCrazy/chameleon/commit/de954609bbc4dc24dbf704d809ffb1de9a9116b2))
+
 ## [0.0.46](https://github.com/ByteCrazy/chameleon/compare/v0.0.45...v0.0.46) (2024-06-30)
 
 ### 🐛 Bug Fixes | Bug 修复

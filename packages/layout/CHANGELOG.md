@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.0](https://github.com/ByteCrazy/chameleon/compare/v0.0.46...v0.1.0) (2024-09-07)
+
+### 👷 Continuous Integration | CI 配置
+
+* **engine, engine-website-app, layout, model:** 🎡 update github ci ([259e9db](https://github.com/ByteCrazy/chameleon/commit/259e9db229576cd09c5aae1f28a2c228927011c7))
+
+### ✨ Features | 新功能
+
+* **build-script, demo-page, engine, layout, render:** 🎸 add lang switch ([29da65e](https://github.com/ByteCrazy/chameleon/commit/29da65ee1aa09550d910ddfbbcb9d8b4db983373))
+* **docs-app, engine, layout, material, model, render:** 🎸 optimize GL layout ([02274b4](https://github.com/ByteCrazy/chameleon/commit/02274b432903dc247c5613873f14715dd806decd))
+* **engine, layout:** 🎸 add set canvas width method ([a18369f](https://github.com/ByteCrazy/chameleon/commit/a18369f0d4bbb4bcf04ce2695be313d767d4bbe5))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **demo-page, docs-app, engine, engine-website-app, layout, material:** 🐛 fixed material meta not correct ([55b755c](https://github.com/ByteCrazy/chameleon/commit/55b755ce0c833e594b46447b2d6608cf56f7a593))
+* **docs-website, engine, layout:** 🐛 fixed higligh toolbar pos ([0356109](https://github.com/ByteCrazy/chameleon/commit/0356109e8a11a5a85ab90d1610ef7ef8549db0a9))
+* **engine, layout:** 🐛 fixed toolbox width not correct ([4dc159a](https://github.com/ByteCrazy/chameleon/commit/4dc159a1931a853ba4cdb664638f27ba71b1ecf2))
+
 ## [0.0.46](https://github.com/ByteCrazy/chameleon/compare/v0.0.45...v0.0.46) (2024-06-30)
 
 **Note:** Version bump only for package @chamn/layout

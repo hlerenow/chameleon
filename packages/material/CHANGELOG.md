@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.0](https://github.com/ByteCrazy/chameleon/compare/v0.0.46...v0.1.0) (2024-09-07)
+
+### 👷 Continuous Integration | CI 配置
+
+* **build-script, docs-website, material, render:** 🎡 not build docs ([37aa10a](https://github.com/ByteCrazy/chameleon/commit/37aa10abf0324f3465a6921a9a014875e9500f8f))
+
+### ✨ Features | 新功能
+
+* **demo-page, engine, engine-website-app, material:** 🎸 add designerSizer and fixed GridItem bug ([4665aed](https://github.com/ByteCrazy/chameleon/commit/4665aed300d54c77be4abcb9a8cc0f1710ac2145))
+* **docs-app, engine, layout, material, model, render:** 🎸 optimize GL layout ([02274b4](https://github.com/ByteCrazy/chameleon/commit/02274b432903dc247c5613873f14715dd806decd))
+* **engine-website-app, material:** 🎸 optimize RGL ([dd04999](https://github.com/ByteCrazy/chameleon/commit/dd04999a1509e29d6d738ea3a4250a146bfc295e))
+* **engine, material:** 🎸 add GRL meterial ([ae15c34](https://github.com/ByteCrazy/chameleon/commit/ae15c34a3f2736db61a933dc7d09166d9a619473))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **demo-page, docs-app, engine, engine-website-app, layout, material:** 🐛 fixed material meta not correct ([55b755c](https://github.com/ByteCrazy/chameleon/commit/55b755ce0c833e594b46447b2d6608cf56f7a593))
+* **engine, engine-website-app, material:** 🐛 fixed ReactGridLayout edit mode lable not correct ([9801839](https://github.com/ByteCrazy/chameleon/commit/9801839d9ff6a6548b0e23f1e31850cd56e7fff0))
+* **material:** 🐛 fixed GridItem copy ([70f9f68](https://github.com/ByteCrazy/chameleon/commit/70f9f6811da3dd46707e0a7304182b807eb745c9))
+* **material:** 🐛 remove inner pkg version ([eefcf7e](https://github.com/ByteCrazy/chameleon/commit/eefcf7e11e8405e1d96fdf0c1abdd8959473db1c))
+
 ## [0.0.46](https://github.com/ByteCrazy/chameleon/compare/v0.0.45...v0.0.46) (2024-06-30)
 
 **Note:** Version bump only for package @chamn/material
