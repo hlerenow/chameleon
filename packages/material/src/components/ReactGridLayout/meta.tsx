@@ -1,5 +1,5 @@
-import React, { useCallback, useRef } from 'react';
-import { CMaterialType, CNode } from '@chamn/model';
+import { useCallback, useRef } from 'react';
+import { CMaterialType } from '@chamn/model';
 import { snippets, snippetsGridItem } from './snippets';
 import { LayoutWrap } from './edit/layoutWrap';
 import { useEffect, useState } from 'react';
@@ -310,8 +310,10 @@ export const ReactGridItemMeta: CMaterialType = {
               background: 'white',
               marginRight: '5px',
               fontSize: '12px',
-              height: '15px',
-              padding: '0 3px',
+              padding: '0 10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
             <b
