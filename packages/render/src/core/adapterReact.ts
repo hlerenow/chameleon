@@ -288,7 +288,6 @@ export class DefineReactAdapter {
         this.state = nodeModel.value.state || {};
         const nodeName = nodeModel.value.nodeName || nodeModel.id;
         this.nodeName = nodeName;
-
         const nodeStore = that.storeManager.getStore(nodeName);
         if (!nodeStore) {
           // add to global store manager
