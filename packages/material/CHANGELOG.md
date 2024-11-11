@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.1](https://github.com/ByteCrazy/chameleon/compare/v0.1.0...v0.1.1) (2024-11-11)
+
+### ✨ Features | 新功能
+
+* **material:** 🎸 optimize material gridItem UI ([34b8b8e](https://github.com/ByteCrazy/chameleon/commit/34b8b8e1b09aac22e538eff44488dc2021a5add6))
+
 ## [0.1.0](https://github.com/ByteCrazy/chameleon/compare/v0.0.46...v0.1.0) (2024-09-07)
 
 ### 👷 Continuous Integration | CI 配置

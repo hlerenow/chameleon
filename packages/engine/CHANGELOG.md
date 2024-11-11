@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.1](https://github.com/ByteCrazy/chameleon/compare/v0.1.0...v0.1.1) (2024-11-11)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine:** 🐛 fixed cycle dependencies ([cefa3f0](https://github.com/ByteCrazy/chameleon/commit/cefa3f0a4a9c72c81b5337bbdb6e0429ca247252))
+
 ## [0.1.0](https://github.com/ByteCrazy/chameleon/compare/v0.0.46...v0.1.0) (2024-09-07)
 
 ### 👷 Continuous Integration | CI 配置
