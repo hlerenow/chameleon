@@ -151,6 +151,15 @@ const BaseComponentMeta: CMaterialType[] = [
       },
       customAttributesMeta,
     ],
+    advanceCustom: {
+      wrapComponent: (comp) => {
+        return (props: any) => {
+          const Comp = comp;
+          return <Comp {...props} style={{ ...(props.style || {}), userSelect: 'none', webkitUserDrag: 'none' }} />;
+        };
+      },
+    },
+
     groupName: '原子组件',
     snippets: [
       {
