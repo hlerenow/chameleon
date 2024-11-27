@@ -1,5 +1,5 @@
 import { CLI_ARGS_OBJ, PROJECT_ROOT, getCustomConfig } from './base';
-import { getCommonConfig } from './vite.common.js';
+import { getCommonConfig } from './vite.common';
 import { visualizer } from 'rollup-plugin-visualizer';
 import path from 'path';
 
