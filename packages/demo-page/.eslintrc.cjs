@@ -28,5 +28,8 @@ module.exports = {
     'linebreak-style': ['error', 'unix'],
     quotes: ['error', 'single'],
     semi: ['error', 'always'],
+    '@typescript-eslint/no-explicit-any': 0,
+    '@typescript-eslint/no-unused-vars': 1,
+    'react/prop-types': 0,
   },
 };

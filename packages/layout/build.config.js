@@ -18,4 +18,4 @@ const mainConfig = {
 
 const config = mainConfig;
 
-module.exports = config;
+export default config;

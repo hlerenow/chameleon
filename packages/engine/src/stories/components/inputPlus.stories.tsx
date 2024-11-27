@@ -29,7 +29,7 @@ const Template: StoryFn<typeof TargetComponent> = (args) => {
     <>
       <TargetComponent
         value={val}
-        onValueChange={(newVal) => setVal(newVal)}
+        onValueChange={(newVal) => setVal(newVal || '')}
         {...args}
         min={0}
         max={100}

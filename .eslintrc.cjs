@@ -10,11 +10,7 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  extends: [
-    'eslint:recommended',
-    'plugin:react/recommended',
-    'plugin:@typescript-eslint/recommended',
-  ],
+  extends: ['eslint:recommended', 'plugin:react/recommended', 'plugin:@typescript-eslint/recommended'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
@@ -31,5 +27,8 @@ module.exports = {
     semi: ['error', 'always'],
     'no-debugger': 0,
     eqeqeq: 'error',
+    '@typescript-eslint/no-explicit-any': 0,
+    '@typescript-eslint/no-unused-vars': 1,
+    'react/prop-types': 0,
   },
 };

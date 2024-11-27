@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const path = require('path');
+import path from 'path';
 
-module.exports = {
+export default {
   resolve: {
     alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
   },

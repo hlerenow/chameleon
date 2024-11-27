@@ -417,7 +417,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       this.eventExposeHandler.push(
         addEventListenerReturnCancel<'mousedown'>(
           iframeDoc.body,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ev,
           async (e) => {
             const targetComponentInstance = this.designRenderRef.current?.getInstanceByDom(e.target as HTMLElement);

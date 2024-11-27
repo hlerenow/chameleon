@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs-extra';
-import { LibraryOptions, UserConfig, loadConfigFromFile } from 'vite';
+import { loadConfigFromFile, type LibraryOptions, type UserConfig } from 'vite';
 import argv from 'yargs-parser';
 
 const cliArgs: {

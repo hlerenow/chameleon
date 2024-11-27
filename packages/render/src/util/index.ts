@@ -17,7 +17,6 @@ export const isClass = function (val: any) {
   return true;
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 export function shouldConstruct(Component: any) {
   const prototype = Component?.prototype;
   return !!(prototype && prototype.isReactComponent);

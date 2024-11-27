@@ -1,6 +1,6 @@
 import React, { DOMAttributes } from 'react';
 import { AppstoreAddOutlined } from '@ant-design/icons';
-import { LayoutDragAndDropExtraDataType, Sensor, SensorEventObjType } from '@chamn/layout';
+import { LayoutDragAndDropExtraDataType, Sensor } from '@chamn/layout';
 import { Tabs } from 'antd';
 import { CPlugin, CPluginCtx } from '../../core/pluginManager';
 import localize from './localize';

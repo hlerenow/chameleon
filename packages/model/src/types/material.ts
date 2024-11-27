@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import { isPlainObject } from 'lodash-es';
 import React, { ReactInstance } from 'react';
 import {

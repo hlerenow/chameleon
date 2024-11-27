@@ -1,9 +1,10 @@
-import { mergeConfig } from 'vite';
 import { CLI_ARGS_OBJ, PROJECT_ROOT, getCustomConfig } from './base';
-import { getCommonConfig } from './vite.common';
+import { getCommonConfig } from './vite.common.js';
 import { visualizer } from 'rollup-plugin-visualizer';
-import dts from 'vite-plugin-dts';
 import path from 'path';
+
+import dts from 'vite-plugin-dts';
+import { mergeConfig } from 'vite';
 
 const generateDTS = CLI_ARGS_OBJ.generateDTS;
 const plugins: any[] = [];

@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const path = require('path');
+import path from 'path';
 
-module.exports = {
+// const globalCSssVar = fs.readFileSync('./src/assets/styles/mixin.scss', 'utf-8');
+
+export default {
   resolve: {
     alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
   },
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: '@import "@/assets/styles/mixin.scss";',
+        additionalData: '@use "@/assets/styles/mixin.scss" as *;\n',
       },
     },
   },

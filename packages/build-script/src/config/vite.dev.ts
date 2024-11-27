@@ -1,6 +1,6 @@
-import { mergeConfig } from 'vite';
 import { getCommonConfig } from './vite.common';
 import { getCustomConfig } from './base';
+import { mergeConfig } from 'vite';
 
 // https://vitejs.dev/config/
 export const devConfig = async () => {

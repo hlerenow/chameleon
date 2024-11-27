@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 module.exports = {
-  root: true,
   settings: {
     react: {
       version: 'detect',
@@ -9,9 +8,8 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
-    node: true,
   },
-  extends: ['plugin:react/jsx-runtime', 'plugin:storybook/recommended'],
+  extends: ['eslint:recommended', 'plugin:react/recommended', 'plugin:@typescript-eslint/recommended'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
@@ -21,10 +19,14 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['react', '@typescript-eslint'],
-  extends: ['plugin:react/jsx-runtime'],
   rules: {
+    'no-debugger': 1,
     indent: ['error', 2],
+    'linebreak-style': ['error', 'unix'],
     quotes: ['error', 'single'],
     semi: ['error', 'always'],
+    '@typescript-eslint/no-explicit-any': 0,
+    '@typescript-eslint/no-unused-vars': 1,
+    'react/prop-types': 0,
   },
 };

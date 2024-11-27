@@ -1,2 +1,2 @@
-declare const classNames: {};
+declare const classNames: any;
 export = classNames;

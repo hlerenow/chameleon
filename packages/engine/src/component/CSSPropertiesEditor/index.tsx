@@ -41,7 +41,6 @@ export const CSSPropertiesEditor = forwardRef<CSSPropertiesEditorRef, CSSPropert
 
     useEffect(() => {
       if (props.initialValue) {
-        props.initialValue;
         setPropertyList([...props.initialValue]);
       }
     }, []);

@@ -31,6 +31,19 @@ if (LIB_NAME) {
     // 额外的 vite 配置
     vite: {
       define: envDefine,
+      build: {
+        lib: {
+          fileName: (format, entryName) => {
+            if (format === 'umd') {
+              return `${entryName}.${format}.js`;
+            }
+            if (format === 'cjs') {
+              return `${entryName}.${format}`;
+            }
+            return `${entryName}.js`;
+          },
+        },
+      },
     },
   };
 

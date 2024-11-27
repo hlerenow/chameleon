@@ -41,19 +41,8 @@ const customAttributesMeta: CMaterialPropsType[number] = {
   ],
 };
 
-// const widthPropsMeta: CMaterialPropsType[number] = {
-//   name: 'width',
-//   title: '宽度',
-//   valueType: 'string',
-//   setters: ['StringSetter', 'ExpressionSetter'],
-// };
-
-// const heightPropsMeta: CMaterialPropsType[number] = {
-//   name: 'height',
-//   title: '高度',
-//   valueType: 'string',
-//   setters: ['StringSetter', 'ExpressionSetter'],
-// };
+const INNER_META_VERSION = '1.0.0';
+const PKG_NAME = 'CHAMELEON_INNER_PKG';
 
 const htmlNativeComponentMeta = HTMl_TAGS.map((tag) => {
   const DivMeta: CMaterialType = {
@@ -61,6 +50,11 @@ const htmlNativeComponentMeta = HTMl_TAGS.map((tag) => {
     componentName: tag,
     props: [customAttributesMeta],
     snippets: [],
+    npm: {
+      name: tag,
+      package: PKG_NAME,
+      version: INNER_META_VERSION,
+    },
   };
 
   return DivMeta;
@@ -371,7 +365,7 @@ const BaseComponentMeta: CMaterialType[] = [
     ],
     groupName: '原子组件',
     advanceCustom: {
-      onNewAdd: async (node, params) => {
+      onNewAdd: async (node) => {
         const props = node.getPlainProps();
         const id = Math.random().toString(32).slice(3, 9);
         props.$$attributes = [
@@ -464,4 +458,15 @@ const BaseComponentMeta: CMaterialType[] = [
   },
 ];
 
-export const InnerComponentMeta = [...BaseComponentMeta, ...htmlNativeComponentMeta];
+const BaseComponentMetaWithVersion = BaseComponentMeta.map((el) => {
+  return {
+    ...el,
+    npm: {
+      name: el.componentName,
+      package: PKG_NAME,
+      version: INNER_META_VERSION,
+    },
+  };
+});
+
+export const InnerComponentMeta = [...BaseComponentMetaWithVersion, ...htmlNativeComponentMeta];

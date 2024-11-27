@@ -139,7 +139,7 @@ const AdapterMethodList = [
   'clear',
 ] as const;
 
-type CustomAdvanceAdapterMethodListType = typeof CustomAdvanceAdapter[number];
+export type CustomAdvanceAdapterMethodListType = typeof CustomAdvanceAdapter[number];
 
 // 必须实现的方法
 type AdapterMethodListType = typeof AdapterMethodList[number];

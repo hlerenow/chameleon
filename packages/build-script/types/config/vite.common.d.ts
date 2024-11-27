@@ -1,2 +1,1 @@
-import { UserConfig } from 'vite';
-export declare const getCommonConfig: () => Promise<UserConfig>;
+export declare const getCommonConfig: () => Promise<import("vite").UserConfig>;

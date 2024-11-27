@@ -54,5 +54,8 @@
   "resolutions": {
     "react": "18.2.0",
     "@types/react": "^18.2.0"
+  },
+  "dependencies": {
+    "eslint-plugin-react": "^7.30.1"
   }
 }

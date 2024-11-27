@@ -4,16 +4,17 @@
   "files": [
     "dist"
   ],
+  "type": "module",
   "version": "0.1.1",
   "publishConfig": {
     "access": "public"
   },
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "start": "build-script",
-    "build": "cross-env BUILD_TYPE=PKG build-script --build ",
+    "build": "cross-env BUILD_TYPE=PKG VITE_CJS_TRACE=true build-script --build ",
     "build:analyze": "build-script --build --analyze",
     "build:w": "build-script --build --watch",
     "lint": "eslint --ext .tsx,.ts src/",

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const _ = require('lodash');
 const esbuild = require('esbuild');
 const concurrently = require('concurrently');
@@ -13,8 +14,8 @@ if (!argv.format) {
 function buildAll(options) {
   concurrently(
     [
-      { name: 'build:cjs', command: `node scripts/build --format=cjs --out=lib ${options}` },
-      { name: 'build:esm', command: `node scripts/build --format=esm --out=lib ${options}` },
+      { name: 'build:cjs', command: `node scripts/build.cjs --format=cjs --out=lib ${options}` },
+      { name: 'build:esm', command: `node scripts/build.cjs --format=esm --out=lib ${options}` },
     ],
     {
       prefix: 'name',
@@ -32,11 +33,15 @@ function buildAll(options) {
 }
 
 async function buildFormat(format, outDir) {
+  const extMap = {
+    esm: 'mjs',
+    cjs: 'cjs',
+  };
   try {
     console.log('building %s...', format);
     let config = {
       entryPoints: ['src/index.ts'],
-      outfile: `${outDir}/${format}/index.js`,
+      outfile: `${outDir}/index.${extMap[format]}`,
       bundle: true,
       platform: 'node',
       target: ['node10'],

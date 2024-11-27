@@ -251,7 +251,6 @@ export const Editor = () => {
   if (!ready) {
     return <>loading...</>;
   }
-
   return (
     <Engine
       plugins={DEFAULT_PLUGIN_LIST}

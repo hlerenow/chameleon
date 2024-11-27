@@ -1,7 +1,5 @@
-import { CNode } from '@chamn/model';
 import { CPlugin } from '../../core/pluginManager';
 import { DesignerPluginInstance } from '../Designer/type';
-import { HistoryPluginInstance } from '../History/type';
 import { HotKeysManager } from './hotKeyManager';
 import localize from './localize';
 import { actionMap } from './action';

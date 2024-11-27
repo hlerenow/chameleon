@@ -16,6 +16,19 @@ export default {
   },
   // 额外的 vite 配置
   vite: {
+    build: {
+      lib: {
+        fileName: (format, entryName) => {
+          if (format === 'umd') {
+            return `${entryName}.${format}.js`;
+          }
+          if (format === 'cjs') {
+            return `${entryName}.${format}`;
+          }
+          return `${entryName}.js`;
+        },
+      },
+    },
     define: {
       'process.env.NODE_ENV': JSON.stringify(env),
     },

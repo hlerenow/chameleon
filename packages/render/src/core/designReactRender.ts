@@ -106,7 +106,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
 
   constructor(props: DesignRenderProp) {
     super(props);
-    this.updateComponents(this.props.components);
+    this._components = Object.assign(this._components, this.props.components);
     this.renderRef = React.createRef<Render>();
     if (props.dropPlaceholder) {
       this.dropPlaceholder = props.dropPlaceholder;
