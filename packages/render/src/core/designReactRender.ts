@@ -203,7 +203,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
               this._dom = ref;
             },
           },
-          [coreEl]
+          coreEl
         );
       }
     }

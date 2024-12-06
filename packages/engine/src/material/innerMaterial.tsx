@@ -149,7 +149,7 @@ const BaseComponentMeta: CMaterialType[] = [
       wrapComponent: (comp) => {
         return (props: any) => {
           const Comp = comp;
-          return <Comp {...props} style={{ ...(props.style || {}), userSelect: 'none', webkitUserDrag: 'none' }} />;
+          return <Comp {...props} style={{ ...(props.style || {}), userSelect: 'none', WebkitUserDrag: 'none' }} />;
         };
       },
     },
