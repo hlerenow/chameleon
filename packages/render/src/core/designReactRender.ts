@@ -111,7 +111,6 @@ export class DesignRender extends React.Component<DesignRenderProp> {
     if (props.dropPlaceholder) {
       this.dropPlaceholder = props.dropPlaceholder;
     }
-    console.log('instanceManager', this.instanceManager);
   }
 
   updateComponents(newComponents: Record<string, string> = {}) {
