@@ -167,7 +167,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       // 实时更新选中的节点的实例
       if (this.state.currentSelectId) {
         const nodeId = this.state.currentSelectId;
-        this.designRenderRef.current?.getInstancesById(nodeId) || [];
         let instanceList = this.designRenderRef.current?.getInstancesById(nodeId) || [];
         instanceList = instanceList.filter((el) => el?._STATUS !== 'DESTROY');
         if (!instanceList.length) {
@@ -187,7 +186,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           }),
         });
       }
-    }, 100);
+    }, (1000 / 60) * 2);
   };
 
   disposeRealTimeUpdate = () => {
@@ -529,7 +528,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         dropNode.isContainer() || dropNode.value?.componentName === InnerComponentNameEnum.ROOT_CONTAINER;
 
       const originalEvent = eventObj.event;
-      const dropInstanceDom = ReactDOM.findDOMNode(dropInstance);
+      const dropInstanceDom = dropInstance.getDom();
       const dropInfo = calculateDropPosInfo({
         point: {
           x: originalEvent.clientX,
@@ -753,7 +752,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       return;
     }
     const instance = instanceList[0];
-    const dom = ReactDOM.findDOMNode(instance) as Element;
+    const dom = instance.getDom();
     if (dom) {
       dom.scrollIntoView?.({
         block: 'nearest',

@@ -272,7 +272,6 @@ export class DragAndDrop<E = Record<string, any>> {
       }
 
       if (this.currentState === 'DRAGGING') {
-        console.log('onMouseup', event, this.currentState);
         this.canTriggerClick = false;
         setTimeout(() => {
           this.canTriggerClick = true;

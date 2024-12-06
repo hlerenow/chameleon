@@ -7,4 +7,6 @@ export type RenderInstance = React.ReactInstance & {
   _UNIQUE_ID: string;
   _STATUS?: 'DESTROY';
   _CONDITION?: boolean;
+  _dom?: HTMLElement;
+  getDom: () => HTMLElement | null | undefined;
 };

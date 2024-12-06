@@ -35,15 +35,15 @@ export const HighlightBox = ({
   instanceRef.current = instance;
   const updateTargetDom = (ins: RenderInstance) => {
     // eslint-disable-next-line react/no-find-dom-node
-    let dom = ReactDOM.findDOMNode(ins) as HTMLElement;
+    let dom = ins.getDom();
     const rootSelector = instance._NODE_MODEL.material?.value.rootSelector;
 
-    if (rootSelector) {
+    if (rootSelector && dom) {
       // 文本节点 注释节点不存在 querySelector 方法
-      dom = dom.querySelector?.(rootSelector) || dom;
+      dom = (dom.querySelector?.(rootSelector) as HTMLElement) || dom;
     }
     if (isDOM(dom)) {
-      setTargetDom(dom);
+      setTargetDom(dom!);
       return true;
     }
     return false;
@@ -94,21 +94,24 @@ export const HighlightBox = ({
 
   const updatePos = useCallback(() => {
     const tempInstance = instanceRef.current;
-    let instanceDom: HTMLElement | null = null;
+    let instanceDom: HTMLElement | null | undefined = null;
     if (tempInstance?._STATUS === 'DESTROY') {
       return;
     }
 
     // eslint-disable-next-line react/no-find-dom-node
-    let dom = ReactDOM.findDOMNode(tempInstance) as HTMLElement;
+    let dom = tempInstance?.getDom();
+    if (!dom) {
+      return;
+    }
     const rootSelector = instance._NODE_MODEL.material?.value.rootSelector;
     if (rootSelector) {
       // 文本节点 注释节点不存在 querySelector 方法
-      dom = dom.querySelector?.(rootSelector) || dom;
+      dom = (dom?.querySelector?.(rootSelector) as any) || dom;
     }
     if (isDOM(dom)) {
-      instanceDom = dom;
-      setTargetDom(instanceDom);
+      instanceDom = dom!;
+      setTargetDom(instanceDom!);
     } else {
       return;
     }

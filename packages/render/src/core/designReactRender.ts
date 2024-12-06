@@ -148,6 +148,8 @@ export class DesignRender extends React.Component<DesignRenderProp> {
       _STATUS?: 'DESTROY';
       _design_target_component: any;
 
+      _dom?: HTMLElement | null;
+
       componentDidMount(): void {
         self.instanceManager.add(node.id, this);
       }
@@ -159,6 +161,11 @@ export class DesignRender extends React.Component<DesignRenderProp> {
       componentWillUnmount(): void {
         this._STATUS = 'DESTROY';
         self.instanceManager.remove(node.id, this);
+      }
+
+      getDom() {
+        // 返回第一个孩子节点, 模拟 ReactDOM.findDOMNode 行为
+        return this._dom?.children?.[0];
       }
 
       render() {
@@ -184,12 +191,19 @@ export class DesignRender extends React.Component<DesignRenderProp> {
           return newChildren;
         }
 
+        const coreEl = React.createElement(innerComp, restProps, ...newChildren);
+
         return React.createElement(
-          innerComp,
+          'div',
           {
-            ...restProps,
+            style: {
+              display: 'contents',
+            },
+            ref: (ref) => {
+              this._dom = ref;
+            },
           },
-          ...newChildren
+          [coreEl]
         );
       }
     }
@@ -237,7 +251,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
       if (el?._STATUS === 'DESTROY') {
         return;
       }
-      const dom = ReactDOM.findDOMNode(el);
+      const dom = el.getDom();
       if (dom && !(dom instanceof Text)) {
         if (selector) {
           // 判断是不是数组
