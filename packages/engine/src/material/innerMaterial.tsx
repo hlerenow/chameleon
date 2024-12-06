@@ -41,19 +41,8 @@ const customAttributesMeta: CMaterialPropsType[number] = {
   ],
 };
 
-// const widthPropsMeta: CMaterialPropsType[number] = {
-//   name: 'width',
-//   title: '宽度',
-//   valueType: 'string',
-//   setters: ['StringSetter', 'ExpressionSetter'],
-// };
-
-// const heightPropsMeta: CMaterialPropsType[number] = {
-//   name: 'height',
-//   title: '高度',
-//   valueType: 'string',
-//   setters: ['StringSetter', 'ExpressionSetter'],
-// };
+const INNER_META_VERSION = '1.0.0';
+const PKG_NAME = 'CHAMELEON_INNER_PKG';
 
 const htmlNativeComponentMeta = HTMl_TAGS.map((tag) => {
   const DivMeta: CMaterialType = {
@@ -61,6 +50,11 @@ const htmlNativeComponentMeta = HTMl_TAGS.map((tag) => {
     componentName: tag,
     props: [customAttributesMeta],
     snippets: [],
+    npm: {
+      name: tag,
+      package: PKG_NAME,
+      version: INNER_META_VERSION,
+    },
   };
 
   return DivMeta;
@@ -92,11 +86,7 @@ const BaseComponentMeta: CMaterialType[] = [
               {
                 state: 'normal',
                 media: [],
-                style: {
-                  background: 'white',
-                  width: '100%',
-                  height: '100px',
-                },
+                text: 'background: white ; width: 100%; height: 100px',
               },
             ],
           },
@@ -135,11 +125,7 @@ const BaseComponentMeta: CMaterialType[] = [
               {
                 state: 'normal',
                 media: [],
-                style: {
-                  background: 'white',
-                  width: '100%',
-                  height: '100px',
-                },
+                text: 'background: white;width: 100%;',
               },
             ],
           },
@@ -159,6 +145,15 @@ const BaseComponentMeta: CMaterialType[] = [
       },
       customAttributesMeta,
     ],
+    advanceCustom: {
+      wrapComponent: (comp) => {
+        return (props: any) => {
+          const Comp = comp;
+          return <Comp {...props} style={{ ...(props.style || {}), userSelect: 'none', webkitUserDrag: 'none' }} />;
+        };
+      },
+    },
+
     groupName: '原子组件',
     snippets: [
       {
@@ -169,15 +164,14 @@ const BaseComponentMeta: CMaterialType[] = [
           css: {
             value: [
               {
-                state: 'normal',
+                text: 'background:white;width:500px;height:300px;overflow:auto;',
                 media: [],
-                style: {
-                  background: 'white',
-                  width: '300px',
-                  height: '150px',
-                },
+                state: 'normal',
               },
             ],
+          },
+          props: {
+            src: 'https://images.unsplash.com/photo-1584080277544-2db5b2c2d9dd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
           },
         },
       },
@@ -215,13 +209,28 @@ const BaseComponentMeta: CMaterialType[] = [
         return (props) => {
           //  原生的控制面板会阻断页面级别的事件监听，导致拖拽失效，这里在编辑态禁用 video 的控制面板相关事件触发
           return (
-            <Comp
-              {...props}
+            <div
               style={{
-                pointerEvents: 'none',
-                ...props.style,
+                display: 'content',
+                position: 'relative',
               }}
-            ></Comp>
+            >
+              <Comp
+                {...props}
+                style={{
+                  ...props.style,
+                }}
+              ></Comp>
+              <div
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                }}
+              ></div>
+            </div>
           );
         };
       },
@@ -241,11 +250,7 @@ const BaseComponentMeta: CMaterialType[] = [
               {
                 state: 'normal',
                 media: [],
-                style: {
-                  background: 'white',
-                  width: '300px',
-                  height: '150px',
-                },
+                text: 'background:white;width:300px;height:150px;',
               },
             ],
           },
@@ -360,7 +365,7 @@ const BaseComponentMeta: CMaterialType[] = [
     ],
     groupName: '原子组件',
     advanceCustom: {
-      onNewAdd: async (node, params) => {
+      onNewAdd: async (node) => {
         const props = node.getPlainProps();
         const id = Math.random().toString(32).slice(3, 9);
         props.$$attributes = [
@@ -453,4 +458,15 @@ const BaseComponentMeta: CMaterialType[] = [
   },
 ];
 
-export const InnerComponentMeta = [...BaseComponentMeta, ...htmlNativeComponentMeta];
+const BaseComponentMetaWithVersion = BaseComponentMeta.map((el) => {
+  return {
+    ...el,
+    npm: {
+      name: el.componentName,
+      package: PKG_NAME,
+      version: INNER_META_VERSION,
+    },
+  };
+});
+
+export const InnerComponentMeta = [...BaseComponentMetaWithVersion, ...htmlNativeComponentMeta];

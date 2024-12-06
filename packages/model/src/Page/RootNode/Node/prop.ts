@@ -12,7 +12,7 @@ import {
   CPropObjDataType,
 } from '../../../types/node';
 import { isArray, isPlainObject } from '../../../util/lodash';
-import { DataModelEmitter } from '../../../util/modelEmitter';
+import { DataModelEmitter, DataModelEmitterType } from '../../../util/modelEmitter';
 import { CJSSlotPropDataType, CSlot } from './slot';
 
 export type CSpecialPropDataType = CJSSlotPropDataType | FunctionPropType | JSExpressionPropType;
@@ -77,7 +77,7 @@ export class CProp {
   nodeType = 'PROP' as const;
   private rawData: CPropDataType;
   parent: CNode | CRootNode | null;
-  emitter = DataModelEmitter;
+  emitter: DataModelEmitterType = DataModelEmitter;
   private data: CPropModelDataType;
   name: string;
   materialsMode: CMaterials;

@@ -88,6 +88,7 @@ export const DefaultDropPlaceholder: React.FC<{ node: CNode | CRootNode }> = (pr
         fontSize: '14px',
         color: 'gray',
         cursor: 'default',
+        minHeight: '50px',
         width: width,
         height: height,
         ...style,
@@ -105,7 +106,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
 
   constructor(props: DesignRenderProp) {
     super(props);
-    this.updateComponents(this.props.components);
+    this._components = Object.assign(this._components, this.props.components);
     this.renderRef = React.createRef<Render>();
     if (props.dropPlaceholder) {
       this.dropPlaceholder = props.dropPlaceholder;
@@ -119,6 +120,8 @@ export class DesignRender extends React.Component<DesignRenderProp> {
   }
 
   componentDidMount(): void {
+    // 添加特殊运行时标记
+    (window as any).__CHAMN_RENDER_MODE = 'DESIGN';
     this.updateComponents(this.props.components);
     this.props.onMount?.(this);
   }
@@ -144,11 +147,16 @@ export class DesignRender extends React.Component<DesignRenderProp> {
       _NODE_ID = node.id;
       _UNIQUE_ID = `${node.id}_${getRandomStr()}`;
       _STATUS?: 'DESTROY';
+      _design_target_component: any;
 
       _dom?: HTMLElement | null;
 
       componentDidMount(): void {
         self.instanceManager.add(node.id, this);
+      }
+
+      getTargetComponentRef() {
+        return this._design_target_component;
       }
 
       componentWillUnmount(): void {
@@ -276,7 +284,15 @@ export class DesignRender extends React.Component<DesignRenderProp> {
       onGetComponent,
       ...renderProps,
       components: this._components,
-      // 拦截特殊属性配置, 配合开发模式使用
+      // 拦截特殊属性配置, 配合设计模式使用
+      /**
+       * 可以对节点的一些配置数据做统一处理
+       * 比如: fixedProps 强制将 fixedProps 内的值覆盖 node 本省的配置
+       * 比如： 统一处理节点的 Condition 属性，控制节点是否显示
+       * @param config
+       * @param node
+       * @returns
+       */
       processNodeConfigHook: (config, node) => {
         if (node.nodeType !== 'NODE') {
           return config;

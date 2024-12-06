@@ -126,16 +126,20 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
   };
   let bodyView: any = null;
   const hiddenLabel = useField === false || currentSetter?.hiddenLabel === true;
+  const collapse = (currentSetter?.props as any)?.collapse;
+  const collapseObj = typeof collapse === 'object' ? collapse : {};
   if (['ArraySetter'].includes(currentSetter?.componentName || '')) {
     bodyView = (
       <Collapse
         bordered={false}
+        {...collapseObj}
         style={{
           marginBottom: '10px',
         }}
-        defaultActiveKey={[props.name]}
+        defaultActiveKey={[collapseObj.open ? props.name : '']}
         items={[
           {
+            key: props.name,
             label: (
               <div className={styles.collapseHeader}>
                 <span
@@ -193,10 +197,11 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
             </CField>
           </div>
         )}
-        {(currentSetter?.props as any)?.collapse !== false && (
+        {collapse !== false && (
           <Collapse
+            {...collapseObj}
             bordered={false}
-            // defaultActiveKey={[props.name]}
+            defaultActiveKey={[collapseObj.open ? props.name : '']}
             style={{ flex: 1 }}
             items={[
               {

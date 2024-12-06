@@ -33,6 +33,7 @@ export const CSSUIPanel = forwardRef<CSSUIPanelRef, CSSUIPanelProps>(({ value, i
     const tempValue = tempValueRef.current ?? value;
 
     inputRefs.forEach((ref) => {
+      ref.current?.setEmptyValue();
       ref.current?.setValue(tempValue || {});
     });
   };
@@ -43,7 +44,13 @@ export const CSSUIPanel = forwardRef<CSSUIPanelRef, CSSUIPanelProps>(({ value, i
         setValue: (newVal) => {
           tempValueRef.current = newVal;
           inputRefs.forEach((ref) => {
+            ref.current?.setEmptyValue();
             ref.current?.setValue(newVal);
+          });
+        },
+        setEmptyValue: () => {
+          inputRefs.forEach((ref) => {
+            ref.current?.setEmptyValue();
           });
         },
       };
@@ -61,7 +68,12 @@ export const CSSUIPanel = forwardRef<CSSUIPanelRef, CSSUIPanelProps>(({ value, i
             initialValue={initialVal as any}
             value={value as any}
             onChange={(val) => {
-              onValueChange?.({ ...value, ...val });
+              const newVal = {
+                ...(tempValueRef.current || {}),
+                ...val,
+              };
+              tempValueRef.current = newVal;
+              onValueChange?.(newVal);
             }}
           />
         ),
@@ -76,7 +88,12 @@ export const CSSUIPanel = forwardRef<CSSUIPanelRef, CSSUIPanelProps>(({ value, i
             initialValue={initialVal as any}
             value={value as any}
             onChange={(val) => {
-              onValueChange?.({ ...value, ...val });
+              const newVal = {
+                ...(tempValueRef.current || {}),
+                ...val,
+              };
+              tempValueRef.current = newVal;
+              onValueChange?.(newVal);
             }}
           />
         ),
@@ -91,7 +108,12 @@ export const CSSUIPanel = forwardRef<CSSUIPanelRef, CSSUIPanelProps>(({ value, i
             prefix="padding"
             value={value as any}
             onChange={(val) => {
-              onValueChange?.({ ...value, ...val });
+              const newVal = {
+                ...(tempValueRef.current || {}),
+                ...val,
+              };
+              tempValueRef.current = newVal;
+              onValueChange?.(newVal);
             }}
           />
         ),
@@ -105,7 +127,12 @@ export const CSSUIPanel = forwardRef<CSSUIPanelRef, CSSUIPanelProps>(({ value, i
             initialValue={initialVal as any}
             value={value as any}
             onChange={(val) => {
-              onValueChange?.({ ...value, ...val });
+              const newVal = {
+                ...(tempValueRef.current || {}),
+                ...val,
+              };
+              tempValueRef.current = newVal;
+              onValueChange?.(newVal);
             }}
           />
         ),
@@ -119,7 +146,12 @@ export const CSSUIPanel = forwardRef<CSSUIPanelRef, CSSUIPanelProps>(({ value, i
             value={value as any}
             initialValue={initialVal as any}
             onChange={(val) => {
-              onValueChange?.({ ...value, ...val });
+              const newVal = {
+                ...(tempValueRef.current || {}),
+                ...val,
+              };
+              tempValueRef.current = newVal;
+              onValueChange?.(newVal);
             }}
           />
         ),
@@ -132,7 +164,12 @@ export const CSSUIPanel = forwardRef<CSSUIPanelRef, CSSUIPanelProps>(({ value, i
             ref={borderRef}
             initialValue={initialVal as any}
             onChange={(val) => {
-              onValueChange?.({ ...value, ...val });
+              const newVal = {
+                ...(tempValueRef.current || {}),
+                ...val,
+              };
+              tempValueRef.current = newVal;
+              onValueChange?.(newVal);
             }}
           />
         ),
@@ -146,7 +183,10 @@ export const CSSUIPanel = forwardRef<CSSUIPanelRef, CSSUIPanelProps>(({ value, i
             initialValue={initialVal as any}
             value={value as any}
             onChange={(val) => {
-              onValueChange?.({ ...value, ...val });
+              onValueChange?.({
+                ...(tempValueRef.current || {}),
+                ...val,
+              });
             }}
           />
         ),

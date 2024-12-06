@@ -37,6 +37,8 @@ type ContextType = {
   params?: Record<any, any>;
   /** 全局状态 */
   globalState?: Record<any, any>;
+  /** 获取最新的GlobalState */
+  getGlobalState?: () => Record<any, any>;
   /** 更新全局状态 */
   updateGlobalState?: (newState: any) => void;
   /** 存储当前节点的数据，不具有响应性 **/

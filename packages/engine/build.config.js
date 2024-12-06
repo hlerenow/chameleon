@@ -33,24 +33,15 @@ if (process.env.BUILD_TYPE === 'APP') {
 }
 
 const mainConfig = {
-  libMode: process.env.BUILD_TYPE !== 'APP',
+  libMode: true,
   entry: './src/index.tsx',
-  // libName: 'CEngine',
   fileName: 'index',
-  external:
-    process.env.BUILD_TYPE === 'APP'
-      ? []
-      : ['react', 'react-dom', 'monaco-editor', 'antd', '@chamn/model', '@chamn/layout'],
+  external: ['react', 'react-dom', 'monaco-editor', 'antd', '@chamn/model', '@chamn/layout'],
   global: {
     react: 'React',
     'react-dom': 'ReactDOM',
   },
   vite: {
-    base: process.env.BUILD_TYPE === 'APP' ? '/chameleon/' : '',
-    build: {
-      outDir: process.env.BUILD_TYPE === 'APP' ? './example' : './dist',
-      copyPublicDir: process.env.BUILD_TYPE === 'APP',
-    },
     plugins: plugins,
     ...commonConfig,
     define: {
@@ -63,4 +54,4 @@ const mainConfig = {
 };
 
 const config = mainConfig;
-module.exports = config;
+export default config;

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Low-code engine</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body,
+    #root {
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+  <script>
+    window.React = window.parent.React;
+    window.ReactDOM = window.parent.ReactDOM;
+    window.ReactDOMClient = window.parent.ReactDOMClient;
+  </script>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="module" src="./render.tsx"></script>
+</body>
+
+</html>

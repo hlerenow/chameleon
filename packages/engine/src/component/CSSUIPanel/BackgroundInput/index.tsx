@@ -1,12 +1,23 @@
 /* eslint-disable react/display-name */
 import { Row, Col, ColorPicker, Radio, Input } from 'antd';
 import styles from '../style.module.scss';
-import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { DEFAULT_PRESET_COLORS } from '@/config/colorPickerColorList';
 import clsx from 'clsx';
 import { InputCommonRef } from '../type';
+import { pick } from 'lodash-es';
+import { CustomColorPicker, CustomColorPickerRef } from '@/component/CustomColorPicker';
 
-type Value = Record<'background-color' | 'background-image' | 'background-repeat' | 'background-size', string>;
+const CSS_BACKGROUND_KEY_LIST = [
+  'background-color',
+  'background-image',
+  'background-repeat',
+  'background-size',
+] as const;
+
+type CSSBackgroundKeyType = typeof CSS_BACKGROUND_KEY_LIST[number];
+
+type Value = Record<CSSBackgroundKeyType, string>;
 
 export type BackgroundInputProps = {
   value?: Value;
@@ -25,6 +36,7 @@ const getEmptyVal = () => {
 
 export const BackgroundInput = forwardRef<InputCommonRef, BackgroundInputProps>((props, ref) => {
   const [innerVal, setInnerVal] = useState<Value>(props.initialValue ?? getEmptyVal());
+  const colorRef = useRef<CustomColorPickerRef>(null);
 
   const updateInnerVal = useCallback(
     (newVal: Partial<Value>, noTrigger?: boolean) => {
@@ -33,6 +45,7 @@ export const BackgroundInput = forwardRef<InputCommonRef, BackgroundInputProps>(
           ...oldVal,
           ...newVal,
         };
+        colorRef.current?.updateColor(finalVal['background-color']);
         if (noTrigger !== true) {
           props.onChange?.(finalVal);
         }
@@ -52,13 +65,17 @@ export const BackgroundInput = forwardRef<InputCommonRef, BackgroundInputProps>(
             updateInnerVal(
               {
                 ...emptyVal,
-                ...newVal,
+                ...pick(newVal, CSS_BACKGROUND_KEY_LIST),
               },
               true
             );
           } else {
             updateInnerVal(emptyVal, true);
           }
+        },
+        setEmptyValue: () => {
+          const emptyVal = getEmptyVal();
+          updateInnerVal(emptyVal, true);
         },
       };
     },
@@ -79,13 +96,14 @@ export const BackgroundInput = forwardRef<InputCommonRef, BackgroundInputProps>(
           }}
         >
           <span className={clsx([styles.label])}>Color:</span>
-          <ColorPicker
+          <CustomColorPicker
+            ref={colorRef}
             showText={true}
             size="small"
             value={realValue['background-color'] || ''}
-            onChangeComplete={(color) => {
+            onChange={(color) => {
               updateInnerVal({
-                'background-color': color.toRgbString(),
+                'background-color': color,
               });
             }}
             presets={DEFAULT_PRESET_COLORS}

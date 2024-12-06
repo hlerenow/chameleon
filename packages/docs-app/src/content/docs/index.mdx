@@ -1,0 +1,37 @@
+---
+title: Welcome to Chameleon Engine
+description: Get started building your docs site with Starlight.
+template: splash
+hero:
+  tagline: Congrats on setting up a new Starlight project!
+  image:
+    file: ../../assets/houston.webp
+  actions:
+    - text: Start Guide
+      link: /chameleon/documents/guides
+      icon: right-arrow
+      variant: primary
+    # - text: Read the docs
+    #   link: /reference/
+    #   icon: external
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Link } from '../../components/Link.tsx';
+
+## Next steps
+
+<CardGrid stagger>
+  <Card title="Material Develop" icon="pencil">
+    How to develop a component that can be used in the editor? <Link url="reference/material/introduction/">Doc</Link>
+  </Card>
+  <Card title="Schema Defined" icon="add-document">
+    Definition of page protocol <Link url="reference/pageschema/page/">Doc</Link>
+  </Card>
+  <Card title="Plugins" icon="setting">
+    How to develop editor plugins? <Link url="reference/plugin/plugin-develop">Doc</Link>
+  </Card>
+  <Card title="API" icon="open-book">
+    API Description, Learn more in <Link url="guides">Doc</Link>
+  </Card>
+</CardGrid>

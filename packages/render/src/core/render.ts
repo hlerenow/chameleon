@@ -1,8 +1,8 @@
 import { checkPage, CPage, CPageDataType } from '@chamn/model';
 import { isPlainObject } from 'lodash-es';
-import React, { useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { InnerComponent } from '../commonComponent';
-import { AdapterOptionType, AdapterType, ComponentsType } from './adapter';
+import { AdapterOptionType, AdapterType } from './adapter';
 import { RefManager } from './refManager';
 import { RenderInstance } from './type';
 
@@ -56,7 +56,6 @@ export class Render extends React.Component<
   render() {
     const { props } = this;
     const { adapter, onGetComponent, onComponentDestroy, onComponentMount } = props;
-
     const { pageModel } = this.state;
     // todo: 加载 page 资源
     // todo: 收集所有的 第三方库
@@ -111,14 +110,18 @@ export type UseRenderReturnType = {
 export const useRender = (): UseRenderReturnType => {
   const ref = useRef<Render>(null);
 
-  return {
-    ref: ref,
-    rerender: function (...args) {
-      if (ref.current) {
-        ref.current.rerender(...args);
-      }
-    },
-  };
+  const res = useMemo<UseRenderReturnType>(() => {
+    return {
+      ref: ref,
+      rerender: function (...args) {
+        if (ref.current) {
+          ref.current.rerender(...args);
+        }
+      },
+    };
+  }, []);
+
+  return res;
 };
 
 export * from './type';

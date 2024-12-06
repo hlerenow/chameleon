@@ -1,9 +1,0 @@
-{
-  "position": 2,
-  "label": "组件物料",
-  "collapsible": true,
-  "collapsed": false,
-  "customProps": {
-    "description": "This description can be used in the swizzled DocCard"
-  }
-}

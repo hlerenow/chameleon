@@ -1,9 +1,8 @@
-import { defineConfig, UserConfig } from 'vite';
 import path from 'path';
 import react from '@vitejs/plugin-react';
-import eslint from 'vite-plugin-eslint';
-import sassDts from 'vite-plugin-sass-dts';
 import { CLI_ARGS_OBJ, PROJECT_ROOT, getCustomConfig } from './base';
+import { defineConfig } from 'vite';
+import eslint from 'vite-plugin-eslint2';
 
 // https://vitejs.dev/config/
 export const getCommonConfig = async () => {
@@ -21,6 +20,7 @@ export const getCommonConfig = async () => {
         entry: path.resolve(PROJECT_ROOT, CUSTOM_CONFIG.entry),
         formats: CUSTOM_CONFIG.formats || ['cjs', 'es'],
         fileName: CUSTOM_CONFIG.fileName,
+        cssFileName: 'style',
       },
       rollupOptions: {
         // 确保外部化处理那些你不想打包进库的依赖
@@ -31,18 +31,8 @@ export const getCommonConfig = async () => {
         },
       },
     },
-    plugins: [
-      sassDts({
-        enabledMode: ['development'],
-        global: {
-          generate: true,
-          outFile: path.resolve(PROJECT_ROOT, './src/style.d.ts'),
-        },
-      }),
-      react(),
-      eslint(),
-    ],
-  }) as UserConfig;
+    plugins: [react(), eslint()],
+  });
 
   if (CUSTOM_CONFIG.libMode === false) {
     delete commonConfigJson?.build?.lib;

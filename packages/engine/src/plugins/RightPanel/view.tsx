@@ -96,7 +96,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
       displayPanels: CRightPanelItem[];
     } = { panels: [], displayPanels: [] };
     if (node) {
-      const panelParams = { node: node, pluginCtx };
+      const panelParams: RightPanelOptions = { node: node, pluginCtx, activeTab: this.state.activeKey };
       const displayPanels = newPanels.filter((panel) => {
         if (panel.show === undefined) {
           return true;
@@ -124,7 +124,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
   onNodeChange = ({ node }: any) => {
     const { pluginCtx } = this.props;
     const { panels, activeKey } = this.state;
-    const panelParams = { node: node, pluginCtx };
+    const panelParams: RightPanelOptions = { node: node, pluginCtx, activeTab: this.state.activeKey };
     const displayPanels = panels.filter((panel) => {
       if (panel.show === undefined) {
         return true;

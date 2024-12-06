@@ -6,7 +6,7 @@ import { CNode } from '../Page/RootNode/Node';
 import { CProp } from '../Page/RootNode/Node/prop';
 import { CSlot } from '../Page/RootNode/Node/slot';
 import { InnerComponentNameEnum } from '../types/rootNode';
-import { FunctionPropType, JSExpressionPropType, RenderPropType } from '@/types/node';
+import { FunctionPropType, JSExpressionPropType, RenderPropType } from '../types/node';
 
 export const isExpression = (val: any): val is JSExpressionPropType => {
   if (val?.type === CNodePropsTypeEnum.EXPRESSION) {

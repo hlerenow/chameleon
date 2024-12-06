@@ -1,5 +1,5 @@
 import { CPlugin, PluginInstance } from '@/core/pluginManager';
-import { DragAndDrop, Layout, LayoutPropsType } from '@chamn/layout';
+import { DragAndDrop, IFrameContainer, Layout, LayoutPropsType } from '@chamn/layout';
 import { AdvanceCustom, AssetPackage, CPageDataType } from '@chamn/model';
 import { RenderInstance } from '@chamn/render';
 import { Designer } from './components/Canvas';
@@ -17,7 +17,10 @@ export type DesignerExport = {
   getDynamicComponentInstances: (id: string) => RenderInstance;
   getLayoutRef: () => React.RefObject<Layout>;
   getDesignerWindow: () => Window | null;
+  getIframeDom: () => IFrameContainer | undefined;
   updateRenderComponents: (newComponentMap: Record<string, string>) => void;
+  /** set canvas width, width must below visible area width*/
+  setCanvasWidth: (width: number | string) => void;
 };
 
 export type DesignerPluginConfig = Omit<

@@ -97,6 +97,8 @@ export type LayoutStateType = {
   dropEvent: DragAndDropEventType<LayoutDragAndDropExtraDataType>['dragging'] | null;
   dropInfo: DropPosType | null;
   canDrop: boolean;
+  /** 是否可以选中节点 */
+  canSelectNode: boolean;
   pointerEventsForHightLightBox: 'auto' | 'none';
 };
 
@@ -141,6 +143,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       dropEvent: null,
       dropInfo: null,
       canDrop: true,
+      canSelectNode: true,
       pointerEventsForHightLightBox: 'none',
     };
     this.highlightCanvasRef = React.createRef<HighlightCanvasRefType>();
@@ -206,7 +209,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     (window as any).___CHAMELEON_DESIGNER_RENDER___ = this.designRenderRef;
     const iframeContainer = this.iframeContainer;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    iframeContainer.load(document.getElementById(this.iframeDomId)!);
+    iframeContainer.load(document.getElementById(this.iframeDomId)! as any);
     iframeContainer.onLoadFailed((e) => {
       console.error('iframe canvas load failed', e);
     });
@@ -248,6 +251,20 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       } else {
         throw new Error('Must pass customRender methods');
       }
+    });
+  }
+
+  /** 禁止节点选中 */
+  banSelectNode() {
+    this.setState({
+      canSelectNode: false,
+    });
+  }
+
+  /** 回复节点选中 */
+  recoverSelectNode() {
+    this.setState({
+      canSelectNode: true,
     });
   }
 
@@ -296,6 +313,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
           const res = await this.props.onSelectNode?.(componentInstance._NODE_MODEL, e as any);
           if (res === false) {
+            return;
+          }
+          if (!this.state.canSelectNode) {
             return;
           }
           this.disposeRealTimeUpdate();
@@ -393,11 +413,10 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     if (!iframeDoc || !subWin) {
       return;
     }
-    ['mousedown'].forEach((ev: any) => {
+    ['mousedown', 'mouseup'].forEach((ev: any) => {
       this.eventExposeHandler.push(
         addEventListenerReturnCancel<'mousedown'>(
           iframeDoc.body,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ev,
           async (e) => {
             const targetComponentInstance = this.designRenderRef.current?.getInstanceByDom(e.target as HTMLElement);
@@ -420,9 +439,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
                 }
               }
             }
-
-            e.stopPropagation();
-            e.preventDefault();
           },
           true
         )
@@ -766,6 +782,8 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       currentSelectInstance: null,
       selectComponentInstances: [],
     });
+    // 清空之前的选中
+    this.props.onSelectNode?.(null, null);
   }
 
   resetDrag = () => {
@@ -875,6 +893,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             left: 0,
             top: 0,
             outline: '1px dashed rgba(0,0,255, .8)',
+            whiteSpace: 'nowrap',
             ...hoverBoxStyle,
           }}
           toolbarView={hoverToolBarView}

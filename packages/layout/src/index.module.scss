@@ -5,6 +5,9 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0 1px 4px 0 rgb(31 50 88 / 13%);
 }
 
 .elementHighlightBox {

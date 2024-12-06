@@ -6,7 +6,7 @@ import { CNodeDataStructDescribe, CNodeDataType } from '../../../types/node';
 import { getRandomStr, clearSchema, getNode } from '../../../util';
 import { checkComplexData } from '../../../util/dataCheck';
 import { DataModelEmitter } from '../../../util/modelEmitter';
-import type { DataModelEventType } from '../../../util/modelEmitter';
+import type { DataModelEmitterType, DataModelEventType } from '../../../util/modelEmitter';
 import { CProp } from './prop';
 import { CSlot } from './slot';
 
@@ -103,7 +103,7 @@ export class CNode {
   nodeType = 'NODE' as const;
   private rawData: CNodeDataType;
   private data: CNodeModelDataType;
-  emitter = DataModelEmitter;
+  emitter: DataModelEmitterType = DataModelEmitter;
   parent: ParentType;
   materialsModel: CMaterials;
   listenerHandle: (() => void)[];
@@ -248,7 +248,11 @@ export class CNode {
     });
     configure.propsSetter = newPropsSetter;
     // handle configure props setter config, clear invalidate setter config end
-    if (this.material) {
+    // 避免重复的物料
+    const hasExitsMeta = this.materialsModel.usedMaterials.find(
+      (el) => el.componentName === this.material?.componentName
+    );
+    if (this.material && !hasExitsMeta) {
       this.materialsModel.usedMaterials.push(this.material);
     }
     let newRes: CNodeDataType = {

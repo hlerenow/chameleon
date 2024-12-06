@@ -107,8 +107,13 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     this.init();
   }
 
-  reloadRender({ assets }: { assets?: AssetPackage[] }) {
-    this.layoutRef.current?.reload({ assets });
+  getIframeDom() {
+    return this.layoutRef.current?.iframeContainer;
+  }
+
+  reloadRender() {
+    this.layoutRef.current?.reload();
+    this.props.pluginCtx.pageModel.reloadPage();
   }
 
   async init() {
@@ -277,6 +282,17 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       extra: extraData,
     };
 
+    const canDragFlag = await dragNode.material?.value.advanceCustom?.canDragNode?.(dragNode, {
+      context: this.props.pluginCtx,
+      viewPortal: this.getPortalViewCtx(),
+      event: e,
+      extra: {},
+    });
+
+    if (canDragFlag === false) {
+      return canDragFlag;
+    }
+
     const dragFlag = await dragNode.material?.value.advanceCustom?.onDragStart?.(dragNode, { ...commonParam });
     if (dragFlag === false) {
       return dragFlag;
@@ -360,7 +376,14 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     const ToolbarView =
       this.customAdvanceHook.getToolbarViewRender(node) || this.props.pluginCtx.config.toolbarViewRender;
     if (ToolbarView) {
-      toolbarView = <ToolbarView node={node} context={this.context} toolBarItems={defaultToolbarItem} />;
+      toolbarView = (
+        <ToolbarView
+          node={node}
+          context={this.props.pluginCtx}
+          toolBarItems={defaultToolbarItem.map}
+          toolBarItemList={defaultToolbarItem.list}
+        />
+      );
     }
     return toolbarView;
   };
@@ -499,7 +522,6 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
 
     const { pluginCtx } = props;
     const assets = pluginCtx.assetsPackageListManager.getList() || ([] as AssetPackage[]);
-    console.log('🚀 ~ Designer ~ render ~ assets:', assets);
 
     const renderJSUrl = pluginCtx.engine.props.renderJSUrl || './render.umd.js';
     const advanceCustomProps: LayoutPropsType = {};

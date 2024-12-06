@@ -5,7 +5,7 @@ import { CMaterials } from '../../../Material';
 import { RenderPropType } from '../../../types/node';
 import { getRandomStr } from '../../../util';
 import { isArray, isPlainObject } from '../../../util/lodash';
-import { DataModelEmitter } from '../../../util/modelEmitter';
+import { DataModelEmitter, DataModelEmitterType } from '../../../util/modelEmitter';
 import { CProp } from './prop';
 
 export type CJSSlotPropDataType = Omit<RenderPropType, 'value'> & {
@@ -49,7 +49,7 @@ export class CSlot {
   nodeType = 'SLOT' as const;
   private rawData: RenderPropType;
   parent: CProp | null;
-  emitter = DataModelEmitter;
+  emitter: DataModelEmitterType = DataModelEmitter;
   private data: CJSSlotPropDataType;
   id: string;
   materialsMode: CMaterials;

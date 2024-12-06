@@ -1,5 +1,4 @@
 import { build } from 'vite';
-
 import { buildConfig } from '../config/vite.build';
 
 export const doBuild = async () => {

@@ -18,7 +18,7 @@ export const PropertyPanel = (props: { node: CNode | CRootNode | null; pluginCtx
     };
     handel();
     node?.emitter.on('onNodeChange', handel);
-    () => {
+    return () => {
       node?.emitter.off('onNodeChange', handel);
     };
   }, [node]);

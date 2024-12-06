@@ -51,7 +51,9 @@ export class StoreManager {
     }
   }
 
-  // storeManger 赋值以及 获取需要做转换
+  /**
+   * storeManger 赋值以及 获取需要做转换
+   */
   getStateSnapshot() {
     const res: Record<string, any> = {};
     this.storeMap.forEach((_, key) => {

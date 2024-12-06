@@ -55,40 +55,38 @@ export const getDefaultToolbarItem = (props: DefaultSelectToolBarProps) => {
   });
 
   const copyItem = (
-    <div className={styles.item} onClick={() => toCopy(currentNode?.id || '')}>
+    <div className={styles.item} onClick={() => toCopy(currentNode?.id || '')} key={'CopyOutlined'}>
       <CopyOutlined />
     </div>
   );
 
   const deleteItem = (
-    <div className={styles.item} onClick={() => toDelete(currentNode?.id || '')}>
+    <div className={styles.item} onClick={() => toDelete(currentNode?.id || '')} key={'DeleteOutlined'}>
       <DeleteOutlined />
     </div>
   );
 
   const visibleItem = (
-    <div className={styles.item} onClick={() => toHidden(currentNode?.id || '')}>
+    <div className={styles.item} onClick={() => toHidden(currentNode?.id || '')} key={'EyeInvisibleOutlined'}>
       <EyeInvisibleOutlined />
     </div>
   );
 
   const nodeLayout = (
-    <LayoutSelect dataSource={parentNodeItems.reverse()} onSelect={toSelectNode}>
+    <LayoutSelect dataSource={parentNodeItems.reverse()} onSelect={toSelectNode} key={'LayoutSelect'}>
       <div>{currentNode?.value.title || currentNode?.material?.value.title || 'Empty'}</div>
     </LayoutSelect>
   );
 
   return {
-    copyItem,
-    deleteItem,
-    visibleItem,
-    nodeLayout,
+    map: { copyItem, deleteItem, visibleItem, nodeLayout },
+    list: [nodeLayout, visibleItem, copyItem, deleteItem],
   };
 };
 
 export const DefaultSelectToolBar = (props: DefaultSelectToolBarProps) => {
   const { copyItem, deleteItem, visibleItem, nodeLayout } = useMemo(() => {
-    return getDefaultToolbarItem(props);
+    return getDefaultToolbarItem(props).map;
   }, [props]);
 
   return (

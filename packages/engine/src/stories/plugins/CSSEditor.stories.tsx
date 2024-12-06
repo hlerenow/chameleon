@@ -8,6 +8,7 @@ import mitt from 'mitt';
 import customI18n from '@/i18n';
 import { BasePage } from '@chamn/demo-page';
 import { CSSEditor } from '@/component/CSSEditor';
+import { AssetsPackageListManager } from '@/core/assetPackagesListManage';
 
 const TargetComponent = CSSEditor;
 
@@ -62,7 +63,6 @@ const node = new CNode({
 });
 
 const pluginManager = new PluginManager({
-  assets: [],
   emitter: mitt(),
   getWorkbench: () => {
     return {} as any;
@@ -70,6 +70,7 @@ const pluginManager = new PluginManager({
   i18n: customI18n,
   pageModel: new CPage(BasePage),
   engine: {} as any,
+  assetsPackageListManager: new AssetsPackageListManager([]),
 });
 
 const ctx = pluginManager.createPluginCtx();

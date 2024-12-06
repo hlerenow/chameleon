@@ -5,3 +5,4 @@ export * from './ClassNameEditor';
 export * from './CustomSchemaForm';
 export * from './MonacoEditor';
 export * from './Workbench';
+export * from './DesignerSizer';

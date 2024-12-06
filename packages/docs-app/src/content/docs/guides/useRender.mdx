@@ -1,0 +1,43 @@
+---
+title: 接入渲染器
+descripttopn:
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem, FileTree, CardGrid, LinkCard, Steps, Code } from '@astrojs/starlight/components';
+
+import RenderSourceCode from '../../../codeSnippets/render.tsx?raw';
+
+接入编辑器之后，通过页面编辑，最终倒出后可以得到一个页面的 schema json 协议，如何将协议重新渲染为一个可以运行的 React 页面呢?
+
+## 安装
+
+<Tabs>
+  <TabItem label="npm">```shell npm i @chamn/render ```</TabItem>
+  <TabItem label="pnpm">```shell pnpm i @chamn/render ```</TabItem>
+  <TabItem label="yarn">```shell yarn i @chamn/render ```</TabItem>
+</Tabs>
+
+如果已经安装过则不需要安装。
+
+## 用法
+
+<Code code={RenderSourceCode} lang="tsx" title="render.tsx"></Code>
+
+:::info
+如果你在页面中用了一些第三方组件，比如 antd, 你需要手动的 `improt` 相关库，并将其拍平后传递给 `components` 属性
+:::
+
+Example:
+
+```tsx
+import * as Antd from 'antd';
+import * as CustomComponents from 'xxx';
+
+// 每个 key 都是组件名需要唯一，value 表示对应的运行时组件
+const components: Record<string, any> = {
+  ...Antd,
+  ...CustomComponents,
+};
+```

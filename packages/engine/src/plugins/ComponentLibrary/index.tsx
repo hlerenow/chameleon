@@ -1,6 +1,6 @@
 import React, { DOMAttributes } from 'react';
 import { AppstoreAddOutlined } from '@ant-design/icons';
-import { LayoutDragAndDropExtraDataType, Sensor, SensorEventObjType } from '@chamn/layout';
+import { LayoutDragAndDropExtraDataType, Sensor } from '@chamn/layout';
 import { Tabs } from 'antd';
 import { CPlugin, CPluginCtx } from '../../core/pluginManager';
 import localize from './localize';
@@ -131,6 +131,7 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
     const boxSensor = new Sensor<LayoutDragAndDropExtraDataType>({
       name: 'ComponentListBox',
       container: containerRef.current,
+      mainDocument: document,
     });
 
     this.boxSensor = boxSensor;
@@ -189,7 +190,6 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
           if (selectedNode.isContainer()) {
             pos = 'CHILD_END';
             dropNode = selectedNode;
-            pageModel.addNode(newNode, selectedNode as never, pos);
           } else {
             pos = 'AFTER';
             dropNode = selectedNode;

@@ -3,6 +3,46 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.1](https://github.com/ByteCrazy/chameleon/compare/v0.1.0...v0.1.1) (2024-11-11)
+
+**Note:** Version bump only for package @chamn/model
+
+## [0.1.0](https://github.com/ByteCrazy/chameleon/compare/v0.0.46...v0.1.0) (2024-09-07)
+
+### 👷 Continuous Integration | CI 配置
+
+* **engine, engine-website-app, layout, model:** 🎡 update github ci ([259e9db](https://github.com/ByteCrazy/chameleon/commit/259e9db229576cd09c5aae1f28a2c228927011c7))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **model:** 🐛 fixed export meta repeat ([614bedd](https://github.com/ByteCrazy/chameleon/commit/614beddb464f6e66d1d77bcccd1f9b996702c344))
+
+### ✨ Features | 新功能
+
+* **docs-app, engine, layout, material, model, render:** 🎸 optimize GL layout ([02274b4](https://github.com/ByteCrazy/chameleon/commit/02274b432903dc247c5613873f14715dd806decd))
+* **engine, model:** 🎸 add advanceOptions property ([d75f178](https://github.com/ByteCrazy/chameleon/commit/d75f178fa70d4c49b451dff9dddfb30d4c061196))
+* **engine, model:** 🎸 add hotKey plugin and fixed reloadPage event not trigge ([1cbf1e1](https://github.com/ByteCrazy/chameleon/commit/1cbf1e1a345d94c3b758b26cfbf1ecde69ce051c))
+
+## [0.0.46](https://github.com/ByteCrazy/chameleon/compare/v0.0.45...v0.0.46) (2024-06-30)
+
+**Note:** Version bump only for package @chamn/model
+
+## [0.0.45](https://github.com/ByteCrazy/chameleon/compare/v0.0.44...v0.0.45) (2024-06-30)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **model:** 🐛 fixed addMaterials method logic ([b7b1d14](https://github.com/ByteCrazy/chameleon/commit/b7b1d14737b2b25362809fc15a7b9ae25cba18fc))
+
+## [0.0.44](https://github.com/ByteCrazy/chameleon/compare/v0.0.43...v0.0.44) (2024-06-30)
+
+### ✨ Features | 新功能
+
+* **engine, model, render:** 🎸 optimize addMaterials and fixed inner mat schema ([aa77803](https://github.com/ByteCrazy/chameleon/commit/aa77803c75b203ee2a098fbee143f4a9581e15fa))
+
+## [0.0.43](https://github.com/ByteCrazy/chameleon/compare/v0.0.42...v0.0.43) (2024-06-29)
+
+**Note:** Version bump only for package @chamn/model
+
 ## [0.0.42](https://github.com/ByteCrazy/chameleon/compare/v0.0.41...v0.0.42) (2024-06-01)
 
 **Note:** Version bump only for package @chamn/model

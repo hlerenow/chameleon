@@ -1,6 +1,5 @@
 import { Engine } from '@/index';
-import { AssetPackage, CPage } from '@chamn/model';
-import { i18n } from 'i18next';
+import { CPage } from '@chamn/model';
 import mitt, { Emitter } from 'mitt';
 import { Workbench } from '../component/Workbench';
 import { CustomI18n } from '../i18n';

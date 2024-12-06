@@ -1,1 +1,2 @@
-export * from './Button/index';
+export * from './ReactGridLayout';
+export * from './ReactGridLayout/GridItem';

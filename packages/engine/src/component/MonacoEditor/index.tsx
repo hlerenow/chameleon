@@ -23,17 +23,15 @@ export const MonacoEditor = (props: MonacoEditorProps) => {
   };
 
   return (
-    <>
-      <Editor
-        height="100%"
-        width="100%"
-        defaultLanguage={props.language}
-        defaultValue={props.initialValue}
-        beforeMount={handleEditorBeforeMount}
-        onMount={handleEditorDidMount}
-        options={props.options}
-        onChange={props.onChange}
-      />
-    </>
+    <Editor
+      height="100%"
+      width="100%"
+      defaultLanguage={props.language}
+      defaultValue={props.initialValue}
+      beforeMount={handleEditorBeforeMount}
+      onMount={handleEditorDidMount}
+      options={props.options}
+      onChange={props.onChange}
+    />
   );
 };

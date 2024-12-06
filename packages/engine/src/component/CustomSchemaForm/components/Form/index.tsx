@@ -12,12 +12,15 @@ export type CFormProps = {
 
 const CUSTOM_SETTER_MAP = {};
 
+let updateState = () => {};
+
 export const registerCustomSetter = (customSetterMap: CFormContextData['customSetterMap']) => {
   Object.assign(CUSTOM_SETTER_MAP, customSetterMap);
+  updateState?.();
 };
 export class CForm extends React.Component<CFormProps, CFormContextData> {
   updateContext: (newState: ContextState) => void;
-
+  isMount = false;
   constructor(props: CFormProps) {
     super(props);
     this.updateContext = (newState: ContextState) => {
@@ -27,6 +30,15 @@ export class CForm extends React.Component<CFormProps, CFormContextData> {
       });
       this.props.onValueChange?.(this.formatValue(newState));
     };
+    updateState = () => {
+      if (!this.isMount) {
+        return;
+      }
+      this.setState({
+        customSetterMap: CUSTOM_SETTER_MAP,
+      });
+    };
+    registerCustomSetter(props.customSetterMap || {});
     this.state = {
       formName: props.name,
       formState: props.initialValue ?? {},
@@ -42,6 +54,14 @@ export class CForm extends React.Component<CFormProps, CFormContextData> {
         });
       },
     };
+  }
+
+  componentDidMount(): void {
+    this.isMount = true;
+  }
+
+  componentWillUnmount(): void {
+    this.isMount = false;
   }
 
   getFieldsValue = () => {

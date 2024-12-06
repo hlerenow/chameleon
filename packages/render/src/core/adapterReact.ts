@@ -46,8 +46,9 @@ export class DefineReactAdapter {
   onComponentMount: AdapterOptionType['onComponentMount'];
 
   onComponentDestroy: AdapterOptionType['onComponentDestroy'];
-
-  // 处理 props 钩子
+  /**
+   * 处理 props 钩子, 可以统一拦截 node 的处理，并修改其值
+   */
   processNodeConfigHook?: AdapterOptionType['processNodeConfigHook'];
   getComponent(currentNode: CNode | CRootNode) {
     const componentName = currentNode.value.componentName;
@@ -271,7 +272,7 @@ export class DefineReactAdapter {
       listenerHandle: (() => void)[] = [];
       storeState: StoreApi<any>;
       storeListenDisposeList: (() => void)[] = [];
-      // save dom and media css
+      /** save dom and media css */
       domHeader: HTMLHeadElement | undefined;
       mediaStyleDomMap: Record<string, HTMLStyleElement> = {};
       /** 存储当前节点的一些变量和方法，不具有响应性 */
@@ -287,7 +288,6 @@ export class DefineReactAdapter {
         this.state = nodeModel.value.state || {};
         const nodeName = nodeModel.value.nodeName || nodeModel.id;
         this.nodeName = nodeName;
-
         const nodeStore = that.storeManager.getStore(nodeName);
         if (!nodeStore) {
           // add to global store manager
@@ -326,7 +326,6 @@ export class DefineReactAdapter {
 
       updateState = (newState: any) => {
         this.storeState.setState(newState);
-        this.forceUpdate();
       };
 
       connectStore() {
@@ -382,8 +381,10 @@ export class DefineReactAdapter {
               });
               console.warn(that.storeManager, storeName, 'not exits');
             }
-            const handle = that.storeManager.connect(storeName, () => {
-              this.forceUpdate();
+            const handle = that.storeManager.connect(storeName, (newState) => {
+              this.setState({
+                ...newState,
+              });
             });
             disposeList.push(handle);
           });
@@ -455,7 +456,7 @@ export class DefineReactAdapter {
           that.onGetRef(this.targetComponentRef, nodeModel, this as any);
         }
         that.onComponentMount?.(this, nodeModel);
-        const forceUpdate = () => {
+        const customForceUpdate = () => {
           // nodeName maybe changed
           that.storeManager.setStore(nodeModel.value.nodeName || nodeModel.id, this.storeState);
           this.storeState.setState({
@@ -464,7 +465,8 @@ export class DefineReactAdapter {
           });
           this.rebuildNode();
         };
-        nodeModel.onChange(forceUpdate);
+        // 设计模式使用
+        nodeModel.onChange(customForceUpdate);
       }
 
       rebuildNode = () => {
@@ -515,6 +517,9 @@ export class DefineReactAdapter {
         if (nodeModel.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER) {
           tempContext.globalState = this.state;
           tempContext.updateGlobalState = this.updateState;
+          tempContext.getGlobalState = () => {
+            return this.state;
+          };
         }
 
         const newContext = that.getContext(tempContext, $$context);

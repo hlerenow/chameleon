@@ -6,7 +6,7 @@ import localize from './localize';
 import { MonacoEditor, MonacoEditorInstance } from '../../component/MonacoEditor';
 import styles from './style.module.scss';
 
-export const PLUGIN_NAME = 'GlobalState';
+const PLUGIN_NAME = 'GlobalState';
 const i18nNamespace = `plugin:${PLUGIN_NAME}`;
 
 type GlobalStatePanelProps = {
@@ -24,6 +24,7 @@ const GlobalStatePanel = (props: GlobalStatePanelProps) => {
     editorRef?.current?.setValue(JSON.stringify(rootState, null, 2));
     // 正常情况下, 只有 reloadPage  才需要同步数据
     pluginCtx.pageModel.emitter.on('onReloadPage', (e) => {
+      console.log('onReloadPage 111');
       if (triggerChangeBySelf) {
         triggerChangeBySelf = false;
         return;
@@ -55,9 +56,16 @@ const GlobalStatePanel = (props: GlobalStatePanelProps) => {
           quickSuggestions: false,
           suggestOnTriggerCharacters: false,
           folding: false,
+          comments: {},
         }}
         onDidMount={(editor) => {
           editorRef.current = editor;
+        }}
+        beforeMount={(monaco) => {
+          // monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+          //   validate: true,
+          //   allowComments: true, // 启用注释
+          // });
         }}
         onChange={onValueChange}
       />

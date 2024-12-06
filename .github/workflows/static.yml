@@ -27,29 +27,25 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Use Node.js 16.x
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v3
         with:
-          node-version: 16.14.0
+          node-version: 18.18.0
       - name: Checkout
         uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
         with:
           version: 8
       - run: |
-          pnpm i
-          cd packages/build-script
-          pwd
+          pnpm -v
+          node -v
+          npm -v
+          pnpm install --no-frozen-lockfile
           pnpm run build
-          pnpm link -g
-          cd ../../
-          pnpm run build
-          cd packages/engine
+          cd packages/engine-website-app/dist
           pwd
-          pnpm run build:app
-          cd example
           mkdir documents
-          cp -r  ../../docs-website/build/* ./documents
+          cp -r  ../../docs-app/dist/* ./documents
       - name: current path
         run: pwd
       - name: Setup Pages
@@ -58,7 +54,7 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload entire repository
-          path: 'packages/engine/example'
+          path: 'packages/engine-website-app/dist'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1

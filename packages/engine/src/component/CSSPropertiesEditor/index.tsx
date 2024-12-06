@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { CSSPropertyList } from './cssProperties';
 import styles from './style.module.scss';
 
@@ -41,7 +41,6 @@ export const CSSPropertiesEditor = forwardRef<CSSPropertiesEditorRef, CSSPropert
 
     useEffect(() => {
       if (props.initialValue) {
-        props.initialValue;
         setPropertyList([...props.initialValue]);
       }
     }, []);

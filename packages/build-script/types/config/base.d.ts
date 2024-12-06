@@ -1,4 +1,4 @@
-import { LibraryOptions, UserConfig } from 'vite';
+import { type LibraryOptions, type UserConfig } from 'vite';
 export declare const CLI_ARGS_OBJ: {
     dev: boolean;
     build: boolean;

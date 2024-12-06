@@ -1,3 +1,8 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const bScript = require('../lib/cjs/index');
-bScript.run();
+#!/usr/bin/env node
+
+async function start() {
+  const bScript = await import('../lib/index.mjs');
+  bScript.run();
+}
+
+start();

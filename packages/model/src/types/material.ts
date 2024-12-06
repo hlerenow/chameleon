@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import { isPlainObject } from 'lodash-es';
 import React, { ReactInstance } from 'react';
 import {
@@ -180,7 +179,11 @@ export type ShapeSetterObjType<T extends SetterBasicType = ''> = {
   props?: {
     elements: MaterialPropType<T>[];
     /** 是否可以收缩，默认： true  */
-    collapse?: boolean;
+    collapse?:
+      | boolean
+      | {
+          open?: boolean;
+        };
   } & {};
   initialValue: any;
   /** props reference CSetterProps<T> from engine */
@@ -191,6 +194,11 @@ export type ShapeSetterObjType<T extends SetterBasicType = ''> = {
 export type ArraySetterObjType<T extends SetterBasicType = ''> = {
   componentName: ComplexSetterTypeEnum.ARRAY_SETTER | `${ComplexSetterTypeEnum.ARRAY_SETTER}` | T | `${T}`;
   props?: {
+    collapse?:
+      | boolean
+      | {
+          open?: boolean;
+        };
     item: {
       setters: SetterType<T>[];
       initialValue: any;
@@ -476,6 +484,7 @@ export type AdvanceCustom = {
       visibleItem: React.ReactElement;
       nodeLayout: React.ReactElement;
     };
+    toolBarItemList: React.ReactElement[];
   }) => React.ReactElement;
   selectRectViewRender?: (props: CustomViewRenderProps) => React.ReactElement;
   hoverRectViewRender?: (props: CustomViewRenderProps) => React.ReactElement;
@@ -502,6 +511,10 @@ export type AdvanceCustom = {
     visual?: boolean;
     state?: boolean;
     advance?: boolean;
+    advanceOptions?: {
+      /** 是否展示 loop 选项 */
+      loop?: boolean;
+    };
     property?: boolean;
     customTabs?: {
       /** 唯一标识 */

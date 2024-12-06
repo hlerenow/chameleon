@@ -3,6 +3,42 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.1](https://github.com/ByteCrazy/chameleon/compare/v0.1.0...v0.1.1) (2024-11-11)
+
+**Note:** Version bump only for package @chamn/demo-page
+
+## [0.1.0](https://github.com/ByteCrazy/chameleon/compare/v0.0.46...v0.1.0) (2024-09-07)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **demo-page, docs-app, engine, engine-website-app, layout, material:** 🐛 fixed material meta not correct ([55b755c](https://github.com/ByteCrazy/chameleon/commit/55b755ce0c833e594b46447b2d6608cf56f7a593))
+
+### ✨ Features | 新功能
+
+* **build-script, demo-page, engine, layout, render:** 🎸 add lang switch ([29da65e](https://github.com/ByteCrazy/chameleon/commit/29da65ee1aa09550d910ddfbbcb9d8b4db983373))
+* **demo-page, engine, engine-website-app, material:** 🎸 add designerSizer and fixed GridItem bug ([4665aed](https://github.com/ByteCrazy/chameleon/commit/4665aed300d54c77be4abcb9a8cc0f1710ac2145))
+* **demo-page, engine, render:** 🎸 add getGlobalState and optimize node udpate ([4d3934f](https://github.com/ByteCrazy/chameleon/commit/4d3934fd8febe616a44e5d39da0e10964f3c800d))
+
+### 📝 Documentation | 文档
+
+* **demo-page, engine-website-app:** ✏️ demo app add switch page ([c098997](https://github.com/ByteCrazy/chameleon/commit/c098997e2c53bbe135ce263fcd1912ddc53146fe))
+
+## [0.0.46](https://github.com/ByteCrazy/chameleon/compare/v0.0.45...v0.0.46) (2024-06-30)
+
+**Note:** Version bump only for package @chamn/demo-page
+
+## [0.0.45](https://github.com/ByteCrazy/chameleon/compare/v0.0.44...v0.0.45) (2024-06-30)
+
+**Note:** Version bump only for package @chamn/demo-page
+
+## [0.0.44](https://github.com/ByteCrazy/chameleon/compare/v0.0.43...v0.0.44) (2024-06-30)
+
+**Note:** Version bump only for package @chamn/demo-page
+
+## [0.0.43](https://github.com/ByteCrazy/chameleon/compare/v0.0.42...v0.0.43) (2024-06-29)
+
+**Note:** Version bump only for package @chamn/demo-page
+
 ## [0.0.42](https://github.com/ByteCrazy/chameleon/compare/v0.0.41...v0.0.42) (2024-06-01)
 
 **Note:** Version bump only for package @chamn/demo-page

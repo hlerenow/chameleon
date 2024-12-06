@@ -1,11 +1,12 @@
 {
   "name": "@chamn/engine",
-  "version": "0.0.42",
+  "version": "0.1.1",
+  "type": "module",
   "files": [
     "dist"
   ],
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "publishConfig": {
     "access": "public"
@@ -22,10 +23,8 @@
   "scripts": {
     "start": "build-script",
     "build": "cross-env BUILD_TYPE=PKG build-script --build",
+    "build:w": "cross-env BUILD_TYPE=PKG build-script --build --watch",
     "build:analyze": "cross-env BUILD_TYPE=PKG  build-script --build --analyze",
-    "build:app": "export NODE_OPTIONS=--max-old-space-size=32768 && cross-env BUILD_TYPE=APP build-script --build",
-    "build:app:analyze": "cross-env BUILD_TYPE=APP build-script --build --analyze",
-    "copyAssets": "",
     "lint": "eslint --ext .tsx,.ts src/",
     "prettier": "prettier --write ./src",
     "test": "jest",
@@ -37,7 +36,7 @@
     "react-dom": ">=16.9.0"
   },
   "dependencies": {
-    "@ant-design/icons": "^4.8.0",
+    "@ant-design/icons": "^5.4.0",
     "@chamn/layout": "workspace:*",
     "@chamn/model": "workspace:*",
     "@chamn/render": "workspace:*",
@@ -52,6 +51,7 @@
     "consola": "^2.15.3",
     "css": "^3.0.0",
     "i18next": "^22.1.5",
+    "loadjs": "^4.3.0",
     "lodash-es": "^4.17.21",
     "mitt": "^3.0.0",
     "monaco-editor": "^0.41.0",
@@ -74,8 +74,9 @@
     "@types/color": "^3.0.4",
     "@types/consola": "^2.2.5",
     "@types/css": "^0.0.34",
+    "@types/loadjs": "^4.0.4",
     "@types/lodash-es": "^4.17.6",
-    "@types/react": "^18.0.15",
+    "@types/react": "^18.2.0",
     "@types/react-color": "^3.0.6",
     "@types/react-dom": "^18.0.6",
     "babel-loader": "^8.3.0",

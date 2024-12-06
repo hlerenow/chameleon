@@ -1,5 +1,4 @@
 import { createServer } from 'vite';
-
 import { devConfig } from '../config/vite.dev';
 
 export const doDev = async () => {

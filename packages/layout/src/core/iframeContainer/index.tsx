@@ -9,6 +9,7 @@ export class IFrameContainer {
   readyQueue: (() => void)[] = [];
   errorQueue: ((e: { msg: string }) => void)[] = [];
   loadError: any;
+  containerDom?: HTMLDivElement;
   constructor() {
     this.iframe = this.createIframe();
     this.iframeStatus = 'INIT';
@@ -37,6 +38,11 @@ export class IFrameContainer {
             width: 100%;
             height: 100%;
           }
+          div {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
         </style>
       </head>
       <body>
@@ -46,7 +52,8 @@ export class IFrameContainer {
     return template;
   }
 
-  load(containerDom: HTMLElement) {
+  load(containerDom: HTMLDivElement) {
+    this.containerDom = containerDom;
     if (this.iframe) {
       containerDom.appendChild(this.iframe);
     } else {

@@ -7,6 +7,7 @@ import { PluginManager } from '@/core/pluginManager';
 import mitt from 'mitt';
 import customI18n from '@/i18n';
 import { BasePage } from '@chamn/demo-page';
+import { AssetsPackageListManager } from '@/core/assetPackagesListManage';
 
 const TargetComponent = VisualPanelPlus;
 
@@ -61,7 +62,7 @@ const node = new CNode({
 });
 
 const pluginManager = new PluginManager({
-  assets: [],
+  assetsPackageListManager: new AssetsPackageListManager([]),
   emitter: mitt(),
   getWorkbench: () => {
     return {} as any;
@@ -72,4 +73,4 @@ const pluginManager = new PluginManager({
 });
 
 const ctx = pluginManager.createPluginCtx();
-export const Default = () => <Template node={node} pluginCtx={ctx}></Template>;
+export const Default = () => <Template node={node} pluginCtx={ctx} activeTab={''}></Template>;

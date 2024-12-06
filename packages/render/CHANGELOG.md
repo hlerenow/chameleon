@@ -3,6 +3,42 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.1](https://github.com/ByteCrazy/chameleon/compare/v0.1.0...v0.1.1) (2024-11-11)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **render:** 🐛 fixeds useRender not memory ([d579bfa](https://github.com/ByteCrazy/chameleon/commit/d579bfa401c39810a5dadc55e3fa1f3a0f407322))
+
+## [0.1.0](https://github.com/ByteCrazy/chameleon/compare/v0.0.46...v0.1.0) (2024-09-07)
+
+### 👷 Continuous Integration | CI 配置
+
+* **build-script, docs-website, material, render:** 🎡 not build docs ([37aa10a](https://github.com/ByteCrazy/chameleon/commit/37aa10abf0324f3465a6921a9a014875e9500f8f))
+
+### ✨ Features | 新功能
+
+* **build-script, demo-page, engine, layout, render:** 🎸 add lang switch ([29da65e](https://github.com/ByteCrazy/chameleon/commit/29da65ee1aa09550d910ddfbbcb9d8b4db983373))
+* **demo-page, engine, render:** 🎸 add getGlobalState and optimize node udpate ([4d3934f](https://github.com/ByteCrazy/chameleon/commit/4d3934fd8febe616a44e5d39da0e10964f3c800d))
+* **docs-app, engine, layout, material, model, render:** 🎸 optimize GL layout ([02274b4](https://github.com/ByteCrazy/chameleon/commit/02274b432903dc247c5613873f14715dd806decd))
+
+## [0.0.46](https://github.com/ByteCrazy/chameleon/compare/v0.0.45...v0.0.46) (2024-06-30)
+
+**Note:** Version bump only for package @chamn/render
+
+## [0.0.45](https://github.com/ByteCrazy/chameleon/compare/v0.0.44...v0.0.45) (2024-06-30)
+
+**Note:** Version bump only for package @chamn/render
+
+## [0.0.44](https://github.com/ByteCrazy/chameleon/compare/v0.0.43...v0.0.44) (2024-06-30)
+
+### ✨ Features | 新功能
+
+* **engine, model, render:** 🎸 optimize addMaterials and fixed inner mat schema ([aa77803](https://github.com/ByteCrazy/chameleon/commit/aa77803c75b203ee2a098fbee143f4a9581e15fa))
+
+## [0.0.43](https://github.com/ByteCrazy/chameleon/compare/v0.0.42...v0.0.43) (2024-06-29)
+
+**Note:** Version bump only for package @chamn/render
+
 ## [0.0.42](https://github.com/ByteCrazy/chameleon/compare/v0.0.41...v0.0.42) (2024-06-01)
 
 **Note:** Version bump only for package @chamn/render

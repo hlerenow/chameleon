@@ -1,13 +1,17 @@
 /* eslint-disable react/display-name */
 import { CSSSizeInput } from '@/component/CSSSizeInput';
-import { Row, Col, ColorPicker, Radio } from 'antd';
+import { Row, Col, Radio } from 'antd';
 import styles from '../style.module.scss';
-import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { DEFAULT_PRESET_COLORS } from '@/config/colorPickerColorList';
 import clsx from 'clsx';
 import { InputCommonRef } from '../type';
+import { pick } from 'lodash-es';
+import { CustomColorPicker, CustomColorPickerRef } from '@/component/CustomColorPicker';
 
-type Value = Record<'font-size' | 'color' | 'text-align' | 'font-weight', string>;
+const FONT_CSS_KEY_LIST = ['font-size', 'color', 'text-align', 'font-weight'] as const;
+type FontKeyType = typeof FONT_CSS_KEY_LIST[number];
+type Value = Record<FontKeyType, string>;
 
 export type FontInputProps = {
   initialValue?: Value;
@@ -43,7 +47,7 @@ const getEmptyVal = () => ({
 
 export const FontInput = forwardRef<InputCommonRef, FontInputProps>((props, ref) => {
   const [innerVal, setInnerVal] = useState<Value>(props.initialValue ?? getEmptyVal());
-
+  const colorRef = useRef<CustomColorPickerRef>(null);
   const updateInnerVal = useCallback(
     (newVal: Partial<Value>, noTrigger?: boolean) => {
       setInnerVal((oldVal) => {
@@ -65,11 +69,19 @@ export const FontInput = forwardRef<InputCommonRef, FontInputProps>((props, ref)
     () => {
       return {
         setValue: (newVal) => {
-          console.log('🚀 ~ file: index.tsx:68 ~ FontInput ~ newVal:', newVal);
+          colorRef.current?.updateColor(newVal?.color || '');
           updateInnerVal(
             {
               ...getEmptyVal(),
-              ...newVal,
+              ...pick(newVal, FONT_CSS_KEY_LIST),
+            },
+            true
+          );
+        },
+        setEmptyValue: () => {
+          updateInnerVal(
+            {
+              ...getEmptyVal(),
             },
             true
           );
@@ -92,14 +104,13 @@ export const FontInput = forwardRef<InputCommonRef, FontInputProps>((props, ref)
           }}
         >
           <span className={clsx([styles.label])}>Color:</span>
-          <ColorPicker
-            key={realValue.color}
+          <CustomColorPicker
+            ref={colorRef}
             showText={true}
             size="small"
-            value={realValue.color || ''}
-            onChangeComplete={(color) => {
+            onChange={(color) => {
               updateInnerVal({
-                color: color.toRgbString(),
+                color: color,
               });
             }}
             presets={DEFAULT_PRESET_COLORS}

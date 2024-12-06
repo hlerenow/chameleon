@@ -5,7 +5,7 @@ import { PLUGIN_NAME } from './config';
 import { Designer } from './components/Canvas';
 import { DesignerPluginType } from './type';
 
-export const DesignerPlugin: DesignerPluginType = (ctx) => {
+export const DesignerPlugin: DesignerPluginType = () => {
   const designerRef = React.createRef<Designer>();
   return {
     name: PLUGIN_NAME,
@@ -19,6 +19,21 @@ export const DesignerPlugin: DesignerPluginType = (ctx) => {
     },
     export: () => {
       return {
+        setCanvasWidth(width: number | string) {
+          const iframeContainer = designerRef.current?.getIframeDom();
+
+          if (iframeContainer?.containerDom) {
+            let newW = width;
+            if (typeof width === 'number') {
+              newW = `${width}px`;
+            }
+            iframeContainer.containerDom.style.width = String(newW);
+            iframeContainer.containerDom.style.margin = '0 auto';
+          }
+        },
+        getIframeDom() {
+          return designerRef.current?.getIframeDom();
+        },
         getInstance: () => {
           return designerRef.current;
         },
@@ -40,8 +55,8 @@ export const DesignerPlugin: DesignerPluginType = (ctx) => {
         updatePage: (page: CPageDataType | CPage) => {
           designerRef.current?.layoutRef.current?.designRenderRef?.current?.rerender(page);
         },
-        reload: ({ assets } = {}) => {
-          designerRef.current?.reloadRender({ assets });
+        reload: () => {
+          designerRef.current?.reloadRender();
         },
         getComponentInstances: (id: string) => {
           return designerRef.current?.layoutRef.current?.designRenderRef.current?.getInstancesById(id) || [];

@@ -1,6 +1,6 @@
 import { Pointer } from './common';
 import { SensorEventType, Sensor, SensorEventObjType } from './sensor';
-import mitt from 'mitt';
+import mitt, { Emitter } from 'mitt';
 import { BaseDragAndDropEventType } from '../../types/dragAndDrop';
 import { debounce } from 'lodash-es';
 
@@ -34,7 +34,7 @@ export class DragAndDrop<E = Record<string, any>> {
   currentSensor: Sensor | null = null;
   currentState: 'NORMAL' | 'DRAGGING' | 'CANCEL' = 'NORMAL';
   dragStartObj: SensorEventType['mouseDown'] | null = null;
-  emitter = mitt<DragAndDropEventType<E>>();
+  emitter: Emitter<DragAndDropEventType<E>> = mitt<DragAndDropEventType<E>>();
   /** 拖动结束后是否可以触发点击事件 */
   canTriggerClick = true;
   /** 存储需要被恢复的事件列表 */

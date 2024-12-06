@@ -1,6 +1,6 @@
 import { checkComplexData } from '../util/dataCheck';
 import { ComponentMetaType, CPageDataType, CPageDataTypeDescribe } from '../types/page';
-import { DataModelEmitter } from '../util/modelEmitter';
+import { DataModelEmitter, DataModelEmitterType } from '../util/modelEmitter';
 import { CRootNode } from './RootNode';
 import { ExportType, ExportTypeEnum } from '../const/schema';
 import { CMaterials } from '../Material';
@@ -49,7 +49,7 @@ export type InsertNodePosType = 'BEFORE' | 'AFTER' | 'CHILD_START' | 'CHILD_END'
 export class CPage {
   nodeType = 'PAGE' as const;
   rawData: CPageDataType;
-  emitter = DataModelEmitter;
+  emitter: DataModelEmitterType = DataModelEmitter;
   data: CPpageDataModelType;
   parent: null | undefined;
   materialsModel: CMaterials;
@@ -80,10 +80,12 @@ export class CPage {
     });
   }
 
-  reloadPage(data: CPageDataType) {
+  reloadPage(data?: CPageDataType) {
     const oldData = this.data;
-    this.rawData = JSON.parse(JSON.stringify(data));
-    this.data = parsePage(data, this, this.materialsModel);
+    if (data) {
+      this.rawData = JSON.parse(JSON.stringify(data));
+      this.data = parsePage(data, this, this.materialsModel);
+    }
     this.emitter.emit('onReloadPage', {
       value: this.data,
       preValue: oldData,

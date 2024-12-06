@@ -13,57 +13,60 @@ export function RenderDemo() {
   SamplePage;
   BasePage;
   const [page] = useState(
-    new CPage(BasePage, {
+    new CPage(SamplePage, {
       materials: Material,
     })
   );
   (window as any).__CPAGE_MODEL = page;
   const renderHandle = useRender();
   (window as any).RENDER_HANDLE = renderHandle;
+  // useEffect(() => {
+  //   const node = page.getNode('9g9ohd');
+  //   console.log('🚀 ~ file: RenderDemo.tsx:25 ~ useEffect ~ node:', node);
+  //   if (!node) {
+  //     return;
+  //   }
+  //   node.value.methods = [
+  //     {
+  //       name: 'testMethod',
+  //       define: {
+  //         type: 'FUNCTION',
+  //         value: 'function () { console.log("$$context", $$context);}',
+  //       },
+  //     },
+  //   ];
+  //   node.updateValue();
+
+  //   // setTimeout(() => {
+  //   //   const newNode = page.createNode({
+  //   //     componentName: 'Button',
+  //   //     children: ['动态添加的按钮'],
+  //   //   });
+  //   //   const boxNode = page.value.componentsTree.value.children[1];
+  //   //   const [node] = page.value.componentsTree.value.children.splice(3, 1);
+  //   //   page.value.componentsTree.updateValue();
+  //   //   console.log(
+  //   //     '🚀 ~ file: dev.tsx ~ line 70 ~ setTimeout ~ boxNode',
+  //   //     boxNode
+  //   //   );
+
+  //   //   boxNode.value.children.push(node, newNode);
+
+  //   //   boxNode.updateValue();
+  //   //   const tableNode = page.getNode('3');
+  //   //   console.log(tableNode);
+  //   //   tableNode?.props.columns.updateValue();
+  //   // }, 500);
+
+  //   console.log(page.export());
+  //   console.log(page);
+  //   page?.moveNodeById('999', '5', 'BEFORE');
+  //   console.log(page);
+
+  //   page.export();
+  // }, []);
   useEffect(() => {
-    const node = page.getNode('9g9ohd');
-    console.log('🚀 ~ file: RenderDemo.tsx:25 ~ useEffect ~ node:', node);
-    if (!node) {
-      return;
-    }
-    node.value.methods = [
-      {
-        name: 'testMethod',
-        define: {
-          type: 'FUNCTION',
-          value: 'function () { console.log("$$context", $$context);}',
-        },
-      },
-    ];
-    node.updateValue();
-
-    // setTimeout(() => {
-    //   const newNode = page.createNode({
-    //     componentName: 'Button',
-    //     children: ['动态添加的按钮'],
-    //   });
-    //   const boxNode = page.value.componentsTree.value.children[1];
-    //   const [node] = page.value.componentsTree.value.children.splice(3, 1);
-    //   page.value.componentsTree.updateValue();
-    //   console.log(
-    //     '🚀 ~ file: dev.tsx ~ line 70 ~ setTimeout ~ boxNode',
-    //     boxNode
-    //   );
-
-    //   boxNode.value.children.push(node, newNode);
-
-    //   boxNode.updateValue();
-    //   const tableNode = page.getNode('3');
-    //   console.log(tableNode);
-    //   tableNode?.props.columns.updateValue();
-    // }, 500);
-
-    console.log(page.export());
-    console.log(page);
-    page?.moveNodeById('999', '5', 'BEFORE');
-    console.log(page);
-
-    page.export();
+    console.log('11111', Date.now());
   }, []);
 
   return (

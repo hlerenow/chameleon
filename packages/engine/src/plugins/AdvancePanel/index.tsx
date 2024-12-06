@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { CMaterialPropsType, CNode, CRootNode } from '@chamn/model';
 import { CustomSchemaForm, CustomSchemaFormInstance, CustomSchemaFormProps } from '../../component/CustomSchemaForm';
 import { CPluginCtx } from '../../core/pluginManager';
@@ -150,7 +150,23 @@ const properties: CMaterialPropsType = [
 export const AdvancePanel = (props: AdvancePanelProps) => {
   const { node } = props;
 
+  const innerProperties = useMemo(() => {
+    // 如果元素是容器不允许 loop, 或者主动指定不然 loop
+    const canLoop =
+      !node?.material?.value.advanceCustom?.rightPanel?.advanceOptions?.loop === false ||
+      !node?.material?.value.isContainer;
+
+    if (!canLoop) {
+      return properties.filter((el) => (el as any)?.name !== 'loop');
+    }
+
+    return properties;
+  }, [node?.id]);
+
   const onSetterChange: CustomSchemaFormProps['onSetterChange'] = (keyPaths, setterName) => {
+    if (!node) {
+      return;
+    }
     node.value.configure = node.value.configure || {};
     node.value.configure.advanceSetter = node.value.configure.advanceSetter || {};
     node.value.configure.advanceSetter[keyPaths.join('.')] = {
@@ -159,13 +175,13 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
     };
   };
 
-  const loopObj = node.value.loop;
+  const loopObj = node?.value.loop;
   const formRef = useRef<CustomSchemaFormInstance>(null);
 
   useEffect(() => {
     const newValue = {
-      id: node.id,
-      condition: node.value.condition || true,
+      id: node?.id,
+      condition: node?.value.condition || true,
       loop: {
         open: loopObj?.open || false,
         data: loopObj?.data || [],
@@ -174,27 +190,33 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
         key: loopObj?.key || '',
         name: loopObj?.name || '',
       },
-      refId: node.value.refId,
-      nodeName: node.value.nodeName,
+      refId: node?.value.refId,
+      nodeName: node?.value.nodeName,
     };
     formRef.current?.setFields(newValue);
   }, [node]);
 
   const onValueChange = (newVal: { refId: string; loop: any; condition: any; nodeName: any }) => {
+    if (!node) {
+      return;
+    }
     node.value.loop = newVal.loop;
     node.value.condition = newVal.condition;
     node.value.refId = newVal.refId;
     node.value.nodeName = newVal.nodeName;
-
     node.updateValue();
   };
+  if (!node) {
+    return <></>;
+  }
+
   return (
     <div className={styles.advanceBox}>
       <CustomSchemaForm
         key={node.id}
         defaultSetterConfig={node.value.configure?.advanceSetter || {}}
         onSetterChange={onSetterChange}
-        properties={properties}
+        properties={innerProperties}
         initialValue={{}}
         ref={formRef}
         onValueChange={onValueChange}
