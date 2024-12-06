@@ -38,6 +38,11 @@ export class IFrameContainer {
             width: 100%;
             height: 100%;
           }
+          div {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
         </style>
       </head>
       <body>
