@@ -52,7 +52,7 @@ export function DropAnchor(props: DropAnchorPropsType<LayoutDragAndDropExtraData
       return;
     }
     // eslint-disable-next-line react/no-find-dom-node
-    const dom = ReactDOM.findDOMNode(instance);
+    const dom = instance.getDom();
     if (isDOM(dom)) {
       setTargetDom(dom as unknown as HTMLElement);
     }
@@ -90,7 +90,7 @@ export function DropAnchor(props: DropAnchorPropsType<LayoutDragAndDropExtraData
     }
 
     // eslint-disable-next-line react/no-find-dom-node
-    const dom = ReactDOM.findDOMNode(instance);
+    const dom = instance.getDom();
     if (isDOM(dom)) {
       instanceDom = dom as unknown as HTMLElement;
       setTargetDom(instanceDom);

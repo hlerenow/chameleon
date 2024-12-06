@@ -163,6 +163,11 @@ export class DesignRender extends React.Component<DesignRenderProp> {
         self.instanceManager.remove(node.id, this);
       }
 
+      getDom() {
+        // 返回第一个孩子节点, 模拟 ReactDOM.findDOMNode 行为
+        return this._dom?.children?.[0];
+      }
+
       render() {
         const { children = [], onlyRenderChild, ...restProps } = this.props;
         let newChildren = children;
@@ -196,7 +201,6 @@ export class DesignRender extends React.Component<DesignRenderProp> {
             },
             ref: (ref) => {
               this._dom = ref;
-              console.log('ref', ref);
             },
           },
           [coreEl]
@@ -247,7 +251,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
       if (el?._STATUS === 'DESTROY') {
         return;
       }
-      const dom = ReactDOM.findDOMNode(el);
+      const dom = el.getDom();
       if (dom && !(dom instanceof Text)) {
         if (selector) {
           // 判断是不是数组

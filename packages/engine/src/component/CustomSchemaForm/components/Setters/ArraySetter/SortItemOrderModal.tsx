@@ -77,8 +77,10 @@ export const SortItemOrderModal = ({
     <Modal
       {...modalProps}
       title={`Sort:  ${label} [${keyPaths.join('.')}]`}
-      maskStyle={{
-        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+      styles={{
+        mask: {
+          backgroundColor: 'rgba(0, 0, 0, 0.1)',
+        },
       }}
       modalRender={(modal) => {
         return (
