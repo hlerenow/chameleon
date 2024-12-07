@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.0](https://github.com/ByteCrazy/chameleon/compare/v0.1.1...v0.2.0) (2024-12-07)
+
+### ✨ Features | 新功能
+
+* **build-script, demo-page, engine, engine-website-app, layout, material, model, render:** 🎸 upgrade vite to 6.0 ([bcac2b1](https://github.com/ByteCrazy/chameleon/commit/bcac2b15b83b41a7042ca37368c1b45302ad81d5))
+
 ## [0.1.1](https://github.com/ByteCrazy/chameleon/compare/v0.1.0...v0.1.1) (2024-11-11)
 
 **Note:** Version bump only for package @chamn/model

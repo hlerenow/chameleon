@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.0](https://github.com/ByteCrazy/chameleon/compare/v0.1.1...v0.2.0) (2024-12-07)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **layout:** 🐛 fixed canvas scroll ([9f4c5b9](https://github.com/ByteCrazy/chameleon/commit/9f4c5b9afaf5e3370a72256f2484b9390354f5a3))
+
+### ✨ Features | 新功能
+
+* **build-script, demo-page, engine, engine-website-app, layout, material, model, render:** 🎸 upgrade vite to 6.0 ([bcac2b1](https://github.com/ByteCrazy/chameleon/commit/bcac2b15b83b41a7042ca37368c1b45302ad81d5))
+* **engine, layout, render:** 🎸 replace findDOMNode API ([af2531a](https://github.com/ByteCrazy/chameleon/commit/af2531a095124ac55d4f6dc6896d430f52f5da82))
+
 ## [0.1.1](https://github.com/ByteCrazy/chameleon/compare/v0.1.0...v0.1.1) (2024-11-11)
 
 **Note:** Version bump only for package @chamn/layout
