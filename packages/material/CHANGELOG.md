@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.2](https://github.com/ByteCrazy/chameleon/compare/v0.2.1...v0.2.2) (2024-12-07)
+
+### ✨ Features | 新功能
+
+* **material:** 🎸 optimize RGL ([518402f](https://github.com/ByteCrazy/chameleon/commit/518402ff0d173e60fd31430222aea8e5856fa0da))
+
 ## [0.2.1](https://github.com/ByteCrazy/chameleon/compare/v0.2.0...v0.2.1) (2024-12-07)
 
 ### ✨ Features | 新功能
