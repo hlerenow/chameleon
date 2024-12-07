@@ -132,6 +132,9 @@ export const ReactGridLayoutMeta: CMaterialType = {
         );
       };
     },
+    rightPanel: {
+      visual: false,
+    },
   },
 };
 

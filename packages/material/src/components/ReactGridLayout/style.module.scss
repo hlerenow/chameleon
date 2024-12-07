@@ -1,10 +1,21 @@
 :global(.grid-stack-item) {
   .dragIcon {
     display: none;
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    top: 8px;
+    right: 6px;
+    z-index: 999;
+    box-sizing: border-box;
+    padding: 4px;
+    background-color: rgba(0, 0, 0, 0.1);
+    align-items: center;
+    justify-content: center;
   }
   &:hover {
     .dragIcon {
-      display: block;
+      display: flex;
       cursor: move;
     }
   }

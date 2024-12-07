@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unknown-property */
-import React, { forwardRef, useImperativeHandle } from 'react';
+import React, { CSSProperties, forwardRef, useImperativeHandle } from 'react';
 import { useContext, useEffect, useMemo, useRef } from 'react';
 
 import { CNode } from '@chamn/model';
@@ -25,7 +25,7 @@ export type GridItemPropsType = {
   responsive: ResponsiveItemInfo[];
   node?: CNode;
   dev?: boolean;
-  style?: StyleSheet;
+  style?: CSSProperties;
   $SET_DOM?: (dom: HTMLElement) => void;
   onGetRef?: (
     ref: React.MutableRefObject<GridItemRefType | undefined>
@@ -44,7 +44,6 @@ export const GridItem = forwardRef<GridItemRefType, GridItemPropsType>(
       return props?.node?.id || Math.random().toString(32).slice(3, 9);
     }, []);
 
-    console.log(refDom.current);
     /** 配合设计器使用 */
     if (refDom.current) {
       $SET_DOM?.(refDom.current);
@@ -125,32 +124,21 @@ export const GridItem = forwardRef<GridItemRefType, GridItemPropsType>(
         gs-h={currentSizeAndPosInfo.info.h}
         gs-x={currentSizeAndPosInfo.info.x}
         gs-y={currentSizeAndPosInfo.info.y}
-        {...props}
         style={{
+          position: 'relative',
           overflow: 'hidden',
           padding: '2px',
           boxSizing: 'border-box',
-          ...(props.style || {}),
         }}
       >
         {dev && (
-          <div
-            className={clsx(['grid-drag-handler', styles.dragIcon])}
-            style={{
-              position: 'absolute',
-              top: 8,
-              right: 6,
-              width: '16px',
-              height: '18px',
-              zIndex: 999,
-              padding: '2px',
-              backgroundColor: 'rgba(0,0,0,0.1)',
-            }}
-          >
+          <div className={clsx(['grid-drag-handler', styles.dragIcon])}>
             <svg
               style={{
                 transform: 'rotate(45deg)',
               }}
+              width={16}
+              height={16}
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -165,8 +153,19 @@ export const GridItem = forwardRef<GridItemRefType, GridItemPropsType>(
             </svg>
           </div>
         )}
-
-        {props.children}
+        <div
+          {...props}
+          style={{
+            ...props.style,
+            width: '100%',
+            height: '100%',
+            margin: 0,
+            padding: 0,
+            boxSizing: 'border-box',
+          }}
+        >
+          {props.children}
+        </div>
       </div>
     );
   }
