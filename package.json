@@ -31,7 +31,6 @@
     "@lerna-lite/list": "^1.17.0",
     "@lerna-lite/run": "^1.17.0",
     "@lerna-lite/watch": "^1.17.0",
-    "@storybook/preset-scss": "^1.0.3",
     "@types/jest": "^28.1.6",
     "clsx": "^1.1.1",
     "conventional-changelog-conventionalcommits": "^5.0.0",

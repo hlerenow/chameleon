@@ -26,6 +26,7 @@ export type GridItemPropsType = {
   node?: CNode;
   dev?: boolean;
   style?: StyleSheet;
+  $SET_DOM?: (dom: HTMLElement) => void;
   onGetRef?: (
     ref: React.MutableRefObject<GridItemRefType | undefined>
   ) => object;
@@ -36,12 +37,18 @@ export type GridItemRefType = {
 };
 
 export const GridItem = forwardRef<GridItemRefType, GridItemPropsType>(
-  ({ dev, onGetRef, ...props }, ref) => {
+  ({ dev, onGetRef, $SET_DOM, ...props }, ref) => {
     const ctx = useContext(GridContext);
     const refDom = useRef<HTMLDivElement>(null);
     const id = useMemo(() => {
       return props?.node?.id || Math.random().toString(32).slice(3, 9);
     }, []);
+
+    console.log(refDom.current);
+    /** 配合设计器使用 */
+    if (refDom.current) {
+      $SET_DOM?.(refDom.current);
+    }
 
     useEffect(() => {
       if (ctx.ready) {
@@ -88,6 +95,7 @@ export const GridItem = forwardRef<GridItemRefType, GridItemPropsType>(
         };
       },
     };
+    // 配合  ReactGridItemMeta 文件使用
     onGetRef?.(specialRef);
 
     useImperativeHandle(

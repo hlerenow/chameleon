@@ -15,3 +15,5 @@ export function run() {
     doDev();
   }
 }
+
+export * from './config/base';

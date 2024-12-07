@@ -22,6 +22,7 @@ export type ReactGridLayoutPropsType = {
   staticGrid?: boolean;
   animate?: boolean;
   layout?: ColumnOptions;
+  $SET_DOM?: (dom: HTMLElement) => void;
   breakpoints?: ResponsivePoint[];
   onBreakpointChange?: (breakpoint: { w: number; label: string }) => void;
 };
@@ -31,6 +32,7 @@ export const GridLayout = ({
   staticGrid,
   animate,
   onMount,
+  $SET_DOM,
   ...props
 }: ReactGridLayoutPropsType) => {
   const [ctx, setCtx] = useState<GridContextType>(getDefaultContextValue());
@@ -38,6 +40,7 @@ export const GridLayout = ({
     return Math.random().toString(32).slice(3, 9);
   }, []);
   const gridRef = useRef<GridStack>();
+  const refDom = useRef<HTMLDivElement>(null);
 
   const init = async () => {
     const tempGridStack: typeof GridStack =
@@ -78,6 +81,11 @@ export const GridLayout = ({
       el(grid);
     });
   };
+
+  /** 配合设计器使用 */
+  if (refDom.current) {
+    $SET_DOM?.(refDom.current);
+  }
 
   useEffect(() => {
     if (props.breakpoints) {
@@ -125,7 +133,7 @@ export const GridLayout = ({
 
   return (
     <GridContext.Provider value={finalCtx}>
-      <div id={id} className="grid-stack" {...props}>
+      <div id={id} className="grid-stack" ref={refDom}>
         {props.children}
       </div>
     </GridContext.Provider>

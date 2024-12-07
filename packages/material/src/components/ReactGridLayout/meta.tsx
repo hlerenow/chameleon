@@ -82,6 +82,7 @@ export const ReactGridLayoutMeta: CMaterialType = {
   },
   snippets: snippets,
   advanceCustom: {
+    autoGetDom: false,
     wrapComponent: (Comp, options) => {
       return (props: any) => {
         const [iframeWindow, setIframeWindow] = useState();
@@ -244,6 +245,7 @@ export const ReactGridItemMeta: CMaterialType = {
   },
   disableEditorDragDom: true,
   advanceCustom: {
+    autoGetDom: false,
     toolbarViewRender: ({ node, context, toolBarItemList }) => {
       const [posInfo, setPostInfo] = useState({
         label: '',

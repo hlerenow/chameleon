@@ -393,7 +393,6 @@ export type AdvanceCustomFuncParam = {
 export type EventName = keyof HTMLElementEventMap;
 
 export type AdvanceCustom = {
-  // TODO: 当前节点是否能被放置, 可以控制落点的 UI 样式？
   canDragNode?: (
     node: CNode | CRootNode,
     params: AdvanceCustomFuncParam
@@ -524,6 +523,8 @@ export type AdvanceCustom = {
       show?: (options: { node: CNode | CRootNode | null; pluginCtx: any }) => boolean;
     }[];
   };
+  /** 是否自动获取 元素 dom, 配置 getDom  使用, 默认 为 true */
+  autoGetDom?: boolean;
 };
 
 export type CMaterialType<PropsSetter extends string = ''> = {

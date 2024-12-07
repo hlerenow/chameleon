@@ -11,17 +11,18 @@
   },
   "exports": {
     ".": {
+      "types": "./lib/index.d.ts",
       "module-sync": "./lib/index.mjs",
       "import": "./lib/index.mjs",
       "require": "./lib/index.cjs"
     },
+    "./lib/index.d.ts": "./lib/index.d.ts",
     "./package.json": "./package.json"
   },
-  "types": "types/index.d.ts",
   "scripts": {
     "start": "npm run clean && node scripts/build.cjs",
-    "build:tsc": "tsc ./src/index.ts --declaration --emitDeclarationOnly --esModuleInterop true --skipLibCheck true --outDir ./types ",
-    "build": "npm run clean && npm run build:tsc  && node scripts/build.cjs",
+    "build:tsc": "tsc ./src/index.ts --declaration --emitDeclarationOnly --esModuleInterop true --skipLibCheck true --outDir ./lib ",
+    "build": "npm run clean && npm run build:tsc && node scripts/build.cjs",
     "build:w": "npm run clean && node scripts/build.cjs --watch",
     "clean": "rimraf es lib dist types generated demo coverage output",
     "test": "echo 'skip test'",
@@ -52,7 +53,7 @@
     "merge": "^2.1.1",
     "prettier": "2.7.1",
     "rimraf": "^4.4.1",
-    "rollup-plugin-visualizer": "^5.8.3",
+    "rollup-plugin-visualizer": "^5.12.0",
     "ts-jest": "^28.0.7",
     "ts-node": "^10.9.1",
     "vite": "^6.0.0",

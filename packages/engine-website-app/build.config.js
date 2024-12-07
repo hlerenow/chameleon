@@ -1,21 +1,9 @@
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import pkg from './package.json';
-import { visualizer } from 'rollup-plugin-visualizer';
 import commonConfig from './build.common.config';
 // 开发模式默认读取 index.html 作为开发模式入口
 // entry 作为打包库入口
 const plugins = [];
-
-if (process.env.ANALYZE) {
-  plugins.push(
-    visualizer({
-      open: true,
-      emitFile: false,
-      gzipSize: true,
-      brotliSize: true,
-    })
-  );
-}
 
 plugins.push(
   viteStaticCopy({

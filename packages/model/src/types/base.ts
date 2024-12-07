@@ -106,3 +106,7 @@ export type DropPosType = {
   direction: 'vertical' | 'horizontal';
   pos: 'before' | 'after' | 'current';
 };
+
+export type DesignerInjectProps = {
+  $SET_DOM?: (dom: HTMLElement) => void;
+};

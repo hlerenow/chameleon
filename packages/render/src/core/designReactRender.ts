@@ -164,8 +164,13 @@ export class DesignRender extends React.Component<DesignRenderProp> {
       }
 
       getDom() {
-        // 返回第一个孩子节点, 模拟 ReactDOM.findDOMNode 行为
-        return this._dom?.children?.[0];
+        const autoGetDom = node.material?.value.advanceCustom?.autoGetDom ?? true;
+        if (autoGetDom) {
+          // 返回第一个孩子节点, 模拟 ReactDOM.findDOMNode 行为
+          return this._dom?.children?.[0];
+        } else {
+          return this._dom;
+        }
       }
 
       render() {
@@ -190,21 +195,37 @@ export class DesignRender extends React.Component<DesignRenderProp> {
         if (onlyRenderChild) {
           return newChildren;
         }
+        const autoGetDom = node.material?.value.advanceCustom?.autoGetDom ?? true;
 
-        const coreEl = React.createElement(innerComp, restProps, ...newChildren);
+        if (autoGetDom) {
+          const coreEl = React.createElement(innerComp, restProps, ...newChildren);
 
-        return React.createElement(
-          'div',
-          {
-            style: {
-              display: 'contents',
+          return React.createElement(
+            'div',
+            {
+              style: {
+                display: 'contents',
+              },
+              ref: (ref) => {
+                this._dom = ref;
+              },
             },
-            ref: (ref) => {
-              this._dom = ref;
+            coreEl
+          );
+        } else {
+          const coreEl = React.createElement(
+            innerComp,
+            {
+              ...restProps,
+              //  注入到组件中, 配合设计器使用
+              $SET_DOM: (ref: any) => {
+                this._dom = ref;
+              },
             },
-          },
-          coreEl
-        );
+            ...newChildren
+          );
+          return coreEl;
+        }
       }
     }
     return React.forwardRef(function ErrorWrap(props: any, ref) {

@@ -1,22 +1,11 @@
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import pkg from './package.json';
-import { visualizer } from 'rollup-plugin-visualizer';
 import commonConfig from './build.common.config';
+import { BuildScriptConfig } from '@chamn/build-script';
 
 // 开发模式默认读取 index.html 作为开发模式入口
 // entry 作为打包库入口
-const plugins = [];
-
-if (process.env.ANALYZE) {
-  plugins.push(
-    visualizer({
-      open: true,
-      emitFile: false,
-      gzipSize: true,
-      brotliSize: true,
-    })
-  );
-}
+const plugins: any[] = [];
 
 if (process.env.BUILD_TYPE === 'APP') {
   plugins.push(
@@ -32,7 +21,7 @@ if (process.env.BUILD_TYPE === 'APP') {
   );
 }
 
-const mainConfig = {
+const mainConfig: BuildScriptConfig = {
   libMode: true,
   entry: './src/index.tsx',
   fileName: 'index',

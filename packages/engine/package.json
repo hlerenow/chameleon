@@ -27,9 +27,7 @@
     "build:analyze": "cross-env BUILD_TYPE=PKG  build-script --build --analyze",
     "lint": "eslint --ext .tsx,.ts src/",
     "prettier": "prettier --write ./src",
-    "test": "jest",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "test": "jest"
   },
   "peerDependencies": {
     "react": ">=16.9.0",
@@ -48,7 +46,7 @@
     "ahooks": "^3.7.4",
     "antd": "^5.8.5",
     "color": "^4.2.3",
-    "consola": "^2.15.3",
+    "consola": "^3.2.3",
     "css": "^3.0.0",
     "i18next": "^22.1.5",
     "loadjs": "^4.3.0",
@@ -62,17 +60,7 @@
     "@babel/core": "^7.21.0",
     "@chamn/build-script": "workspace:*",
     "@chamn/demo-page": "workspace:*",
-    "@storybook/addon-docs": "^7.4.0",
-    "@storybook/addon-essentials": "^7.4.0",
-    "@storybook/addon-interactions": "^7.4.0",
-    "@storybook/addon-links": "^7.4.0",
-    "@storybook/addon-onboarding": "^1.0.8",
-    "@storybook/blocks": "^7.4.0",
-    "@storybook/react": "^7.4.0",
-    "@storybook/react-vite": "^7.4.0",
-    "@storybook/testing-library": "^0.2.0",
     "@types/color": "^3.0.4",
-    "@types/consola": "^2.2.5",
     "@types/css": "^0.0.34",
     "@types/loadjs": "^4.0.4",
     "@types/lodash-es": "^4.17.6",
@@ -90,9 +78,7 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^12.1.1",
     "react-router-dom": "^6.7.0",
-    "rollup-plugin-visualizer": "^5.8.3",
-    "sass": "^1.54.0",
-    "storybook": "^7.4.0"
+    "sass": "^1.54.0"
   },
   "config": {},
   "gitHead": "dc3e55fdeb903a8012f6ebd3ebc018ed61ad89db"

@@ -56,9 +56,11 @@ export const FunctionSetter: CSetter<any> = ({
         style={{
           maxWidth: '1300px',
         }}
-        bodyStyle={{
-          minHeight: '500px',
-          height: 'calc(100vh - 280px)',
+        styles={{
+          body: {
+            minHeight: '500px',
+            height: 'calc(100vh - 280px)',
+          },
         }}
       >
         <div style={{ height: '100%' }}>
