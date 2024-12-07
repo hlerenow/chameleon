@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.1](https://github.com/ByteCrazy/chameleon/compare/v0.2.0...v0.2.1) (2024-12-07)
+
+### ✨ Features | 新功能
+
+* **build-script, engine, engine-website-app, material, model, render:** 🎸 fixed RGL component and optimize project struct ([99f0679](https://github.com/ByteCrazy/chameleon/commit/99f0679d93a2fd696034ebed8f1abcd9d9e601d4))
+
 ## [0.2.0](https://github.com/ByteCrazy/chameleon/compare/v0.1.1...v0.2.0) (2024-12-07)
 
 ### 🐛 Bug Fixes | Bug 修复
