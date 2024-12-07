@@ -211,25 +211,17 @@ const BaseComponentMeta: CMaterialType[] = [
           return (
             <div
               style={{
-                display: 'content',
-                position: 'relative',
+                ...props.style,
+                display: 'inline-flex',
               }}
             >
               <Comp
                 {...props}
                 style={{
                   ...props.style,
+                  pointerEvents: 'none',
                 }}
               ></Comp>
-              <div
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  position: 'absolute',
-                  left: 0,
-                  top: 0,
-                }}
-              ></div>
             </div>
           );
         };
