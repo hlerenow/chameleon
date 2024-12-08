@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.3](https://github.com/ByteCrazy/chameleon/compare/v0.2.2...v0.2.3) (2024-12-08)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine:** 🐛 fixed CVideo interactive ([4b1dabf](https://github.com/ByteCrazy/chameleon/commit/4b1dabfe89efbe2a3dfbb642e77ae10e74daaf0e))
+* **engine:** 🐛 fixed hotkey not work sometimes ([d029841](https://github.com/ByteCrazy/chameleon/commit/d029841679183d5cffcbb991cf64cfcfea9de34e))
+
 ## [0.2.2](https://github.com/ByteCrazy/chameleon/compare/v0.2.1...v0.2.2) (2024-12-07)
 
 ### ✨ Features | 新功能
