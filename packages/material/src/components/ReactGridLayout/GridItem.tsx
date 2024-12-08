@@ -125,10 +125,7 @@ export const GridItem = forwardRef<GridItemRefType, GridItemPropsType>(
         gs-x={currentSizeAndPosInfo.info.x}
         gs-y={currentSizeAndPosInfo.info.y}
         style={{
-          position: 'relative',
           overflow: 'hidden',
-          padding: '2px',
-          boxSizing: 'border-box',
         }}
       >
         {dev && (

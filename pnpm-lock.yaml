@@ -540,8 +540,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       gridstack:
-        specifier: ^10.3.1
-        version: 10.3.1
+        specifier: ^11.1.1
+        version: 11.1.1
       loadjs:
         specifier: ^4.3.0
         version: 4.3.0
@@ -5097,8 +5097,8 @@ packages:
     resolution: {integrity: sha512-5v6yZd4JK3eMI3FqqCouswVqwugaA9r4dNZB1wwcmrD02QkV5H0y7XBQW8QwQqEaZY1pM9aqORSORhJRdNK44Q==}
     engines: {node: '>=6.0'}
 
-  gridstack@10.3.1:
-    resolution: {integrity: sha512-Ra82k/88gdeiu3ZP40COS4bI4sGhNQlZAaAQ6szfPfr68zVpsXxiyLKr5zYcTpKX4jjcwyNsNNdcV1tDJc71fA==}
+  gridstack@11.1.1:
+    resolution: {integrity: sha512-St50Ra3FlxxERrMcnRAmxQKE8paXOIwQ88zpafUkzdOYg9Sn/3/Vf4EqCWv8P/hkNIlfW/8VYsk8fk+3DQPVxQ==}
 
   gunzip-maybe@1.4.2:
     resolution: {integrity: sha512-4haO1M4mLO91PW57BMsDFf75UmwoRX0GkdD+Faw+Lr+r/OZrOCS0pIBwOL1xCKQqnQzbNFGgK2V2CpBUPeFNTw==}
@@ -15002,7 +15002,7 @@ snapshots:
       section-matter: 1.0.0
       strip-bom-string: 1.0.0
 
-  gridstack@10.3.1: {}
+  gridstack@11.1.1: {}
 
   gunzip-maybe@1.4.2:
     dependencies:

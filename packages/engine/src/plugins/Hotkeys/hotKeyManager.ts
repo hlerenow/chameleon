@@ -46,7 +46,6 @@ export class HotKeysManager {
         if (this.filterInputElement(event)) return;
 
         const key = event.keyCode || event.which || event.charCode;
-        console.log('🚀 ~ HotKeysManager ~ setTimeout ~ key:', key);
 
         const findKeyIndex = this.downKeyCodeList.findIndex((el) => el === key);
         if (findKeyIndex >= 0) {
@@ -87,7 +86,6 @@ export class HotKeysManager {
     const hotActionId = this.downKeyCodeList.join(this.splitStr);
     // 本次快捷操作回合已经触发过，跳过触发
     const cb = this.hotActionMap[hotActionId];
-    console.log('🚀 ~ HotKeysManager ~ triggerHotKey ~ hotActionId:', hotActionId, cb, this.hotActionMap);
 
     cb?.();
   }
