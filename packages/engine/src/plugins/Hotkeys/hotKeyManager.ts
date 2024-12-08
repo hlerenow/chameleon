@@ -46,6 +46,8 @@ export class HotKeysManager {
         if (this.filterInputElement(event)) return;
 
         const key = event.keyCode || event.which || event.charCode;
+        console.log('🚀 ~ HotKeysManager ~ setTimeout ~ key:', key);
+
         const findKeyIndex = this.downKeyCodeList.findIndex((el) => el === key);
         if (findKeyIndex >= 0) {
           this.downKeyCodeList.splice(findKeyIndex, 1);
@@ -56,9 +58,16 @@ export class HotKeysManager {
     };
     el?.addEventListener('keyup', keyupCb);
 
+    const clearKeyDownList = () => {
+      this.downKeyCodeList = [];
+    };
+    // 修正某些意外情况下，文档失焦，导致快捷键失效等情况
+    window?.addEventListener('blur', clearKeyDownList);
+
     return () => {
       el.removeEventListener('keydown', keydownCb);
       el.removeEventListener('keyup', keyupCb);
+      window?.removeEventListener('blur', clearKeyDownList);
     };
   }
 
@@ -78,6 +87,8 @@ export class HotKeysManager {
     const hotActionId = this.downKeyCodeList.join(this.splitStr);
     // 本次快捷操作回合已经触发过，跳过触发
     const cb = this.hotActionMap[hotActionId];
+    console.log('🚀 ~ HotKeysManager ~ triggerHotKey ~ hotActionId:', hotActionId, cb, this.hotActionMap);
+
     cb?.();
   }
 
