@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.4](https://github.com/ByteCrazy/chameleon/compare/v0.2.3...v0.2.4) (2024-12-08)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, material:** 🐛 fixed RGL init layout not correcnt and upgrade gridstack ([6b66b47](https://github.com/ByteCrazy/chameleon/commit/6b66b47b37e1fcd96602132bb44373a01d5de946))
+
 ## [0.2.3](https://github.com/ByteCrazy/chameleon/compare/v0.2.2...v0.2.3) (2024-12-08)
 
 **Note:** Version bump only for package @chamn/material
