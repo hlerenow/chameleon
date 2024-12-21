@@ -375,7 +375,6 @@ export type CustomViewRenderProps = {
 };
 
 export type AdvanceCustomFuncParam = {
-  // TODO
   dropNode?: CNode | CRootNode;
   viewPortal: {
     setView: (view: React.ReactNode) => void;
@@ -523,7 +522,7 @@ export type AdvanceCustom = {
       show?: (options: { node: CNode | CRootNode | null; pluginCtx: any }) => boolean;
     }[];
   };
-  /** 是否自动获取 元素 dom, 配置 getDom  使用, 默认 为 true */
+  /** 是否自动获取 元素 dom, 配和 getDom  使用, 默认 为 true, 兼容 react 19 废弃 findDomByNode */
   autoGetDom?: boolean;
 };
 
@@ -563,6 +562,7 @@ export type CMaterialType<PropsSetter extends string = ''> = {
     name: string;
     params?: {
       name: string;
+      type: 'string';
       description: string;
     }[];
     template?: string;
