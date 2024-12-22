@@ -303,7 +303,7 @@ export type CMaterialEventType =
       // 事件参数描述
       params?: TFunctionOrEventParameter[];
       // function string
-      template: string;
+      template?: string;
     };
 export const CMaterialEventTypeDescribe = union([
   string(),

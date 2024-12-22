@@ -55,59 +55,60 @@ export enum LogicType {
   JUMP_LINK = 'JUMP_LINK',
   RUN_CODE = 'RUN_CODE',
   REQUEST_API = 'REQUEST_API',
+  /** 调用节点方法 */
+  CALL_NODE_METHOD = 'CALL_NODE_METHOD',
 }
 
 type TDynamicValue = string | number | JSExpressionPropType | FunctionPropType;
 
 export type TLogicJumpLinkItem = {
-  type: LogicType.JUMP_LINK;
+  type: LogicType.JUMP_LINK | `${LogicType.JUMP_LINK}`;
   link: TDynamicValue;
 };
 
 export type TLogicRunCodeItem = {
   /** 函数最好有返回值 */
-  type: LogicType.RUN_CODE;
+  type: LogicType.RUN_CODE | `${LogicType.RUN_CODE}`;
 } & TBaseFunction;
 
+export type TLogicCallNodeMethodItem = {
+  type: LogicType.CALL_NODE_METHOD | `${LogicType.CALL_NODE_METHOD}`;
+  nodeId: string;
+  args?: TDynamicValue[];
+};
+
 export type TLogicRequestAPIItem = {
-  type: LogicType.REQUEST_API;
+  type: LogicType.REQUEST_API | `${LogicType.REQUEST_API}`;
   /** 直接获取具体的 API path, 完整的 host, 特殊场景使用，一般使用 apiId, 可以控制环境切换 */
   api?: TDynamicValue;
   /** 内置 api id, 从全局直接使用变量获取执行函数 */
   apiId?: string;
   /** 默认 get */
   method?: 'POST' | 'GET' | 'PUT' | ' PATCH' | 'DELETE';
+
+  /** 执行前的执行代码，可以用来格式化数据, 需要返回一个数组或者对象，如果是对象根据 key 映射, args 的代码版本 */
+  processParameter?: FunctionPropType;
   args: TDynamicValue[];
+
+  // 请求响应之后的执行代码， 获取到返回值，可以继续执行多个操作
+  afterResponse?: TLogicItemHandler;
   /** 额外的数据 */
   extra?: Record<any, any>;
 };
-export enum ActionNodeType {
-  BLOCK = 'BLOCK',
-  JUDGE = 'JUDGE',
-}
 
-export type TLogicJudeNode = {
-  nodeType: ActionNodeType.JUDGE;
-  condition?: TDynamicValue;
-  trueNode?: TLogicItem[];
-  falseNode?: TLogicItem[];
-};
+export type TLogicItemHandler = (
+  | TLogicJumpLinkItem
+  | TLogicRunCodeItem
+  | TLogicRequestAPIItem
+  | TLogicCallNodeMethodItem
+)[];
 
-export type TLogicBlockNode = {
-  nodeType: ActionNodeType.BLOCK;
-  detail: TLogicJumpLinkItem | TLogicRunCodeItem | TLogicRequestAPIItem;
-  nextNode?: TLogicItem[];
-};
-
-export type TLogicItem = TLogicBlockNode | TLogicJudeNode;
-
-/** 给节点的事件使用 */
-export type ActionPropType = {
+export type TLogicItem = {
   type: CNodePropsTypeEnum.ACTION | `${CNodePropsTypeEnum.ACTION}`;
-  logic: TLogicItem;
+  handler: TLogicItemHandler;
 };
 
-export type SpecialProp = RenderPropType | JSExpressionPropType | FunctionPropType | ActionPropType;
+export type SpecialProp = RenderPropType | JSExpressionPropType | FunctionPropType | TLogicItem;
 
 export type CPropDataType = NormalPropType | SpecialProp | CPropObjDataType;
 
@@ -169,13 +170,19 @@ export type CNodeDataType = {
   id?: string;
   title?: string;
   componentName: string;
-  // 节点类型
+  /** 节点类型 */
   type?: 'dynamic' | 'normal';
-  // 所有的 props 的 value 需要支持表达式 $$context
+  /** 所有的 props 的 value 需要支持表达式 $$context */
   props?: CPropObjDataType;
   state?: Record<string, any>;
+  /** 当前节点的事件处理逻辑，会被压缩为 prop 传入 */
+  eventListener?: {
+    name: string;
+    /** 处理程序 */
+    func: TLogicItem;
+  }[];
   nodeName?: string;
-  // if type is dynamic, schema is required
+  /** TODO: if type is dynamic, schema is required */
   schema?: CPageDataType;
   children?: (string | CNodeDataType)[];
   /**
@@ -184,7 +191,7 @@ export type CNodeDataType = {
    * @type {Record<any, any>}
    */
   configure?: {
-    // 由于一个 prop 可能会有多个设置器，这里用来存储当前使用的那个设置器
+    /** 由于一个 prop 可能会有多个设置器，这里用来存储当前使用的那个设置器 */
     propsSetter?: Record<
       string,
       {
@@ -199,7 +206,7 @@ export type CNodeDataType = {
         setter: string;
       }
     >;
-    // 开发模式下中的临时状态存储
+    /** 开发模式下中的临时状态存储 */
     devState?: {
       condition?: boolean | JSExpressionPropType;
       props?: CPropObjDataType;

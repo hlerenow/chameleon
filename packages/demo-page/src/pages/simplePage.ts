@@ -1,4 +1,4 @@
-import { CPageDataType } from '@chamn/model';
+import { CNodePropsTypeEnum, CPageDataType, LogicType } from '@chamn/model';
 
 export const SamplePage: CPageDataType = {
   version: '1.0.0',
@@ -21,6 +21,52 @@ export const SamplePage: CPageDataType = {
               '"rowState to reshow: " + $$context.stateManager.RowState.state.rowMark',
           },
         },
+      },
+      {
+        componentName: 'Card',
+        props: {
+          onClick: {
+            type: 'FUNCTION',
+            value: `
+              function (a) {
+                console.log(a, $$context);
+                const stateManager = $$context.stateManager;
+                const methods = $$context.getMethods();
+                console.log("🚀 ~ methods:", methods)
+                const state = stateManager.RowState.state;
+                stateManager.RowState.updateState({
+                  rowMark: state.rowMark  +1
+                })
+              }
+            `,
+          },
+        },
+        eventListener: [
+          {
+            name: 'onClick',
+            func: {
+              type: CNodePropsTypeEnum.ACTION,
+              handler: [
+                {
+                  type: 'RUN_CODE',
+                  value: `
+                    console.log('12321312');
+                  `,
+                },
+              ],
+            },
+          },
+        ],
+        methods: [
+          {
+            name: 'getAge',
+            type: 'FUNCTION',
+            value: `function getAge() {
+            console.log(12);
+            }`,
+          },
+        ],
+        children: ['Action login flow Demo'],
       },
       {
         componentName: 'Button',
