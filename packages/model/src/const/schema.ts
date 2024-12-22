@@ -2,6 +2,8 @@ export enum CNodePropsTypeEnum {
   SLOT = 'SLOT',
   FUNCTION = 'FUNCTION',
   EXPRESSION = 'EXPRESSION',
+  ACTION = 'ACTION',
+  EVENT = 'EVENT',
 }
 
 export enum ExportTypeEnum {

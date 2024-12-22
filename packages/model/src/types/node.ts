@@ -36,12 +36,78 @@ export type JSExpressionPropType = {
   value: string;
 };
 
-export type FunctionPropType = {
-  type: CNodePropsTypeEnum.FUNCTION | `${CNodePropsTypeEnum.FUNCTION}`;
+export type TBaseFunction = {
+  /** 编辑器使，存储函数的源码，用于编辑器使用  */
+  sourceCode?: string;
+  /** 编辑器使用 */
+  tsType?: string;
+  /** 可直接在浏览器运行的代码  */
   value: string;
+  /** 函数名称 */
+  name?: string;
 };
 
-export type SpecialProp = RenderPropType | JSExpressionPropType | FunctionPropType;
+export type FunctionPropType = {
+  type: CNodePropsTypeEnum.FUNCTION | `${CNodePropsTypeEnum.FUNCTION}`;
+} & TBaseFunction;
+
+export enum LogicType {
+  JUMP_LINK = 'JUMP_LINK',
+  RUN_CODE = 'RUN_CODE',
+  REQUEST_API = 'REQUEST_API',
+}
+
+type TDynamicValue = string | number | JSExpressionPropType | FunctionPropType;
+
+export type TLogicJumpLinkItem = {
+  type: LogicType.JUMP_LINK;
+  link: TDynamicValue;
+};
+
+export type TLogicRunCodeItem = {
+  /** 函数最好有返回值 */
+  type: LogicType.RUN_CODE;
+} & TBaseFunction;
+
+export type TLogicRequestAPIItem = {
+  type: LogicType.REQUEST_API;
+  /** 直接获取具体的 API path, 完整的 host, 特殊场景使用，一般使用 apiId, 可以控制环境切换 */
+  api?: TDynamicValue;
+  /** 内置 api id, 从全局直接使用变量获取执行函数 */
+  apiId?: string;
+  /** 默认 get */
+  method?: 'POST' | 'GET' | 'PUT' | ' PATCH' | 'DELETE';
+  args: TDynamicValue[];
+  /** 额外的数据 */
+  extra?: Record<any, any>;
+};
+export enum ActionNodeType {
+  BLOCK = 'BLOCK',
+  JUDGE = 'JUDGE',
+}
+
+export type TLogicJudeNode = {
+  nodeType: ActionNodeType.JUDGE;
+  condition?: TDynamicValue;
+  trueNode?: TLogicItem[];
+  falseNode?: TLogicItem[];
+};
+
+export type TLogicBlockNode = {
+  nodeType: ActionNodeType.BLOCK;
+  detail: TLogicJumpLinkItem | TLogicRunCodeItem | TLogicRequestAPIItem;
+  nextNode?: TLogicItem[];
+};
+
+export type TLogicItem = TLogicBlockNode | TLogicJudeNode;
+
+/** 给节点的事件使用 */
+export type ActionPropType = {
+  type: CNodePropsTypeEnum.ACTION | `${CNodePropsTypeEnum.ACTION}`;
+  logic: TLogicItem;
+};
+
+export type SpecialProp = RenderPropType | JSExpressionPropType | FunctionPropType | ActionPropType;
 
 export type CPropDataType = NormalPropType | SpecialProp | CPropObjDataType;
 
@@ -150,10 +216,8 @@ export type CNodeDataType = {
   }[];
   // 组件引用的唯一id
   refId?: string;
-  methods?: {
-    name: string;
-    define: FunctionPropType;
-  }[];
+  // 组件上写的自定义方法, 一般不会使用
+  methods?: FunctionPropType[];
   loop?: {
     open: boolean;
     data: any[] | JSExpressionPropType;

@@ -311,7 +311,7 @@ export class DefineReactAdapter {
         });
         this.connectStore();
 
-        // create node variable space
+        // create node variable space, 存储节点的变量空间
         const variableSpace = that.variableManager.get(nodeName);
         if (variableSpace) {
           this.variableSpace = variableSpace;
@@ -523,7 +523,7 @@ export class DefineReactAdapter {
         }
 
         const newContext = that.getContext(tempContext, $$context);
-        // 需要优先处理处理 methods， methods 内部不能调用 methods 上的方法
+        // 需要优先处理处理 methods， methods 内部不能调用 methods 上的方法, 转换为可执行的方法
         const methodsObj = that.transformProps(
           {
             methods: nodeModel.value.methods,
@@ -534,7 +534,7 @@ export class DefineReactAdapter {
         );
         const methodList = methodsObj.methods as { name: string; define: (...args: any) => void }[];
         const methodMap = methodList.reduce((res, item) => {
-          res[item.name] = item.define;
+          res[item.name] = item;
           return res;
         }, {} as any);
         newContext.methods = methodMap;

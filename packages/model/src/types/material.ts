@@ -286,16 +286,22 @@ export const isSpecialMaterialPropType = <CustomSetter extends SetterBasicType =
   }
 };
 
+export type TFunctionOrEventParameter = {
+  /** 参数名 */
+  name: string;
+  /** 参数的 ts 类型 */
+  tsType?: string;
+  description?: string;
+  example?: string;
+};
+
 export type CMaterialEventType =
   | string
   | {
       name: string;
       descriptions?: string;
       // 事件参数描述
-      params?: {
-        name: string;
-        title: MTitle;
-      }[];
+      params?: TFunctionOrEventParameter[];
       // function string
       template: string;
     };
@@ -305,10 +311,13 @@ export const CMaterialEventTypeDescribe = union([
     name: string(),
     describe: optional(string()),
     params: optional(
-      object({
-        name: string(),
-        description: string(),
-      })
+      array(
+        object({
+          name: string(),
+          description: string(),
+          example: string(),
+        })
+      )
     ),
     template: string(),
   }),
@@ -557,14 +566,13 @@ export type CMaterialType<PropsSetter extends string = ''> = {
       }
     | boolean;
   /** TODO: 组件支持的可被调用的方法， todo： 没有补充验证 类型 describe */
-  actions?: {
+  methods?: {
     title: string;
     // 方法名
     name: string;
-    params?: {
-      name: string;
-      description: string;
-    }[];
+    params?: TFunctionOrEventParameter[];
+    // 方法的 ts 类型定义
+    tsType?: string;
     template?: string;
   }[];
   /** TODO: 组件可能触发的事件 */
