@@ -68,32 +68,36 @@ export const runExpression = (expStr: string, context: any) => {
 
 export const convertCodeStringToFunction = (
   functionStr: string,
+  functionName: string,
   $$context: ContextType,
   storeManager: StoreManager
 ) => {
-  const newFunc = function (...args: any[]) {
-    let codeBody;
+  const funcName = functionName || 'anonymous';
+  const tempObj = {
+    [funcName]: function (...args: any[]) {
+      let codeBody;
 
-    try {
-      codeBody = `
-var $$$__args__$$$ = Array.from(arguments);
-function $$_run_$$() {
-  var $$_f_$$ = ${functionStr || 'function () {}'};
-  var __$$storeManager__ = $$$__args__$$$.pop();
-  var $$context = $$$__args__$$$.pop();
-  $$context.stateManager = __$$storeManager__.getStateSnapshot();
-  return $$_f_$$.apply($$_f_$$, $$$__args__$$$);
-}
-return $$_run_$$();
-      `;
-      const f = new Function(codeBody);
-      f(...args, $$context, storeManager);
-    } catch (e) {
-      console.log(codeBody);
-      console.warn(e);
-    }
+      try {
+        codeBody = `
+  var $$$__args__$$$ = Array.from(arguments);
+  function $$_run_$$() {
+    var $$_f_$$ = ${functionStr || 'function () {}'};
+    var __$$storeManager__ = $$$__args__$$$.pop();
+    var $$context = $$$__args__$$$.pop();
+    $$context.stateManager = __$$storeManager__.getStateSnapshot();
+    return $$_f_$$.apply($$_f_$$, $$$__args__$$$);
+  }
+  return $$_run_$$();
+        `;
+        const f = new Function(codeBody);
+        f(...args, $$context, storeManager);
+      } catch (e) {
+        console.log(codeBody);
+        console.warn(e);
+      }
+    },
   };
-  return newFunc;
+  return tempObj[funcName];
 };
 
 /**
@@ -227,4 +231,19 @@ export const findComponentByChainRefer = (componentReferPath: string, components
   });
 
   return res || (() => `Component [${componentReferPath}] not found`);
+};
+
+/**
+ * 优先访问 sourceObj 上的方法，找不到时访问 targetObj 上的方法
+ * @param sourceObj
+ * @param targetObj
+ * @returns
+ */
+export const getInheritObj = (sourceObj: Record<any, any>, targetObj: Record<any, any>) => {
+  const newObj = {
+    ...sourceObj,
+  };
+
+  (newObj as any).__proto__ = targetObj;
+  return newObj;
 };

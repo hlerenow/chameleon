@@ -23,6 +23,7 @@ import {
   convertCodeStringToFunction,
   findComponentByChainRefer,
   formatSourceStylePropertyName,
+  getInheritObj,
   getMatchVal,
   getNodeCssClassName,
   getObjFromArrayMap,
@@ -33,6 +34,7 @@ import { DYNAMIC_COMPONENT_TYPE, InnerPropList } from '../const';
 import { StoreApi } from 'zustand/vanilla';
 import { StoreManager } from './storeManager';
 import { VariableManager } from './variableManager';
+import { RefManager } from './refManager';
 
 export class DefineReactAdapter {
   renderMode: AdapterOptionType['renderMode'] = 'normal';
@@ -44,6 +46,7 @@ export class DefineReactAdapter {
   onGetRef?: AdapterOptionType['onGetRef'];
   onGetComponent: AdapterOptionType['onGetComponent'];
   onComponentMount: AdapterOptionType['onComponentMount'];
+  refManager: RefManager = new RefManager();
 
   onComponentDestroy: AdapterOptionType['onComponentDestroy'];
   /**
@@ -83,6 +86,7 @@ export class DefineReactAdapter {
     {
       components,
       onGetRef,
+      refManager,
       $$context = {},
       onGetComponent,
       onComponentMount,
@@ -98,6 +102,7 @@ export class DefineReactAdapter {
     this.onComponentMount = onComponentMount;
     this.onComponentDestroy = onComponentDestroy;
     this.processNodeConfigHook = processNodeConfigHook;
+    this.refManager = refManager;
 
     //做一些全局 store 操作
     const rootNode = pageModel.value.componentsTree;
@@ -173,7 +178,6 @@ export class DefineReactAdapter {
           const renderList = tempVal?.map((it: any) => {
             return handleSingleSlot(it);
           });
-          // TODO: 需要做额外的处理
           return (...args: any[]) => {
             return renderList.map((renderItem) => {
               const isClassComponent = shouldConstruct(renderItem.component);
@@ -199,7 +203,7 @@ export class DefineReactAdapter {
         return newVal;
       } else if (isFunction(propVal)) {
         const funcProp = propVal as FunctionPropType;
-        return convertCodeStringToFunction(funcProp.value, parentContext, this.storeManager);
+        return convertCodeStringToFunction(funcProp.value, funcProp.name || '', parentContext, this.storeManager);
       } else if (isPlainObject(propVal)) {
         // 可能是 普通的 props 模型
         let specialPropVal: any = propVal;
@@ -486,6 +490,7 @@ export class DefineReactAdapter {
       render(): React.ReactNode {
         const { $$context, ...props } = this.props;
         const nodeName = nodeModel.value.nodeName || nodeModel.id;
+        const nodeId = nodeModel.id;
         const newOriginalProps = {
           key: nodeModel.id,
           ...nodeModel.props,
@@ -501,10 +506,17 @@ export class DefineReactAdapter {
           getStateObjById: (nodeId: string) => that.storeManager.getStateObj(nodeId),
           stateManager: that.storeManager.getStateSnapshot(),
           getMethods: () => {
-            return that.variableManager.get(nodeName).methods;
+            const methods = that.variableManager.get(nodeId).methods;
+            const nodeRef = that.refManager.get(nodeId).current;
+            const obj = getInheritObj(methods, nodeRef);
+
+            return obj;
           },
           getMethodsById: (nodeId: string) => {
-            return that.variableManager.get(nodeId).methods;
+            const methods = that.variableManager.get(nodeId).methods;
+            const nodeRef = that.refManager.get(nodeId).current;
+            const obj = getInheritObj(methods, nodeRef);
+            return obj;
           },
           getStaticVar: () => {
             return that.variableManager.get(nodeName).staticVar;
@@ -521,9 +533,10 @@ export class DefineReactAdapter {
             return this.state;
           };
         }
-
+        console.log(nodeModel.value.methods, nodeModel.value);
         const newContext = that.getContext(tempContext, $$context);
         // 需要优先处理处理 methods， methods 内部不能调用 methods 上的方法, 转换为可执行的方法
+
         const methodsObj = that.transformProps(
           {
             methods: nodeModel.value.methods,
@@ -532,9 +545,10 @@ export class DefineReactAdapter {
             $$context: newContext,
           }
         );
-        const methodList = methodsObj.methods as { name: string; define: (...args: any) => void }[];
-        const methodMap = methodList.reduce((res, item) => {
-          res[item.name] = item;
+        const originalMethods = nodeModel.value.methods || [];
+        const methodList = methodsObj.methods as ((...args: any) => void)[];
+        const methodMap = originalMethods.reduce((res, item, index) => {
+          res[item.name!] = methodList[index];
           return res;
         }, {} as any);
         newContext.methods = methodMap;

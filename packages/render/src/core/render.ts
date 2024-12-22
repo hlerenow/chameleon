@@ -73,6 +73,7 @@ export class Render extends React.Component<
     const PageRoot = adapter.pageRender(pageModel, {
       libs: {},
       components: finalComponents,
+      refManager: this.refManager,
       onGetRef: this.onGetRef,
       onGetComponent,
       onComponentMount,

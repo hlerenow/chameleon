@@ -17,6 +17,7 @@ export type ContextType = {
   getStaticVar?: () => Record<string, any>;
   getStaticVarById?: (nodeId: string) => Record<string, any>;
   methods?: Record<string, (...arg: any) => any>;
+  // 获取节点的方法 包含自定义的方法 和 ref 上的方法
   getMethods?: () => Record<string, (...arg: any) => any>;
   getMethodsById?: (nodeId: string) => Record<string, (...arg: any) => any>;
   /** 当前节点状态 **/
@@ -62,6 +63,7 @@ export type AdapterOptionType = {
   libs: Record<string, any>;
   components: ComponentsType;
   $$context: ContextType;
+  refManager: RefManager;
   onGetRef?: (ref: React.RefObject<React.ReactInstance>, nodeMode: CNode | CRootNode, instance: RenderInstance) => void;
   onGetComponent?: (component: (...args: any) => any, currentNode: CNode | CRootNode) => void;
   onComponentMount?: (instance: ReactInstance, node: CNode | CRootNode) => void;

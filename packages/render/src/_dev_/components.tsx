@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+/* eslint-disable react/display-name */
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import * as antD from 'antd';
 
 export const components: any = {
@@ -12,4 +13,17 @@ export const components: any = {
     }, []);
     return <div {...props}>{children}</div>;
   },
+  Button: forwardRef((props: any, ref) => {
+    const [state, setState] = useState(1);
+    useImperativeHandle(
+      ref,
+      () => {
+        return {
+          setState,
+        };
+      },
+      []
+    );
+    return <div {...props}>Button{state}</div>;
+  }),
 };

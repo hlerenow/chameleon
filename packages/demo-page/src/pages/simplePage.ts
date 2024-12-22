@@ -31,6 +31,8 @@ export const SamplePage: CPageDataType = {
               function (a) {
                 console.log(a, $$context);
                 const stateManager = $$context.stateManager;
+                const methods = $$context.getMethods();
+                console.log("🚀 ~ methods:", methods)
                 const state = stateManager.RowState.state;
                 stateManager.RowState.updateState({
                   rowMark: state.rowMark  +1
@@ -39,6 +41,15 @@ export const SamplePage: CPageDataType = {
             `,
           },
         },
+        methods: [
+          {
+            name: 'getAge',
+            type: 'FUNCTION',
+            value: `function getAge() {
+            console.log(12);
+            }`,
+          },
+        ],
         children: ['change row state value'],
       },
       {
