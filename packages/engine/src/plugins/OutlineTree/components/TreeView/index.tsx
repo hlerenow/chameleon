@@ -124,6 +124,10 @@ export class TreeView extends React.Component<
 
     await this.props.pluginCtx.pluginManager.onPluginReadyOk('Designer');
     this.registerDragEvent();
+    // 页面重载时重新注册拖拽事件
+    this.props.pluginCtx.engine.pageModel.emitter.on('onReloadPage', () => {
+      this.registerDragEvent();
+    });
   }
 
   toSelectTreeNode = (node: CNode | CRootNode | null) => {
