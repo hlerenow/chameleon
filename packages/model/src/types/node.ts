@@ -91,12 +91,12 @@ export type TLogicRequestAPIItem = {
   args: TDynamicValue[];
 
   // 请求响应之后的执行代码， 获取到返回值，可以继续执行多个操作
-  afterResponse?: TLogicItemHandler;
+  afterResponse?: TLogicItemHandlerFlow;
   /** 额外的数据 */
   extra?: Record<any, any>;
 };
 
-export type TLogicItemHandler = (
+export type TLogicItemHandlerFlow = (
   | TLogicJumpLinkItem
   | TLogicRunCodeItem
   | TLogicRequestAPIItem
@@ -105,7 +105,7 @@ export type TLogicItemHandler = (
 
 export type TLogicItem = {
   type: CNodePropsTypeEnum.ACTION | `${CNodePropsTypeEnum.ACTION}`;
-  handler: TLogicItemHandler;
+  handler: TLogicItemHandlerFlow;
 };
 
 export type SpecialProp = RenderPropType | JSExpressionPropType | FunctionPropType | TLogicItem;
@@ -149,6 +149,11 @@ export const PropsDataStructDescribe: any = union([
   object({
     type: literal(CNodePropsTypeEnum.FUNCTION),
     value: string(),
+  }),
+  object({
+    type: literal(CNodePropsTypeEnum.ACTION),
+    /** 暂时不做规则强检验 */
+    handler: any(),
   }),
   normalObj(),
   array(

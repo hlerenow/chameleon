@@ -102,12 +102,7 @@ export interface AdapterType {
   getComponent: (currentNode: CNode | CRootNode, components: ComponentsType) => void;
   getContext: (data: Record<any, any>, ctx: ContextType | null) => ContextType;
   getUtils: () => void;
-  // 获取数据域链
-  getDataLink: () => void;
-  createDataLink: () => void;
   transformProps: (originalProps: Record<any, any>, options: { $$context: Record<any, any> }) => Record<any, any>;
-  transformData: () => void;
-  transformGlobalData: () => void;
   errorCatch: () => void;
   // clear memory
   clear: () => void;
@@ -132,11 +127,7 @@ const AdapterMethodList = [
   'getComponent',
   'getContext',
   'getUtils',
-  'getDataLink',
-  'createDataLink',
   'transformProps',
-  'transformData',
-  'transformGlobalData',
   'errorCatch',
   'clear',
 ] as const;

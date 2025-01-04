@@ -32,6 +32,14 @@ export const isFunction = (val: any): val is FunctionPropType => {
   }
 };
 
+export const isAction = (val: any): val is FunctionPropType => {
+  if (val?.type === CNodePropsTypeEnum.ACTION) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 export const getRandomStr = () => {
   return Math.random().toString(32).slice(3, 9);
 };

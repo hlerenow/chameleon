@@ -1,3 +1,4 @@
+/** 变量空间，没有响应性 */
 export class VariableManager {
   private varSpace = new Map();
 
