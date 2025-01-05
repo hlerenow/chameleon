@@ -59,13 +59,14 @@ export enum LogicType {
   CALL_NODE_METHOD = 'CALL_NODE_METHOD',
 }
 
-type TDynamicValue = string | number | JSExpressionPropType | FunctionPropType;
+export type TDynamicValue = string | number | JSExpressionPropType | FunctionPropType;
 
 export type TLogicJumpLinkItem = {
   type: LogicType.JUMP_LINK | `${LogicType.JUMP_LINK}`;
   link: TDynamicValue;
 };
 
+/** 🌧️函数类型类似 */
 export type TLogicRunCodeItem = {
   /** 函数最好有返回值 */
   type: LogicType.RUN_CODE | `${LogicType.RUN_CODE}`;
@@ -74,24 +75,25 @@ export type TLogicRunCodeItem = {
 export type TLogicCallNodeMethodItem = {
   type: LogicType.CALL_NODE_METHOD | `${LogicType.CALL_NODE_METHOD}`;
   nodeId: string;
+  methodName: string;
   args?: TDynamicValue[];
+  /** 返回值的变量名 */
+  returnVarName?: string;
 };
 
 export type TLogicRequestAPIItem = {
   type: LogicType.REQUEST_API | `${LogicType.REQUEST_API}`;
   /** 直接获取具体的 API path, 完整的 host, 特殊场景使用，一般使用 apiId, 可以控制环境切换 */
-  api?: TDynamicValue;
-  /** 内置 api id, 从全局直接使用变量获取执行函数 */
-  apiId?: string;
+  apiPath: TDynamicValue;
   /** 默认 get */
   method?: 'POST' | 'GET' | 'PUT' | ' PATCH' | 'DELETE';
-
-  /** 执行前的执行代码，可以用来格式化数据, 需要返回一个数组或者对象，如果是对象根据 key 映射, args 的代码版本 */
-  processParameter?: FunctionPropType;
-  args: TDynamicValue[];
-
+  query?: Record<string, TDynamicValue>;
+  body?: Record<string, TDynamicValue>;
+  header?: Record<string, TDynamicValue>;
   // 请求响应之后的执行代码， 获取到返回值，可以继续执行多个操作
   afterResponse?: TLogicItemHandlerFlow;
+  /** 响应变量名 */
+  responseVarName?: string;
   /** 额外的数据 */
   extra?: Record<any, any>;
 };
@@ -103,12 +105,12 @@ export type TLogicItemHandlerFlow = (
   | TLogicCallNodeMethodItem
 )[];
 
-export type TLogicItem = {
+export type TActionLogicItem = {
   type: CNodePropsTypeEnum.ACTION | `${CNodePropsTypeEnum.ACTION}`;
   handler: TLogicItemHandlerFlow;
 };
 
-export type SpecialProp = RenderPropType | JSExpressionPropType | FunctionPropType | TLogicItem;
+export type SpecialProp = RenderPropType | JSExpressionPropType | FunctionPropType | TActionLogicItem;
 
 export type CPropDataType = NormalPropType | SpecialProp | CPropObjDataType;
 
@@ -184,7 +186,7 @@ export type CNodeDataType = {
   eventListener?: {
     name: string;
     /** 处理程序 */
-    func: TLogicItem;
+    func: TActionLogicItem;
   }[];
   nodeName?: string;
   /** TODO: if type is dynamic, schema is required */
@@ -258,6 +260,7 @@ export const CNodeDataStructDescribe: any = object({
   children: dynamic(() => {
     return optional(array(union([string(), CNodeDataStructDescribe])));
   }),
+  eventListener: optional(array(any())),
   configure: optional(any()),
   css: optional(any()),
   style: optional(any()),

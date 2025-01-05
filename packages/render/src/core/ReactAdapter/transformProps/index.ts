@@ -8,15 +8,17 @@ import {
   FunctionPropType,
   CProp,
   isFunction,
+  isAction,
 } from '@chamn/model';
 import { isPlainObject } from 'lodash-es';
 import React from 'react';
-import { DYNAMIC_COMPONENT_TYPE } from '../../const';
-import { getObjFromArrayMap, shouldConstruct, runExpression, convertCodeStringToFunction } from '../../util';
-import { ContextType } from '../adapter';
-import { getContext, renderComponent } from './help';
-import { convertModelToComponent } from './convertModelToComponent';
-import { TRenderBaseOption } from './type';
+import { DYNAMIC_COMPONENT_TYPE } from '../../../const';
+import { getObjFromArrayMap, shouldConstruct, runExpression, convertCodeStringToFunction } from '../../../util';
+import { ContextType } from '../../adapter';
+import { getContext, renderComponent } from '../help';
+import { convertModelToComponent } from '../convertModelToComponent';
+import { TRenderBaseOption } from '../type';
+import { transformActionNode } from './actionNode';
 
 export const transformProps = (
   originalProps: Record<string, any> = {},
@@ -60,6 +62,7 @@ export const transformProps = (
           const $$context = getContext(
             {
               params,
+              nodeRefs: parentContext.nodeRefs,
             },
             parentContext
           );
@@ -98,12 +101,24 @@ export const transformProps = (
         return handleSingleSlot(tempVal).component;
       }
     } else if (isExpression(propVal)) {
-      const expProp = propVal as JSExpressionPropType;
+      const expProp = propVal;
       const newVal = runExpression(expProp.value, parentContext || {});
       return newVal;
     } else if (isFunction(propVal)) {
       const funcProp = propVal as FunctionPropType;
-      return convertCodeStringToFunction(funcProp.value, funcProp.name || '', parentContext, storeManager);
+      return convertCodeStringToFunction({
+        funcBody: funcProp.value,
+        funcName: funcProp.name || '',
+        nodeContext: parentContext,
+        storeManager: storeManager,
+      });
+    } else if (isAction(propVal)) {
+      const newVal = transformActionNode(propVal, {
+        context: parentContext,
+        storeManager: storeManager,
+        actionVariableSpace: {},
+      });
+      return newVal;
     } else if (isPlainObject(propVal)) {
       // 可能是 普通的 props 模型
       let specialPropVal: any = propVal;

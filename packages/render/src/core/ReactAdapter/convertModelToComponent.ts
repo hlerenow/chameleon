@@ -22,7 +22,7 @@ import {
 import { collectSpecialProps, getContext, renderComponent } from './help';
 import { transformProps } from './transformProps';
 import { buildComponent } from './buildComponent';
-import { TRenderBaseOption } from './type';
+import { IDynamicComponent, TRenderBaseOption } from './type';
 
 type PropsType = {
   $$context: ContextType;
@@ -42,11 +42,12 @@ export const convertModelToComponent = (
     onComponentDestroy,
     refManager,
     processNodeConfigHook,
+    requestAPI,
   } = options;
 
   const { ...commonRenderOptions } = options;
 
-  class DynamicComponent extends React.Component<PropsType> {
+  class DynamicComponent extends React.Component<PropsType> implements IDynamicComponent {
     static __CP_TYPE__ = DYNAMIC_COMPONENT_TYPE;
     _CONDITION = true;
     _DESIGN_BOX = false;
@@ -304,11 +305,13 @@ export const convertModelToComponent = (
         getStaticVarById: (nodeId: string) => {
           return variableManager.get(nodeId).staticVar;
         },
+        nodeRefs: $$context.nodeRefs,
       };
 
       if (nodeModel.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER) {
         tempContext.globalState = this.state;
         tempContext.updateGlobalState = this.updateState;
+        tempContext.requestAPI = requestAPI;
         tempContext.getGlobalState = () => {
           return this.state;
         };
@@ -355,6 +358,7 @@ export const convertModelToComponent = (
           const loopContext = getContext(
             {
               [loopDataName]: loopData,
+              nodeRefs: newContext.nodeRefs,
             },
             newContext
           );

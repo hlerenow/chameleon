@@ -4,7 +4,7 @@ import { ContextType } from '../adapter';
 import { isPropModel } from '@chamn/model';
 import { isArray, isPlainObject } from 'lodash-es';
 
-export const getContext = (data: ContextType = {}, ctx?: ContextType | null): ContextType => {
+export const getContext = (data: ContextType, ctx?: ContextType | null): ContextType => {
   let newCtx: ContextType = data;
   if (ctx) {
     newCtx = {

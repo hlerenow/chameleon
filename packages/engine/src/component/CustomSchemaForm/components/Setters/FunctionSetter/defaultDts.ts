@@ -74,7 +74,7 @@ type ContextType = {
   /** 循环数据 */
   loopData?: Record<any, any>;
   /** 组件节点的 Ref */
-  refs?: { get: (nodeId: string) => any };
+  nodeRefs?: { get: (nodeId: string) => any };
   storeManager?: StoreManager;
   /** 第三方辅助库 */
   thirdLibs?: Record<string, any>;

@@ -41,10 +41,11 @@ export type ContextType = {
   /** 循环数据 */
   loopData?: Record<any, any>;
   /** 组件节点的 Ref */
-  refs?: RefManager;
+  nodeRefs: RefManager;
   storeManager?: StoreManager;
   /** 第三方辅助库 */
   thirdLibs?: Record<string, any>;
+  requestAPI?: AdapterOptionType['requestAPI'];
 };
 
 export type RuntimeRenderHelper = {
@@ -79,6 +80,14 @@ export type AdapterOptionType = {
     props: Record<string, any>;
   };
   renderMode?: 'design' | 'normal';
+  /** 请求 API */
+  requestAPI?: (params: {
+    url: string;
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+    header: Record<any, any>;
+    body?: Record<any, any>;
+    query?: Record<any, any>;
+  }) => Promise<any>;
 };
 
 // TODO: 后续考虑去掉
@@ -96,6 +105,9 @@ export interface AdapterType {
       idx?: number;
     } & AdapterOptionType
   ) => any;
+
+  /** 请求 API */
+  requestAPI?: AdapterOptionType['requestAPI'];
   // 渲染一个组件
   render: (originalComponent: any, props?: Record<any, any>, ...children: any[]) => any;
   // find target component render function
@@ -129,6 +141,7 @@ const AdapterMethodList = [
   'getUtils',
   'transformProps',
   'errorCatch',
+  'requestAPI',
   'clear',
 ] as const;
 

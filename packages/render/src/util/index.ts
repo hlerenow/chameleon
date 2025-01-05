@@ -66,31 +66,52 @@ export const runExpression = (expStr: string, context: any) => {
   }
 };
 
-export const convertCodeStringToFunction = (
-  functionStr: string,
-  functionName: string,
-  $$context: ContextType,
-  storeManager: StoreManager
-) => {
+export const convertCodeStringToFunction = (params: {
+  funcBody: string;
+  funcName: string;
+  nodeContext: ContextType;
+  storeManager: StoreManager;
+  /** 最近一个 API 的返回响应 */
+  $$response?: any;
+  actionVariableSpace?: Record<any, any>;
+}) => {
+  const {
+    funcBody,
+    funcName: functionName,
+    nodeContext: $$context,
+    storeManager,
+    $$response,
+    actionVariableSpace,
+  } = params;
   const funcName = functionName || 'anonymous';
+
   const tempObj = {
     [funcName]: function (...args: any[]) {
       let codeBody;
-
+      const actionVariableSpaceKeyList = Object.keys(actionVariableSpace || {});
+      const varListCode = actionVariableSpaceKeyList.map((key) => {
+        return `var ${key}=$$actionVariableSpace[${key}];`;
+      });
       try {
         codeBody = `
   var $$$__args__$$$ = Array.from(arguments);
   function $$_run_$$() {
-    var $$_f_$$ = ${functionStr || 'function () {}'};
-    var __$$storeManager__ = $$$__args__$$$.pop();
-    var $$context = $$$__args__$$$.pop();
+    var extraParams = $$$__args__$$$.pop();
+    var __$$storeManager__ = extraParams.storeManager;
+    var $$context =  extraParams.$$context;
+    var $$response =  extraParams.$$response;
+    var $$actionVariableSpace =  extraParams.actionVariableSpace;
     $$context.stateManager = __$$storeManager__.getStateSnapshot();
+    ${varListCode.join(';\n')}
+
+    var $$_f_$$ = ${funcBody.trim() || 'function () {}'};
+
     return $$_f_$$.apply($$_f_$$, $$$__args__$$$);
   }
   return $$_run_$$();
         `;
         const f = new Function(codeBody);
-        f(...args, $$context, storeManager);
+        return f(...args, { $$context, storeManager, $$response, actionVariableSpace });
       } catch (e) {
         console.log(codeBody);
         console.warn(e);

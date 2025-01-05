@@ -68,8 +68,7 @@ export class Render extends React.Component<
       ...props.components,
     };
 
-    const $$context = this.props.$$context ?? {};
-    $$context.refs = this.refManager;
+    const $$context: any = this.props.$$context || {};
     const PageRoot = adapter.pageRender(pageModel, {
       libs: {},
       components: finalComponents,
@@ -78,8 +77,12 @@ export class Render extends React.Component<
       onGetComponent,
       onComponentMount,
       onComponentDestroy,
-      $$context: $$context,
+      $$context: {
+        ...$$context,
+        nodeRefs: this.refManager,
+      },
       renderMode: props.renderMode,
+      requestAPI: props.requestAPI ?? adapter.requestAPI,
       processNodeConfigHook: props.processNodeConfigHook,
     });
 

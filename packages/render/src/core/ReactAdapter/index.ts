@@ -17,6 +17,7 @@ export class DefineReactAdapter {
   onGetRef?: AdapterOptionType['onGetRef'];
   onGetComponent: AdapterOptionType['onGetComponent'];
   onComponentMount: AdapterOptionType['onComponentMount'];
+
   refManager: RefManager = new RefManager();
 
   onComponentDestroy: AdapterOptionType['onComponentDestroy'];
@@ -53,12 +54,15 @@ export class DefineReactAdapter {
       components,
       onGetRef,
       refManager,
-      $$context = {},
+      $$context = {
+        nodeRefs: refManager,
+      },
       onGetComponent,
       onComponentMount,
       onComponentDestroy,
       renderMode,
       processNodeConfigHook,
+      requestAPI,
     }: AdapterOptionType
   ) {
     this.renderMode = renderMode;
@@ -69,7 +73,7 @@ export class DefineReactAdapter {
     this.onComponentDestroy = onComponentDestroy;
     this.processNodeConfigHook = processNodeConfigHook;
     this.refManager = refManager;
-
+    this.requestAPI = requestAPI;
     //做一些全局 store 操作
     const rootNode = pageModel.value.componentsTree;
     const component = this.getComponent(rootNode);
@@ -85,6 +89,7 @@ export class DefineReactAdapter {
       onComponentMount: onComponentMount!,
       onComponentDestroy: onComponentDestroy!,
       renderMode: renderMode!,
+      requestAPI: requestAPI,
     });
 
     const props: Record<string, any> = {};
@@ -95,6 +100,18 @@ export class DefineReactAdapter {
     props.$$context = $$context;
     return renderComponent(newComp, props);
   }
+
+  /** 请求 API */
+  requestAPI: AdapterOptionType['requestAPI'] = async (params) => {
+    console.log('🚀 ~ DefineReactAdapter ~ requestAPI ~ params:', params);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          a: 5555,
+        });
+      }, 100);
+    });
+  };
 
   clear() {
     this.runtimeComponentCache.clear();

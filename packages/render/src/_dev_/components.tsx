@@ -20,6 +20,9 @@ export const components: any = {
       () => {
         return {
           setState,
+          sayHello: (newVal: any) => {
+            setState(newVal + Date.now());
+          },
         };
       },
       []
