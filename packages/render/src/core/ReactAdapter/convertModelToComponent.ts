@@ -268,7 +268,7 @@ export const convertModelToComponent = (
       onComponentDestroy?.(this, nodeModel);
     }
 
-    render(): React.ReactNode {
+    renderLoop(): React.ReactNode {
       const { $$context, ...props } = this.props;
       const nodeName = nodeModel.value.nodeName || nodeModel.id;
       const nodeId = nodeModel.id;
@@ -277,6 +277,7 @@ export const convertModelToComponent = (
         ...nodeModel.props,
         ...props,
       };
+
       const tempContext: ContextType = {
         state: this.state || {},
         staticVar: this.variableSpace.staticVar,
@@ -308,34 +309,14 @@ export const convertModelToComponent = (
         nodeRefs: $$context.nodeRefs,
       };
 
-      if (nodeModel.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER) {
-        tempContext.globalState = this.state;
-        tempContext.updateGlobalState = this.updateState;
-        tempContext.requestAPI = requestAPI;
-        tempContext.getGlobalState = () => {
-          return this.state;
-        };
-      }
-      const newContext = getContext(tempContext, $$context);
-      // 需要优先处理处理 methods， methods 内部不能调用 methods 上的方法, 转换为可执行的方法
+      // 根节点 context 需要注入额外的变量
+      this.processRootContext(tempContext);
 
-      const methodsObj = transformProps(
-        {
-          methods: nodeModel.value.methods,
-        },
-        {
-          $$context: newContext,
-          ...commonRenderOptions,
-        }
-      );
-      const originalMethods = nodeModel.value.methods || [];
-      const methodList = methodsObj.methods as ((...args: any) => void)[];
-      const methodMap = originalMethods.reduce((res, item, index) => {
-        res[item.name!] = methodList[index];
-        return res;
-      }, {} as any);
-      newContext.methods = methodMap;
-      this.variableSpace.methods = Object.assign(this.variableSpace.methods, methodMap);
+      const newContext = getContext(tempContext, $$context);
+
+      // 需要优先处理处理 methods， methods 内部不能调用 methods 上的方法, 转换为可执行的方法
+      this.transformMethods({ context: newContext });
+
       // 处理循环
       const loopObj = nodeModel.value.loop;
       let loopRes: any[] = [];
@@ -367,96 +348,122 @@ export const convertModelToComponent = (
             $$context: loopContext,
             ...commonRenderOptions,
           });
-          // 处理 className
-          const classNames =
-            nodeModel.value.classNames?.map((it) => {
-              const name = it.name;
-              const status = isExpression(it.status)
-                ? runExpression(String(it.status?.value || ''), loopContext)
-                : false;
-              if (status) {
-                return name;
-              }
-              return '';
-            }) || [];
-          let finalClsx = `${newProps.className ?? ''} ${classNames.join(' ')}`.trim();
-          if (nodeModel.value.css) {
-            // 每个节点添加一个 表示节点唯一的 className, 使用 node.id
-            const nodeClassName = getNodeCssClassName(nodeModel);
 
-            const className = `${nodeClassName} ${finalClsx}`.trim();
-            finalClsx = className;
-          }
+          // 处理 className
+          const finalClsx = this.processNodeClassName(newProps.className, loopContext);
           newProps.className = finalClsx;
 
           // 处理 style
-          const newStyle = transformProps(
-            {
-              style: nodeModel.value.style,
-            },
-            {
-              $$context: loopContext,
-              ...commonRenderOptions,
-            }
-          );
-          // font-size to fontSize
-          if (nodeModel.value.style) {
-            newProps.style = formatSourceStylePropertyName(newStyle.style || []);
-          }
+          const newStyle: Record<string, any> = this.processNodeStyle(loopContext);
+          newProps.style = newStyle;
 
+          // handle children
           const { children } = newProps;
-          let newChildren: React.ReactNode[] = [];
-          if (children !== undefined) {
-            delete newProps.children;
-            newChildren = Array.isArray(children) ? children : [children];
-          } else {
-            const children: React.ReactNode[] = [];
-            const childModel = nodeModel.value.children;
-            childModel.forEach((node, index) => {
-              const child = buildComponent(node, {
-                $$context: loopContext,
-                idx: index,
-                ...commonRenderOptions,
-              });
-              children.push(child);
-            });
-            newChildren = children;
-          }
+          delete newProps.children;
+          const newChildren = this.processNodeChild(children, loopContext);
+          // handle children end
 
+          // loop 渲染特有的 key
           newProps.key = `${newProps.key}-${innerIndex}`;
           if (isExpression(loopObj.key)) {
             const keyObj = loopObj.key as JSExpressionPropType;
             const specialKey = runExpression(keyObj.value, loopContext || {});
             newProps.key += `-${specialKey}`;
           }
+          // loop 渲染特有的 key End
+
+          // 处理 ref
           newProps.ref = (ref: any) => {
             this.targetComponentRef.current = this.targetComponentRef.current || [];
             this.targetComponentRef.current[innerIndex] = ref;
           };
 
-          // handle children
-          return renderComponent(originalComponent, newProps, ...newChildren);
+          const renderView = this.processNodeConditionAndConfigHook(newProps, newChildren, loopContext);
+
+          return renderView;
         });
 
         // 结束循环渲染
         return loopRes;
       }
       // 处理循环结束
+    }
 
-      // handle props
-      const newProps: Record<string, any> = transformProps(newOriginalProps, {
-        $$context: newContext,
-        ...commonRenderOptions,
-      });
+    /** 转换节点的 methods */
+    transformMethods(option: { context: ContextType }) {
+      const { context: newContext } = option;
+      // 需要优先处理处理 methods， methods 内部不能调用 methods 上的方法, 转换为可执行的方法
+      const methodsObj = transformProps(
+        {
+          methods: nodeModel.value.methods,
+        },
+        {
+          $$context: newContext,
+          ...commonRenderOptions,
+        }
+      );
+      const originalMethods = nodeModel.value.methods || [];
+      const methodList = methodsObj.methods as ((...args: any) => void)[];
+      const methodMap = originalMethods.reduce((res, item, index) => {
+        res[item.name!] = methodList[index];
+        return res;
+      }, {} as any);
+      newContext.methods = methodMap;
+      this.variableSpace.methods = Object.assign(this.variableSpace.methods, methodMap);
+    }
 
-      const { children } = newProps;
+    /** 处理根节点的 context */
+    processRootContext(context: ContextType) {
+      if (nodeModel.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER) {
+        context.globalState = this.state;
+        context.updateGlobalState = this.updateState;
+        context.requestAPI = requestAPI;
+        context.getGlobalState = () => {
+          return this.state;
+        };
+      }
+    }
+
+    processNodeClassName(className: string, context: ContextType) {
+      // 处理 className
+      const classNames =
+        nodeModel.value.classNames?.map((it) => {
+          const name = it.name;
+          const status = isExpression(it.status) ? runExpression(it.status?.value || '', context) : false;
+          if (status) {
+            return name;
+          }
+          return '';
+        }) || [];
+
+      let finalClsx = `${className ?? ''} ${classNames.join(' ')}`.trim();
+      if (nodeModel.value.css) {
+        // 每个节点添加一个 表示节点唯一的 className, 使用 node.id
+        const nodeClassName = getNodeCssClassName(nodeModel);
+        const className = `${nodeClassName} ${finalClsx}`.trim();
+        finalClsx = className;
+      }
+      return finalClsx;
+    }
+    processNodeStyle(newContext: ContextType) {
+      if (!nodeModel.value.style) {
+        return {};
+      }
+      const newStyle: Record<string, any> = transformProps(
+        { style: nodeModel.value.style },
+        {
+          $$context: newContext,
+          ...commonRenderOptions,
+        }
+      );
+      // font-size to fontSize
+      return formatSourceStylePropertyName(newStyle.style || []);
+    }
+
+    processNodeChild(children: any, newContext: ContextType) {
       let newChildren: React.ReactNode[] = [];
-      // 判断是否有 child 缓存
-
-      // 处理 children
       if (children !== undefined) {
         // 优先使用 props 中的 children
-        delete newProps.children;
         newChildren = Array.isArray(children) ? children : [children];
       } else {
         const children: React.ReactNode[] = [];
@@ -472,41 +479,10 @@ export const convertModelToComponent = (
         newChildren = children;
       }
 
-      newProps.ref = this.targetComponentRef;
-      // 处理 className
-      const classNames =
-        nodeModel.value.classNames?.map((it) => {
-          const name = it.name;
-          const status = isExpression(it.status) ? runExpression(it.status?.value || '', newContext) : false;
-          if (status) {
-            return name;
-          }
-          return '';
-        }) || [];
+      return newChildren;
+    }
 
-      let finalClsx = `${newProps.className ?? ''} ${classNames.join(' ')}`.trim();
-      if (nodeModel.value.css) {
-        // 每个节点添加一个 表示节点唯一的 className, 使用 node.id
-        const nodeClassName = getNodeCssClassName(nodeModel);
-        const className = `${nodeClassName} ${finalClsx}`.trim();
-        finalClsx = className;
-      }
-
-      newProps.className = finalClsx;
-      // 处理 style
-      const newStyle: Record<string, any> = transformProps(
-        { style: nodeModel.value.style },
-        {
-          $$context: newContext,
-          ...commonRenderOptions,
-        }
-      );
-      // font-size to fontSize
-      if (nodeModel.value.style) {
-        newProps.style = formatSourceStylePropertyName(newStyle.style || []);
-      }
-
-      // handle children
+    processNodeConditionAndConfigHook(newProps: any, newChildren: any, newContext: ContextType) {
       let condition = nodeModel.value.condition ?? true;
       if (typeof condition !== 'boolean') {
         const conditionObj = condition as JSExpressionPropType;
@@ -519,7 +495,6 @@ export const convertModelToComponent = (
       if (processNodeConfigHook) {
         finalNodeConfig = processNodeConfigHook(finalNodeConfig, nodeModel as CNode);
       }
-
       const renderView = renderComponent(originalComponent, finalNodeConfig.props, ...newChildren);
 
       this._CONDITION = finalNodeConfig.condition as boolean;
@@ -534,8 +509,92 @@ export const convertModelToComponent = (
           renderView
         );
       }
-
       return renderView;
+    }
+
+    renderCore(): React.ReactNode {
+      const { $$context, ...props } = this.props;
+      const nodeName = nodeModel.value.nodeName || nodeModel.id;
+      const nodeId = nodeModel.id;
+
+      const newOriginalProps = {
+        key: nodeModel.id,
+        ...nodeModel.props,
+        ...props,
+      };
+
+      const tempContext: ContextType = {
+        state: this.state || {},
+        staticVar: this.variableSpace.staticVar,
+        updateState: this.updateState,
+        storeManager: storeManager,
+        getState: () => storeManager.getStateObj(nodeName),
+        getStateObj: () => storeManager.getStateObj(nodeName),
+        getStateObjById: (nodeId: string) => storeManager.getStateObj(nodeId),
+        stateManager: storeManager.getStateSnapshot(),
+        getMethods: () => {
+          const methods = variableManager.get(nodeId).methods;
+          const nodeRef = refManager.get(nodeId).current;
+          const obj = getInheritObj(methods, nodeRef);
+
+          return obj;
+        },
+        getMethodsById: (nodeId: string) => {
+          const methods = variableManager.get(nodeId).methods;
+          const nodeRef = refManager.get(nodeId).current;
+          const obj = getInheritObj(methods, nodeRef);
+          return obj;
+        },
+        getStaticVar: () => {
+          return variableManager.get(nodeName).staticVar;
+        },
+        getStaticVarById: (nodeId: string) => {
+          return variableManager.get(nodeId).staticVar;
+        },
+        nodeRefs: $$context.nodeRefs,
+      };
+
+      // 根节点 context 需要注入额外的变量
+      this.processRootContext(tempContext);
+
+      const newContext = getContext(tempContext, $$context);
+
+      this.transformMethods({ context: newContext });
+
+      // handle props
+      const newProps: Record<string, any> = transformProps(newOriginalProps, {
+        $$context: newContext,
+        ...commonRenderOptions,
+      });
+
+      // 处理 className
+      const finalClsx = this.processNodeClassName(newProps.className, newContext);
+      newProps.className = finalClsx;
+
+      // 处理 style
+      const newStyle: Record<string, any> = this.processNodeStyle(newContext);
+      newProps.style = newStyle;
+
+      // handle children
+      const { children } = newProps;
+      delete newProps.children;
+      const newChildren = this.processNodeChild(children, newContext);
+      // handle children end
+
+      // 处理 ref
+      newProps.ref = this.targetComponentRef;
+      const renderView = this.processNodeConditionAndConfigHook(newProps, newChildren, newContext);
+      return renderView;
+      // 可能能复用 end
+    }
+
+    render(): React.ReactNode {
+      const loopObj = nodeModel.value.loop;
+      if (loopObj && loopObj.open) {
+        return this.renderLoop();
+      } else {
+        return this, this.renderCore();
+      }
       // 可能能复用 end
     }
   }
