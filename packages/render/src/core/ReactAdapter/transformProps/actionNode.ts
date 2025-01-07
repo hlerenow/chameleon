@@ -41,7 +41,12 @@ export const transformActionNode = (propVal: TActionLogicItem, options: CommonOp
           actionVariableSpace: options.actionVariableSpace,
         });
 
-        const res = codeFunc(options.$$response, ...args);
+        let res;
+        if (options.$$response !== undefined) {
+          res = codeFunc(options.$$response, ...args);
+        } else {
+          res = codeFunc(...args);
+        }
 
         if (res?.then) {
           resultList[i] = await res;

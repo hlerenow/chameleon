@@ -167,7 +167,10 @@ export const SamplePage: CPageDataType = {
                 {
                   type: 'RUN_CODE',
                   value: `
-                    console.log('12321312');
+                    function (params) {
+                      console.log('12321312', $$context, params);
+                      return 'Hello eventListener logic'
+                    };
                   `,
                 },
               ],

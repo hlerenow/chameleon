@@ -23,6 +23,7 @@ import { collectSpecialProps, getContext, renderComponent } from './help';
 import { transformProps } from './transformProps';
 import { buildComponent } from './buildComponent';
 import { IDynamicComponent, TRenderBaseOption } from './type';
+import { transformActionNode } from './transformProps/actionNode';
 
 type PropsType = {
   $$context: ContextType;
@@ -445,6 +446,7 @@ export const convertModelToComponent = (
       }
       return finalClsx;
     }
+
     processNodeStyle(newContext: ContextType) {
       if (!nodeModel.value.style) {
         return {};
@@ -512,6 +514,20 @@ export const convertModelToComponent = (
       return renderView;
     }
 
+    processNodeEventListener(newContext: ContextType) {
+      const eventListener = nodeModel.value.eventListener;
+      const res: any = {};
+      eventListener?.forEach((event) => {
+        const func = transformActionNode(event.func, {
+          context: newContext,
+          storeManager: storeManager,
+          actionVariableSpace: {},
+        });
+        res[event.name] = func;
+      });
+      return res;
+    }
+
     renderCore(): React.ReactNode {
       const { $$context, ...props } = this.props;
       const nodeName = nodeModel.value.nodeName || nodeModel.id;
@@ -562,7 +578,7 @@ export const convertModelToComponent = (
       this.transformMethods({ context: newContext });
 
       // handle props
-      const newProps: Record<string, any> = transformProps(newOriginalProps, {
+      let newProps: Record<string, any> = transformProps(newOriginalProps, {
         $$context: newContext,
         ...commonRenderOptions,
       });
@@ -583,6 +599,14 @@ export const convertModelToComponent = (
 
       // 处理 ref
       newProps.ref = this.targetComponentRef;
+      // 处理 eventListener 事件监听
+      if (nodeModel.value.eventListener) {
+        const eventListenerObj = this.processNodeEventListener(newContext);
+        newProps = {
+          ...newProps,
+          ...eventListenerObj,
+        };
+      }
       const renderView = this.processNodeConditionAndConfigHook(newProps, newChildren, newContext);
       return renderView;
       // 可能能复用 end
