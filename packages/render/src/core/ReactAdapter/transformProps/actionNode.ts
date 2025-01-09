@@ -66,23 +66,34 @@ export const transformActionNode = (propVal: TActionLogicItem, options: CommonOp
       }
 
       if (item.type === 'REQUEST_API') {
-        const { run, afterResponse } = buildRequestAPI(item, options);
-        const res = run(...args);
-        if (res?.then) {
-          resultList[i] = await res;
-        } else {
-          resultList[i] = res;
+        const { run, afterFailedResponse, afterSuccessResponse } = buildRequestAPI(item, options);
+
+        try {
+          const res = run(...args);
+          if (res?.then) {
+            resultList[i] = await res;
+          } else {
+            resultList[i] = res;
+          }
+
+          /** 写入变量 */
+          if (item.responseVarName) {
+            options.actionVariableSpace[item.responseVarName] = resultList[i];
+          }
+          // 处理后置操作
+          const res2: any = afterSuccessResponse(resultList[i], ...args);
+          if (res2?.then) {
+            return await res2;
+          }
+          return res2;
+        } catch (err) {
+          const resFailed: any = await afterFailedResponse(err);
+          if (resFailed?.then) {
+            return await resFailed;
+          } else {
+            return resFailed;
+          }
         }
-        /** 写入变量 */
-        if (item.responseVarName) {
-          options.actionVariableSpace[item.responseVarName] = resultList[i];
-        }
-        // 处理后置操作
-        const res2: any = afterResponse(resultList[i], ...args);
-        if (res2?.then) {
-          return await res2;
-        }
-        return res2;
       }
 
       if (item.type === 'CALL_NODE_METHOD') {
@@ -166,15 +177,34 @@ const buildRequestAPI = (item: TLogicRequestAPIItem, option: CommonOption) => {
     return res;
   };
 
-  const afterResponse = async (response: any, ...args: any[]) => {
-    if (!item.afterResponse) {
+  const afterSuccessResponse = async (response: any, ...args: any[]) => {
+    if (!item.afterSuccessResponse) {
       return response;
     }
 
     const func = transformActionNode(
       {
         type: 'ACTION',
-        handler: item.afterResponse || [],
+        handler: item.afterSuccessResponse || [],
+      },
+      {
+        ...option,
+        $$response: response,
+      }
+    );
+
+    return func(...args);
+  };
+
+  const afterFailedResponse = async (response: any, ...args: any[]) => {
+    if (!item.afterFailedResponse) {
+      return response;
+    }
+
+    const func = transformActionNode(
+      {
+        type: 'ACTION',
+        handler: item.afterFailedResponse || [],
       },
       {
         ...option,
@@ -187,7 +217,8 @@ const buildRequestAPI = (item: TLogicRequestAPIItem, option: CommonOption) => {
 
   return {
     run: run,
-    afterResponse,
+    afterSuccessResponse,
+    afterFailedResponse,
   };
 };
 

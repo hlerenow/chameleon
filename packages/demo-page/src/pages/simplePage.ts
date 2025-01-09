@@ -2,9 +2,7 @@ import {
   CNodePropsTypeEnum,
   CPageDataType,
   LogicType,
-  TLogicCallNodeMethodItem,
   TLogicJumpLinkItem,
-  TLogicRequestAPIItem,
 } from '@chamn/model';
 
 export const SamplePage: CPageDataType = {
@@ -116,7 +114,7 @@ export const SamplePage: CPageDataType = {
                   },
                 },
                 responseVarName: 'APIResult',
-                afterResponse: [
+                afterSuccessResponse: [
                   {
                     type: 'RUN_CODE',
                     value: `function (apiResult) {
@@ -154,13 +152,22 @@ export const SamplePage: CPageDataType = {
                   }`,
                   },
                 ],
+                afterFailedResponse: [
+                  {
+                    type: 'RUN_CODE',
+                    value: `function (apiResult) {
+                      console.log($$context, $$response);
+                      console.log('errrrror', apiResult)
+                  }`,
+                  },
+                ],
               },
             ],
           },
         },
         eventListener: [
           {
-            name: 'onClick',
+            name: 'onMouseEnter',
             func: {
               type: CNodePropsTypeEnum.ACTION,
               handler: [

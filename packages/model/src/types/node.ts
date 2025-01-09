@@ -57,6 +57,8 @@ export enum LogicType {
   REQUEST_API = 'REQUEST_API',
   /** 调用节点方法 */
   CALL_NODE_METHOD = 'CALL_NODE_METHOD',
+  // 赋予值操作
+  ASSIGN_VALUE = 'ASSIGN_VALUE',
 }
 
 export type TDynamicValue = string | number | JSExpressionPropType | FunctionPropType;
@@ -90,12 +92,36 @@ export type TLogicRequestAPIItem = {
   query?: Record<string, TDynamicValue>;
   body?: Record<string, TDynamicValue>;
   header?: Record<string, TDynamicValue>;
-  // 请求响应之后的执行代码， 获取到返回值，可以继续执行多个操作
-  afterResponse?: TLogicItemHandlerFlow;
+  // 请求响应成功之后的执行代码， 获取到返回值，可以继续执行多个操作
+  afterSuccessResponse?: TLogicItemHandlerFlow;
+  // 请求响应失败之后的执行代码， 获取到返回值，可以继续执行多个操作
+  afterFailedResponse?: TLogicItemHandlerFlow;
   /** 响应变量名 */
   responseVarName?: string;
   /** 额外的数据 */
   extra?: Record<any, any>;
+};
+
+export enum AssignValueType {
+  /** 组件内的局部变量，没有响应性， 只在当前的上下文中有效 */
+  MEMORY = 'MEMORY',
+  STATE = 'STATE',
+}
+
+type TAssignValueType = `${AssignValueType}`;
+
+/** 赋值操作  */
+export type TLogicAssignValueItem = {
+  type: LogicType.ASSIGN_VALUE | `${LogicType.ASSIGN_VALUE}`;
+  valueType: AssignValueType | TAssignValueType;
+  currentValue: TDynamicValue;
+  /** 如果是 STATE 类型需要 nodeId, 否则只用填 string */
+  targetValueName?:
+    | {
+        nodeId: string;
+        keyPath: string;
+      }
+    | string;
 };
 
 export type TLogicItemHandlerFlow = (
@@ -103,6 +129,7 @@ export type TLogicItemHandlerFlow = (
   | TLogicRunCodeItem
   | TLogicRequestAPIItem
   | TLogicCallNodeMethodItem
+  | TLogicAssignValueItem
 )[];
 
 export type TActionLogicItem = {

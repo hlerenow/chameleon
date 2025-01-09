@@ -71,7 +71,20 @@ export function RenderDemo() {
 
   return (
     <div className="App">
-      <Render pageModel={page} components={components} render={renderHandle as any} adapter={ReactAdapter} />
+      <Render
+        pageModel={page}
+        components={components}
+        render={renderHandle as any}
+        adapter={ReactAdapter}
+        requestAPI={async (params) => {
+          const random = Math.random();
+          if (random > 0.5) {
+            throw new Error('request error: ');
+          } else {
+            return params;
+          }
+        }}
+      />
     </div>
   );
 }
