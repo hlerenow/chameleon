@@ -4,7 +4,6 @@ import {
   isSlotModel,
   CNode,
   isExpression,
-  JSExpressionPropType,
   FunctionPropType,
   CProp,
   isFunction,

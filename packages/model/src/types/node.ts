@@ -108,20 +108,19 @@ export enum AssignValueType {
   STATE = 'STATE',
 }
 
-type TAssignValueType = `${AssignValueType}`;
+export type TAssignValueType = `${AssignValueType}`;
 
+export type TargetValueNameObject = {
+  nodeId: string;
+  keyPath: string;
+};
 /** 赋值操作  */
 export type TLogicAssignValueItem = {
   type: LogicType.ASSIGN_VALUE | `${LogicType.ASSIGN_VALUE}`;
   valueType: AssignValueType | TAssignValueType;
   currentValue: TDynamicValue;
   /** 如果是 STATE 类型需要 nodeId, 否则只用填 string */
-  targetValueName?:
-    | {
-        nodeId: string;
-        keyPath: string;
-      }
-    | string;
+  targetValueName?: TargetValueNameObject | string;
 };
 
 export type TLogicItemHandlerFlow = (

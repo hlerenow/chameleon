@@ -2,6 +2,7 @@ import {
   CNodePropsTypeEnum,
   CPageDataType,
   LogicType,
+  TLogicAssignValueItem,
   TLogicJumpLinkItem,
 } from '@chamn/model';
 
@@ -151,6 +152,31 @@ export const SamplePage: CPageDataType = {
                       console.log(77889999,callNodeReturnVar, APIResult)
                   }`,
                   },
+                  {
+                    type: LogicType.ASSIGN_VALUE,
+                    valueType: 'STATE',
+                    currentValue: {
+                      type: 'EXPRESSION',
+                      value: 'APIResult',
+                    },
+                    targetValueName: {
+                      nodeId: 'xxx',
+                      keyPath: 'apiResult',
+                    },
+                  } as TLogicAssignValueItem,
+                  {
+                    type: LogicType.ASSIGN_VALUE,
+                    valueType: 'MEMORY',
+                    currentValue: {
+                      type: 'FUNCTION',
+                      value: `function (apiResult) {
+                        console.log(6677, apiResult, APIResult);
+                        return apiResult;
+                      }
+                      `,
+                    },
+                    targetValueName: 'tempApiResult1',
+                  } as TLogicAssignValueItem,
                 ],
                 afterFailedResponse: [
                   {

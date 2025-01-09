@@ -2,7 +2,9 @@ import {
   isExpression,
   isFunction,
   TActionLogicItem,
+  TargetValueNameObject,
   TDynamicValue,
+  TLogicAssignValueItem,
   TLogicCallNodeMethodItem,
   TLogicJumpLinkItem,
   TLogicRequestAPIItem,
@@ -107,6 +109,15 @@ export const transformActionNode = (propVal: TActionLogicItem, options: CommonOp
         if (item.returnVarName) {
           options.actionVariableSpace[item.returnVarName] = resultList[i];
         }
+      }
+      if (item.type === 'ASSIGN_VALUE') {
+        const func = buildAssignValue(item, options);
+        let tempArgs = [...args];
+        if (options.$$response !== undefined) {
+          tempArgs = [options.$$response, tempArgs];
+        }
+        const res = func(...tempArgs);
+        resultList[i] = await res;
       }
     }
     console.log('action result:', resultList);
@@ -254,5 +265,31 @@ const buildCallNodeMethod = (item: TLogicCallNodeMethodItem, option: CommonOptio
     }
 
     return codeFunc(...customArgs);
+  };
+};
+
+const buildAssignValue = (item: TLogicAssignValueItem, option: CommonOption) => {
+  return async (...args: any[]): Promise<any> => {
+    const valueFunc = buildDynamicValue(item.currentValue, option);
+    const res = valueFunc(...args);
+    let result;
+    if (res?.then) {
+      result = await res;
+    } else {
+      result = res;
+    }
+    if (item.valueType === 'STATE') {
+      const targetValueName = item.targetValueName as TargetValueNameObject;
+      const store = option.storeManager.getStore(targetValueName.nodeId);
+      if (store) {
+        store.setState({
+          [targetValueName.keyPath]: result,
+        });
+      }
+    } else if (item.valueType === 'MEMORY') {
+      option.actionVariableSpace[item.targetValueName as string] = result;
+    }
+
+    return result;
   };
 };

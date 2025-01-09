@@ -66,6 +66,7 @@ export const runExpression = (expStr: string, context: any) => {
   }
 };
 
+/** 后续考虑是否需要做沙箱 */
 export const convertCodeStringToFunction = (params: {
   funcBody: string;
   funcName: string;
@@ -90,7 +91,7 @@ export const convertCodeStringToFunction = (params: {
       let codeBody;
       const actionVariableSpaceKeyList = Object.keys(actionVariableSpace || {});
       const varListCode = actionVariableSpaceKeyList.map((key) => {
-        return `var ${key}=$$actionVariableSpace[${key}];`;
+        return `var ${key}=$$actionVariableSpace[${JSON.stringify(key)}];`;
       });
       try {
         codeBody = `
