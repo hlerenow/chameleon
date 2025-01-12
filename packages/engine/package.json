@@ -45,6 +45,7 @@
     "@dnd-kit/sortable": "^7.0.2",
     "@dnd-kit/utilities": "^3.2.1",
     "@monaco-editor/react": "^4.5.1",
+    "@xyflow/react": "^12.3.6",
     "ahooks": "^3.7.4",
     "antd": "^5.8.5",
     "color": "^4.2.3",
