@@ -1,7 +1,7 @@
 // Button.stories.ts|tsx
 
 import { Meta, StoryFn } from '@storybook/react';
-import { ColorSetter } from '@/component/CustomSchemaForm/components/Setters/ColorSetter';
+import { ColorSetter } from '../../component/CustomSchemaForm/components/Setters/ColorSetter';
 import { useState } from 'react';
 
 const TargetComponent = ColorSetter;

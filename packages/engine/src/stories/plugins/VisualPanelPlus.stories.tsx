@@ -1,34 +1,23 @@
 // Button.stories.ts|tsx
 
-import { Meta, StoryFn } from '@storybook/react';
 import { VisualPanelPlus } from '@/plugins/VisualPanelPlus';
 import { CNode, CPage } from '@chamn/model';
-import { PluginManager } from '@/core/pluginManager';
+import { PluginManager } from '../../core/pluginManager';
 import mitt from 'mitt';
-import customI18n from '@/i18n';
+import customI18n from '../../i18n';
 import { BasePage } from '@chamn/demo-page';
-import { CSSEditor } from '@/component/CSSEditor';
-import { AssetsPackageListManager } from '@/core/assetPackagesListManage';
+import { AssetsPackageListManager } from '../../core/assetPackagesListManage';
 
-const TargetComponent = CSSEditor;
+const TargetComponent = VisualPanelPlus;
 
 export default {
   /* 👇 The title prop is optional.
    * See https://storybook.js.org/docs/react/configure/overview#configure-story-loading
    * to learn how to generate automatic titles
    */
-  title: 'CSSEditor',
+  title: 'VisualPanelPlus',
   component: VisualPanelPlus,
-  decorators: [
-    (Story) => (
-      <div style={{ width: '500px' }}>
-        <Story />
-      </div>
-    ),
-  ],
-} as Meta<typeof VisualPanelPlus>;
-
-const Template: StoryFn<typeof TargetComponent> = (args) => <TargetComponent />;
+};
 
 const node = new CNode({
   props: {
@@ -63,6 +52,7 @@ const node = new CNode({
 });
 
 const pluginManager = new PluginManager({
+  assetsPackageListManager: new AssetsPackageListManager([]),
   emitter: mitt(),
   getWorkbench: () => {
     return {} as any;
@@ -70,8 +60,7 @@ const pluginManager = new PluginManager({
   i18n: customI18n,
   pageModel: new CPage(BasePage),
   engine: {} as any,
-  assetsPackageListManager: new AssetsPackageListManager([]),
 });
 
 const ctx = pluginManager.createPluginCtx();
-export const Default = () => <Template></Template>;
+export const Default = () => <TargetComponent node={node} pluginCtx={ctx} activeTab={''}></TargetComponent>;

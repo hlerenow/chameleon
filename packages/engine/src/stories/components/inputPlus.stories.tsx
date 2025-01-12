@@ -1,7 +1,7 @@
 // Button.stories.ts|tsx
 
 import { Meta, StoryFn } from '@storybook/react';
-import { CSSSizeInput } from '@/component/CSSSizeInput';
+import { CSSSizeInput } from '../../component/CSSSizeInput';
 import { useState } from 'react';
 
 const TargetComponent = CSSSizeInput;

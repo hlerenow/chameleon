@@ -1,33 +1,32 @@
-// Button.stories.ts|tsx
-
-import { ComponentMeta, ComponentStory } from '@storybook/react';
-import { VisualPanelPlus } from '@/plugins/VisualPanelPlus';
+import { Meta, StoryFn } from '@storybook/react';
+import { VisualPanelPlus } from '../../plugins/VisualPanelPlus';
 import { CNode, CPage } from '@chamn/model';
-import { PluginManager } from '@/core/pluginManager';
+import { PluginManager } from '../../core/pluginManager';
 import mitt from 'mitt';
-import customI18n from '@/i18n';
+import customI18n from '../../i18n';
 import { BasePage } from '@chamn/demo-page';
-import { AssetsPackageListManager } from '@/core/assetPackagesListManage';
+import { CSSEditor } from '../../component/CSSEditor';
+import { AssetsPackageListManager } from '../../core/assetPackagesListManage';
 
-const TargetComponent = VisualPanelPlus;
+const TargetComponent = CSSEditor;
 
 export default {
   /* 👇 The title prop is optional.
    * See https://storybook.js.org/docs/react/configure/overview#configure-story-loading
    * to learn how to generate automatic titles
    */
-  title: 'VisualPanelPlus',
+  title: 'CSSEditor',
   component: VisualPanelPlus,
   decorators: [
     (Story) => (
-      <div style={{ width: '400px' }}>
+      <div style={{ width: '500px' }}>
         <Story />
       </div>
     ),
   ],
-} as ComponentMeta<typeof VisualPanelPlus>;
+} as Meta<typeof VisualPanelPlus>;
 
-const Template: ComponentStory<typeof TargetComponent> = (args) => <TargetComponent {...args} />;
+const Template: StoryFn<typeof TargetComponent> = (args) => <TargetComponent />;
 
 const node = new CNode({
   props: {
@@ -62,7 +61,6 @@ const node = new CNode({
 });
 
 const pluginManager = new PluginManager({
-  assetsPackageListManager: new AssetsPackageListManager([]),
   emitter: mitt(),
   getWorkbench: () => {
     return {} as any;
@@ -70,7 +68,8 @@ const pluginManager = new PluginManager({
   i18n: customI18n,
   pageModel: new CPage(BasePage),
   engine: {} as any,
+  assetsPackageListManager: new AssetsPackageListManager([]),
 });
 
 const ctx = pluginManager.createPluginCtx();
-export const Default = () => <Template node={node} pluginCtx={ctx} activeTab={''}></Template>;
+export const Default = () => <Template></Template>;

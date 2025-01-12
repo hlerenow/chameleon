@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { CNode, CNodeModelDataType, CRootNode } from '@chamn/model';
+import { CNode, CRootNode } from '@chamn/model';
 import { CRightPanelItem, RightPanelOptions } from '../RightPanel/view';
 
 import styles from './style.module.scss';
