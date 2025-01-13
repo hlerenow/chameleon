@@ -30,6 +30,7 @@
     "html-tag-names": "^2.0.1",
     "loadjs": "4.3.0-rc1",
     "lodash-es": "^4.17.21",
+    "react-reconciler": "^0.31.0",
     "zustand": "^4.3.8"
   },
   "devDependencies": {

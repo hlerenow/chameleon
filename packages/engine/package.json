@@ -27,7 +27,9 @@
     "build:analyze": "cross-env BUILD_TYPE=PKG  build-script --build --analyze",
     "lint": "eslint --ext .tsx,.ts src/",
     "prettier": "prettier --write ./src",
-    "test": "jest"
+    "test": "jest",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "peerDependencies": {
     "react": ">=16.9.0",
@@ -43,6 +45,7 @@
     "@dnd-kit/sortable": "^7.0.2",
     "@dnd-kit/utilities": "^3.2.1",
     "@monaco-editor/react": "^4.5.1",
+    "@xyflow/react": "^12.3.6",
     "ahooks": "^3.7.4",
     "antd": "^5.8.5",
     "color": "^4.2.3",
@@ -60,6 +63,14 @@
     "@babel/core": "^7.21.0",
     "@chamn/build-script": "workspace:*",
     "@chamn/demo-page": "workspace:*",
+    "@chromatic-com/storybook": "^3.2.3",
+    "@storybook/addon-essentials": "^8.4.7",
+    "@storybook/addon-interactions": "^8.4.7",
+    "@storybook/addon-onboarding": "^8.4.7",
+    "@storybook/blocks": "^8.4.7",
+    "@storybook/react": "^8.4.7",
+    "@storybook/react-vite": "^8.4.7",
+    "@storybook/test": "^8.4.7",
     "@types/color": "^3.0.4",
     "@types/css": "^0.0.34",
     "@types/loadjs": "^4.0.4",
@@ -70,6 +81,7 @@
     "babel-loader": "^8.3.0",
     "cross-env": "^7.0.3",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-storybook": "^0.11.2",
     "prop-types": "^15.8.1",
     "rc-select": "^14.4.0",
     "re-resizable": "^6.9.9",
@@ -78,7 +90,8 @@
     "react-dom": "^18.2.0",
     "react-i18next": "^12.1.1",
     "react-router-dom": "^6.7.0",
-    "sass": "^1.54.0"
+    "sass": "^1.54.0",
+    "storybook": "^8.4.7"
   },
   "config": {},
   "gitHead": "dc3e55fdeb903a8012f6ebd3ebc018ed61ad89db"
