@@ -5,20 +5,23 @@ import {
   MiniMap,
   OnConnect,
   ReactFlow,
+  ReactFlowProvider,
   useEdgesState,
   useNodesState,
+  useReactFlow,
+  Node,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { BaseNode } from './node/BaseNode';
-import { JumpLinkNode } from './node/jumpLinkNode';
-import { SamplePage } from '@chamn/demo-page';
 import { TLogicJumpLinkItem } from '@chamn/model';
+import { JumpLinkNode } from './node/JumpLinkNode';
+import { getLayoutedElements } from './util';
 
 const jumpDataList = [
   {
     type: 'JUMP_LINK',
-    link: 'https://www.baidu.com 123123',
+    link: '------',
   },
   {
     type: 'JUMP_LINK',
@@ -41,13 +44,14 @@ const jumpDataList = [
     },
   } as TLogicJumpLinkItem,
 ];
-export const ActionFlowSetter = () => {
+export const ActionFlowSetterCore = () => {
+  const { fitView } = useReactFlow();
+  const [flowMount, setFlowMount] = useState(false);
   const [nodes, setNodes, onNodesChange] = useNodesState<any>([
     {
       id: '1',
-      data: { label: 'Hello' },
+      data: { label: 'Start' },
       position: { x: 0, y: 0 },
-      type: 'BaseNode',
     },
     {
       id: '2',
@@ -63,6 +67,19 @@ export const ActionFlowSetter = () => {
     (params) => setEdges((eds) => addEdge({ ...params, animated: true }, eds)),
     []
   );
+
+  const latestNodeRef = useRef<Node[]>([]);
+  latestNodeRef.current = nodes;
+  const layoutGraph = useCallback(() => {
+    const layouted = getLayoutedElements(latestNodeRef.current, edges, { direction: 'TB' });
+    setNodes([...layouted.nodes]);
+    setEdges([...layouted.edges]);
+
+    window.requestAnimationFrame(() => {
+      fitView();
+    });
+  }, [edges, fitView, setEdges, setNodes]);
+
   return (
     <div
       style={{
@@ -74,8 +91,22 @@ export const ActionFlowSetter = () => {
       <div
         style={{
           flex: 1,
+          position: 'relative',
         }}
       >
+        {!flowMount && (
+          <div
+            style={{
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'white',
+              zIndex: 999,
+            }}
+          ></div>
+        )}
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -87,6 +118,13 @@ export const ActionFlowSetter = () => {
           defaultEdgeOptions={{
             type: 'smoothstep',
             // animated: true,
+          }}
+          onInit={() => {
+            console.log('render ok 11111');
+            setTimeout(() => {
+              layoutGraph();
+              setFlowMount(true);
+            }, 50);
           }}
           fitView
           nodeTypes={{
@@ -100,5 +138,13 @@ export const ActionFlowSetter = () => {
         </ReactFlow>
       </div>
     </div>
+  );
+};
+
+export const ActionFlowSetter = (props: any) => {
+  return (
+    <ReactFlowProvider>
+      <ActionFlowSetterCore {...props}></ActionFlowSetterCore>
+    </ReactFlowProvider>
   );
 };

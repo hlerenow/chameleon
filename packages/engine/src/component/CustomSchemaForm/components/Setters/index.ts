@@ -16,7 +16,7 @@ import { SliderSetter } from './SliderSetter';
 import { RadioGroupSetter } from './RadioGroupSetter';
 import { CSSSizeSetter } from './CSSSizeSetter';
 
-export default {
+export const BUILD_IN_SETTER_MAP = {
   StringSetter,
   ArraySetter,
   ShapeSetter,
@@ -34,5 +34,7 @@ export default {
   RadioGroupSetter,
   CSSSizeSetter,
 } as Record<string, CSetter>;
+
+export default BUILD_IN_SETTER_MAP;
 
 export * from './type';

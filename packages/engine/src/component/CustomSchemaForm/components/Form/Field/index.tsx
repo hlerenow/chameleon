@@ -5,6 +5,8 @@ import { CFormContext } from '../context';
 export type CFieldProps = {
   children: React.ReactNode;
   label?: string;
+  labelWidth?: string;
+  labelAlign?: 'start' | 'center' | 'end';
   tips?: ReactNode | (() => ReactNode);
   name: string;
   condition?: (formState: Record<string, any>) => boolean;
@@ -69,8 +71,22 @@ export const CField = (props: CFieldProps) => {
   }
 
   return (
-    <div className={styles.fieldBox}>
-      {hiddenLabel !== true && <div className={styles.label}>{labelView}</div>}
+    <div
+      className={styles.fieldBox}
+      style={{
+        alignItems: props.labelAlign ?? 'center',
+      }}
+    >
+      {hiddenLabel !== true && (
+        <div
+          className={styles.label}
+          style={{
+            width: props.labelWidth ?? '60px',
+          }}
+        >
+          {labelView}
+        </div>
+      )}
       <div className={styles.content}>{newChildren}</div>
     </div>
   );
