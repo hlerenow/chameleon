@@ -193,6 +193,42 @@ export const SamplePage: CPageDataType = {
         },
         eventListener: [
           {
+            name: 'ON_DID_RENDER',
+            func: {
+              type: CNodePropsTypeEnum.ACTION,
+              handler: [
+                {
+                  type: 'RUN_CODE',
+                  value: `
+                  function (params) {
+                    console.log('12321312', $$context, params);
+                    console.log('Component Did Mount')
+                    return 'Component Did Mount'
+                  };
+                `,
+                },
+              ],
+            },
+          },
+          {
+            name: 'ON_WILL_DESTROY',
+            func: {
+              type: CNodePropsTypeEnum.ACTION,
+              handler: [
+                {
+                  type: 'RUN_CODE',
+                  value: `
+                  function (params) {
+                    console.log('12321312', $$context, params);
+                    console.log('Component ON_WILL_DESTROY')
+                    return 'Component ON_WILL_DESTROY'
+                  };
+                `,
+                },
+              ],
+            },
+          },
+          {
             name: 'onMouseEnter',
             func: {
               type: CNodePropsTypeEnum.ACTION,

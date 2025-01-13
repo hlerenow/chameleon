@@ -30,6 +30,14 @@ type PropsType = {
   $$nodeModel: CNode | CRootNode;
 };
 
+/** 内部事件，组件渲染之后 */
+const ON_DID_RENDER = 'ON_DID_RENDER';
+
+/** 组件销毁之前 */
+const ON_WILL_DESTROY = 'ON_WILL_DESTROY';
+
+const INNER_EVENT_LIST = [ON_DID_RENDER, ON_WILL_DESTROY];
+
 export const convertModelToComponent = (
   originalComponent: any,
   nodeModel: CNode | CRootNode,
@@ -238,6 +246,14 @@ export const convertModelToComponent = (
       this.mediaStyleDomMap = {};
     };
 
+    rebuildNode = () => {
+      this.storeListenDisposeList.forEach((el) => el());
+      this.removeMediaCSS();
+      this.connectStore();
+      this.addMediaCSS();
+      this.forceUpdate();
+    };
+
     componentDidMount(): void {
       this.addMediaCSS();
       onGetRef?.(this.targetComponentRef, nodeModel, this as any);
@@ -251,143 +267,35 @@ export const convertModelToComponent = (
         });
         this.rebuildNode();
       };
+      const EVENT_NAME = ON_DID_RENDER;
+      const actionFlow = nodeModel.value.eventListener?.find((el) => el.name === EVENT_NAME);
+      if (actionFlow) {
+        const func = transformActionNode(actionFlow.func, {
+          context: this.createCurrentNodeCtx(),
+          storeManager: storeManager,
+          actionVariableSpace: {},
+        });
+        func();
+      }
+
       // 设计模式使用
       nodeModel.onChange(customForceUpdate);
     }
-
-    rebuildNode = () => {
-      this.storeListenDisposeList.forEach((el) => el());
-      this.removeMediaCSS();
-      this.connectStore();
-      this.addMediaCSS();
-      this.forceUpdate();
-    };
 
     componentWillUnmount(): void {
       this.storeListenDisposeList.forEach((el) => el());
       this.removeMediaCSS();
       onComponentDestroy?.(this, nodeModel);
-    }
-
-    renderLoop(): React.ReactNode {
-      const { $$context, ...props } = this.props;
-      const nodeName = nodeModel.value.nodeName || nodeModel.id;
-      const nodeId = nodeModel.id;
-      const newOriginalProps = {
-        key: nodeModel.id,
-        ...nodeModel.props,
-        ...props,
-      };
-
-      const tempContext: ContextType = {
-        state: this.state || {},
-        staticVar: this.variableSpace.staticVar,
-        updateState: this.updateState,
-        storeManager: storeManager,
-        getState: () => storeManager.getStateObj(nodeName),
-        getStateObj: () => storeManager.getStateObj(nodeName),
-        getStateObjById: (nodeId: string) => storeManager.getStateObj(nodeId),
-        stateManager: storeManager.getStateSnapshot(),
-        getMethods: () => {
-          const methods = variableManager.get(nodeId).methods;
-          const nodeRef = refManager.get(nodeId).current;
-          const obj = getInheritObj(methods, nodeRef);
-
-          return obj;
-        },
-        getMethodsById: (nodeId: string) => {
-          const methods = variableManager.get(nodeId).methods;
-          const nodeRef = refManager.get(nodeId).current;
-          const obj = getInheritObj(methods, nodeRef);
-          return obj;
-        },
-        getStaticVar: () => {
-          return variableManager.get(nodeName).staticVar;
-        },
-        getStaticVarById: (nodeId: string) => {
-          return variableManager.get(nodeId).staticVar;
-        },
-        nodeRefs: $$context.nodeRefs,
-      };
-
-      // 根节点 context 需要注入额外的变量
-      this.processRootContext(tempContext);
-
-      const newContext = getContext(tempContext, $$context);
-
-      // 需要优先处理处理 methods， methods 内部不能调用 methods 上的方法, 转换为可执行的方法
-      this.transformMethods({ context: newContext });
-
-      // 处理循环
-      const loopObj = nodeModel.value.loop;
-      let loopRes: any[] = [];
-      if (loopObj && loopObj.open) {
-        this.targetComponentRef.current = [];
-        let loopList: any[] = (loopObj.data as any[]) || [];
-        if (isExpression(loopObj.data)) {
-          const expProp = loopObj.data as JSExpressionPropType;
-          loopList = runExpression(expProp.value, newContext || {});
-        }
-        loopRes = loopList.map((...args) => {
-          const innerIndex = args[1];
-          const argsName = [loopObj.forName || 'item', loopObj.forIndex || 'index'];
-          const loopData = getObjFromArrayMap(args, argsName);
-          let loopDataName = 'loopData';
-          // loopDataName: loopData or loopData${xxx}, xxx is capitalize
-          if (loopObj.name) {
-            loopDataName = `${loopDataName}${loopObj.name}`;
-          }
-          const loopContext = getContext(
-            {
-              [loopDataName]: loopData,
-              nodeRefs: newContext.nodeRefs,
-            },
-            newContext
-          );
-          // handle props
-          const newProps: Record<string, any> = transformProps(newOriginalProps, {
-            $$context: loopContext,
-            ...commonRenderOptions,
-          });
-
-          // 处理 className
-          const finalClsx = this.processNodeClassName(newProps.className, loopContext);
-          newProps.className = finalClsx;
-
-          // 处理 style
-          const newStyle: Record<string, any> = this.processNodeStyle(loopContext);
-          newProps.style = newStyle;
-
-          // handle children
-          const { children } = newProps;
-          delete newProps.children;
-          const newChildren = this.processNodeChild(children, loopContext);
-          // handle children end
-
-          // loop 渲染特有的 key
-          newProps.key = `${newProps.key}-${innerIndex}`;
-          if (isExpression(loopObj.key)) {
-            const keyObj = loopObj.key as JSExpressionPropType;
-            const specialKey = runExpression(keyObj.value, loopContext || {});
-            newProps.key += `-${specialKey}`;
-          }
-          // loop 渲染特有的 key End
-
-          // 处理 ref
-          newProps.ref = (ref: any) => {
-            this.targetComponentRef.current = this.targetComponentRef.current || [];
-            this.targetComponentRef.current[innerIndex] = ref;
-          };
-
-          const renderView = this.processNodeConditionAndConfigHook(newProps, newChildren, loopContext);
-
-          return renderView;
+      const EVENT_NAME = ON_WILL_DESTROY;
+      const actionFlow = nodeModel.value.eventListener?.find((el) => el.name === EVENT_NAME);
+      if (actionFlow) {
+        const func = transformActionNode(actionFlow.func, {
+          context: this.createCurrentNodeCtx(),
+          storeManager: storeManager,
+          actionVariableSpace: {},
         });
-
-        // 结束循环渲染
-        return loopRes;
+        func();
       }
-      // 处理循环结束
     }
 
     /** 转换节点的 methods */
@@ -518,6 +426,10 @@ export const convertModelToComponent = (
       const eventListener = nodeModel.value.eventListener;
       const res: any = {};
       eventListener?.forEach((event) => {
+        /** 内部事件略过 */
+        if (INNER_EVENT_LIST.includes(event.name)) {
+          return;
+        }
         const func = transformActionNode(event.func, {
           context: newContext,
           storeManager: storeManager,
@@ -528,16 +440,10 @@ export const convertModelToComponent = (
       return res;
     }
 
-    renderCore(): React.ReactNode {
-      const { $$context, ...props } = this.props;
+    createCurrentNodeCtx() {
+      const { $$context } = this.props;
       const nodeName = nodeModel.value.nodeName || nodeModel.id;
       const nodeId = nodeModel.id;
-
-      const newOriginalProps = {
-        key: nodeModel.id,
-        ...nodeModel.props,
-        ...props,
-      };
 
       const tempContext: ContextType = {
         state: this.state || {},
@@ -574,6 +480,18 @@ export const convertModelToComponent = (
       this.processRootContext(tempContext);
 
       const newContext = getContext(tempContext, $$context);
+      return newContext;
+    }
+
+    renderCore(): React.ReactNode {
+      const { $$context: _, ...props } = this.props;
+      const newOriginalProps = {
+        key: nodeModel.id,
+        ...nodeModel.props,
+        ...props,
+      };
+
+      const newContext = this.createCurrentNodeCtx();
 
       this.transformMethods({ context: newContext });
 
@@ -612,14 +530,98 @@ export const convertModelToComponent = (
       // 可能能复用 end
     }
 
+    renderLoop(): React.ReactNode {
+      const { $$context: _, ...props } = this.props;
+      const newOriginalProps = {
+        key: nodeModel.id,
+        ...nodeModel.props,
+        ...props,
+      };
+
+      const newContext = this.createCurrentNodeCtx();
+
+      // 需要优先处理处理 methods， methods 内部不能调用 methods 上的方法, 转换为可执行的方法
+      this.transformMethods({ context: newContext });
+
+      // 处理循环
+      const loopObj = nodeModel.value.loop;
+      let loopRes: any[] = [];
+      if (loopObj && loopObj.open) {
+        this.targetComponentRef.current = [];
+        let loopList: any[] = (loopObj.data as any[]) || [];
+        if (isExpression(loopObj.data)) {
+          const expProp = loopObj.data as JSExpressionPropType;
+          loopList = runExpression(expProp.value, newContext || {});
+        }
+        loopRes = loopList.map((...args) => {
+          const innerIndex = args[1];
+          const argsName = [loopObj.forName || 'item', loopObj.forIndex || 'index'];
+          const loopData = getObjFromArrayMap(args, argsName);
+          let loopDataName = 'loopData';
+          // loopDataName: loopData or loopData${xxx}, xxx is capitalize
+          if (loopObj.name) {
+            loopDataName = `${loopDataName}${loopObj.name}`;
+          }
+          const loopContext = getContext(
+            {
+              [loopDataName]: loopData,
+              nodeRefs: newContext.nodeRefs,
+            },
+            newContext
+          );
+          // handle props
+          const newProps: Record<string, any> = transformProps(newOriginalProps, {
+            $$context: loopContext,
+            ...commonRenderOptions,
+          });
+
+          // 处理 className
+          const finalClsx = this.processNodeClassName(newProps.className, loopContext);
+          newProps.className = finalClsx;
+
+          // 处理 style
+          const newStyle: Record<string, any> = this.processNodeStyle(loopContext);
+          newProps.style = newStyle;
+
+          // handle children
+          const { children } = newProps;
+          delete newProps.children;
+          const newChildren = this.processNodeChild(children, loopContext);
+          // handle children end
+
+          // loop 渲染特有的 key
+          newProps.key = `${newProps.key}-${innerIndex}`;
+          if (isExpression(loopObj.key)) {
+            const keyObj = loopObj.key as JSExpressionPropType;
+            const specialKey = runExpression(keyObj.value, loopContext || {});
+            newProps.key += `-${specialKey}`;
+          }
+          // loop 渲染特有的 key End
+
+          // 处理 ref
+          newProps.ref = (ref: any) => {
+            this.targetComponentRef.current = this.targetComponentRef.current || [];
+            this.targetComponentRef.current[innerIndex] = ref;
+          };
+
+          const renderView = this.processNodeConditionAndConfigHook(newProps, newChildren, loopContext);
+
+          return renderView;
+        });
+
+        // 结束循环渲染
+        return loopRes;
+      }
+      // 处理循环结束
+    }
+
     render(): React.ReactNode {
       const loopObj = nodeModel.value.loop;
       if (loopObj && loopObj.open) {
         return this.renderLoop();
       } else {
-        return this, this.renderCore();
+        return this.renderCore();
       }
-      // 可能能复用 end
     }
   }
 
