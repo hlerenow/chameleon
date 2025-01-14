@@ -10,16 +10,72 @@ export const FunctionSetter: CSetter<any> = ({
   initialValue,
   setterContext,
   ...props
-}: CSetterProps<any>) => {
+}: CSetterProps<{ mode: 'MODAL' | 'EMBED'; containerStyle?: React.CSSProperties; minimap?: boolean }>) => {
   const editorRef = useRef<MonacoEditorInstance | null>(null);
   const [open, setOpen] = useState(false);
   const onInnerValueChange = () => {
     const newValStr = editorRef.current?.getValue() || '';
-    onValueChange({
+    onValueChange?.({
       type: CNodePropsTypeEnum.FUNCTION,
       value: newValStr,
     });
   };
+  const editorView = (
+    <MonacoEditor
+      beforeMount={(monaco) => {
+        monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+          noSemanticValidation: true,
+          noSyntaxValidation: false,
+        });
+
+        // compiler options
+        monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+          target: monaco.languages.typescript.ScriptTarget.ES5,
+          allowNonTsExtensions: true,
+        });
+
+        const libUri = 'ts:filename/chameleon.default.variable.d.ts';
+        monaco.languages.typescript.javascriptDefaults.addExtraLib(DefaultTslibSource, libUri);
+        // When resolving definitions and references, the editor will try to use created models.
+        // Creating a model for the library allows "peek definition/references" commands to work with the library.
+        const model = monaco.editor.getModel(monaco.Uri.parse(libUri));
+        if (!model) {
+          monaco.editor.createModel(DefaultTslibSource, 'typescript', monaco.Uri.parse(libUri));
+        }
+      }}
+      onDidMount={(editor) => {
+        editorRef.current = editor;
+      }}
+      initialValue={props.value?.value ?? (initialValue || '')}
+      language={'javascript'}
+      options={{
+        automaticLayout: true,
+        tabSize: 2,
+        minimap: {
+          enabled: props.minimap ?? true,
+        },
+      }}
+      onChange={() => {
+        if (props.mode === 'EMBED') {
+          // TODO: 需要节流每 1 秒触发一次
+          onInnerValueChange();
+        }
+      }}
+    />
+  );
+
+  if (props.mode === 'EMBED') {
+    return (
+      <div
+        style={{
+          border: '1px solid rgba(0,0,0, 0.2)',
+          ...(props.containerStyle || {}),
+        }}
+      >
+        {editorView}
+      </div>
+    );
+  }
   return (
     <ConfigProvider
       theme={{
@@ -63,42 +119,7 @@ export const FunctionSetter: CSetter<any> = ({
           },
         }}
       >
-        <div style={{ height: '100%' }}>
-          {open && (
-            <MonacoEditor
-              beforeMount={(monaco) => {
-                monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-                  noSemanticValidation: true,
-                  noSyntaxValidation: false,
-                });
-
-                // compiler options
-                monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
-                  target: monaco.languages.typescript.ScriptTarget.ES5,
-                  allowNonTsExtensions: true,
-                });
-
-                const libUri = 'ts:filename/chameleon.default.variable.d.ts';
-                monaco.languages.typescript.javascriptDefaults.addExtraLib(DefaultTslibSource, libUri);
-                // When resolving definitions and references, the editor will try to use created models.
-                // Creating a model for the library allows "peek definition/references" commands to work with the library.
-                const model = monaco.editor.getModel(monaco.Uri.parse(libUri));
-                if (!model) {
-                  monaco.editor.createModel(DefaultTslibSource, 'typescript', monaco.Uri.parse(libUri));
-                }
-              }}
-              onDidMount={(editor) => {
-                editorRef.current = editor;
-              }}
-              initialValue={props.value?.value ?? (initialValue || '')}
-              language={'javascript'}
-              options={{
-                automaticLayout: true,
-                tabSize: 2,
-              }}
-            />
-          )}
-        </div>
+        <div style={{ height: '100%' }}>{open && editorView}</div>
       </Modal>
     </ConfigProvider>
   );

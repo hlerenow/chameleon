@@ -181,7 +181,7 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
   useEffect(() => {
     const newValue = {
       id: node?.id,
-      condition: node?.value.condition || true,
+      condition: node?.value.condition ?? true,
       loop: {
         open: loopObj?.open || false,
         data: loopObj?.data || [],

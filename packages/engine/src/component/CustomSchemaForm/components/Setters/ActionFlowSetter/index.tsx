@@ -12,7 +12,7 @@ import {
   Node,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { BaseNode } from './node/BaseNode';
 import { TLogicJumpLinkItem } from '@chamn/model';
 import { JumpLinkNode } from './node/JumpLinkNode';
@@ -57,6 +57,12 @@ export const ActionFlowSetterCore = () => {
       id: '2',
       type: 'JumpLinkNode',
       data: jumpDataList[0],
+      position: { x: -57.5, y: 104 },
+    },
+    {
+      id: '3',
+      type: 'JumpLinkNode',
+      data: jumpDataList[2],
       position: { x: -57.5, y: 104 },
     },
   ]);

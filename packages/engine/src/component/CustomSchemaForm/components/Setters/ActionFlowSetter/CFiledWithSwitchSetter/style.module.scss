@@ -1,0 +1,11 @@
+.fieldBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.switchBtn {
+  color: $fontColor;
+  font-size: 12px;
+  padding: 0 5px 0 10px;
+}

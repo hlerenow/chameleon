@@ -11,6 +11,7 @@ export type MonacoEditorProps = {
   onChange?: EditorType['onChange'];
   initialValue?: string;
   language?: 'json' | 'javascript' | 'typescript';
+  theme?: 'vs-dark' | 'light';
 };
 
 export const MonacoEditor = (props: MonacoEditorProps) => {
@@ -31,6 +32,7 @@ export const MonacoEditor = (props: MonacoEditorProps) => {
       beforeMount={handleEditorBeforeMount}
       onMount={handleEditorDidMount}
       options={props.options}
+      theme={props.theme}
       onChange={props.onChange}
     />
   );
