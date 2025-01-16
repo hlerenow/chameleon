@@ -1,6 +1,8 @@
 import { Edge, Node } from '@xyflow/react';
 import Dagre from '@dagrejs/dagre';
+import { TActionLogicItem } from '@chamn/model';
 
+/** 自动布局 flow node */
 export const getLayoutedElements = (
   nodes: Node[],
   edges: Edge[],
@@ -34,4 +36,20 @@ export const getLayoutedElements = (
     }),
     edges,
   };
+};
+
+export const parseActionLogicToNodeList = (value: TActionLogicItem) => {
+  return {
+    nodes: [],
+    edges: [],
+  };
+};
+
+export const revertNodeToActionLogic = (params: { node: any[]; edges: any[] }) => {
+  const result: TActionLogicItem = {
+    type: 'ACTION',
+    handler: [],
+  };
+
+  return result;
 };

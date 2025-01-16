@@ -177,7 +177,10 @@ export const transformPageSchemaToTreeData = (pageSchema: CPageDataType, pageMod
   return [rootNode];
 };
 
-export const traverseTree = (tree: TreeNodeData | TreeNodeData[], handler: (node: TreeNodeData) => boolean) => {
+export const traverseTree = (
+  tree: TreeNodeData | TreeNodeData[],
+  handler: (node: TreeNodeData) => boolean | undefined
+) => {
   let tempTree: TreeNodeData[] = [];
   if (Array.isArray(tree)) {
     tempTree = tree;
@@ -187,7 +190,7 @@ export const traverseTree = (tree: TreeNodeData | TreeNodeData[], handler: (node
 
   let stop = false;
 
-  const traverseCb = (node: TreeNodeData, conditionCb: (node: TreeNodeData) => boolean) => {
+  const traverseCb = (node: TreeNodeData, conditionCb: (node: TreeNodeData) => boolean | undefined) => {
     if (stop) {
       return;
     }

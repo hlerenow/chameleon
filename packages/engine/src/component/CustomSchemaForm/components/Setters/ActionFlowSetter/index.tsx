@@ -13,10 +13,10 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useCallback, useRef, useState } from 'react';
-import { BaseNode } from './node/BaseNode';
-import { TLogicJumpLinkItem } from '@chamn/model';
-import { JumpLinkNode } from './node/JumpLinkNode';
+import { TActionLogicItem, TLogicAssignValueItem, TLogicJumpLinkItem } from '@chamn/model';
 import { getLayoutedElements } from './util';
+import { NODE_TYPE } from './node';
+import { CSetterProps } from '../type';
 
 const jumpDataList = [
   {
@@ -43,8 +43,37 @@ const jumpDataList = [
     }`,
     },
   } as TLogicJumpLinkItem,
+  {
+    type: 'ASSIGN_VALUE',
+    valueType: 'MEMORY',
+    currentValue: 123,
+    targetValueName: 'Asd',
+  } as TLogicAssignValueItem,
+  {
+    type: 'ASSIGN_VALUE',
+    valueType: 'MEMORY',
+    currentValue: {
+      type: 'EXPRESSION',
+      value: '$$context',
+    },
+    targetValueName: 'Asd',
+  } as TLogicAssignValueItem,
+  {
+    type: 'ASSIGN_VALUE',
+    valueType: 'MEMORY',
+    currentValue: {
+      type: 'FUNCTION',
+      value: 'console.log(12444)',
+    },
+    targetValueName: 'Asd',
+  } as TLogicAssignValueItem,
 ];
-export const ActionFlowSetterCore = () => {
+
+export type TActionFlowSetterCore = CSetterProps<{
+  value?: TActionLogicItem;
+}>;
+
+export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
   const { fitView } = useReactFlow();
   const [flowMount, setFlowMount] = useState(false);
   const [nodes, setNodes, onNodesChange] = useNodesState<any>([
@@ -53,29 +82,45 @@ export const ActionFlowSetterCore = () => {
       data: { label: 'Start' },
       position: { x: 0, y: 0 },
     },
+    // {
+    //   id: '2',
+    //   type: 'JumpLinkNode',
+    //   data: jumpDataList[0],
+    //   position: { x: -57.5, y: 104 },
+    // },
+    // {
+    //   id: '3',
+    //   type: 'JumpLinkNode',
+    //   data: jumpDataList[2],
+    //   position: { x: -57.5, y: 104 },
+    // },
     {
-      id: '2',
-      type: 'JumpLinkNode',
-      data: jumpDataList[0],
+      id: '4',
+      type: 'AssignValueNode',
+      data: { ...jumpDataList[3], pageModel: props.setterContext?.pluginCtx?.pageModel },
       position: { x: -57.5, y: 104 },
     },
     {
-      id: '3',
-      type: 'JumpLinkNode',
-      data: jumpDataList[2],
+      id: '5',
+      type: 'AssignValueNode',
+      data: jumpDataList[4],
+      position: { x: -57.5, y: 104 },
+    },
+    {
+      id: '6',
+      type: 'AssignValueNode',
+      data: jumpDataList[5],
       position: { x: -57.5, y: 104 },
     },
   ]);
 
   const [edges, setEdges, onEdgesChange] = useEdgesState<any>([{ id: '1-2', source: '1', target: '2' }]);
 
-  const onConnect = useCallback<OnConnect>(
-    (params) => setEdges((eds) => addEdge({ ...params, animated: true }, eds)),
-    []
-  );
+  const onConnect = useCallback<OnConnect>((params) => setEdges((eds) => addEdge({ ...params }, eds)), [setEdges]);
 
   const latestNodeRef = useRef<Node[]>([]);
   latestNodeRef.current = nodes;
+
   const layoutGraph = useCallback(() => {
     const layouted = getLayoutedElements(latestNodeRef.current, edges, { direction: 'TB' });
     setNodes([...layouted.nodes]);
@@ -133,10 +178,7 @@ export const ActionFlowSetterCore = () => {
             }, 50);
           }}
           fitView
-          nodeTypes={{
-            BaseNode: BaseNode,
-            JumpLinkNode: JumpLinkNode,
-          }}
+          nodeTypes={NODE_TYPE}
         >
           <Background />
           <Controls />
@@ -147,7 +189,7 @@ export const ActionFlowSetterCore = () => {
   );
 };
 
-export const ActionFlowSetter = (props: any) => {
+export const ActionFlowSetter = (props: TActionFlowSetterCore) => {
   return (
     <ReactFlowProvider>
       <ActionFlowSetterCore {...props}></ActionFlowSetterCore>

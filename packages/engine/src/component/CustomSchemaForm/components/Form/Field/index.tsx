@@ -13,6 +13,8 @@ export type CFieldProps = {
   onConditionValueChange?: (val: boolean) => void;
   noStyle?: boolean;
   hiddenLabel?: boolean;
+  valueChangeEventName?: string;
+  formatEventValue?: (val: any) => any;
 };
 
 export const CField = (props: CFieldProps) => {
@@ -48,14 +50,20 @@ export const CField = (props: CFieldProps) => {
   let newChildren = children;
 
   if (isValidElement(children)) {
+    const eventName = props.valueChangeEventName ?? 'onValueChange';
     const extraProps: any = {
-      onValueChange: (val: any) => {
+      [eventName]: (val: any) => {
+        let tempVal = val;
+        if (props.formatEventValue) {
+          tempVal = props.formatEventValue(val);
+        }
         updateContext({
           ...formState,
-          [name]: val,
+          [name]: tempVal,
         });
       },
     };
+
     if ((formState as any)[name] !== undefined) {
       extraProps.value = (formState as any)[name];
     }
