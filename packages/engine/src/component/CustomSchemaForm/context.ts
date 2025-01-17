@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import React, { Ref } from 'react';
-import { CustomSchemaFormInstance } from '.';
+import { CustomSchemaFormInstance } from './index';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CForm } from './components/Form';
 import { CFormContextData } from './components/Form/context';

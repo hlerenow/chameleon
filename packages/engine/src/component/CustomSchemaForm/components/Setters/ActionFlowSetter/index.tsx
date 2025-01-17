@@ -13,7 +13,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useCallback, useRef, useState } from 'react';
-import { TActionLogicItem, TLogicAssignValueItem, TLogicJumpLinkItem } from '@chamn/model';
+import { AssignValueType, TActionLogicItem, TLogicAssignValueItem, TLogicJumpLinkItem } from '@chamn/model';
 import { getLayoutedElements } from './util';
 import { NODE_TYPE } from './node';
 import { CSetterProps } from '../type';
@@ -45,18 +45,21 @@ const jumpDataList = [
   } as TLogicJumpLinkItem,
   {
     type: 'ASSIGN_VALUE',
-    valueType: 'MEMORY',
+    valueType: AssignValueType.STATE,
     currentValue: 123,
     targetValueName: 'Asd',
   } as TLogicAssignValueItem,
   {
     type: 'ASSIGN_VALUE',
-    valueType: 'MEMORY',
+    valueType: AssignValueType.STATE,
     currentValue: {
       type: 'EXPRESSION',
       value: '$$context',
     },
-    targetValueName: 'Asd',
+    targetValueName: {
+      keyPath: 'testName',
+      nodeId: '12323',
+    },
   } as TLogicAssignValueItem,
   {
     type: 'ASSIGN_VALUE',
@@ -97,24 +100,39 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
     {
       id: '4',
       type: 'AssignValueNode',
-      data: { ...jumpDataList[3], pageModel: props.setterContext?.pluginCtx?.pageModel },
+      data: {
+        ...jumpDataList[3],
+        __devConfig__: {
+          pageModel: props.setterContext?.pluginCtx?.pageModel,
+          defaultSetterMap: {
+            currentValue: {
+              name: 'currentValue',
+              setter: 'NumberSetter',
+            },
+          },
+        },
+      },
       position: { x: -57.5, y: 104 },
     },
     {
       id: '5',
       type: 'AssignValueNode',
-      data: jumpDataList[4],
+      data: { ...jumpDataList[4], __devConfig__: { pageModel: props.setterContext?.pluginCtx?.pageModel } },
       position: { x: -57.5, y: 104 },
     },
-    {
-      id: '6',
-      type: 'AssignValueNode',
-      data: jumpDataList[5],
-      position: { x: -57.5, y: 104 },
-    },
+    // {
+    //   id: '6',
+    //   type: 'AssignValueNode',
+    //   data: jumpDataList[5],
+    //   position: { x: -57.5, y: 104 },
+    // },
   ]);
 
-  const [edges, setEdges, onEdgesChange] = useEdgesState<any>([{ id: '1-2', source: '1', target: '2' }]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<any>([
+    { id: '1-2', source: '1', target: '2' },
+    { id: '1-3', source: '2', target: '3' },
+    { id: '1-4', source: '3', target: '4' },
+  ]);
 
   const onConnect = useCallback<OnConnect>((params) => setEdges((eds) => addEdge({ ...params }, eds)), [setEdges]);
 

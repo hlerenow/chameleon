@@ -110,3 +110,6 @@ export type DropPosType = {
 export type DesignerInjectProps = {
   $SET_DOM?: (dom: HTMLElement) => void;
 };
+
+/** 存储开发过程中的中间态配置，不影响渲染 */
+export const DEV_CONFIG_KEY = '__DEV_CONFIG__';

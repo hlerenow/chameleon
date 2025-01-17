@@ -8,7 +8,7 @@ export type CFormProps = {
   initialValue?: Record<string, any>;
   customSetterMap: CFormContextData['customSetterMap'];
   onValueChange?: (formData: Record<string, any>) => void;
-};
+} & Partial<ContextState>;
 
 const CUSTOM_SETTER_MAP = {};
 
@@ -44,6 +44,7 @@ export class CForm extends React.Component<CFormProps, CFormContextData> {
       formState: props.initialValue ?? {},
       conditionConfig: {},
       customSetterMap: props.customSetterMap || {},
+
       updateContext: this.updateContext,
       updateConditionConfig: (name: string, cb: (state: Record<string, any>) => boolean) => {
         this.setState({

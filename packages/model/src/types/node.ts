@@ -16,7 +16,7 @@ import {
 } from 'superstruct';
 import { CNodePropsTypeEnum, SlotRenderType } from '../const/schema';
 import { isPlainObject } from '../util/lodash';
-import { CSSType } from './base';
+import { CSSType, DEV_CONFIG_KEY } from './base';
 import { CPageDataType } from './page';
 
 export type NormalPropType = string | boolean | number | Record<string, any>;
@@ -63,15 +63,27 @@ export enum LogicType {
 
 export type TDynamicValue = string | number | JSExpressionPropType | FunctionPropType;
 
+/** 存储开发中的一些临时状态 */
+type TActionFlowDevConfig = {
+  defaultSetterMap: Record<
+    string,
+    {
+      name: string;
+      setter: string;
+    }
+  >;
+};
 export type TLogicJumpLinkItem = {
   type: LogicType.JUMP_LINK | `${LogicType.JUMP_LINK}`;
   link: TDynamicValue;
+  [DEV_CONFIG_KEY]?: TActionFlowDevConfig;
 };
 
 /** 🌧️函数类型类似 */
 export type TLogicRunCodeItem = {
   /** 函数最好有返回值 */
   type: LogicType.RUN_CODE | `${LogicType.RUN_CODE}`;
+  [DEV_CONFIG_KEY]?: TActionFlowDevConfig;
 } & TBaseFunction;
 
 export type TLogicCallNodeMethodItem = {
@@ -81,6 +93,7 @@ export type TLogicCallNodeMethodItem = {
   args?: TDynamicValue[];
   /** 返回值的变量名 */
   returnVarName?: string;
+  [DEV_CONFIG_KEY]?: TActionFlowDevConfig;
 };
 
 export type TLogicRequestAPIItem = {
@@ -100,6 +113,7 @@ export type TLogicRequestAPIItem = {
   responseVarName?: string;
   /** 额外的数据 */
   extra?: Record<any, any>;
+  [DEV_CONFIG_KEY]?: TActionFlowDevConfig;
 };
 
 export enum AssignValueType {
@@ -121,6 +135,7 @@ export type TLogicAssignValueItem = {
   currentValue: TDynamicValue;
   /** 如果是 STATE 类型需要 nodeId, 否则只用填 string */
   targetValueName?: TargetValueNameObject | string;
+  [DEV_CONFIG_KEY]?: TActionFlowDevConfig;
 };
 
 export type TLogicItemHandlerFlow = (

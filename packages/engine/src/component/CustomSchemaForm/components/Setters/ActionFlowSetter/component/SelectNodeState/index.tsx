@@ -1,43 +1,42 @@
-import { transformPageSchemaToTreeData, traverseTree } from '@/plugins/OutlineTree/util';
-import { TreeSelect } from 'antd';
-import { useMemo, useRef, useState } from 'react';
+import { CPage } from '@chamn/model';
+import { SelectNodeByTree } from '../SelectNodeByTree';
+import { Input, Space } from 'antd';
 
-export const SelectNodeState = (props: { pageModel: any }) => {
-  const treeData = useMemo(() => {
-    if (!props.pageModel) {
-      return;
-    }
-    const treeData = transformPageSchemaToTreeData(props.pageModel?.export(), props.pageModel);
-    traverseTree(treeData, (el: any) => {
-      el.value = el.key;
-      return false;
-    });
-    return treeData;
-  }, [props.pageModel]);
-
-  console.log('🚀 ~ treeData ~ treeData:', treeData);
-  const treeRef = useRef<any>();
-  console.log('🚀 ~ SelectNodeState ~ treeRef:', treeRef);
-  const [value, setValue] = useState<string>('');
-  const onChange = (newValue: string) => {
-    setValue(newValue);
+export const SelectNodeState = (props: {
+  value?: {
+    nodeId: string;
+    keyPath: string;
   };
+  pageModel: CPage;
+  onChange?: (data: { nodeId: string; keyPath: string }) => void;
+}) => {
   return (
-    <div id="tse">
-      <TreeSelect
-        ref={treeRef}
-        showSearch
-        style={{ width: '100%' }}
-        // value={value}
-        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-        placeholder="Please select"
-        allowClear
-        treeDefaultExpandAll
-        onChange={onChange}
-        treeData={treeData}
-        getPopupContainer={() => document.getElementById('tse')!}
-        // onPopupScroll={onPopupScroll}
-      />
+    <div>
+      <Space>
+        <SelectNodeByTree
+          pageModel={props.pageModel}
+          onChange={(data) => {
+            props.onChange?.({
+              nodeId: data.nodeId,
+              keyPath: props.value?.keyPath || '',
+            });
+          }}
+        />
+        <Input
+          style={{
+            width: 250,
+          }}
+          value={props.value?.keyPath}
+          onChange={(e) => {
+            const { value: inputValue } = e.target;
+            props.onChange?.({
+              nodeId: props.value?.nodeId || '',
+              keyPath: String(inputValue),
+            });
+          }}
+          placeholder="variable name. support '.'"
+        />
+      </Space>
     </div>
   );
 };
