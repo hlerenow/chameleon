@@ -309,7 +309,7 @@ export class CPage {
       if (el.componentName && el.package && el.version) {
         return true;
       }
-      console.warn(`${el} not a valid material info`);
+      console.warn(`${JSON.stringify(el, null, 2)} not a valid material info`);
       return false;
     });
     this.materialsModel.usedMaterials = [];

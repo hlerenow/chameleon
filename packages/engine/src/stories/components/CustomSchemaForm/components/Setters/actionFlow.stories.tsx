@@ -1,7 +1,7 @@
 import { ActionFlowSetter } from '@/component/CustomSchemaForm/components/Setters/ActionFlowSetter';
 import { CPage } from '@chamn/model';
 import { fn } from '@storybook/test';
-import { SamplePage } from '@chamn/demo-page';
+import { SamplePage, Material } from '@chamn/demo-page';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 export default {
@@ -23,6 +23,7 @@ export default {
 export const Demo = {
   args: {},
   render: () => {
+    console.log(Material);
     return (
       <div
         style={{
@@ -33,7 +34,7 @@ export const Demo = {
         <ActionFlowSetter
           setterContext={{
             pluginCtx: {
-              pageModel: new CPage(SamplePage),
+              pageModel: new CPage(SamplePage, { materials: Material }),
             } as any,
             setCollapseHeaderExt: undefined,
             onSetterChange: function (keyPaths: string[], setterName: string): void {

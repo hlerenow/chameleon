@@ -34,13 +34,14 @@ export const JumpLinkNode = ({ data, isConnectable, selected, ...restProps }: No
         minWidth: '100px',
       }}
     >
-      <Card title="Jump Link" bordered={false}>
+      <Card title="Jump Link">
         <CForm
           ref={formRef}
           name="jump Link"
           customSetterMap={BUILD_IN_SETTER_MAP}
           onValueChange={(newVal) => {
             console.log('newVal', newVal);
+            Object.assign(data, newVal);
           }}
         >
           <CFiledWithSwitchSetter

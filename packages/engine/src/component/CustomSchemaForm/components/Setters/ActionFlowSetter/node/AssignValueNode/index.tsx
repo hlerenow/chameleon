@@ -49,7 +49,6 @@ export const AssignValueNode = ({ data, isConnectable, selected, ...restProps }:
             name: keyPaths.join('.'),
             setter: setterName,
           };
-          console.log(JSON.stringify(data.__devConfig__.defaultSetterMap, null, 2));
         },
         customSetterMap: { ...BUILD_IN_SETTER_MAP },
       }}
@@ -60,13 +59,13 @@ export const AssignValueNode = ({ data, isConnectable, selected, ...restProps }:
           minWidth: '100px',
         }}
       >
-        <Card title="Assign Value" bordered={false}>
+        <Card title="Assign Value">
           <CForm
             ref={formRef}
             name="jump Link"
             customSetterMap={BUILD_IN_SETTER_MAP}
             onValueChange={(newVal) => {
-              console.log('🚀 ~ AssignValueNode ~ newVal:', newVal, data.__devConfig__.defaultSetterMap);
+              Object.assign(data, newVal);
               setFormValue(newVal as any);
             }}
           >

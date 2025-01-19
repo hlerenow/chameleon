@@ -12,6 +12,35 @@ export const DivMeta: CMaterialType = {
       setters: ['JSONSetter'],
     },
   ],
+  methods: [
+    {
+      name: 'doAlert',
+      params: [
+        {
+          name: 'msg',
+        },
+      ],
+      title: '打开警告提示',
+    },
+    {
+      name: 'doAlert2',
+      params: [
+        {
+          name: 'msg',
+          description: '警告内容',
+          tsType: 'string',
+          example: '请求失败',
+        },
+        {
+          name: 'count',
+          description: '提示次数',
+          tsType: 'number',
+          example: '1',
+        },
+      ],
+      title: '打开警告提示2',
+    },
+  ],
   snippets: [
     {
       title: '基础元素',

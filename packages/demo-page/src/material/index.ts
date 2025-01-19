@@ -15,4 +15,5 @@ export const Material: CMaterialType<any>[] = [
   ButtonMeta,
   LayoutMeta,
   AdvanceButtonMeta,
+  DivMeta,
 ];

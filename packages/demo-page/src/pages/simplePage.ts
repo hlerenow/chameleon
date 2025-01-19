@@ -53,6 +53,7 @@ export const SamplePage: CPageDataType = {
             type: CNodePropsTypeEnum.ACTION,
             handler: [
               {
+                id: 1,
                 type: 'RUN_CODE',
                 sourceCode: '',
                 value: `
@@ -61,8 +62,11 @@ export const SamplePage: CPageDataType = {
                      return 555;
                    }
                   `,
+                next: 2,
               },
               {
+                id: 2,
+                next: 3,
                 type: 'JUMP_LINK',
                 link: 'https://www.baidu.com',
               },
@@ -74,6 +78,8 @@ export const SamplePage: CPageDataType = {
                 },
               } as TLogicJumpLinkItem,
               {
+                id: 3,
+                next: 4,
                 type: 'JUMP_LINK',
                 link: {
                   type: 'FUNCTION',
@@ -87,6 +93,7 @@ export const SamplePage: CPageDataType = {
                 },
               } as TLogicJumpLinkItem,
               {
+                id: 4,
                 type: LogicType.REQUEST_API,
                 apiPath: {
                   type: 'FUNCTION',
@@ -117,6 +124,8 @@ export const SamplePage: CPageDataType = {
                 responseVarName: 'APIResult',
                 afterSuccessResponse: [
                   {
+                    id: 't1',
+                    next: 't2',
                     type: 'RUN_CODE',
                     value: `function (apiResult) {
                       console.log($$context, $$response);
@@ -124,6 +133,8 @@ export const SamplePage: CPageDataType = {
                   }`,
                   },
                   {
+                    id: 't2',
+                    next: 't3',
                     type: 'CALL_NODE_METHOD',
                     nodeId: 'testNode',
                     methodName: 'sayHello',
@@ -147,12 +158,16 @@ export const SamplePage: CPageDataType = {
                   },
                   {
                     type: 'RUN_CODE',
+                    id: 't3',
+                    next: 't4',
                     value: `function (apiResult) {
                       console.log(9898989, apiResult, $$context, $$response, $$actionVariableSpace);
                       console.log(77889999,callNodeReturnVar, APIResult)
                   }`,
                   },
                   {
+                    id: 't4',
+                    next: 't5',
                     type: LogicType.ASSIGN_VALUE,
                     valueType: 'STATE',
                     currentValue: {
@@ -165,6 +180,8 @@ export const SamplePage: CPageDataType = {
                     },
                   } as TLogicAssignValueItem,
                   {
+                    id: 't5',
+                    next: 't6',
                     type: LogicType.ASSIGN_VALUE,
                     valueType: 'MEMORY',
                     currentValue: {
@@ -181,6 +198,8 @@ export const SamplePage: CPageDataType = {
                 afterFailedResponse: [
                   {
                     type: 'RUN_CODE',
+                    id: 't7',
+                    next: 't8',
                     value: `function (apiResult) {
                       console.log($$context, $$response);
                       console.log('errrrror', apiResult)
@@ -198,6 +217,7 @@ export const SamplePage: CPageDataType = {
               type: CNodePropsTypeEnum.ACTION,
               handler: [
                 {
+                  id: '12',
                   type: 'RUN_CODE',
                   value: `
                   function (params) {
@@ -216,6 +236,7 @@ export const SamplePage: CPageDataType = {
               type: CNodePropsTypeEnum.ACTION,
               handler: [
                 {
+                  id: '123',
                   type: 'RUN_CODE',
                   value: `
                   function (params) {
@@ -234,6 +255,7 @@ export const SamplePage: CPageDataType = {
               type: CNodePropsTypeEnum.ACTION,
               handler: [
                 {
+                  id: '125',
                   type: 'RUN_CODE',
                   value: `
                     function (params) {

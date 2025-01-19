@@ -13,6 +13,7 @@ export type CArraySetterProps = {
     setters: SetterType[];
     initialValue?: any;
   };
+  itemLabelPrefix?: string;
   sortLabelKey?: string;
 };
 
@@ -30,6 +31,7 @@ export const ArraySetter = ({
   item: { setters, initialValue: itemInitialValue },
   sortLabelKey,
   initialValue,
+  itemLabelPrefix,
   ...props
 }: CSetterProps<CArraySetterProps>) => {
   const { keyPaths, label } = setterContext;
@@ -78,6 +80,7 @@ export const ArraySetter = ({
       {listValue.map((val, index) => {
         return (
           <ArrayItem
+            labelPrefix={itemLabelPrefix}
             key={index}
             style={{ paddingBottom: '10px' }}
             index={index}

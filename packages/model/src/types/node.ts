@@ -63,6 +63,10 @@ export enum LogicType {
 
 export type TDynamicValue = string | number | JSExpressionPropType | FunctionPropType;
 
+type TBaseActionNode = {
+  id: string | number;
+  next?: string | number;
+};
 /** 存储开发中的一些临时状态 */
 type TActionFlowDevConfig = {
   defaultSetterMap: Record<
@@ -77,14 +81,15 @@ export type TLogicJumpLinkItem = {
   type: LogicType.JUMP_LINK | `${LogicType.JUMP_LINK}`;
   link: TDynamicValue;
   [DEV_CONFIG_KEY]?: TActionFlowDevConfig;
-};
+} & TBaseActionNode;
 
 /** 🌧️函数类型类似 */
 export type TLogicRunCodeItem = {
   /** 函数最好有返回值 */
   type: LogicType.RUN_CODE | `${LogicType.RUN_CODE}`;
   [DEV_CONFIG_KEY]?: TActionFlowDevConfig;
-} & TBaseFunction;
+} & TBaseFunction &
+  TBaseActionNode;
 
 export type TLogicCallNodeMethodItem = {
   type: LogicType.CALL_NODE_METHOD | `${LogicType.CALL_NODE_METHOD}`;
@@ -94,7 +99,7 @@ export type TLogicCallNodeMethodItem = {
   /** 返回值的变量名 */
   returnVarName?: string;
   [DEV_CONFIG_KEY]?: TActionFlowDevConfig;
-};
+} & TBaseActionNode;
 
 export type TLogicRequestAPIItem = {
   type: LogicType.REQUEST_API | `${LogicType.REQUEST_API}`;
@@ -114,7 +119,7 @@ export type TLogicRequestAPIItem = {
   /** 额外的数据 */
   extra?: Record<any, any>;
   [DEV_CONFIG_KEY]?: TActionFlowDevConfig;
-};
+} & TBaseActionNode;
 
 export enum AssignValueType {
   /** 组件内的局部变量，没有响应性， 只在当前的上下文中有效 */
@@ -136,7 +141,7 @@ export type TLogicAssignValueItem = {
   /** 如果是 STATE 类型需要 nodeId, 否则只用填 string */
   targetValueName?: TargetValueNameObject | string;
   [DEV_CONFIG_KEY]?: TActionFlowDevConfig;
-};
+} & TBaseActionNode;
 
 export type TLogicItemHandlerFlow = (
   | TLogicJumpLinkItem

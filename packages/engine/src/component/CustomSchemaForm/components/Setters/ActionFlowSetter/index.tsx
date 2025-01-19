@@ -85,38 +85,44 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
       data: { label: 'Start' },
       position: { x: 0, y: 0 },
     },
-    // {
-    //   id: '2',
-    //   type: 'JumpLinkNode',
-    //   data: jumpDataList[0],
-    //   position: { x: -57.5, y: 104 },
-    // },
+    {
+      id: '2',
+      type: 'JumpLinkNode',
+      data: jumpDataList[0],
+      position: { x: -57.5, y: 104 },
+    },
     // {
     //   id: '3',
     //   type: 'JumpLinkNode',
     //   data: jumpDataList[2],
     //   position: { x: -57.5, y: 104 },
     // },
+    // {
+    //   id: '4',
+    //   type: 'AssignValueNode',
+    //   data: {
+    //     ...jumpDataList[3],
+    //     __devConfig__: {
+    //       pageModel: props.setterContext?.pluginCtx?.pageModel,
+    //       defaultSetterMap: {
+    //         currentValue: {
+    //           name: 'currentValue',
+    //           setter: 'NumberSetter',
+    //         },
+    //       },
+    //     },
+    //   },
+    //   position: { x: -57.5, y: 104 },
+    // },
+    // {
+    //   id: '5',
+    //   type: 'AssignValueNode',
+    //   data: { ...jumpDataList[4], __devConfig__: { pageModel: props.setterContext?.pluginCtx?.pageModel } },
+    //   position: { x: -57.5, y: 104 },
+    // },
     {
-      id: '4',
-      type: 'AssignValueNode',
-      data: {
-        ...jumpDataList[3],
-        __devConfig__: {
-          pageModel: props.setterContext?.pluginCtx?.pageModel,
-          defaultSetterMap: {
-            currentValue: {
-              name: 'currentValue',
-              setter: 'NumberSetter',
-            },
-          },
-        },
-      },
-      position: { x: -57.5, y: 104 },
-    },
-    {
-      id: '5',
-      type: 'AssignValueNode',
+      id: '7',
+      type: 'CallNodeMethodNode',
       data: { ...jumpDataList[4], __devConfig__: { pageModel: props.setterContext?.pluginCtx?.pageModel } },
       position: { x: -57.5, y: 104 },
     },
@@ -186,14 +192,12 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
           onConnect={onConnect}
           defaultEdgeOptions={{
             type: 'smoothstep',
-            // animated: true,
           }}
           onInit={() => {
-            console.log('render ok 11111');
             setTimeout(() => {
               layoutGraph();
               setFlowMount(true);
-            }, 50);
+            }, 100);
           }}
           fitView
           nodeTypes={NODE_TYPE}

@@ -203,6 +203,7 @@ export type ArraySetterObjType<T extends SetterBasicType = ''> = {
       setters: SetterType<T>[];
       initialValue: any;
     };
+    itemLabelPrefix?: string;
     sortLabelKey?: any;
   };
   initialValue: any;
@@ -384,7 +385,6 @@ export type CustomViewRenderProps = {
 };
 
 export type AdvanceCustomFuncParam = {
-  // TODO
   dropNode?: CNode | CRootNode;
   viewPortal: {
     setView: (view: React.ReactNode) => void;
@@ -617,6 +617,7 @@ export const CMaterialTypeDescribe = object({
       }),
     ])
   ),
+  methods: optional(any()),
   fixedProps: optional(any()),
   // 可以拖入组件
   isContainer: optional(

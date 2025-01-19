@@ -6,6 +6,7 @@ import { SetterObjType } from '@chamn/model';
 
 export function ArrayItem(props: {
   index: number;
+  labelPrefix?: string;
   keyPaths: string[];
   value: Record<string, any>;
   setters: SetterObjType[];
@@ -51,7 +52,7 @@ export function ArrayItem(props: {
             </div>
           }
           name={String(index)}
-          label={`元素${index}`}
+          label={`${props.labelPrefix ?? '元素'}${index}`}
           keyPaths={[...keyPaths, String(index)]}
           setters={setters}
         ></SetterSwitcher>

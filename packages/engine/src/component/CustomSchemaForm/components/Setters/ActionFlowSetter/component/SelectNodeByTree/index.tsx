@@ -74,7 +74,7 @@ export const SelectNodeByTree = (props: {
   }, []);
 
   return (
-    <div ref={boxDomRef}>
+    <div ref={boxDomRef} style={{ width: 250 }}>
       <Popover
         open={nodePopupOpen}
         placement="bottomLeft"
@@ -105,7 +105,6 @@ export const SelectNodeByTree = (props: {
       >
         <Input
           value={searchValue}
-          style={{ width: 250 }}
           placeholder="Select Node"
           onChange={onChange}
           onBlur={() => {

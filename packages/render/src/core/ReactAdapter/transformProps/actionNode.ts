@@ -6,6 +6,7 @@ import {
   TDynamicValue,
   TLogicAssignValueItem,
   TLogicCallNodeMethodItem,
+  TLogicItemHandlerFlow,
   TLogicJumpLinkItem,
   TLogicRequestAPIItem,
 } from '@chamn/model';
@@ -30,9 +31,10 @@ export const transformActionNode = (propVal: TActionLogicItem, options: CommonOp
   }
 
   return async function (...args: any[]) {
-    const resultList = [];
-    for (let i = 0; i < handler.length; i++) {
-      const item = handler[i];
+    const resultMap: any = {};
+
+    const buildNode = async (nodeItem: TLogicItemHandlerFlow[number]) => {
+      const item = nodeItem;
       if (item.type === 'RUN_CODE') {
         const codeFunc = convertCodeStringToFunction({
           funcName: '',
@@ -51,9 +53,9 @@ export const transformActionNode = (propVal: TActionLogicItem, options: CommonOp
         }
 
         if (res?.then) {
-          resultList[i] = await res;
+          resultMap[item.id] = await res;
         } else {
-          resultList[i] = res;
+          resultMap[item.id] = res;
         }
       }
 
@@ -61,9 +63,9 @@ export const transformActionNode = (propVal: TActionLogicItem, options: CommonOp
         const func = buildJumpLink(item, options);
         const res = func(...args);
         if (res?.then) {
-          resultList[i] = await res;
+          resultMap[item.id] = await res;
         } else {
-          resultList[i] = res;
+          resultMap[item.id] = res;
         }
       }
 
@@ -73,17 +75,17 @@ export const transformActionNode = (propVal: TActionLogicItem, options: CommonOp
         try {
           const res = run(...args);
           if (res?.then) {
-            resultList[i] = await res;
+            resultMap[item.id] = await res;
           } else {
-            resultList[i] = res;
+            resultMap[item.id] = res;
           }
 
           /** 写入变量 */
           if (item.responseVarName) {
-            options.actionVariableSpace[item.responseVarName] = resultList[i];
+            options.actionVariableSpace[item.responseVarName] = resultMap[item.id];
           }
           // 处理后置操作
-          const res2: any = afterSuccessResponse(resultList[i], ...args);
+          const res2: any = afterSuccessResponse(resultMap[item.id], ...args);
           if (res2?.then) {
             return await res2;
           }
@@ -102,12 +104,12 @@ export const transformActionNode = (propVal: TActionLogicItem, options: CommonOp
         const func = buildCallNodeMethod(item, options);
         const res = func(...args);
         if (res?.then) {
-          resultList[i] = await res;
+          resultMap[item.id] = await res;
         } else {
-          resultList[i] = res;
+          resultMap[item.id] = res;
         }
         if (item.returnVarName) {
-          options.actionVariableSpace[item.returnVarName] = resultList[i];
+          options.actionVariableSpace[item.returnVarName] = resultMap[item.id];
         }
       }
       if (item.type === 'ASSIGN_VALUE') {
@@ -117,10 +119,18 @@ export const transformActionNode = (propVal: TActionLogicItem, options: CommonOp
           tempArgs = [options.$$response, tempArgs];
         }
         const res = func(...tempArgs);
-        resultList[i] = await res;
+        resultMap[item.id] = await res;
       }
+    };
+    // 从第一节点开始执行逻辑知道，next 为空
+    let nextNode: TLogicItemHandlerFlow[number] | undefined = handler[0];
+
+    while (nextNode) {
+      await buildNode(nextNode);
+      const tempNode = handler.find((el) => nextNode?.next && el.id === nextNode?.next);
+      nextNode = tempNode;
     }
-    console.log('action result:', resultList);
+    console.log('resultMap', resultMap);
   };
 };
 
@@ -193,10 +203,12 @@ const buildRequestAPI = (item: TLogicRequestAPIItem, option: CommonOption) => {
       return response;
     }
 
+    const allNodeList = [...(item.afterSuccessResponse || []), ...(item.afterFailedResponse || [])];
+
     const func = transformActionNode(
       {
         type: 'ACTION',
-        handler: item.afterSuccessResponse || [],
+        handler: allNodeList,
       },
       {
         ...option,
@@ -212,10 +224,12 @@ const buildRequestAPI = (item: TLogicRequestAPIItem, option: CommonOption) => {
       return response;
     }
 
+    const allNodeList = [...(item.afterFailedResponse || []), ...(item.afterSuccessResponse || [])];
+
     const func = transformActionNode(
       {
         type: 'ACTION',
-        handler: item.afterFailedResponse || [],
+        handler: allNodeList,
       },
       {
         ...option,
