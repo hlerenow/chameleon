@@ -35,7 +35,7 @@ export class CForm extends React.Component<CFormProps, CFormContextData> {
         return;
       }
       this.setState({
-        customSetterMap: CUSTOM_SETTER_MAP,
+        customSetterMap: { ...CUSTOM_SETTER_MAP, ...this.props.customSetterMap },
       });
     };
     registerCustomSetter(props.customSetterMap || {});

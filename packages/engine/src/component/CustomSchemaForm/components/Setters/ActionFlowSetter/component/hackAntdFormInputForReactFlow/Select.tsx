@@ -7,6 +7,10 @@ export const RLSelect = (props: SelectProps) => {
     <Select
       {...props}
       open={open}
+      onChange={(val, option) => {
+        props.onChange?.(val, option);
+        setOpen(false);
+      }}
       onFocus={(e) => {
         setOpen(true);
         props.onFocus?.(e);

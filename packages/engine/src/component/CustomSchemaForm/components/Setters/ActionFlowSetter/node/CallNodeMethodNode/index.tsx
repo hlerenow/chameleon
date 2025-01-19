@@ -1,26 +1,18 @@
 import { BUILD_IN_SETTER_MAP, CustomSchemaForm, CustomSchemaFormInstance } from '@/component/CustomSchemaForm';
-import { CMaterialPropsType, CNode, CPage, TLogicCallNodeMethodItem } from '@chamn/model';
+import { CMaterialPropsType, CNode, CPage, DEV_CONFIG_KEY, TLogicCallNodeMethodItem } from '@chamn/model';
 import { Handle, NodeProps, Position, Node } from '@xyflow/react';
-import { Card, Select } from 'antd';
+import { Card, Input } from 'antd';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CForm } from '../../../../Form';
-import { CFiledWithSwitchSetter } from '../../CFiledWithSwitchSetter';
 import styles from './style.module.scss';
 import { CCustomSchemaFormContext } from '@/component/CustomSchemaForm/context';
 import { SelectNodeByTree } from '../../component/SelectNodeByTree';
 import { CField } from '@/component/CustomSchemaForm/components/Form/Field';
 import { RLSelect } from '../../component/hackAntdFormInputForReactFlow/Select';
+import { formatArgsObjToArray, formatArgsToObject, getArgsObjFormSchema, isValidJSVariableName } from './util';
+import { ensureKeyExist } from '@/utils';
 
-export type TCallNodeMethodNode = Node<
-  TLogicCallNodeMethodItem & {
-    __devConfig__: {
-      pageModel: CPage;
-      currentNode: CNode;
-      defaultSetterMap: Record<string, { name: string; setter: string }>;
-    };
-  },
-  'CallNodeMethodNode'
->;
+export type TCallNodeMethodNode = Node<TLogicCallNodeMethodItem, 'CallNodeMethodNode'>;
 
 const properties: CMaterialPropsType = [
   {
@@ -160,18 +152,20 @@ const properties: CMaterialPropsType = [
 ];
 
 export const CallNodeMethodNode = ({ data, isConnectable, selected, ...restProps }: NodeProps<TCallNodeMethodNode>) => {
-  const {
-    __devConfig__: { pageModel },
-  } = data;
+  ensureKeyExist(data, DEV_CONFIG_KEY, {});
+  const devConfigObj = data[DEV_CONFIG_KEY]!;
+  const { pageModel } = devConfigObj!;
+
   const formRef = useRef<CustomSchemaFormInstance>(null);
   const [formValue, setFormValue] = useState<TLogicCallNodeMethodItem>();
   useEffect(() => {
     const newVal = {
+      id: data.id || '',
       type: data.type,
-      nodeId: '',
-      methodName: '',
-      args: [],
-      returnVarName: '',
+      nodeId: data.nodeId,
+      methodName: data.methodName,
+      args: data.args,
+      returnVarName: data.returnVarName,
     };
     formRef.current?.setFields(newVal);
     setFormValue(newVal);
@@ -182,7 +176,6 @@ export const CallNodeMethodNode = ({ data, isConnectable, selected, ...restProps
     const list = targetNode?.material?.value.methods || [];
     return list;
   }, [formValue]);
-  console.log('🚀 ~ methodList ~ methodList:', methodList);
 
   const methodListOptions = useMemo(() => {
     return methodList?.map((el) => {
@@ -192,23 +185,27 @@ export const CallNodeMethodNode = ({ data, isConnectable, selected, ...restProps
       };
     });
   }, [methodList]);
-  console.log('🚀 ~ methodListOptions ~ methodListOptions:', methodListOptions);
+
+  const argsFormSchema = useMemo(() => {
+    return getArgsObjFormSchema(pageModel.getNode(formValue?.nodeId)!, formValue?.methodName || '');
+  }, [formValue?.nodeId, formValue?.methodName]);
+
+  const updateKeySetterConfig = (keyPaths: string[], setterName: string) => {
+    if (!devConfigObj.defaultSetterMap) {
+      devConfigObj.defaultSetterMap = {};
+    }
+    devConfigObj.defaultSetterMap[keyPaths.join('.')] = {
+      name: keyPaths.join('.'),
+      setter: setterName,
+    };
+  };
 
   return (
     <CCustomSchemaFormContext.Provider
       value={{
-        defaultSetterConfig: data.__devConfig__.defaultSetterMap || {},
+        defaultSetterConfig: devConfigObj.defaultSetterMap || {},
         formRef: formRef,
-        onSetterChange: (keyPaths, setterName) => {
-          console.log('🚀 ~ CallNodeMethodNode ~ keyPaths:', keyPaths, setterName);
-          if (!data.__devConfig__.defaultSetterMap) {
-            data.__devConfig__.defaultSetterMap = {};
-          }
-          data.__devConfig__.defaultSetterMap[keyPaths.join('.')] = {
-            name: keyPaths.join('.'),
-            setter: setterName,
-          };
-        },
+        onSetterChange: updateKeySetterConfig,
         customSetterMap: { ...BUILD_IN_SETTER_MAP },
       }}
     >
@@ -224,31 +221,18 @@ export const CallNodeMethodNode = ({ data, isConnectable, selected, ...restProps
             name="Call Node Method"
             customSetterMap={BUILD_IN_SETTER_MAP}
             onValueChange={(newVal) => {
-              console.log('🚀 ~ CallNodeMethodNode ~ newVal:', newVal);
               Object.assign(data, newVal);
               setFormValue(newVal as any);
             }}
           >
-            <CField label={'组件'} name="nodeId" valueChangeEventName="onChange" formatEventValue={(el) => el.nodeId}>
-              <SelectNodeByTree pageModel={data.__devConfig__.pageModel} />
-            </CField>
             <div className={styles.line}>
-              <CustomSchemaForm
-                initialValue={{}}
-                properties={[]}
-                onSetterChange={function (keyPaths: string[], setterName: string): void {
-                  throw new Error('Function not implemented.');
-                }}
-                defaultSetterConfig={{}}
-              />
+              <CField label={'组件'} name="nodeId" valueChangeEventName="onChange" formatEventValue={(el) => el.nodeId}>
+                <SelectNodeByTree pageModel={devConfigObj.pageModel} />
+              </CField>
             </div>
+
             <div className={styles.line}>
-              <CField
-                name="methodName"
-                label="方法"
-                valueChangeEventName="onChange"
-                formatEventValue={(el) => el.nodeId}
-              >
+              <CField name="methodName" label="方法" valueChangeEventName="onChange">
                 <RLSelect
                   style={{ width: 250 }}
                   options={methodListOptions}
@@ -261,34 +245,51 @@ export const CallNodeMethodNode = ({ data, isConnectable, selected, ...restProps
                 ></RLSelect>
               </CField>
             </div>
-            <div
-              className={styles.line}
-              style={{
-                minWidth: '450px',
-              }}
-            >
-              <CFiledWithSwitchSetter
-                name={'currentValue'}
-                label="Value"
+            <div className={styles.line}>
+              <CField
+                name={'args'}
+                label="参数"
                 labelWidth="60px"
                 labelAlign={'start'}
-                setterList={[
-                  'TextAreaSetter',
-                  'NumberSetter',
-                  'ExpressionSetter',
+                condition={() => Boolean(argsFormSchema.length)}
+                noStyle
+                formatEventValue={(val) => {
+                  const newVal = formatArgsObjToArray(val);
+                  return newVal;
+                }}
+              >
+                <CustomSchemaForm
+                  initialValue={formatArgsToObject(data.args || [])}
+                  properties={argsFormSchema}
+                  onSetterChange={updateKeySetterConfig}
+                  defaultSetterConfig={devConfigObj.defaultSetterMap || {}}
+                ></CustomSchemaForm>
+              </CField>
+            </div>
+
+            <div className={styles.line}>
+              <CField
+                name={'returnVarName'}
+                label="返回值变量名"
+                labelWidth="80px"
+                tips={
+                  '变量名必须以字母（a-z、A-Z）、下划线（_）或美元符号（$）开头。后续字符可以是字母、数字（0-9）、下划线或美元符号。变量名不能是保留关键字（例如 if、while 等）'
+                }
+                rules={[
                   {
-                    componentName: 'FunctionSetter',
-                    props: {
-                      mode: 'EMBED',
-                      minimap: false,
-                      containerStyle: {
-                        width: '600px',
-                        height: '400px',
-                      },
+                    validator: async (val) => {
+                      if (val === '') {
+                        return true;
+                      }
+                      return isValidJSVariableName(val);
                     },
                   },
                 ]}
-              ></CFiledWithSwitchSetter>
+                valueChangeEventName="onChange"
+                formatEventValue={(e) => e.target.value}
+              >
+                <Input allowClear />
+              </CField>
             </div>
           </CForm>
         </Card>

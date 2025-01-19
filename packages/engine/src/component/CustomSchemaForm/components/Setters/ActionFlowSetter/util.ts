@@ -1,6 +1,6 @@
 import { Edge, Node } from '@xyflow/react';
 import Dagre from '@dagrejs/dagre';
-import { TActionLogicItem } from '@chamn/model';
+import { SetterType, TActionLogicItem } from '@chamn/model';
 
 /** 自动布局 flow node */
 export const getLayoutedElements = (
@@ -53,3 +53,21 @@ export const revertNodeToActionLogic = (params: { node: any[]; edges: any[] }) =
 
   return result;
 };
+
+/** 通用的 flow action 画布中的 setter 配置 */
+export const CommonDynamicValueSetter: SetterType[] = [
+  'StringSetter',
+  'NumberSetter',
+  'ExpressionSetter',
+  {
+    componentName: 'FunctionSetter',
+    props: {
+      mode: 'EMBED',
+      minimap: false,
+      containerStyle: {
+        width: '600px',
+        height: '300px',
+      },
+    },
+  },
+];

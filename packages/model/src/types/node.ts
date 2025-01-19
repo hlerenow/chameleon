@@ -18,6 +18,8 @@ import { CNodePropsTypeEnum, SlotRenderType } from '../const/schema';
 import { isPlainObject } from '../util/lodash';
 import { CSSType, DEV_CONFIG_KEY } from './base';
 import { CPageDataType } from './page';
+import { CPage } from '@/Page';
+import { CNode } from '@/Page/RootNode/Node';
 
 export type NormalPropType = string | boolean | number | Record<string, any>;
 
@@ -63,12 +65,14 @@ export enum LogicType {
 
 export type TDynamicValue = string | number | JSExpressionPropType | FunctionPropType;
 
-type TBaseActionNode = {
+export type TBaseActionNode = {
   id: string | number;
   next?: string | number;
 };
 /** 存储开发中的一些临时状态 */
-type TActionFlowDevConfig = {
+export type TActionFlowDevConfig = {
+  pageModel: CPage;
+  currentNode: CNode;
   defaultSetterMap: Record<
     string,
     {

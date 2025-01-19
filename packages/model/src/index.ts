@@ -9,7 +9,7 @@ export * from './const/schema';
 export * from './types/base';
 export * from './types/material';
 export * from './types/node';
-export * from './types/page';
 export * from './types/rootNode';
+export * from './types/page';
 
 export * from './util/index';

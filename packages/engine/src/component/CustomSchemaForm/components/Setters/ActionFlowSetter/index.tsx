@@ -13,7 +13,13 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useCallback, useRef, useState } from 'react';
-import { AssignValueType, TActionLogicItem, TLogicAssignValueItem, TLogicJumpLinkItem } from '@chamn/model';
+import {
+  AssignValueType,
+  DEV_CONFIG_KEY,
+  TActionLogicItem,
+  TLogicAssignValueItem,
+  TLogicJumpLinkItem,
+} from '@chamn/model';
 import { getLayoutedElements } from './util';
 import { NODE_TYPE } from './node';
 import { CSetterProps } from '../type';
@@ -89,7 +95,7 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
       id: '2',
       type: 'JumpLinkNode',
       data: jumpDataList[0],
-      position: { x: -57.5, y: 104 },
+      position: { x: 0, y: 0 },
     },
     // {
     //   id: '3',
@@ -102,7 +108,7 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
     //   type: 'AssignValueNode',
     //   data: {
     //     ...jumpDataList[3],
-    //     __devConfig__: {
+    //     [DEV_CONFIG_KEY]: {
     //       pageModel: props.setterContext?.pluginCtx?.pageModel,
     //       defaultSetterMap: {
     //         currentValue: {
@@ -117,14 +123,26 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
     // {
     //   id: '5',
     //   type: 'AssignValueNode',
-    //   data: { ...jumpDataList[4], __devConfig__: { pageModel: props.setterContext?.pluginCtx?.pageModel } },
+    //   data: { ...jumpDataList[4], [DEV_CONFIG_KEY]: { pageModel: props.setterContext?.pluginCtx?.pageModel } },
     //   position: { x: -57.5, y: 104 },
     // },
     {
       id: '7',
       type: 'CallNodeMethodNode',
-      data: { ...jumpDataList[4], __devConfig__: { pageModel: props.setterContext?.pluginCtx?.pageModel } },
-      position: { x: -57.5, y: 104 },
+      data: {
+        ...{
+          id: '',
+          type: 'ASSIGN_VALUE',
+          nodeId: 'globalStateText',
+          methodName: 'doAlert',
+          args: ['123', { type: 'EXPRESSION', value: 'q2123' }],
+        },
+        [DEV_CONFIG_KEY]: {
+          pageModel: props.setterContext?.pluginCtx?.pageModel,
+          defaultSetterMap: { 'args.1': { name: 'args.1', setter: 'ExpressionSetter' } },
+        },
+      },
+      position: { x: 0, y: 0 },
     },
     // {
     //   id: '6',

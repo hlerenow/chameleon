@@ -14,6 +14,13 @@ export const waitReactUpdate = ({
     }, time);
   });
 };
+/** 确保 key 一定存在 */
+export const ensureKeyExist = (obj: any, key: string, defaultValue: any) => {
+  if (obj[key] !== undefined) {
+    return;
+  }
+  obj[key] = defaultValue;
+};
 
 export * from './css';
 export * from './defaultEngineConfig';

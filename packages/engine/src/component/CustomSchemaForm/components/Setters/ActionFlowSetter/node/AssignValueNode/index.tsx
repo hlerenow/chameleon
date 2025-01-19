@@ -1,5 +1,5 @@
 import { BUILD_IN_SETTER_MAP, CustomSchemaFormInstance } from '@/component/CustomSchemaForm';
-import { AssignValueType, CPage, TLogicAssignValueItem } from '@chamn/model';
+import { AssignValueType, CPage, DEV_CONFIG_KEY, TLogicAssignValueItem } from '@chamn/model';
 import { Handle, NodeProps, Position, Node } from '@xyflow/react';
 import { Card, Radio } from 'antd';
 import { useEffect, useRef, useState } from 'react';
@@ -11,22 +11,18 @@ import styles from './style.module.scss';
 import { TTextAreaSetterProps } from '../../../TextAreaSetter';
 import { isValidJSVariableName } from './util';
 import { CCustomSchemaFormContext } from '@/component/CustomSchemaForm/context';
+import { ensureKeyExist } from '@/utils';
 
-export type TAssignValueNode = Node<
-  TLogicAssignValueItem & {
-    __devConfig__: {
-      pageModel: CPage;
-      defaultSetterMap: Record<string, { name: string; setter: string }>;
-    };
-  },
-  'AssignValueNode'
->;
+export type TAssignValueNode = Node<TLogicAssignValueItem, 'AssignValueNode'>;
 
 export const AssignValueNode = ({ data, isConnectable, selected, ...restProps }: NodeProps<TAssignValueNode>) => {
+  ensureKeyExist(data, DEV_CONFIG_KEY, {});
+  const devConfigObj = data[DEV_CONFIG_KEY]!;
   const formRef = useRef<CustomSchemaFormInstance>(null);
   const [formValue, setFormValue] = useState<TLogicAssignValueItem>();
   useEffect(() => {
     const newVal = {
+      id: data.id,
       type: data.type,
       valueType: data.valueType,
       currentValue: data.currentValue,
@@ -39,13 +35,13 @@ export const AssignValueNode = ({ data, isConnectable, selected, ...restProps }:
   return (
     <CCustomSchemaFormContext.Provider
       value={{
-        defaultSetterConfig: data.__devConfig__.defaultSetterMap || {},
+        defaultSetterConfig: devConfigObj.defaultSetterMap || {},
         formRef: formRef,
         onSetterChange: (keyPaths, setterName) => {
-          if (!data.__devConfig__.defaultSetterMap) {
-            data.__devConfig__.defaultSetterMap = {};
+          if (!devConfigObj.defaultSetterMap) {
+            devConfigObj.defaultSetterMap = {};
           }
-          data.__devConfig__.defaultSetterMap[keyPaths.join('.')] = {
+          devConfigObj.defaultSetterMap[keyPaths.join('.')] = {
             name: keyPaths.join('.'),
             setter: setterName,
           };
@@ -91,7 +87,7 @@ export const AssignValueNode = ({ data, isConnectable, selected, ...restProps }:
             <div className={styles.line}>
               {formValue?.valueType === 'STATE' && (
                 <CField name={'targetValueName'} label="Var Name" valueChangeEventName="onChange">
-                  <SelectNodeState pageModel={data.__devConfig__.pageModel} />
+                  <SelectNodeState pageModel={devConfigObj.pageModel} />
                 </CField>
               )}
 
@@ -112,9 +108,6 @@ export const AssignValueNode = ({ data, isConnectable, selected, ...restProps }:
                       } as TTextAreaSetterProps,
                     },
                   ]}
-                  onSetterChange={(setterName) => {
-                    console.log('setterName', setterName);
-                  }}
                 ></CFiledWithSwitchSetter>
               )}
             </div>

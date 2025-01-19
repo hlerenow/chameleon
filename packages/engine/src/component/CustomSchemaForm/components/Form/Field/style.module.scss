@@ -28,5 +28,19 @@
   }
   .content {
     flex: 1;
+    position: relative;
   }
+}
+
+$errorColor: #ff002dc4;
+
+.error {
+  outline: 1px solid $errorColor;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.errorTipIcon {
+  color: $errorColor;
+  margin: 0 5px;
 }

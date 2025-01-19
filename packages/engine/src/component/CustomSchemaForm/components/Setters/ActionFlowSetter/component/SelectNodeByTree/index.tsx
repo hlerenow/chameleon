@@ -7,12 +7,13 @@ import { CPage } from '@chamn/model';
 export const SelectNodeByTree = (props: {
   pageModel: CPage;
   onChange?: (data: { nodeId: string; title: string }) => void;
+  value?: any;
 }) => {
   const boxDomRef = useRef<HTMLDivElement>(null);
 
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
   const [searchValue, setSearchValue] = useState<string>('');
-  const [currentValue, setCurrentValue] = useState<{ title: string; key: string }>({ title: '', key: '' });
+  const [currentValue, setCurrentValue] = useState<{ title: string; key: string }>({ title: '', key: props.value });
   const [nodePopupOpen, setNodePopupOpen] = useState(false);
 
   const [autoExpandParent, setAutoExpandParent] = useState(true);
@@ -43,6 +44,22 @@ export const SelectNodeByTree = (props: {
     });
     return treeData;
   }, [props.pageModel]);
+
+  useEffect(() => {
+    traverseTree(treeData || [], (el: any) => {
+      if (props.value === undefined || props.value === currentValue.key) {
+        return;
+      }
+      if (el.key === props.value) {
+        setCurrentValue({
+          key: el.sourceData.key,
+          title: el.sourceData.title,
+        });
+        setSearchValue(el.sourceData.title);
+        return true;
+      }
+    });
+  }, [props.value, treeData]);
 
   const nodeKeyList = useMemo(() => {
     return generateKeyList(treeData as any);
@@ -98,6 +115,7 @@ export const SelectNodeByTree = (props: {
                   nodeId: node.key,
                   title: node.sourceData.title,
                 });
+                setNodePopupOpen(false);
               }}
             />
           </div>
@@ -107,6 +125,14 @@ export const SelectNodeByTree = (props: {
           value={searchValue}
           placeholder="Select Node"
           onChange={onChange}
+          allowClear
+          onClear={() => {
+            setCurrentValue({ title: '', key: '' });
+            props.onChange?.({
+              nodeId: '',
+              title: '',
+            });
+          }}
           onBlur={() => {
             setSearchValue(currentValue.title);
           }}
