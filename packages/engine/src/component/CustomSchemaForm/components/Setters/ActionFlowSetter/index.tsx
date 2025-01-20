@@ -23,6 +23,7 @@ import {
 import { getLayoutedElements } from './util';
 import { NODE_TYPE } from './node';
 import { CSetterProps } from '../type';
+import { REACT_FLOW_DRAG_CLASS_NAME } from './config';
 
 const jumpDataList = [
   {
@@ -86,17 +87,40 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
   const { fitView } = useReactFlow();
   const [flowMount, setFlowMount] = useState(false);
   const [nodes, setNodes, onNodesChange] = useNodesState<any>([
+    // {
+    //   id: '1',
+    //   data: { label: 'Start' },
+    //   position: { x: 0, y: 0 },
+    //   dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
+    // },
+    // {
+    //   id: '2',
+    //   type: 'JumpLinkNode',
+    //   data: jumpDataList[0],
+    //   position: { x: 0, y: 0 },
+    //   dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
+    // },
+    // {
+    //   id: '999',
+    //   type: 'RunCodeNode',
+    //   data: {
+    //     id: '13',
+    //     value: 'console.log(123)',
+    //   },
+    //   dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
+    //   position: { x: 0, y: 0 },
+    // },
     {
-      id: '1',
-      data: { label: 'Start' },
+      id: '988',
+      type: 'RequestAPINode',
+      data: {
+        id: '13',
+        value: 'console.log(123)',
+      },
+      dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
       position: { x: 0, y: 0 },
     },
-    {
-      id: '2',
-      type: 'JumpLinkNode',
-      data: jumpDataList[0],
-      position: { x: 0, y: 0 },
-    },
+
     // {
     //   id: '3',
     //   type: 'JumpLinkNode',
@@ -126,24 +150,25 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
     //   data: { ...jumpDataList[4], [DEV_CONFIG_KEY]: { pageModel: props.setterContext?.pluginCtx?.pageModel } },
     //   position: { x: -57.5, y: 104 },
     // },
-    {
-      id: '7',
-      type: 'CallNodeMethodNode',
-      data: {
-        ...{
-          id: '',
-          type: 'ASSIGN_VALUE',
-          nodeId: 'globalStateText',
-          methodName: 'doAlert',
-          args: ['123', { type: 'EXPRESSION', value: 'q2123' }],
-        },
-        [DEV_CONFIG_KEY]: {
-          pageModel: props.setterContext?.pluginCtx?.pageModel,
-          defaultSetterMap: { 'args.1': { name: 'args.1', setter: 'ExpressionSetter' } },
-        },
-      },
-      position: { x: 0, y: 0 },
-    },
+    // {
+    //   id: '7',
+    //   type: 'CallNodeMethodNode',
+    //   data: {
+    //     ...{
+    //       id: '',
+    //       type: 'ASSIGN_VALUE',
+    //       nodeId: 'globalStateText',
+    //       methodName: 'doAlert',
+    //       args: ['123', { type: 'EXPRESSION', value: 'q2123' }],
+    //     },
+    //     [DEV_CONFIG_KEY]: {
+    //       pageModel: props.setterContext?.pluginCtx?.pageModel,
+    //       defaultSetterMap: { 'args.1': { name: 'args.1', setter: 'ExpressionSetter' } },
+    //     },
+    //   },
+    //   dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
+    //   position: { x: 0, y: 0 },
+    // },
     // {
     //   id: '6',
     //   type: 'AssignValueNode',

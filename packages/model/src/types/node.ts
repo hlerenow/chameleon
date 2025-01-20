@@ -39,7 +39,7 @@ export type JSExpressionPropType = {
 };
 
 export type TBaseFunction = {
-  /** 编辑器使，存储函数的源码，用于编辑器使用  */
+  /** TODO: 编辑器使，存储函数的源码，用于编辑器使用  */
   sourceCode?: string;
   /** 编辑器使用 */
   tsType?: string;
@@ -87,7 +87,7 @@ export type TLogicJumpLinkItem = {
   [DEV_CONFIG_KEY]?: TActionFlowDevConfig;
 } & TBaseActionNode;
 
-/** 🌧️函数类型类似 */
+/** 🌧️函数类型 */
 export type TLogicRunCodeItem = {
   /** 函数最好有返回值 */
   type: LogicType.RUN_CODE | `${LogicType.RUN_CODE}`;

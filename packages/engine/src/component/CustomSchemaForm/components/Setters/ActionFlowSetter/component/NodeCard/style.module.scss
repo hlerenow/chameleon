@@ -1,0 +1,33 @@
+.l {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 20px;
+  cursor: grab;
+}
+
+.r {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 20px;
+  cursor: grab;
+}
+
+.b {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 20px;
+  cursor: grab;
+}
+
+.dragBox {
+  background-color: rgb(128 128 128 / 16%);
+  padding: 0 4px;
+  border-radius: 4px;
+  color: rgb(0 0 0 / 64%);
+}

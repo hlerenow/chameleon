@@ -1,7 +1,7 @@
 import { BUILD_IN_SETTER_MAP, CustomSchemaFormInstance } from '@/component/CustomSchemaForm';
-import { AssignValueType, CPage, DEV_CONFIG_KEY, TLogicAssignValueItem } from '@chamn/model';
+import { AssignValueType, DEV_CONFIG_KEY, TLogicAssignValueItem } from '@chamn/model';
 import { Handle, NodeProps, Position, Node } from '@xyflow/react';
-import { Card, Radio } from 'antd';
+import { Radio } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { CForm } from '../../../../Form';
 import { CFiledWithSwitchSetter } from '../../CFiledWithSwitchSetter';
@@ -12,6 +12,7 @@ import { TTextAreaSetterProps } from '../../../TextAreaSetter';
 import { isValidJSVariableName } from './util';
 import { CCustomSchemaFormContext } from '@/component/CustomSchemaForm/context';
 import { ensureKeyExist } from '@/utils';
+import { NodeCard } from '../../component/NodeCard';
 
 export type TAssignValueNode = Node<TLogicAssignValueItem, 'AssignValueNode'>;
 
@@ -46,7 +47,7 @@ export const AssignValueNode = ({ data, isConnectable, selected, ...restProps }:
             setter: setterName,
           };
         },
-        customSetterMap: { ...BUILD_IN_SETTER_MAP },
+        customSetterMap: {},
       }}
     >
       <div
@@ -55,7 +56,7 @@ export const AssignValueNode = ({ data, isConnectable, selected, ...restProps }:
           minWidth: '100px',
         }}
       >
-        <Card title="Assign Value">
+        <NodeCard title="Assign Value">
           <CForm
             ref={formRef}
             name="jump Link"
@@ -141,7 +142,7 @@ export const AssignValueNode = ({ data, isConnectable, selected, ...restProps }:
               ></CFiledWithSwitchSetter>
             </div>
           </CForm>
-        </Card>
+        </NodeCard>
 
         <Handle
           type="target"
