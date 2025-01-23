@@ -96,7 +96,7 @@ export const FunctionSetter: CSetter<any> = ({
           setOpen(true);
         }}
       >
-        Edit
+        Edit Function
       </Button>
       <Modal
         centered

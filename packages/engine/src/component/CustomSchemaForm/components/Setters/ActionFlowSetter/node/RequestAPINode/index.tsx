@@ -1,4 +1,4 @@
-import { BUILD_IN_SETTER_MAP, CustomSchemaForm, CustomSchemaFormInstance } from '@/component/CustomSchemaForm';
+import { BUILD_IN_SETTER_MAP, CustomSchemaFormInstance } from '@/component/CustomSchemaForm';
 import { DEV_CONFIG_KEY, TLogicRequestAPIItem } from '@chamn/model';
 import { Handle, NodeProps, Position, Node } from '@xyflow/react';
 import { useEffect, useRef, useState } from 'react';
@@ -6,11 +6,11 @@ import { useEffect, useRef, useState } from 'react';
 import { ensureKeyExist } from '@/utils';
 import { NodeCard } from '../../component/NodeCard';
 import { CForm } from '@/component/CustomSchemaForm/components/Form';
-import { CFiledWithSwitchSetter } from '../../CFiledWithSwitchSetter';
 import { CCustomSchemaFormContext } from '@/component/CustomSchemaForm/context';
 import { CField } from '@/component/CustomSchemaForm/components/Form/Field';
 import styles from './style.module.scss';
 import { Input, Select } from 'antd';
+import { DynamicObjectForm } from './DynamicObjectForm';
 
 export type TRequestAPINode = Node<TLogicRequestAPIItem, 'RequestAPINode'>;
 
@@ -120,28 +120,17 @@ export const RequestAPINode = ({ data, isConnectable, selected, ...restProps }: 
                   />
                 </CField>
               </div>
-              <CustomSchemaForm
-                properties={[
-                  {
-                    name: 'header',
-                    title: 'Header',
-                    valueType: 'array',
-                    setters: [
-                      {
-                        componentName: 'ArraySetter',
-                        props: {
-                          item: {},
-                        },
-                      },
-                    ],
-                  },
-                ]}
-                initialValue={{ header: [] }}
-                onSetterChange={function (keyPaths: string[], setterName: string): void {
-                  throw new Error('Function not implemented.');
-                }}
-                defaultSetterConfig={undefined}
-              ></CustomSchemaForm>
+              <div className={styles.line}>
+                <CField
+                  label={'返回值变量'}
+                  name="responseVarName"
+                  valueChangeEventName="onChange"
+                  formatEventValue={(el) => el.nodeId}
+                  hiddenLabel
+                >
+                  <DynamicObjectForm />
+                </CField>
+              </div>
 
               <div className={styles.line}>
                 <CField
