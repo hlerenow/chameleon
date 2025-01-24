@@ -62,7 +62,7 @@ export const CommonDynamicValueSetter: SetterType[] = [
   {
     componentName: 'FunctionSetter',
     props: {
-      mode: 'EMBED',
+      mode: 'inline',
       minimap: false,
       containerStyle: {
         width: '600px',

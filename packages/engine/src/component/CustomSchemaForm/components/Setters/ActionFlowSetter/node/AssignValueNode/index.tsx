@@ -130,7 +130,7 @@ export const AssignValueNode = ({ data, isConnectable, selected, ...restProps }:
                   {
                     componentName: 'FunctionSetter',
                     props: {
-                      mode: 'EMBED',
+                      mode: 'inline',
                       minimap: false,
                       containerStyle: {
                         width: '600px',

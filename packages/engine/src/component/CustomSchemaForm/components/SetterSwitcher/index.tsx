@@ -18,6 +18,7 @@ export type SetterSwitcherProps = {
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
   style?: React.CSSProperties;
+  /** 是否实用 CFile 包裹 */
   useField?: boolean;
 } & Omit<CFieldProps, 'children'>;
 
@@ -29,7 +30,7 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
     ...InnerSetters,
     ...customSetterMap,
   };
-  const [currentSetter, setCurrentSetter] = useState<SetterObjType | null>(() => {
+  const [currentSetter, setCurrentSetter] = useState<SetterObjType>(() => {
     const currentSetterName = defaultSetterConfig[keyPaths.join('.')]?.setter || '';
     return [...setters].find((el) => el.componentName === currentSetterName) || setters[0];
   });
@@ -126,6 +127,8 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
   };
   let bodyView: any = null;
   const hiddenLabel = useField === false || currentSetter?.hiddenLabel === true;
+  const labelWidth = currentSetter?.labelWidth;
+  const labelAlign = currentSetter?.labelAlign;
   const collapse = (currentSetter?.props as any)?.collapse;
   const collapseObj = typeof collapse === 'object' ? collapse : {};
   if (['ArraySetter'].includes(currentSetter?.componentName || '')) {

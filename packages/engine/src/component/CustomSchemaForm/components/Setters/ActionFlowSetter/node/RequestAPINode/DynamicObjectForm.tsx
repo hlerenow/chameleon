@@ -3,7 +3,7 @@ import { CustomSchemaForm } from '@/component/CustomSchemaForm';
 export const DynamicObjectForm = () => {
   return (
     <CustomSchemaForm
-      initialValue={{ header: [] }}
+      initialValue={{ header: {} }}
       properties={[
         {
           title: 'Headers',
@@ -11,52 +11,31 @@ export const DynamicObjectForm = () => {
           valueType: 'array',
           setters: [
             {
-              componentName: 'ArraySetter',
+              componentName: 'FunctionSetter',
               props: {
-                collapse: {
-                  open: true,
+                mode: 'inline',
+                minimap: false,
+                lineNumber: 'off',
+                containerStyle: {
+                  width: '400px',
+                  height: '200px',
                 },
-                sortLabelKey: 'key',
-                item: {
-                  setters: [
-                    {
-                      componentName: 'ShapeSetter',
-                      props: {
-                        collapse: {
-                          open: true,
-                        },
-                        elements: [
-                          {
-                            name: 'key',
-                            title: 'Key',
-                            valueType: 'string',
-                            setters: ['StringSetter'],
-                          },
-                          {
-                            name: 'value',
-                            title: '值',
-                            valueType: 'boolean',
-                            setters: ['StringSetter', 'ExpressionSetter', 'FunctionSetter'],
-                          },
-                        ],
-                      },
-                      initialValue: {},
-                    },
-                  ],
-                  initialValue: {
-                    name: '',
-                    status: {
-                      value: true,
-                    },
-                  },
+                editorOptions: {
+                  lineNumbers: 'off',
+                  lineDecorationsWidth: 0,
+                  lineNumbersMinChars: 0,
+                  glyphMargin: false,
                 },
               },
-
-              initialValue: [],
             },
-            'JSONSetter',
-            'FunctionSetter',
+            {
+              componentName: 'JSONSetter',
+              props: {
+                mode: 'inline',
+              },
+            },
           ],
+          labelAlign: 'start',
         },
       ]}
       defaultSetterConfig={{}}

@@ -34,7 +34,7 @@ export const RunCodeNode = ({ data, isConnectable, selected, ...restProps }: Nod
     >
       <NodeCard title="Run Code">
         <FunctionSetter
-          mode="EMBED"
+          mode="inline"
           initialValue={data.value}
           containerStyle={{
             width: '600px',

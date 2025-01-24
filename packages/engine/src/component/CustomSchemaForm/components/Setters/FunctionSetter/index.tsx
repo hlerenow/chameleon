@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Button, ConfigProvider, Modal } from 'antd';
 import { CSetter, CSetterProps } from '../type';
-import { MonacoEditor, MonacoEditorInstance } from '../../../../MonacoEditor';
+import { EditorType, MonacoEditor, MonacoEditorInstance } from '../../../../MonacoEditor';
 import DefaultTslibSource from './defaultDts?raw';
 import { CNodePropsTypeEnum } from '@chamn/model';
 
@@ -9,8 +9,15 @@ export const FunctionSetter: CSetter<any> = ({
   onValueChange,
   initialValue,
   setterContext,
+  editorOptions,
   ...props
-}: CSetterProps<{ mode: 'MODAL' | 'EMBED'; containerStyle?: React.CSSProperties; minimap?: boolean }>) => {
+}: CSetterProps<{
+  mode: 'modal' | 'inline';
+  containerStyle?: React.CSSProperties;
+  minimap?: boolean;
+  lineNumber?: 'on' | 'off';
+  editorOptions?: EditorType['options'];
+}>) => {
   const editorRef = useRef<MonacoEditorInstance | null>(null);
   const [open, setOpen] = useState(false);
   const onInnerValueChange = () => {
@@ -51,12 +58,14 @@ export const FunctionSetter: CSetter<any> = ({
       options={{
         automaticLayout: true,
         tabSize: 2,
+        lineNumbers: props.lineNumber ?? 'on',
         minimap: {
           enabled: props.minimap ?? true,
         },
+        ...(editorOptions || {}),
       }}
       onChange={() => {
-        if (props.mode === 'EMBED') {
+        if (props.mode === 'inline') {
           // TODO: 需要节流每 1 秒触发一次
           onInnerValueChange();
         }
@@ -64,7 +73,7 @@ export const FunctionSetter: CSetter<any> = ({
     />
   );
 
-  if (props.mode === 'EMBED') {
+  if (props.mode === 'inline') {
     return (
       <div
         style={{

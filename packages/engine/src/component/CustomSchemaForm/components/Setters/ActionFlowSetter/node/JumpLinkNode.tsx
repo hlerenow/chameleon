@@ -54,7 +54,7 @@ export const JumpLinkNode = ({ data, isConnectable, selected, ...restProps }: No
               {
                 componentName: 'FunctionSetter',
                 props: {
-                  mode: 'EMBED',
+                  mode: 'inline',
                   minimap: false,
                   containerStyle: {
                     width: '600px',

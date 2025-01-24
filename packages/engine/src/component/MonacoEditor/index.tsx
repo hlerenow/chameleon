@@ -1,6 +1,6 @@
 import Editor, { EditorProps, Monaco } from '@monaco-editor/react';
 
-type EditorType = EditorProps;
+export type EditorType = EditorProps;
 
 export type MonacoEditorInstance = Parameters<Required<EditorType>['onMount']>[0];
 
