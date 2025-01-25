@@ -128,7 +128,7 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
   let bodyView: any = null;
   const hiddenLabel = useField === false || currentSetter?.hiddenLabel === true;
   const labelWidth = currentSetter?.labelWidth;
-  const labelAlign = currentSetter?.labelAlign;
+  const labelAlign = currentSetter?.labelAlign || 'center';
   const collapse = (currentSetter?.props as any)?.collapse;
   const collapseObj = typeof collapse === 'object' ? collapse : {};
   if (['ArraySetter'].includes(currentSetter?.componentName || '')) {
@@ -157,7 +157,7 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
               </div>
             ),
             children: !hiddenLabel ? (
-              <CField {...props} noStyle {...conditionProps}>
+              <CField {...props} labelWidth={labelWidth} labelAlign={labelAlign} noStyle {...conditionProps}>
                 <CurrentSetterComp
                   {...setterProps}
                   setterContext={{
@@ -189,7 +189,14 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
         {props.prefix ?? null}
         {(currentSetter?.props as any)?.collapse === false && (
           <div style={{ width: '100%' }}>
-            <CField {...props} noStyle {...conditionProps} hiddenLabel={hiddenLabel}>
+            <CField
+              {...props}
+              noStyle
+              labelWidth={labelWidth}
+              labelAlign={labelAlign}
+              {...conditionProps}
+              hiddenLabel={hiddenLabel}
+            >
               <CurrentSetterComp
                 {...setterProps}
                 setterContext={{
@@ -222,7 +229,7 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
                   </div>
                 ),
                 children: (
-                  <CField {...props} noStyle {...conditionProps}>
+                  <CField {...props} labelWidth={labelWidth} labelAlign={labelAlign} noStyle {...conditionProps}>
                     <CurrentSetterComp
                       {...setterProps}
                       setterContext={{
@@ -242,10 +249,12 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
     );
   } else {
     bodyView = (
-      <div style={{ display: 'flex', alignItems: 'center', paddingBottom: '8px' }}>
+      <div style={{ display: 'flex', alignItems: labelAlign, paddingBottom: '8px' }}>
         {props.prefix ?? null}
         <CField
           {...props}
+          labelWidth={labelWidth}
+          labelAlign={labelAlign}
           hiddenLabel={hiddenLabel}
           condition={condition}
           onConditionValueChange={(val) => {

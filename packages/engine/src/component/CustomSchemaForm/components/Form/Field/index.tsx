@@ -13,7 +13,9 @@ export type CFieldProps = {
   name: string;
   condition?: (formState: Record<string, any>) => boolean;
   onConditionValueChange?: (val: boolean) => void;
+  /** 不做任何包裹, 不会渲染 switchSetter */
   noStyle?: boolean;
+  /** 隐藏 label, 会渲染 switchSetter */
   hiddenLabel?: boolean;
   valueChangeEventName?: string;
   formatEventValue?: (val: any) => any;

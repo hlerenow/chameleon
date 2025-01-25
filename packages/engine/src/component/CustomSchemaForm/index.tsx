@@ -85,8 +85,6 @@ const CustomSchemaFormCore = (props: CustomSchemaFormProps, ref: Ref<CustomSchem
                     label={title}
                     name={property.name || ''}
                     tips={tip}
-                    labelWidth={properties.labelWidth}
-                    labelAlign={properties.labelAlign}
                   />
                 );
               }

@@ -27,7 +27,7 @@ export function ArrayItem(props: {
     formRef.current?.setFields({
       [index]: props.value,
     });
-  }, [props.value]);
+  }, [index, props.value]);
 
   return (
     <div style={style}>

@@ -19,7 +19,6 @@ export const RequestAPINode = ({ data, isConnectable, selected, ...restProps }: 
   const devConfigObj = data[DEV_CONFIG_KEY]!;
   const formRef = useRef<CustomSchemaFormInstance>(null);
   const [formValue, setFormValue] = useState<TLogicRequestAPIItem>();
-
   useEffect(() => {
     const newVal = {
       id: data.id,
