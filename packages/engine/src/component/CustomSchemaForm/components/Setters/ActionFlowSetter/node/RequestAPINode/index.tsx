@@ -9,7 +9,7 @@ import { CForm } from '@/component/CustomSchemaForm/components/Form';
 import { CCustomSchemaFormContext } from '@/component/CustomSchemaForm/context';
 import { CField } from '@/component/CustomSchemaForm/components/Form/Field';
 import styles from './style.module.scss';
-import { Input, Select, Tabs, TabsProps } from 'antd';
+import { Input, Select, Tabs, TabsProps, Tooltip } from 'antd';
 import { CFiledWithSwitchSetter } from '../../CFiledWithSwitchSetter';
 import { methodOptions, requestParamsSchemaSetterList } from './helper';
 
@@ -101,6 +101,7 @@ export const RequestAPINode = ({ data, isConnectable, selected, ...restProps }: 
               ref={formRef}
               customSetterMap={BUILD_IN_SETTER_MAP}
               onValueChange={(newFormData) => {
+                console.log('123213', JSON.stringify(newFormData, null, 2));
                 setFormValue(newFormData as any);
               }}
             >
@@ -136,14 +137,40 @@ export const RequestAPINode = ({ data, isConnectable, selected, ...restProps }: 
             </CForm>
           </div>
         </NodeCard>
-
         <Handle
           type="target"
+          id="input"
           position={Position.Top}
           onConnect={(params) => console.log('handle onConnect', params)}
           isConnectable={isConnectable}
         />
-        <Handle type="source" position={Position.Bottom} id="a" isConnectable={isConnectable} />
+        <Tooltip title="请求成功时">
+          <Handle
+            type="source"
+            position={Position.Bottom}
+            id="output"
+            isConnectable={isConnectable}
+            style={{
+              width: '10px',
+              height: '10px',
+              background: '#8BC34A',
+            }}
+          />
+        </Tooltip>
+        <Tooltip title="请求异常时">
+          <Handle
+            type="source"
+            position={Position.Bottom}
+            id="afterFailedResponse"
+            isConnectable={isConnectable}
+            style={{
+              width: '10px',
+              height: '10px',
+              background: '#ff4d4f',
+              left: '75%',
+            }}
+          />
+        </Tooltip>
       </div>
     </CCustomSchemaFormContext.Provider>
   );

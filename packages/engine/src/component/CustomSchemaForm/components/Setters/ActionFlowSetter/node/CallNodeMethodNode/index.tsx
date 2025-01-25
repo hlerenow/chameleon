@@ -170,11 +170,13 @@ export const CallNodeMethodNode = ({ data, isConnectable, selected, ...restProps
 
         <Handle
           type="target"
+          id="input"
           position={Position.Top}
           onConnect={(params) => console.log('handle onConnect', params)}
           isConnectable={isConnectable}
         />
-        <Handle type="source" position={Position.Bottom} id="a" isConnectable={isConnectable} />
+        <Handle type="source" position={Position.Bottom} id="output" isConnectable={isConnectable} />
+        <Handle type="source" position={Position.Bottom} id="respose" isConnectable={isConnectable} />
       </div>
     </CCustomSchemaFormContext.Provider>
   );

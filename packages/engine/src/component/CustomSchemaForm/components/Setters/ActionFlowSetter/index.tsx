@@ -229,6 +229,7 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
           nodes={nodes}
           edges={edges}
           onNodesChange={(changes) => {
+            console.log('🚀 ~ ActionFlowSetterCore ~ changes:', changes);
             onNodesChange(changes);
           }}
           onEdgesChange={onEdgesChange}
