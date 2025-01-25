@@ -4,6 +4,13 @@ import { Alert, Popover, Tooltip } from 'antd';
 import { CFormContext } from '../context';
 import clsx from 'clsx';
 import { QuestionCircleOutlined } from '@ant-design/icons';
+
+export type CFiledChildProps = {
+  onValueChange?: (val: any) => void;
+  initialValue?: any;
+  value?: any;
+};
+
 export type CFieldProps = {
   children: React.ReactNode;
   label?: string;
@@ -34,7 +41,7 @@ export const CField = (props: CFieldProps) => {
     if (props.condition) {
       updateConditionConfig(name, props.condition);
     }
-  }, [props.condition]);
+  }, [name, props.condition, updateConditionConfig]);
 
   useEffect(() => {
     const condition = props.condition ?? (() => true);

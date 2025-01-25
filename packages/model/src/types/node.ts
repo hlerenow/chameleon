@@ -110,7 +110,7 @@ export type TLogicRequestAPIItem = {
   /** 直接获取具体的 API path, 完整的 host, 特殊场景使用，一般使用 apiId, 可以控制环境切换 */
   apiPath: TDynamicValue;
   /** 默认 get */
-  method?: 'POST' | 'GET' | 'PUT' | ' PATCH' | 'DELETE';
+  method?: 'POST' | 'GET' | 'PUT' | 'PATCH' | 'DELETE';
   query?: Record<string, TDynamicValue>;
   body?: Record<string, TDynamicValue>;
   header?: Record<string, TDynamicValue>;

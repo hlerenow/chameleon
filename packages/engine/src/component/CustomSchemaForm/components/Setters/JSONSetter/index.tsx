@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Button, ConfigProvider } from 'antd';
 import { CSetter, CSetterProps } from '../type';
-import { MonacoEditor, MonacoEditorInstance } from '../../../../MonacoEditor';
+import { EditorType, MonacoEditor, MonacoEditorInstance } from '../../../../MonacoEditor';
 import { MoveableModal } from '@/component/MoveableModal';
 
 const EditorConfig = {
@@ -18,7 +18,7 @@ const EditorConfig = {
   },
 };
 
-const JsonEditor = ({ editor, value, initialValue, onChange, height }: any) => (
+const JsonEditor = ({ editor, value, initialValue, onChange, height, editorOptions }: any) => (
   <div style={{ height: height || EditorConfig.style.height }}>
     <MonacoEditor
       onDidMount={(editorInstance) => {
@@ -27,18 +27,28 @@ const JsonEditor = ({ editor, value, initialValue, onChange, height }: any) => (
       onChange={onChange}
       initialValue={JSON.stringify(value ?? (initialValue || {}), null, 2)}
       language="json"
-      options={EditorConfig.options}
+      options={{
+        ...EditorConfig.options,
+        ...editorOptions,
+      }}
     />
   </div>
 );
 
 export const JSONSetter: CSetter<any> = ({
   onValueChange,
-  setterContext,
   initialValue,
   mode = 'modal',
+  editorOptions,
+  setterContext,
   ...props
-}: CSetterProps<any> & { mode?: 'modal' | 'inline' }) => {
+}: CSetterProps<{
+  mode: 'modal' | 'inline';
+  containerStyle?: React.CSSProperties;
+  minimap?: boolean;
+  lineNumber?: 'on' | 'off';
+  editorOptions?: EditorType['options'];
+}>) => {
   const editorRef = useRef<MonacoEditorInstance | null>(null);
   const [open, setOpen] = useState(false);
 
@@ -46,7 +56,7 @@ export const JSONSetter: CSetter<any> = ({
     const newValStr = editorRef.current?.getValue() || '';
     try {
       const newVal = JSON.parse(newValStr);
-      onValueChange(newVal);
+      onValueChange?.(newVal);
     } catch (e) {
       console.warn(e);
     }
@@ -61,6 +71,7 @@ export const JSONSetter: CSetter<any> = ({
             value={props.value}
             initialValue={initialValue}
             onChange={onInnerValueChange}
+            editorOptions={editorOptions || {}}
           />
         </div>
       ) : (
@@ -88,7 +99,15 @@ export const JSONSetter: CSetter<any> = ({
               setOpen(false);
             }}
           >
-            {open && <JsonEditor editor={editorRef} value={props.value} initialValue={initialValue} height="500px" />}
+            {open && (
+              <JsonEditor
+                editor={editorRef}
+                value={props.value}
+                initialValue={initialValue}
+                height="500px"
+                editorOptions={editorOptions || {}}
+              />
+            )}
           </MoveableModal>
         </>
       )}

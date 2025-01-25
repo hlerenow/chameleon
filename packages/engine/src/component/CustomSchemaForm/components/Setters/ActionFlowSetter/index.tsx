@@ -150,25 +150,25 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
     //   data: { ...jumpDataList[4], [DEV_CONFIG_KEY]: { pageModel: props.setterContext?.pluginCtx?.pageModel } },
     //   position: { x: -57.5, y: 104 },
     // },
-    // {
-    //   id: '7',
-    //   type: 'CallNodeMethodNode',
-    //   data: {
-    //     ...{
-    //       id: '',
-    //       type: 'ASSIGN_VALUE',
-    //       nodeId: 'globalStateText',
-    //       methodName: 'doAlert',
-    //       args: ['123', { type: 'EXPRESSION', value: 'q2123' }],
-    //     },
-    //     [DEV_CONFIG_KEY]: {
-    //       pageModel: props.setterContext?.pluginCtx?.pageModel,
-    //       defaultSetterMap: { 'args.1': { name: 'args.1', setter: 'ExpressionSetter' } },
-    //     },
-    //   },
-    //   dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
-    //   position: { x: 0, y: 0 },
-    // },
+    {
+      id: '7',
+      type: 'CallNodeMethodNode',
+      data: {
+        ...{
+          id: '',
+          type: 'ASSIGN_VALUE',
+          nodeId: 'globalStateText',
+          methodName: 'doAlert',
+          args: ['123', { type: 'EXPRESSION', value: 'q2123' }],
+        },
+        [DEV_CONFIG_KEY]: {
+          pageModel: props.setterContext?.pluginCtx?.pageModel,
+          defaultSetterMap: { 'args.1': { name: 'args.1', setter: 'ExpressionSetter' } },
+        },
+      },
+      dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
+      position: { x: 0, y: 0 },
+    },
     // {
     //   id: '6',
     //   type: 'AssignValueNode',

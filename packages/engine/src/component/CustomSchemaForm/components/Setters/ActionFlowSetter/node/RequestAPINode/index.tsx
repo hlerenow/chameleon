@@ -1,7 +1,7 @@
 import { BUILD_IN_SETTER_MAP, CustomSchemaFormInstance } from '@/component/CustomSchemaForm';
 import { DEV_CONFIG_KEY, TLogicRequestAPIItem } from '@chamn/model';
 import { Handle, NodeProps, Position, Node } from '@xyflow/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { ensureKeyExist } from '@/utils';
 import { NodeCard } from '../../component/NodeCard';
@@ -9,8 +9,9 @@ import { CForm } from '@/component/CustomSchemaForm/components/Form';
 import { CCustomSchemaFormContext } from '@/component/CustomSchemaForm/context';
 import { CField } from '@/component/CustomSchemaForm/components/Form/Field';
 import styles from './style.module.scss';
-import { Input, Select } from 'antd';
-import { DynamicObjectForm } from './DynamicObjectForm';
+import { Input, Select, Tabs, TabsProps } from 'antd';
+import { CFiledWithSwitchSetter } from '../../CFiledWithSwitchSetter';
+import { methodOptions, requestParamsSchemaSetterList } from './helper';
 
 export type TRequestAPINode = Node<TLogicRequestAPIItem, 'RequestAPINode'>;
 
@@ -19,6 +20,7 @@ export const RequestAPINode = ({ data, isConnectable, selected, ...restProps }: 
   const devConfigObj = data[DEV_CONFIG_KEY]!;
   const formRef = useRef<CustomSchemaFormInstance>(null);
   const [formValue, setFormValue] = useState<TLogicRequestAPIItem>();
+
   useEffect(() => {
     const newVal = {
       id: data.id,
@@ -37,6 +39,7 @@ export const RequestAPINode = ({ data, isConnectable, selected, ...restProps }: 
   }, []);
 
   const updateKeySetterConfig = (keyPaths: string[], setterName: string) => {
+    console.log('🚀 ~ updateKeySetterConfig ~ keyPaths:', keyPaths, setterName);
     if (!devConfigObj.defaultSetterMap) {
       devConfigObj.defaultSetterMap = {};
     }
@@ -45,6 +48,32 @@ export const RequestAPINode = ({ data, isConnectable, selected, ...restProps }: 
       setter: setterName,
     };
   };
+
+  const tabItems = useMemo(() => {
+    const tabTagList = [
+      { key: 'header', label: 'Header' },
+      { key: 'query', label: 'Query' },
+      { key: 'body', label: 'Body' },
+    ];
+    const items: TabsProps['items'] = tabTagList.map((el) => {
+      return {
+        ...el,
+        disabled: el.key === 'body' && formValue?.method === 'GET',
+        children: (
+          <div className={styles.line}>
+            <CFiledWithSwitchSetter
+              name={el.key}
+              hiddenLabel={true}
+              labelAlign={'start'}
+              setterList={requestParamsSchemaSetterList}
+            ></CFiledWithSwitchSetter>
+          </div>
+        ),
+      };
+    });
+
+    return items;
+  }, [formValue?.method]);
 
   return (
     <CCustomSchemaFormContext.Provider
@@ -67,56 +96,28 @@ export const RequestAPINode = ({ data, isConnectable, selected, ...restProps }: 
               width: '500px',
             }}
           >
-            <CForm name={'requestAPI'} ref={formRef} customSetterMap={BUILD_IN_SETTER_MAP}>
+            <CForm
+              name={'requestAPI'}
+              ref={formRef}
+              customSetterMap={BUILD_IN_SETTER_MAP}
+              onValueChange={(newFormData) => {
+                console.log(JSON.stringify(newFormData, null, 2));
+                setFormValue(newFormData as any);
+              }}
+            >
               <div className={styles.line}>
                 <CField
                   label={'API'}
                   name="apiPath"
                   valueChangeEventName="onChange"
-                  formatEventValue={(el) => el.nodeId}
+                  formatEventValue={(el) => el.target.value}
                 >
                   <Input />
                 </CField>
               </div>
               <div className={styles.line}>
-                <CField
-                  label={'请求方法'}
-                  name="method"
-                  valueChangeEventName="onChange"
-                  formatEventValue={(el) => el.nodeId}
-                >
-                  <Select
-                    defaultValue="GET"
-                    style={{ width: 230 }}
-                    options={[
-                      { value: 'GET', label: 'GET' },
-                      { value: 'POST', label: 'POST' },
-                      { value: 'PUT', label: 'PUT' },
-                      { value: 'PATCH', label: 'PATCH' },
-                      { value: 'DELETE', label: 'DELETE' },
-                    ]}
-                  />
-                </CField>
-              </div>
-
-              <div className={styles.line}>
-                <CField
-                  label={'请求方法'}
-                  name="method"
-                  valueChangeEventName="onChange"
-                  formatEventValue={(el) => el.nodeId}
-                >
-                  <Select
-                    defaultValue="GET"
-                    style={{ width: 230 }}
-                    options={[
-                      { value: 'GET', label: 'GET' },
-                      { value: 'POST', label: 'POST' },
-                      { value: 'PUT', label: 'PUT' },
-                      { value: 'PATCH', label: 'PATCH' },
-                      { value: 'DELETE', label: 'DELETE' },
-                    ]}
-                  />
+                <CField label={'请求方法'} name="method" valueChangeEventName="onChange">
+                  <Select defaultValue="GET" style={{ width: 230 }} options={methodOptions} />
                 </CField>
               </div>
               <div className={styles.line}>
@@ -124,23 +125,12 @@ export const RequestAPINode = ({ data, isConnectable, selected, ...restProps }: 
                   label={'返回值变量'}
                   name="responseVarName"
                   valueChangeEventName="onChange"
-                  formatEventValue={(el) => el.nodeId}
-                  hiddenLabel
-                >
-                  <DynamicObjectForm />
-                </CField>
-              </div>
-
-              <div className={styles.line}>
-                <CField
-                  label={'返回值变量'}
-                  name="responseVarName"
-                  valueChangeEventName="onChange"
-                  formatEventValue={(el) => el.nodeId}
+                  formatEventValue={(el) => el.target.value}
                 >
                   <Input />
                 </CField>
               </div>
+              <Tabs defaultActiveKey={formValue?.method === 'POST' ? 'body' : 'query'} items={tabItems} />
             </CForm>
           </div>
         </NodeCard>

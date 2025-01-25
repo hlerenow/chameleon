@@ -1,14 +1,13 @@
 import { BUILD_IN_SETTER_MAP, CustomSchemaForm, CustomSchemaFormInstance } from '@/component/CustomSchemaForm';
 import { DEV_CONFIG_KEY, TLogicCallNodeMethodItem } from '@chamn/model';
 import { Handle, NodeProps, Position, Node } from '@xyflow/react';
-import { Input } from 'antd';
+import { Input, Select } from 'antd';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CForm } from '../../../../Form';
 import styles from './style.module.scss';
 import { CCustomSchemaFormContext } from '@/component/CustomSchemaForm/context';
 import { SelectNodeByTree } from '../../component/SelectNodeByTree';
 import { CField } from '@/component/CustomSchemaForm/components/Form/Field';
-import { RLSelect } from '../../component/hackAntdFormInputForReactFlow/Select';
 import { formatArgsObjToArray, formatArgsToObject, getArgsObjFormSchema, isValidJSVariableName } from './util';
 import { ensureKeyExist } from '@/utils';
 import { NodeCard } from '../../component/NodeCard';
@@ -97,7 +96,7 @@ export const CallNodeMethodNode = ({ data, isConnectable, selected, ...restProps
 
             <div className={styles.line}>
               <CField name="methodName" label="方法" valueChangeEventName="onChange">
-                <RLSelect
+                <Select
                   style={{ width: 250 }}
                   options={methodListOptions}
                   onFocus={() => {
@@ -106,7 +105,7 @@ export const CallNodeMethodNode = ({ data, isConnectable, selected, ...restProps
                   onBlur={() => {
                     console.log('blur');
                   }}
-                ></RLSelect>
+                ></Select>
               </CField>
             </div>
             <div className={styles.line}>
