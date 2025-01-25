@@ -1,5 +1,4 @@
 import { TreeDataNode } from 'antd';
-import { Key } from 'react';
 
 export const getParentKey = (key: React.Key, tree: TreeDataNode[]): React.Key => {
   let parentKey: React.Key;
@@ -16,17 +15,21 @@ export const getParentKey = (key: React.Key, tree: TreeDataNode[]): React.Key =>
   return parentKey!;
 };
 
-export const generateKeyList = (data: TreeDataNode[]) => {
-  let dataList: { title: string; key: Key }[] = [];
-  for (let i = 0; i < data.length; i++) {
-    const node = data[i];
-    const { key } = node;
-    dataList.push({ key, title: node.title as string });
-    if (node.children) {
-      const res = generateKeyList(node.children);
-      dataList = [...dataList, ...res];
+export const getNodeInfo = (key: string, tree: TreeDataNode[]): TreeDataNode | null => {
+  const traverse = (nodes: TreeDataNode[]): TreeDataNode | null => {
+    for (const node of nodes) {
+      if (node.key === key) {
+        return node;
+      }
+      if (node.children?.length) {
+        const result = traverse(node.children);
+        if (result) {
+          return result;
+        }
+      }
     }
-  }
+    return null;
+  };
 
-  return dataList;
+  return traverse(tree);
 };

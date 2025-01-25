@@ -10,7 +10,7 @@ export type CFormContextData = {
   conditionConfig: Record<string, (state: ContextState) => boolean>;
   // 自定义 setter 的具体实现，可以覆盖默认 setter
   customSetterMap?: Record<string, CSetter>;
-  updateContext: (newState: ContextState) => void;
+  updateContext: (newState: ContextState, changeKeys?: string[]) => void;
   updateConditionConfig: (name: string, cb: (state: ContextState) => boolean) => void;
 };
 

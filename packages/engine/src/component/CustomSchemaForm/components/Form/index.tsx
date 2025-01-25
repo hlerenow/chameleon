@@ -7,7 +7,7 @@ export type CFormProps = {
   children?: ReactNode | ReactNode[];
   initialValue?: Record<string, any>;
   customSetterMap: CFormContextData['customSetterMap'];
-  onValueChange?: (formData: Record<string, any>) => void;
+  onValueChange?: (formData: Record<string, any>, changeKeys?: string[]) => void;
 } & Partial<ContextState>;
 
 const CUSTOM_SETTER_MAP = {};
@@ -23,12 +23,12 @@ export class CForm extends React.Component<CFormProps, CFormContextData> {
   isMount = false;
   constructor(props: CFormProps) {
     super(props);
-    this.updateContext = (newState: ContextState) => {
+    this.updateContext = (newState: ContextState, changeKeys?: string[]) => {
       this.setState({
         formState: newState,
         customSetterMap: CUSTOM_SETTER_MAP,
       });
-      this.props.onValueChange?.(this.formatValue(newState));
+      this.props.onValueChange?.(this.formatValue(newState), changeKeys);
     };
     updateState = () => {
       if (!this.isMount) {

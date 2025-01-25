@@ -101,7 +101,6 @@ export const RequestAPINode = ({ data, isConnectable, selected, ...restProps }: 
               ref={formRef}
               customSetterMap={BUILD_IN_SETTER_MAP}
               onValueChange={(newFormData) => {
-                console.log(JSON.stringify(newFormData, null, 2));
                 setFormValue(newFormData as any);
               }}
             >
@@ -124,6 +123,9 @@ export const RequestAPINode = ({ data, isConnectable, selected, ...restProps }: 
                 <CField
                   label={'返回值变量'}
                   name="responseVarName"
+                  tips={
+                    '变量名必须以字母（a-z、A-Z）、下划线（_）或美元符号（$）开头。后续字符可以是字母、数字（0-9）、下划线或美元符号。变量名不能是保留关键字（例如 if、while 等）'
+                  }
                   valueChangeEventName="onChange"
                   formatEventValue={(el) => el.target.value}
                 >

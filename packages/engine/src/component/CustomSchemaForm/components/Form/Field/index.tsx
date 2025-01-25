@@ -85,10 +85,13 @@ export const CField = (props: CFieldProps) => {
             errorMsg: '',
           });
         }
-        updateContext({
-          ...formState,
-          [name]: tempVal,
-        });
+        updateContext(
+          {
+            ...formState,
+            [name]: tempVal,
+          },
+          [name]
+        );
       },
     };
 

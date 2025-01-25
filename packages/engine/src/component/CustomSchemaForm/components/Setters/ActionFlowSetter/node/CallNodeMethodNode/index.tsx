@@ -83,29 +83,40 @@ export const CallNodeMethodNode = ({ data, isConnectable, selected, ...restProps
             ref={formRef}
             name="Call Node Method"
             customSetterMap={BUILD_IN_SETTER_MAP}
-            onValueChange={(newVal) => {
+            onValueChange={(newVal, changeKeys) => {
+              if (changeKeys?.includes('nodeId')) {
+                newVal = {
+                  ...newVal,
+                  methodName: '',
+                  args: [],
+                };
+                setTimeout(() => {
+                  formRef.current?.setFields({
+                    ...formValue,
+                    ...newVal,
+                  });
+                });
+              }
               Object.assign(data, newVal);
               setFormValue(newVal as any);
             }}
           >
             <div className={styles.line}>
-              <CField label={'组件'} name="nodeId" valueChangeEventName="onChange" formatEventValue={(el) => el.nodeId}>
+              <CField
+                label={'组件'}
+                name="nodeId"
+                valueChangeEventName="onChange"
+                formatEventValue={(el) => {
+                  return el.nodeId;
+                }}
+              >
                 <SelectNodeByTree pageModel={devConfigObj.pageModel} />
               </CField>
             </div>
 
             <div className={styles.line}>
               <CField name="methodName" label="方法" valueChangeEventName="onChange">
-                <Select
-                  style={{ width: 250 }}
-                  options={methodListOptions}
-                  onFocus={() => {
-                    console.log('onFocus');
-                  }}
-                  onBlur={() => {
-                    console.log('blur');
-                  }}
-                ></Select>
+                <Select style={{ width: 250 }} allowClear options={methodListOptions}></Select>
               </CField>
             </div>
             <div className={styles.line}>

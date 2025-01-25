@@ -1,8 +1,8 @@
 import { transformPageSchemaToTreeData, traverseTree } from '@/plugins/OutlineTree/util';
-import { Input, Popover, Tree } from 'antd';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { generateKeyList, getParentKey } from './util';
+import { TreeSelect } from 'antd';
+import { useMemo, useRef } from 'react';
 import { CPage } from '@chamn/model';
+import { getNodeInfo } from './util';
 
 export const SelectNodeByTree = (props: {
   pageModel: CPage;
@@ -10,27 +10,6 @@ export const SelectNodeByTree = (props: {
   value?: any;
 }) => {
   const boxDomRef = useRef<HTMLDivElement>(null);
-
-  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
-  const [searchValue, setSearchValue] = useState<string>('');
-  const [currentValue, setCurrentValue] = useState<{ title: string; key: string }>({ title: '', key: props.value });
-  const [nodePopupOpen, setNodePopupOpen] = useState(false);
-
-  const [autoExpandParent, setAutoExpandParent] = useState(true);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      const isContain = boxDomRef.current?.contains(e.target as any);
-      if (!isContain) {
-        setNodePopupOpen(false);
-      }
-    };
-    document.addEventListener('click', handler);
-
-    return () => {
-      document.removeEventListener('click', handler);
-    };
-  }, []);
 
   const treeData = useMemo(() => {
     if (!props.pageModel) {
@@ -45,102 +24,33 @@ export const SelectNodeByTree = (props: {
     return treeData;
   }, [props.pageModel]);
 
-  useEffect(() => {
-    traverseTree(treeData || [], (el: any) => {
-      if (props.value === undefined || props.value === currentValue.key) {
-        return;
-      }
-      if (el.key === props.value) {
-        setCurrentValue({
-          key: el.sourceData.key,
-          title: el.sourceData.title,
-        });
-        setSearchValue(el.sourceData.title);
-        return true;
-      }
-    });
-  }, [props.value, treeData]);
-
-  const nodeKeyList = useMemo(() => {
-    return generateKeyList(treeData as any);
-  }, [treeData]);
-
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value: newValue } = e.target;
-    const newExpandedKeys = nodeKeyList
-      .map((item) => {
-        if (item.title.toLowerCase().indexOf(String(newValue).toLowerCase()) > -1) {
-          return getParentKey(item.key, treeData as any);
-        }
-        return null;
-      })
-      .filter((item, i, self): item is React.Key => !!(item && self.indexOf(item) === i));
-
-    setExpandedKeys(newExpandedKeys);
-    setAutoExpandParent(true);
-    setSearchValue(newValue);
-  };
-
-  const onExpand = (newExpandedKeys: React.Key[]) => {
-    setExpandedKeys(newExpandedKeys);
-    setAutoExpandParent(false);
-  };
-
-  useEffect(() => {
-    setExpandedKeys(nodeKeyList.map((el) => el.key));
-  }, []);
-
   return (
     <div ref={boxDomRef} style={{ width: 250 }}>
-      <Popover
-        open={nodePopupOpen}
-        placement="bottomLeft"
-        getPopupContainer={() => boxDomRef?.current || document.body}
-        content={
-          <div
-            style={{
-              width: '350px',
-            }}
-          >
-            <Tree
-              treeData={treeData}
-              defaultExpandAll
-              onExpand={onExpand}
-              expandedKeys={expandedKeys}
-              autoExpandParent={autoExpandParent}
-              onSelect={(selectKeys, { node }: any) => {
-                setSearchValue(node.sourceData.title);
-                setCurrentValue(node.sourceData);
-                props.onChange?.({
-                  nodeId: node.key,
-                  title: node.sourceData.title,
-                });
-                setNodePopupOpen(false);
-              }}
-            />
-          </div>
-        }
-      >
-        <Input
-          value={searchValue}
-          placeholder="Select Node"
-          onChange={onChange}
-          allowClear
-          onClear={() => {
-            setCurrentValue({ title: '', key: '' });
-            props.onChange?.({
-              nodeId: '',
-              title: '',
-            });
-          }}
-          onBlur={() => {
-            setSearchValue(currentValue.title);
-          }}
-          onFocus={() => {
-            setNodePopupOpen(true);
-          }}
-        />
-      </Popover>
+      <TreeSelect
+        showSearch
+        style={{ width: '100%' }}
+        value={props.value}
+        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+        allowClear
+        onClear={() => {
+          props.onChange?.({
+            nodeId: '',
+            title: '',
+          });
+        }}
+        filterTreeNode={(inputValue, treeNode: any) => {
+          return treeNode.title.toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
+        }}
+        treeDefaultExpandAll
+        onChange={(newVal) => {
+          const nodeInfo = getNodeInfo(newVal, (treeData as any) ?? []);
+          props.onChange?.({
+            nodeId: newVal,
+            title: (nodeInfo as any)?.sourceData?.title,
+          });
+        }}
+        treeData={treeData}
+      />
     </div>
   );
 };
