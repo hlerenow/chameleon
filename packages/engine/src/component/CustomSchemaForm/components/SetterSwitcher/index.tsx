@@ -65,39 +65,41 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
     };
   });
 
-  const onChooseSetter: MenuProps['onClick'] = ({ key }) => {
-    const targetSetter = setters.find((setter) => setter.componentName === key);
-    if (targetSetter) {
-      setCurrentSetter(targetSetter);
-      onSetterChange?.(keyPaths, targetSetter.componentName);
+  const switcher = useMemo(() => {
+    const onChooseSetter: MenuProps['onClick'] = ({ key }) => {
+      const targetSetter = setters.find((setter) => setter.componentName === key);
+      if (targetSetter) {
+        setCurrentSetter(targetSetter);
+        onSetterChange?.(keyPaths, targetSetter.componentName);
+      }
+    };
+    if (menuItems.length === 1) {
+      return null;
     }
-  };
 
-  let switcher: any = (
-    <div
-      className={styles.switchBtn}
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      }}
-    >
-      <Dropdown
-        trigger={['click']}
-        menu={{
-          selectable: true,
-          items: menuItems,
-          onClick: onChooseSetter,
-          defaultSelectedKeys: [currentSetter?.componentName || ''],
+    return (
+      <div
+        className={styles.switchBtn}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
         }}
       >
-        <SwapOutlined />
-      </Dropdown>
-    </div>
-  );
+        <Dropdown
+          trigger={['click']}
+          menu={{
+            selectable: true,
+            items: menuItems,
+            onClick: onChooseSetter,
+            defaultSelectedKeys: [currentSetter?.componentName || ''],
+          }}
+        >
+          <SwapOutlined />
+        </Dropdown>
+      </div>
+    );
+  }, [menuItems, currentSetter?.componentName, setters, onSetterChange, keyPaths]);
 
-  if (menuItems.length === 1) {
-    switcher = null;
-  }
   const setterProps = useMemo(() => {
     let newProps = {
       ...(currentSetter?.props || {}),
@@ -113,137 +115,99 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
     return newProps;
   }, [setters, currentSetter]);
 
-  const setterContext = {
-    formRef,
-    pluginCtx,
-  };
-
   const [collapseHeaderExt, setCollapseHeaderExt] = useState<any>([]);
-  const conditionProps = {
-    condition,
-    onConditionValueChange: (val: boolean) => {
-      setVisible(val);
-    },
-  };
+
   let bodyView: any = null;
-  const hiddenLabel = useField === false || currentSetter?.hiddenLabel === true;
+  const hiddenLabel = currentSetter?.hiddenLabel === true;
   const labelWidth = currentSetter?.labelWidth;
   const labelAlign = currentSetter?.labelAlign || 'center';
   const collapse = (currentSetter?.props as any)?.collapse;
-  const collapseObj = typeof collapse === 'object' ? collapse : {};
-  if (['ArraySetter'].includes(currentSetter?.componentName || '')) {
-    bodyView = (
-      <Collapse
-        bordered={false}
-        {...collapseObj}
-        style={{
-          marginBottom: '10px',
-        }}
-        defaultActiveKey={[collapseObj.open ? props.name : '']}
-        items={[
-          {
-            key: props.name,
-            label: (
-              <div className={styles.collapseHeader}>
-                <span
-                  style={{
-                    flex: 1,
-                  }}
-                >
-                  {props.label}
-                </span>
-                {collapseHeaderExt}
-                {switcher}
-              </div>
-            ),
-            children: !hiddenLabel ? (
-              <CField {...props} labelWidth={labelWidth} labelAlign={labelAlign} noStyle {...conditionProps}>
-                <CurrentSetterComp
-                  {...setterProps}
-                  setterContext={{
-                    ...setterContext,
-                    keyPaths: [...keyPaths],
-                    label: props.label,
-                    setCollapseHeaderExt: setCollapseHeaderExt,
-                  }}
-                />
-              </CField>
-            ) : (
-              <CurrentSetterComp
-                {...setterProps}
-                setterContext={{
-                  ...setterContext,
-                  keyPaths: [...keyPaths],
-                  label: props.label,
-                  setCollapseHeaderExt: setCollapseHeaderExt,
-                }}
-              />
-            ),
-          },
-        ]}
-      ></Collapse>
+  const specialSetter = ['ArraySetter', 'ShapeSetter'].includes(currentSetter.componentName);
+  const setterContext = useMemo(
+    () => ({
+      formRef,
+      pluginCtx,
+      keyPaths: [...keyPaths],
+      label: props.label,
+      setCollapseHeaderExt: specialSetter ? setCollapseHeaderExt : undefined,
+    }),
+    [formRef, keyPaths, pluginCtx, props.label, specialSetter]
+  );
+
+  const filedView = useMemo(() => {
+    const cFiledProps = {
+      labelWidth,
+      labelAlign,
+      hiddenLabel,
+      condition,
+      noStyle: specialSetter ? true : false,
+      onConditionValueChange: (val: boolean) => {
+        setVisible(val);
+      },
+    };
+    if (useField === false) {
+      return <CurrentSetterComp {...setterProps} setterContext={setterContext} />;
+    }
+    return (
+      <CField {...cFiledProps} {...props}>
+        <CurrentSetterComp {...setterProps} setterContext={setterContext} />
+      </CField>
     );
+  }, [
+    CurrentSetterComp,
+    condition,
+    hiddenLabel,
+    labelAlign,
+    labelWidth,
+    props,
+    setterContext,
+    setterProps,
+    specialSetter,
+    useField,
+  ]);
+
+  const renderCollapse = useMemo(
+    function renderCollapse() {
+      const collapseObj = typeof collapse === 'object' ? collapse : {};
+
+      const CollapseComponent = (extraHeaderContent?: React.ReactNode) => (
+        <Collapse
+          bordered={false}
+          {...collapseObj}
+          style={{
+            marginBottom: '10px',
+            flex: 1,
+          }}
+          defaultActiveKey={[collapseObj.open ? props.name : '']}
+          items={[
+            {
+              key: props.name,
+              label: (
+                <div className={styles.collapseHeader}>
+                  <span style={{ flex: 1 }}>{props.label}</span>
+                  {extraHeaderContent}
+                  {switcher}
+                </div>
+              ),
+              children: filedView,
+            },
+          ]}
+        />
+      );
+
+      return CollapseComponent;
+    },
+    [collapse, props.name, props.label, switcher, filedView]
+  );
+
+  if (['ArraySetter'].includes(currentSetter?.componentName || '')) {
+    bodyView = renderCollapse(collapseHeaderExt);
   } else if (['ShapeSetter'].includes(currentSetter?.componentName || '')) {
     bodyView = (
       <div className={styles.shapeFieldBox}>
         {props.prefix ?? null}
-        {(currentSetter?.props as any)?.collapse === false && (
-          <div style={{ width: '100%' }}>
-            <CField
-              {...props}
-              noStyle
-              labelWidth={labelWidth}
-              labelAlign={labelAlign}
-              {...conditionProps}
-              hiddenLabel={hiddenLabel}
-            >
-              <CurrentSetterComp
-                {...setterProps}
-                setterContext={{
-                  ...setterContext,
-                  keyPaths: [...keyPaths],
-                }}
-              />
-            </CField>
-          </div>
-        )}
-        {collapse !== false && (
-          <Collapse
-            {...collapseObj}
-            bordered={false}
-            defaultActiveKey={[collapseObj.open ? props.name : '']}
-            style={{ flex: 1 }}
-            items={[
-              {
-                key: props.name,
-                label: (
-                  <div className={styles.collapseHeader}>
-                    <span
-                      style={{
-                        flex: 1,
-                      }}
-                    >
-                      {props.label}
-                    </span>
-                    {switcher}
-                  </div>
-                ),
-                children: (
-                  <CField {...props} labelWidth={labelWidth} labelAlign={labelAlign} noStyle {...conditionProps}>
-                    <CurrentSetterComp
-                      {...setterProps}
-                      setterContext={{
-                        ...setterContext,
-                        keyPaths: [...keyPaths],
-                      }}
-                    />
-                  </CField>
-                ),
-              },
-            ]}
-          ></Collapse>
-        )}
-
+        {(currentSetter?.props as any)?.collapse === false && <div style={{ width: '100%' }}>{filedView}</div>}
+        {collapse !== false && renderCollapse()}
         {props.suffix ?? null}
       </div>
     );
@@ -251,25 +215,7 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
     bodyView = (
       <div style={{ display: 'flex', alignItems: labelAlign, paddingBottom: '8px' }}>
         {props.prefix ?? null}
-        <CField
-          {...props}
-          labelWidth={labelWidth}
-          labelAlign={labelAlign}
-          hiddenLabel={hiddenLabel}
-          condition={condition}
-          onConditionValueChange={(val) => {
-            setVisible(val);
-          }}
-        >
-          <CurrentSetterComp
-            {...setterProps}
-            setterContext={{
-              ...setterContext,
-              keyPaths: [...keyPaths],
-            }}
-          />
-        </CField>
-
+        {filedView}
         {switcher}
         {props.suffix ?? null}
       </div>
