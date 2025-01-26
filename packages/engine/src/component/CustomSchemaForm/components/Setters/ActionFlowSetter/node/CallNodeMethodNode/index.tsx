@@ -11,15 +11,15 @@ import { CField } from '@/component/CustomSchemaForm/components/Form/Field';
 import { formatArgsObjToArray, formatArgsToObject, getArgsObjFormSchema, isValidJSVariableName } from './util';
 import { ensureKeyExist } from '@/utils';
 import { NodeCard } from '../../component/NodeCard';
+import { useActionFlow } from '../../context';
 
 export type TCallNodeMethodNode = Node<TLogicCallNodeMethodItem, 'CallNodeMethodNode'>;
 
 export const CallNodeMethodNode = (props: NodeProps<TCallNodeMethodNode>) => {
   const { data, isConnectable, selected, ...restProps } = props;
-
+  const { pageModel } = useActionFlow();
   ensureKeyExist(data, DEV_CONFIG_KEY, {});
   const devConfigObj = data[DEV_CONFIG_KEY]!;
-  const { pageModel } = devConfigObj!;
 
   const formRef = useRef<CustomSchemaFormInstance>(null);
   const [formValue, setFormValue] = useState<TLogicCallNodeMethodItem>();
@@ -112,7 +112,7 @@ export const CallNodeMethodNode = (props: NodeProps<TCallNodeMethodNode>) => {
                   return el.nodeId;
                 }}
               >
-                <SelectNodeByTree pageModel={devConfigObj.pageModel} />
+                <SelectNodeByTree pageModel={pageModel} />
               </CField>
             </div>
 

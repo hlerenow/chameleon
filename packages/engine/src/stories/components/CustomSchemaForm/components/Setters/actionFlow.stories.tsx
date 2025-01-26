@@ -1,7 +1,8 @@
 import { ActionFlowSetter } from '@/component/CustomSchemaForm/components/Setters/ActionFlowSetter';
-import { CPage } from '@chamn/model';
+import { CNodePropsTypeEnum, CPage } from '@chamn/model';
 import { fn } from '@storybook/test';
 import { SamplePage, Material } from '@chamn/demo-page';
+import { logicListSchema } from './mock';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 export default {
@@ -32,14 +33,16 @@ export const Demo = {
         }}
       >
         <ActionFlowSetter
+          value={{
+            type: CNodePropsTypeEnum.ACTION,
+            handler: logicListSchema,
+          }}
           setterContext={{
             pluginCtx: {
               pageModel: new CPage(SamplePage, { materials: Material }),
             } as any,
             setCollapseHeaderExt: undefined,
-            onSetterChange: function (keyPaths: string[], setterName: string): void {
-              throw new Error('Function not implemented.');
-            },
+            onSetterChange: function () {},
             keyPaths: [],
             label: '',
           }}

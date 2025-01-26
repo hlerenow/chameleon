@@ -13,6 +13,7 @@ export const SelectNodeByTree = (props: {
 
   const treeData = useMemo(() => {
     if (!props.pageModel) {
+      console.log('🚀 ~ treeData ~ props.pageModel:', props.pageModel);
       return;
     }
     const treeData = transformPageSchemaToTreeData(props.pageModel?.export(), props.pageModel);
@@ -21,6 +22,8 @@ export const SelectNodeByTree = (props: {
       el.sourceData = el;
       return false;
     });
+    console.log('🚀 ~ treeData ~ treeData:', treeData);
+
     return treeData;
   }, [props.pageModel]);
 

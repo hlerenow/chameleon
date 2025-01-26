@@ -42,7 +42,6 @@ export const JumpLinkNode = (props: NodeProps<TJumpLinkNode>) => {
           name="jump Link"
           customSetterMap={BUILD_IN_SETTER_MAP}
           onValueChange={(newVal) => {
-            console.log('newVal', newVal);
             Object.assign(data, newVal);
           }}
         >
@@ -59,8 +58,14 @@ export const JumpLinkNode = (props: NodeProps<TJumpLinkNode>) => {
                   mode: 'inline',
                   minimap: false,
                   containerStyle: {
-                    width: '600px',
-                    height: '400px',
+                    width: '400px',
+                    height: '200px',
+                  },
+                  editorOptions: {
+                    lineNumbers: 'off',
+                    lineDecorationsWidth: 0,
+                    lineNumbersMinChars: 0,
+                    glyphMargin: false,
                   },
                 },
               },

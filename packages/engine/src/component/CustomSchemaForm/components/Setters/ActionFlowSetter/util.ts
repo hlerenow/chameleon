@@ -1,7 +1,8 @@
 import { Edge, Node, useReactFlow } from '@xyflow/react';
 import Dagre from '@dagrejs/dagre';
-import { SetterType, TActionLogicItem } from '@chamn/model';
-import { INPUT_HANDLE_ID, OUTPUT_HANDLE_ID } from './config';
+import { getRandomStr, SetterType, TActionLogicItem } from '@chamn/model';
+import { INPUT_HANDLE_ID, OUTPUT_HANDLE_ID, REACT_FLOW_DRAG_CLASS_NAME } from './config';
+import { NODE_TYPE } from './node';
 
 /** 自动布局 flow node */
 export const getLayoutedElements = (
@@ -40,9 +41,56 @@ export const getLayoutedElements = (
 };
 
 export const parseActionLogicToNodeList = (value: TActionLogicItem) => {
+  if (!value?.handler?.length) {
+    return {
+      nodes: [],
+      edges: [],
+    };
+  }
+
+  const nodes: Node[] = [
+    {
+      id: NODE_TYPE.START_NODE,
+      type: NODE_TYPE.START_NODE,
+      position: { x: 0, y: 0 },
+      dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
+      data: { id: NODE_TYPE.START_NODE },
+    },
+  ];
+
+  const edges: Edge[] = [];
+  let previousNodeId = NODE_TYPE.START_NODE;
+
+  value.handler.forEach((item) => {
+    const currentNodeId = item.id || getRandomStr();
+
+    // 创建节点
+    nodes.push({
+      id: currentNodeId,
+      type: item.type,
+      position: { x: 0, y: 0 },
+      dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
+      data: {
+        ...item,
+        id: currentNodeId,
+      },
+    });
+
+    // 创建边
+    edges.push({
+      id: `${previousNodeId}_${currentNodeId}`,
+      source: previousNodeId,
+      sourceHandle: OUTPUT_HANDLE_ID,
+      target: currentNodeId,
+      targetHandle: INPUT_HANDLE_ID,
+    });
+
+    previousNodeId = currentNodeId;
+  });
+
   return {
-    nodes: [],
-    edges: [],
+    nodes,
+    edges,
   };
 };
 
@@ -91,6 +139,8 @@ export const getNewNodePosInfo = function (currentNode: Node, newNodeData: any, 
     id: newNodeData.id,
     type: newNodeData.type,
     position: newNodePosition,
+    /** 必须 */
+    dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
     data: {
       ...newNodeData,
     },
