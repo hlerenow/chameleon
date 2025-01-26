@@ -26,8 +26,14 @@
 }
 
 .dragBox {
-  background-color: rgb(128 128 128 / 16%);
+  background-color: rgb(203 203 203 / 16%);
   padding: 0 4px;
   border-radius: 4px;
-  color: rgb(0 0 0 / 64%);
+  color: rgb(126 126 126 / 54%);
+}
+
+.selectStatus {
+  outline: 1px solid #f57dbd;
+  border-radius: 4px;
+  box-shadow: 0px 3.54px 4.55px 0px #00000005, 0px 3.54px 4.55px 0px #0000000d, 0px 0.51px 1.01px 0px #0000001a;
 }

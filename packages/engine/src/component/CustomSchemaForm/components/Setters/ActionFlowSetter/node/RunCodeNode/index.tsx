@@ -9,7 +9,8 @@ import { NodeCard } from '../../component/NodeCard';
 
 export type TRunCodeNode = Node<TLogicRunCodeItem, 'RunCodeNode'>;
 
-export const RunCodeNode = ({ data, isConnectable, selected, ...restProps }: NodeProps<TRunCodeNode>) => {
+export const RunCodeNode = (props: NodeProps<TRunCodeNode>) => {
+  const { data, isConnectable, selected, ...restProps } = props;
   ensureKeyExist(data, DEV_CONFIG_KEY, {});
   const devConfigObj = data[DEV_CONFIG_KEY]!;
   const formRef = useRef<CustomSchemaFormInstance>(null);
@@ -32,7 +33,7 @@ export const RunCodeNode = ({ data, isConnectable, selected, ...restProps }: Nod
         minWidth: '100px',
       }}
     >
-      <NodeCard title="Run Code">
+      <NodeCard title="Run Code" nodeProps={props}>
         <FunctionSetter
           mode="inline"
           initialValue={data.value}
@@ -45,14 +46,6 @@ export const RunCodeNode = ({ data, isConnectable, selected, ...restProps }: Nod
           }}
         />
       </NodeCard>
-
-      <Handle
-        type="target"
-        position={Position.Top}
-        onConnect={(params) => console.log('handle onConnect', params)}
-        isConnectable={isConnectable}
-      />
-      <Handle type="source" position={Position.Bottom} id="a" isConnectable={isConnectable} />
     </div>
   );
 };

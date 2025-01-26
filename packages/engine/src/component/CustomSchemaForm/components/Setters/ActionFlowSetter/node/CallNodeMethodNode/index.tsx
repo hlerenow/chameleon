@@ -14,7 +14,9 @@ import { NodeCard } from '../../component/NodeCard';
 
 export type TCallNodeMethodNode = Node<TLogicCallNodeMethodItem, 'CallNodeMethodNode'>;
 
-export const CallNodeMethodNode = ({ data, isConnectable, selected, ...restProps }: NodeProps<TCallNodeMethodNode>) => {
+export const CallNodeMethodNode = (props: NodeProps<TCallNodeMethodNode>) => {
+  const { data, isConnectable, selected, ...restProps } = props;
+
   ensureKeyExist(data, DEV_CONFIG_KEY, {});
   const devConfigObj = data[DEV_CONFIG_KEY]!;
   const { pageModel } = devConfigObj!;
@@ -78,7 +80,7 @@ export const CallNodeMethodNode = ({ data, isConnectable, selected, ...restProps
           minWidth: '100px',
         }}
       >
-        <NodeCard title="Call Node Method">
+        <NodeCard title="Call Node Method" nodeProps={props}>
           <CForm
             ref={formRef}
             name="Call Node Method"
@@ -167,16 +169,6 @@ export const CallNodeMethodNode = ({ data, isConnectable, selected, ...restProps
             </div>
           </CForm>
         </NodeCard>
-
-        <Handle
-          type="target"
-          id="input"
-          position={Position.Top}
-          onConnect={(params) => console.log('handle onConnect', params)}
-          isConnectable={isConnectable}
-        />
-        <Handle type="source" position={Position.Bottom} id="output" isConnectable={isConnectable} />
-        <Handle type="source" position={Position.Bottom} id="respose" isConnectable={isConnectable} />
       </div>
     </CCustomSchemaFormContext.Provider>
   );

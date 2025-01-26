@@ -1,25 +1,42 @@
-import { BUILD_IN_SETTER_MAP, CustomSchemaFormInstance } from '@/component/CustomSchemaForm';
 import { DEV_CONFIG_KEY, TLogicRequestAPIItem } from '@chamn/model';
-import { Handle, NodeProps, Position, Node } from '@xyflow/react';
+import { useReactFlow, NodeProps, Node } from '@xyflow/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Input, Select, Tabs, TabsProps } from 'antd';
+import { BUILD_IN_SETTER_MAP, CustomSchemaFormInstance } from '@/component/CustomSchemaForm';
 
 import { ensureKeyExist } from '@/utils';
 import { NodeCard } from '../../component/NodeCard';
 import { CForm } from '@/component/CustomSchemaForm/components/Form';
 import { CCustomSchemaFormContext } from '@/component/CustomSchemaForm/context';
 import { CField } from '@/component/CustomSchemaForm/components/Form/Field';
-import styles from './style.module.scss';
-import { Input, Select, Tabs, TabsProps, Tooltip } from 'antd';
 import { CFiledWithSwitchSetter } from '../../CFiledWithSwitchSetter';
 import { methodOptions, requestParamsSchemaSetterList } from './helper';
+import { CreateNewNodePopup } from '../../component/CreateNewNodePopup';
+import { InputHandle } from '../../component/InputHandle';
+import { OutputHandle } from '../../component/OutputHandle';
+import { INPUT_HANDLE_ID, OUTPUT_HANDLE_ID, REQUEST_API_FAILED_HANDLE_ID } from '../../config';
+import styles from './style.module.scss';
 
 export type TRequestAPINode = Node<TLogicRequestAPIItem, 'RequestAPINode'>;
 
-export const RequestAPINode = ({ data, isConnectable, selected, ...restProps }: NodeProps<TRequestAPINode>) => {
+export const RequestAPINode = (props: NodeProps<TRequestAPINode>) => {
+  const { data, isConnectable, selected, ...restProps } = props;
+  const reactFlowInstance = useReactFlow();
   ensureKeyExist(data, DEV_CONFIG_KEY, {});
   const devConfigObj = data[DEV_CONFIG_KEY]!;
   const formRef = useRef<CustomSchemaFormInstance>(null);
   const [formValue, setFormValue] = useState<TLogicRequestAPIItem>();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const checkHandleConnection = (handleId: string) => {
+    const edges = reactFlowInstance.getEdges();
+    return edges.some(
+      (edge) => edge.source === String(data.id) && (edge.sourceHandle || OUTPUT_HANDLE_ID) === handleId
+    );
+  };
+
+  const isOutputHandleConnected = checkHandleConnection(OUTPUT_HANDLE_ID);
+
+  const isAfterFailedResponseHandleConnected = checkHandleConnection(REQUEST_API_FAILED_HANDLE_ID);
 
   useEffect(() => {
     const newVal = {
@@ -39,7 +56,6 @@ export const RequestAPINode = ({ data, isConnectable, selected, ...restProps }: 
   }, []);
 
   const updateKeySetterConfig = (keyPaths: string[], setterName: string) => {
-    console.log('🚀 ~ updateKeySetterConfig ~ keyPaths:', keyPaths, setterName);
     if (!devConfigObj.defaultSetterMap) {
       devConfigObj.defaultSetterMap = {};
     }
@@ -75,6 +91,57 @@ export const RequestAPINode = ({ data, isConnectable, selected, ...restProps }: 
     return items;
   }, [formValue?.method]);
 
+  const handleNewNodeAdd = (newNodeData: any, handleType: string) => {
+    const currentNode = reactFlowInstance.getNode(String(data.id));
+    if (!currentNode) return;
+
+    let offsetX = 0;
+    if (handleType !== OUTPUT_HANDLE_ID) {
+      offsetX = (currentNode.measured?.width ?? 0) + 150;
+    }
+    // 计算新节点位置
+    const newNodePosition = {
+      x: currentNode.position.x + offsetX,
+      y: currentNode.position.y + (currentNode.measured?.height ?? 0) + 150,
+    };
+
+    // 创建新节点
+    const newNode = {
+      id: newNodeData.id,
+      type: newNodeData.type,
+      position: newNodePosition,
+      data: {
+        ...newNodeData,
+      },
+    };
+
+    // 创建连线
+    const newEdge = {
+      id: `${data.id}_${newNode.id}`,
+      source: String(data.id),
+      sourceHandle: handleType,
+      target: newNode.id,
+      targetHandle: INPUT_HANDLE_ID,
+    };
+
+    // 更新流程图
+    reactFlowInstance.addNodes(newNode);
+    reactFlowInstance.addEdges(newEdge);
+    if (handleType === OUTPUT_HANDLE_ID) {
+      // 更新当前节点的 afterSuccessResponse
+      if (!data.afterSuccessResponse) {
+        data.afterSuccessResponse = [];
+      }
+      data.afterSuccessResponse.push(newNodeData);
+    } else {
+      // 更新当前节点的 afterFailedResponse
+      if (!data.afterFailedResponse) {
+        data.afterFailedResponse = [];
+      }
+      data.afterFailedResponse.push(newNodeData);
+    }
+  };
+
   return (
     <CCustomSchemaFormContext.Provider
       value={{
@@ -90,7 +157,46 @@ export const RequestAPINode = ({ data, isConnectable, selected, ...restProps }: 
           minWidth: '100px',
         }}
       >
-        <NodeCard title="Request Data">
+        <NodeCard
+          title="Request Data"
+          customHandle={
+            <>
+              <InputHandle type="target" isConnectable={isConnectable} />
+              <CreateNewNodePopup
+                title="请求成功时"
+                onNewNodeAdd={(data) => handleNewNodeAdd(data, OUTPUT_HANDLE_ID)}
+                disabled={isOutputHandleConnected}
+              >
+                <OutputHandle
+                  isConnectable={isConnectable}
+                  style={{
+                    width: '10px',
+                    height: '10px',
+                    background: '#8BC34A',
+                  }}
+                />
+              </CreateNewNodePopup>
+              <CreateNewNodePopup
+                title="请求异常时"
+                onNewNodeAdd={(data) => handleNewNodeAdd(data, REQUEST_API_FAILED_HANDLE_ID)}
+                disabled={isAfterFailedResponseHandleConnected}
+              >
+                <OutputHandle
+                  id={REQUEST_API_FAILED_HANDLE_ID}
+                  isConnectable={isConnectable}
+                  style={{
+                    width: '10px',
+                    height: '10px',
+                    background: '#ff4d4f',
+                    left: '75%',
+                  }}
+                />
+              </CreateNewNodePopup>
+            </>
+          }
+          nodeProps={props}
+          handleNewNodeAdd={() => {}}
+        >
           <div
             style={{
               width: '500px',
@@ -101,7 +207,6 @@ export const RequestAPINode = ({ data, isConnectable, selected, ...restProps }: 
               ref={formRef}
               customSetterMap={BUILD_IN_SETTER_MAP}
               onValueChange={(newFormData) => {
-                console.log('123213', JSON.stringify(newFormData, null, 2));
                 setFormValue(newFormData as any);
               }}
             >
@@ -137,40 +242,6 @@ export const RequestAPINode = ({ data, isConnectable, selected, ...restProps }: 
             </CForm>
           </div>
         </NodeCard>
-        <Handle
-          type="target"
-          id="input"
-          position={Position.Top}
-          onConnect={(params) => console.log('handle onConnect', params)}
-          isConnectable={isConnectable}
-        />
-        <Tooltip title="请求成功时">
-          <Handle
-            type="source"
-            position={Position.Bottom}
-            id="output"
-            isConnectable={isConnectable}
-            style={{
-              width: '10px',
-              height: '10px',
-              background: '#8BC34A',
-            }}
-          />
-        </Tooltip>
-        <Tooltip title="请求异常时">
-          <Handle
-            type="source"
-            position={Position.Bottom}
-            id="afterFailedResponse"
-            isConnectable={isConnectable}
-            style={{
-              width: '10px',
-              height: '10px',
-              background: '#ff4d4f',
-              left: '75%',
-            }}
-          />
-        </Tooltip>
       </div>
     </CCustomSchemaFormContext.Provider>
   );

@@ -16,12 +16,13 @@ import { useCallback, useRef, useState } from 'react';
 import {
   AssignValueType,
   DEV_CONFIG_KEY,
+  LogicType,
   TActionLogicItem,
   TLogicAssignValueItem,
   TLogicJumpLinkItem,
 } from '@chamn/model';
 import { getLayoutedElements } from './util';
-import { NODE_TYPE } from './node';
+import { NODE_MAP, NODE_TYPE } from './node';
 import { CSetterProps } from '../type';
 import { REACT_FLOW_DRAG_CLASS_NAME } from './config';
 
@@ -87,12 +88,14 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
   const { fitView } = useReactFlow();
   const [flowMount, setFlowMount] = useState(false);
   const [nodes, setNodes, onNodesChange] = useNodesState<any>([
-    // {
-    //   id: '1',
-    //   data: { label: 'Start' },
-    //   position: { x: 0, y: 0 },
-    //   dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
-    // },
+    {
+      id: '1',
+      data: { id: '1' },
+      position: { x: 0, y: 0 },
+      type: NODE_TYPE.START_NODE,
+      dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
+      selectable: false,
+    },
     // {
     //   id: '2',
     //   type: 'JumpLinkNode',
@@ -111,8 +114,8 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
     //   position: { x: 0, y: 0 },
     // },
     {
-      id: '988',
-      type: 'RequestAPINode',
+      id: '13',
+      type: LogicType.REQUEST_API,
       data: {
         id: '13',
         value: 'console.log(123)',
@@ -152,10 +155,10 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
     // },
     {
       id: '7',
-      type: 'CallNodeMethodNode',
+      type: LogicType.ASSIGN_VALUE,
       data: {
         ...{
-          id: '',
+          id: '7',
           type: 'ASSIGN_VALUE',
           nodeId: 'globalStateText',
           methodName: 'doAlert',
@@ -177,11 +180,7 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
     // },
   ]);
 
-  const [edges, setEdges, onEdgesChange] = useEdgesState<any>([
-    { id: '1-2', source: '1', target: '2' },
-    { id: '1-3', source: '2', target: '3' },
-    { id: '1-4', source: '3', target: '4' },
-  ]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<any>([]);
 
   const onConnect = useCallback<OnConnect>((params) => setEdges((eds) => addEdge({ ...params }, eds)), [setEdges]);
 
@@ -229,7 +228,6 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
           nodes={nodes}
           edges={edges}
           onNodesChange={(changes) => {
-            console.log('🚀 ~ ActionFlowSetterCore ~ changes:', changes);
             onNodesChange(changes);
           }}
           onEdgesChange={onEdgesChange}
@@ -244,7 +242,7 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
             }, 100);
           }}
           fitView
-          nodeTypes={NODE_TYPE}
+          nodeTypes={NODE_MAP}
         >
           <Background />
           <Controls />

@@ -1,6 +1,7 @@
-import { Edge, Node } from '@xyflow/react';
+import { Edge, Node, useReactFlow } from '@xyflow/react';
 import Dagre from '@dagrejs/dagre';
 import { SetterType, TActionLogicItem } from '@chamn/model';
+import { INPUT_HANDLE_ID, OUTPUT_HANDLE_ID } from './config';
 
 /** 自动布局 flow node */
 export const getLayoutedElements = (
@@ -71,3 +72,41 @@ export const CommonDynamicValueSetter: SetterType[] = [
     },
   },
 ];
+
+export const UseNodeHasConnected = function (data: any, handleId: string) {
+  const reactFlowInstance = useReactFlow();
+  const edges = reactFlowInstance.getEdges();
+  return edges.some((edge) => edge.source === String(data.id) && (edge.sourceHandle || OUTPUT_HANDLE_ID) === handleId);
+};
+
+export const getNewNodePosInfo = function (currentNode: Node, newNodeData: any, sourceHandle?: string) {
+  // 计算新节点位置
+  const newNodePosition = {
+    x: currentNode.position.x,
+    y: currentNode.position.y + (currentNode.measured?.height ?? 0) + 150,
+  };
+
+  // 创建新节点
+  const newNode = {
+    id: newNodeData.id,
+    type: newNodeData.type,
+    position: newNodePosition,
+    data: {
+      ...newNodeData,
+    },
+  };
+
+  // 创建连线
+  const newEdge = {
+    id: `${currentNode.data.id}_${newNode.id}`,
+    source: String(currentNode.data.id),
+    sourceHandle: sourceHandle ?? OUTPUT_HANDLE_ID,
+    target: newNode.id,
+    targetHandle: INPUT_HANDLE_ID,
+  };
+
+  return {
+    newEdge,
+    newNode,
+  };
+};

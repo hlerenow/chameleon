@@ -1,50 +1,22 @@
-import { Handle, NodeProps, Position, Node, NodeToolbar, NodeResizer } from '@xyflow/react';
-import { useState } from 'react';
+import { NodeProps, Node } from '@xyflow/react';
+import { NodeCard } from '../component/NodeCard';
 
-export type CounterNode = Node<
-  {
-    color?: number;
-    onChange: any;
-    forceToolbarVisible: boolean;
-    toolbarPosition: Position;
-  },
-  'BaseNode'
->;
+export type CounterNode = Node<any, 'StartNode'>;
 
-export const BaseNode = ({ data, isConnectable, selected, ...restProps }: NodeProps<CounterNode>) => {
-  const [toolbarVisible, setToolbarVisible] = useState(false);
+export const StartNode = (props: NodeProps<CounterNode>) => {
   return (
-    <div
-      style={{
-        backgroundColor: 'red',
-        height: '100%',
-      }}
-      onMouseOver={() => {
-        setToolbarVisible(true);
-      }}
-      onMouseLeave={() => {
-        setToolbarVisible(false);
-      }}
-    >
-      <NodeResizer
-        minWidth={100}
-        minHeight={30}
-        isVisible={selected !== undefined && selected}
-        onResize={(resize) => {
-          console.log('🚀 ~ BaseNode ~ resize:', resize);
+    <NodeCard nodeProps={props} useCardStyle={false} inputHandle={false}>
+      <div
+        style={{
+          minWidth: '100px',
+          padding: '10px 20px',
+          border: '1px solid #1a192b',
+          borderRadius: '4px',
+          textAlign: 'center',
         }}
-      />
-      <NodeToolbar isVisible={toolbarVisible || undefined} position={data.toolbarPosition}>
-        ToolBar
-      </NodeToolbar>
-      <Handle
-        type="target"
-        position={Position.Top}
-        onConnect={(params) => console.log('handle onConnect', params)}
-        isConnectable={isConnectable}
-      />
-      <div>Root</div>
-      <Handle type="source" position={Position.Bottom} id="a" isConnectable={isConnectable} />
-    </div>
+      >
+        Start
+      </div>
+    </NodeCard>
   );
 };

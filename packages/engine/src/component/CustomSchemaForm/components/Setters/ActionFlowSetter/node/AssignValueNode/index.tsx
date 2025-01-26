@@ -1,6 +1,6 @@
 import { BUILD_IN_SETTER_MAP, CustomSchemaFormInstance } from '@/component/CustomSchemaForm';
 import { AssignValueType, DEV_CONFIG_KEY, TLogicAssignValueItem } from '@chamn/model';
-import { Handle, NodeProps, Position, Node } from '@xyflow/react';
+import { Handle, NodeProps, Position, Node, useReactFlow } from '@xyflow/react';
 import { Radio } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { CForm } from '../../../../Form';
@@ -13,10 +13,15 @@ import { isValidJSVariableName } from './util';
 import { CCustomSchemaFormContext } from '@/component/CustomSchemaForm/context';
 import { ensureKeyExist } from '@/utils';
 import { NodeCard } from '../../component/NodeCard';
+import { getNewNodePosInfo, UseNodeHasConnected } from '../../util';
+import { CreateNewNodePopup } from '../../component/CreateNewNodePopup';
+import { InputHandle } from '../../component/InputHandle';
+import { OutputHandle } from '../../component/OutputHandle';
 
 export type TAssignValueNode = Node<TLogicAssignValueItem, 'AssignValueNode'>;
 
-export const AssignValueNode = ({ data, isConnectable, selected, ...restProps }: NodeProps<TAssignValueNode>) => {
+export const AssignValueNode = (props: NodeProps<TAssignValueNode>) => {
+  const { data, isConnectable, selected, ...restProps } = props;
   ensureKeyExist(data, DEV_CONFIG_KEY, {});
   const devConfigObj = data[DEV_CONFIG_KEY]!;
   const formRef = useRef<CustomSchemaFormInstance>(null);
@@ -56,7 +61,7 @@ export const AssignValueNode = ({ data, isConnectable, selected, ...restProps }:
           minWidth: '100px',
         }}
       >
-        <NodeCard title="Assign Value">
+        <NodeCard title="Assign Value" nodeProps={props}>
           <CForm
             ref={formRef}
             name="jump Link"
@@ -143,14 +148,6 @@ export const AssignValueNode = ({ data, isConnectable, selected, ...restProps }:
             </div>
           </CForm>
         </NodeCard>
-
-        <Handle
-          type="target"
-          position={Position.Top}
-          onConnect={(params) => console.log('handle onConnect', params)}
-          isConnectable={isConnectable}
-        />
-        <Handle type="source" position={Position.Bottom} id="a" isConnectable={isConnectable} />
       </div>
     </CCustomSchemaFormContext.Provider>
   );

@@ -5,10 +5,12 @@ import { Card } from 'antd';
 import { useEffect, useMemo, useRef } from 'react';
 import { CForm } from '../../../Form';
 import { CFiledWithSwitchSetter } from '../CFiledWithSwitchSetter';
+import { NodeCard } from '../component/NodeCard';
 
 export type TJumpLinkNode = Node<TLogicJumpLinkItem, 'JumpLinkNode'>;
 
-export const JumpLinkNode = ({ data, isConnectable, selected, ...restProps }: NodeProps<TJumpLinkNode>) => {
+export const JumpLinkNode = (props: NodeProps<TJumpLinkNode>) => {
+  const { data, isConnectable, selected, ...restProps } = props;
   const formRef = useRef<CustomSchemaFormInstance>(null);
 
   useEffect(() => {
@@ -34,7 +36,7 @@ export const JumpLinkNode = ({ data, isConnectable, selected, ...restProps }: No
         minWidth: '100px',
       }}
     >
-      <Card title="Jump Link">
+      <NodeCard title="Jump Link" nodeProps={props}>
         <CForm
           ref={formRef}
           name="jump Link"
@@ -70,15 +72,7 @@ export const JumpLinkNode = ({ data, isConnectable, selected, ...restProps }: No
             }}
           ></CFiledWithSwitchSetter>
         </CForm>
-      </Card>
-
-      <Handle
-        type="target"
-        position={Position.Top}
-        onConnect={(params) => console.log('handle onConnect', params)}
-        isConnectable={isConnectable}
-      />
-      <Handle type="source" position={Position.Bottom} id="a" isConnectable={isConnectable} />
+      </NodeCard>
     </div>
   );
 };

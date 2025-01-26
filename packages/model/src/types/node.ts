@@ -66,7 +66,7 @@ export enum LogicType {
 export type TDynamicValue = string | number | JSExpressionPropType | FunctionPropType;
 
 export type TBaseActionNode = {
-  id: string | number;
+  id: string;
   next?: string | number;
 };
 /** 存储开发中的一些临时状态 */

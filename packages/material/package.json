@@ -35,7 +35,7 @@
     "react-dom": ">=16.9.0"
   },
   "dependencies": {
-    "antd": "^5.6.3",
+    "antd": "^5.23.2",
     "clsx": "^2.1.1",
     "gridstack": "^11.1.1",
     "loadjs": "^4.3.0",

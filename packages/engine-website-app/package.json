@@ -34,7 +34,7 @@
     "@chamn/model": "workspace:*",
     "@chamn/render": "workspace:*",
     "ahooks": "^3.7.4",
-    "antd": "^5.8.5",
+    "antd": "^5.23.2",
     "color": "^4.2.3",
     "css": "^3.0.0",
     "i18next": "^22.1.5",

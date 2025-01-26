@@ -48,7 +48,7 @@
     "@monaco-editor/react": "^4.5.1",
     "@xyflow/react": "^12.3.6",
     "ahooks": "^3.7.4",
-    "antd": "^5.8.5",
+    "antd": "^5.23.2",
     "color": "^4.2.3",
     "consola": "^3.2.3",
     "css": "^3.0.0",
