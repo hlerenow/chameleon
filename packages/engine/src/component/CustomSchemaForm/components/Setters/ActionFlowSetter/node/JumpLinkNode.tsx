@@ -1,22 +1,27 @@
 import { BUILD_IN_SETTER_MAP, CustomSchemaFormInstance } from '@/component/CustomSchemaForm';
 import { isExpression, isFunction, TLogicJumpLinkItem } from '@chamn/model';
 import { NodeProps, Node } from '@xyflow/react';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { CForm } from '../../../Form';
 import { CFiledWithSwitchSetter } from '../CFiledWithSwitchSetter';
 import { NodeCard } from '../component/NodeCard';
 import { CommonDynamicValueSetter } from '../util';
+import { useActionFlow } from '../context';
 
 export type TJumpLinkNode = Node<TLogicJumpLinkItem, 'JumpLinkNode'>;
 
 export const JumpLinkNode = (props: NodeProps<TJumpLinkNode>) => {
-  const { data, isConnectable, selected, ...restProps } = props;
+  const { data } = props;
+  const { onDataChange } = useActionFlow();
+
   const formRef = useRef<CustomSchemaFormInstance>(null);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     formRef.current?.setFields({
       link: data.link,
     });
+    setIsReady(true);
   }, []);
 
   const defaultLinkSetter = useMemo(() => {
@@ -43,19 +48,21 @@ export const JumpLinkNode = (props: NodeProps<TJumpLinkNode>) => {
           customSetterMap={BUILD_IN_SETTER_MAP}
           onValueChange={(newVal) => {
             Object.assign(data, newVal);
+            onDataChange();
           }}
         >
-          <CFiledWithSwitchSetter
-            name={'link'}
-            label="link"
-            labelWidth="auto"
-            labelAlign={'start'}
-            defaultSetterName={defaultLinkSetter}
-            setterList={CommonDynamicValueSetter}
-            onSetterChange={(setterName) => {
-              console.log('setterName', setterName);
-            }}
-          ></CFiledWithSwitchSetter>
+          {isReady && (
+            <>
+              <CFiledWithSwitchSetter
+                name={'link'}
+                label="link"
+                labelWidth="auto"
+                labelAlign={'start'}
+                defaultSetterName={defaultLinkSetter}
+                setterList={CommonDynamicValueSetter}
+              ></CFiledWithSwitchSetter>
+            </>
+          )}
         </CForm>
       </NodeCard>
     </div>

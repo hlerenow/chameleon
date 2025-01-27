@@ -1,6 +1,6 @@
 import { BUILD_IN_SETTER_MAP, CustomSchemaForm, CustomSchemaFormInstance } from '@/component/CustomSchemaForm';
 import { DEV_CONFIG_KEY, TLogicCallNodeMethodItem } from '@chamn/model';
-import { Handle, NodeProps, Position, Node } from '@xyflow/react';
+import { NodeProps, Node } from '@xyflow/react';
 import { Input, Select } from 'antd';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CForm } from '../../../../Form';
@@ -16,8 +16,8 @@ import { useActionFlow } from '../../context';
 export type TCallNodeMethodNode = Node<TLogicCallNodeMethodItem, 'CallNodeMethodNode'>;
 
 export const CallNodeMethodNode = (props: NodeProps<TCallNodeMethodNode>) => {
-  const { data, isConnectable, selected, ...restProps } = props;
-  const { pageModel } = useActionFlow();
+  const { data } = props;
+  const { pageModel, onDataChange } = useActionFlow();
   ensureKeyExist(data, DEV_CONFIG_KEY, {});
   const devConfigObj = data[DEV_CONFIG_KEY]!;
 
@@ -101,6 +101,7 @@ export const CallNodeMethodNode = (props: NodeProps<TCallNodeMethodNode>) => {
               }
               Object.assign(data, newVal);
               setFormValue(newVal as any);
+              onDataChange();
             }}
           >
             <div className={styles.line}>

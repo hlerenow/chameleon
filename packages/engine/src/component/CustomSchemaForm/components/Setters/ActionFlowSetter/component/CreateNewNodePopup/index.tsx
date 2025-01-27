@@ -72,7 +72,13 @@ export const CreateNewNodePopup = (props: {
       }
       title={title}
     >
-      {props.children}
+      <div
+        onMouseDown={() => {
+          setOpen(false);
+        }}
+      >
+        {props.children}
+      </div>
     </Popover>
   );
 };

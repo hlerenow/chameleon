@@ -1,6 +1,6 @@
 import { Edge, Node, useReactFlow } from '@xyflow/react';
 import Dagre from '@dagrejs/dagre';
-import { getRandomStr, SetterType, TActionLogicItem } from '@chamn/model';
+import { getRandomStr, SetterType, TActionLogicItem, TLogicItemHandlerFlow } from '@chamn/model';
 import { INPUT_HANDLE_ID, OUTPUT_HANDLE_ID, REACT_FLOW_DRAG_CLASS_NAME, REQUEST_API_FAILED_HANDLE_ID } from './config';
 import { NODE_TYPE } from './node';
 
@@ -40,13 +40,14 @@ export const getLayoutedElements = (
   };
 };
 
-const createFlowNode = (nodeData: any) => {
+const createFlowNode = (nodeData: Partial<Node>): Node => {
   const nodeId = nodeData.id || getRandomStr();
   return {
     id: nodeId,
     type: nodeData.type,
     position: { x: 0, y: 0 },
     dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
+    selectable: nodeData.type === NODE_TYPE.START_NODE ? false : true,
     data: {
       ...nodeData,
       id: nodeId,
@@ -75,43 +76,98 @@ export const parseActionLogicToNodeList = (value: TActionLogicItem) => {
       type: NODE_TYPE.START_NODE,
     }),
   ];
-
   const edges: Edge[] = [];
-  let previousNodeId: any = NODE_TYPE.START_NODE;
 
-  value.handler.forEach((item) => {
-    const currentNode = createFlowNode(item);
-    nodes.push(currentNode);
-    edges.push(createFlowEdge(previousNodeId, currentNode.id));
+  const processNodes = (items: TLogicItemHandlerFlow, previousNodeId: string) => {
+    items.forEach((item) => {
+      const currentNode = createFlowNode(item);
+      nodes.push(currentNode);
+      edges.push(createFlowEdge(previousNodeId, currentNode.id));
 
-    if (item.type === 'REQUEST_API') {
-      // 处理成功分支节点
-      item.afterSuccessResponse?.forEach((successNode) => {
-        const newNode = createFlowNode(successNode);
-        nodes.push(newNode);
-        edges.push(createFlowEdge(currentNode.id, newNode.id));
-      });
+      if (item.type === 'REQUEST_API') {
+        // 处理成功分支节点
+        if (item.afterSuccessResponse?.length) {
+          processNodes(item.afterSuccessResponse, currentNode.id);
+        }
 
-      // 处理失败分支节点
-      item.afterFailedResponse?.forEach((failedNode) => {
-        const newNode = createFlowNode(failedNode);
-        nodes.push(newNode);
-        edges.push(createFlowEdge(currentNode.id, newNode.id, REQUEST_API_FAILED_HANDLE_ID));
-      });
-    }
+        // 处理失败分支节点
+        if (item.afterFailedResponse?.length) {
+          item.afterFailedResponse.forEach((failedNode) => {
+            const newNode = createFlowNode(failedNode);
+            nodes.push(newNode);
+            edges.push(createFlowEdge(currentNode.id, newNode.id, REQUEST_API_FAILED_HANDLE_ID));
+          });
+        }
+      }
 
-    previousNodeId = currentNode.id;
-  });
+      previousNodeId = currentNode.id;
+    });
+  };
 
+  processNodes(value.handler, NODE_TYPE.START_NODE);
   return { nodes, edges };
 };
 
-export const revertNodeToActionLogic = (params: { node: any[]; edges: any[] }) => {
+export const revertNodeToActionLogic = (params: { nodes: Node[]; edges: Edge[] }): TActionLogicItem => {
+  const { nodes, edges } = params;
   const result: TActionLogicItem = {
     type: 'ACTION',
     handler: [],
   };
 
+  // 找到起始节点
+  const startNode = nodes.find((node) => node.type === NODE_TYPE.START_NODE);
+  if (!startNode) return result;
+  const nodeMap = new Map(nodes.map((node) => [node.id, node]));
+  const visited = new Set<string>();
+
+  const traverseNodes = (currentNodeId: string) => {
+    if (visited.has(currentNodeId)) return [];
+    visited.add(currentNodeId);
+
+    const currentNode = nodeMap.get(currentNodeId);
+    if (!currentNode) return [];
+
+    const handlers = [];
+    const nodeData: any = { ...currentNode.data };
+
+    if (currentNode.type === 'REQUEST_API') {
+      // 获取成功分支节点
+      const successTargets = edges
+        .filter((e) => e.source === currentNodeId && e.sourceHandle === OUTPUT_HANDLE_ID)
+        .map((e) => traverseNodes(e.target))
+        .flat();
+
+      // 获取失败分支节点
+      const failedTargets = edges
+        .filter((e) => e.source === currentNodeId && e.sourceHandle === REQUEST_API_FAILED_HANDLE_ID)
+        .map((e) => traverseNodes(e.target))
+        .flat();
+
+      nodeData.afterSuccessResponse = successTargets;
+      nodeData.afterFailedResponse = failedTargets;
+      handlers.push(nodeData);
+
+      return handlers;
+    }
+
+    handlers.push(nodeData);
+
+    // 获取下一个主流程节点
+    const nextEdges = edges.filter((e) => e.source === currentNodeId && e.sourceHandle === OUTPUT_HANDLE_ID);
+
+    nextEdges.forEach((edge) => {
+      const nextHandlers = traverseNodes(edge.target);
+      handlers.push(...nextHandlers);
+    });
+
+    return handlers;
+  };
+
+  const handler = traverseNodes(startNode.id);
+  // 移除 start node
+  handler.shift();
+  result.handler = handler;
   return result;
 };
 
@@ -127,8 +183,8 @@ export const CommonDynamicValueSetter: SetterType[] = [
       minimap: false,
       lineNumber: false,
       containerStyle: {
-        width: '600px',
-        height: '300px',
+        width: '500px',
+        height: '250px',
       },
     },
   },

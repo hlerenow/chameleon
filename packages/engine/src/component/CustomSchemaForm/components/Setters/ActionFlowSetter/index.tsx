@@ -10,15 +10,17 @@ import {
   useNodesState,
   useReactFlow,
   Node,
+  Edge,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { TActionLogicItem } from '@chamn/model';
-import { getLayoutedElements, parseActionLogicToNodeList } from './util';
+import { getLayoutedElements, parseActionLogicToNodeList, revertNodeToActionLogic } from './util';
 import { NODE_MAP, NODE_TYPE } from './node';
 import { CSetterProps } from '../type';
 import { REACT_FLOW_DRAG_CLASS_NAME } from './config';
 import { ActionFlowContext } from './context';
+import { Button } from 'antd';
 
 export type TActionFlowSetterCore = CSetterProps<{
   value?: TActionLogicItem;
@@ -47,20 +49,26 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
   const [dataReady, setDataReady] = useState(false);
 
   /** 重新布局 */
-  const layoutGraph = useCallback(() => {
-    const layouted = getLayoutedElements(latestNodeRef.current, edges, { direction: 'TB' });
-    setNodes([...layouted.nodes]);
-    setEdges([...layouted.edges]);
-
-    window.requestAnimationFrame(() => {
-      fitView();
-    });
-  }, [edges, fitView, setEdges, setNodes]);
+  const layoutGraph = useCallback(
+    (options?: { fitView: boolean }) => {
+      const layouted = getLayoutedElements(latestNodeRef.current, edges, { direction: 'TB' });
+      setNodes([...layouted.nodes]);
+      setEdges([...layouted.edges]);
+      setTimeout(() => {
+        setFlowMount(true);
+        if (options?.fitView !== false) {
+          fitView({
+            duration: 800,
+          });
+        }
+      }, 500);
+    },
+    [edges, fitView, setEdges, setNodes]
+  );
 
   useEffect(() => {
     // 将 value 转换为 nodes 以及 edges
     const { nodes, edges } = parseActionLogicToNodeList(props.value);
-    console.log('🚀 ~ useEffect ~ nodes:', nodes);
     setNodes(nodes);
     setEdges(edges);
     setTimeout(() => {
@@ -68,76 +76,101 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
     }, 500);
   }, [props.value, setEdges, setNodes]);
 
+  const saveData = () => {
+    const newSchemaValue = revertNodeToActionLogic({ nodes, edges });
+    props.onValueChange?.(newSchemaValue);
+  };
+
   return (
-    <div
-      style={{
-        width: '100%',
-        height: '100%',
-        display: 'flex',
+    <ActionFlowContext.Provider
+      value={{
+        pageModel: props.setterContext?.pluginCtx?.pageModel,
+        onDataChange: saveData,
       }}
     >
       <div
         style={{
-          flex: 1,
+          width: '100%',
+          height: '100%',
+          display: 'flex',
           position: 'relative',
         }}
       >
-        {!flowMount && (
-          <div
+        <div
+          style={{
+            flex: 1,
+            position: 'relative',
+          }}
+        >
+          <Button
             style={{
               position: 'absolute',
-              left: 0,
-              top: 0,
-              width: '100%',
-              height: '100%',
-              backgroundColor: 'white',
-              zIndex: 999,
+              top: '10px',
+              right: '20px',
+              zIndex: 99,
             }}
-          ></div>
-        )}
-        {dataReady && (
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={(changes) => {
-              onNodesChange(changes);
-            }}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            defaultEdgeOptions={{
-              type: 'smoothstep',
-            }}
-            minZoom={0.2}
-            maxZoom={1}
-            onInit={() => {
-              setTimeout(() => {
-                layoutGraph();
-                setFlowMount(true);
-              }, 100);
-            }}
-            fitView
-            nodeTypes={NODE_MAP}
+            onClick={() => layoutGraph({ fitView: false })}
           >
-            <Background />
-            <Controls />
-            <MiniMap />
-          </ReactFlow>
-        )}
+            Reset Layout
+          </Button>
+
+          {!flowMount && (
+            <div
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'white',
+                zIndex: 999,
+              }}
+            ></div>
+          )}
+          {dataReady && (
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={(changes) => {
+                onNodesChange(changes);
+                saveData();
+              }}
+              onEdgesChange={(changes) => {
+                onEdgesChange(changes);
+                saveData();
+              }}
+              onConnect={(connection) => {
+                onConnect(connection);
+                saveData();
+              }}
+              defaultEdgeOptions={{
+                type: 'smoothstep',
+              }}
+              minZoom={0.2}
+              maxZoom={1}
+              onInit={() => {
+                setTimeout(() => {
+                  layoutGraph();
+                }, 100);
+              }}
+              fitView
+              nodeTypes={NODE_MAP}
+            >
+              <Background />
+              <Controls />
+              <MiniMap />
+            </ReactFlow>
+          )}
+        </div>
       </div>
-    </div>
+    </ActionFlowContext.Provider>
   );
 };
 
 export const ActionFlowSetter = (props: TActionFlowSetterCore) => {
   return (
-    <ActionFlowContext.Provider
-      value={{
-        pageModel: props.setterContext?.pluginCtx?.pageModel,
-      }}
-    >
-      <ReactFlowProvider>
-        <ActionFlowSetterCore {...props}></ActionFlowSetterCore>
-      </ReactFlowProvider>
-    </ActionFlowContext.Provider>
+    <ReactFlowProvider>
+      <ActionFlowSetterCore {...props}></ActionFlowSetterCore>
+    </ReactFlowProvider>
   );
 };

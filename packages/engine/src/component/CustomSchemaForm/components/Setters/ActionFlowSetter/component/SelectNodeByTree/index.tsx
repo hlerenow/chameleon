@@ -13,7 +13,6 @@ export const SelectNodeByTree = (props: {
 
   const treeData = useMemo(() => {
     if (!props.pageModel) {
-      console.log('🚀 ~ treeData ~ props.pageModel:', props.pageModel);
       return;
     }
     const treeData = transformPageSchemaToTreeData(props.pageModel?.export(), props.pageModel);
@@ -22,7 +21,6 @@ export const SelectNodeByTree = (props: {
       el.sourceData = el;
       return false;
     });
-    console.log('🚀 ~ treeData ~ treeData:', treeData);
 
     return treeData;
   }, [props.pageModel]);
@@ -44,6 +42,7 @@ export const SelectNodeByTree = (props: {
         filterTreeNode={(inputValue, treeNode: any) => {
           return treeNode.title.toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
         }}
+        getPopupContainer={() => boxDomRef.current!}
         treeDefaultExpandAll
         onChange={(newVal) => {
           const nodeInfo = getNodeInfo(newVal, (treeData as any) ?? []);

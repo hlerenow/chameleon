@@ -14,13 +14,20 @@ import { methodOptions, requestParamsSchemaSetterList } from './helper';
 import { CreateNewNodePopup } from '../../component/CreateNewNodePopup';
 import { InputHandle } from '../../component/InputHandle';
 import { OutputHandle } from '../../component/OutputHandle';
-import { INPUT_HANDLE_ID, OUTPUT_HANDLE_ID, REQUEST_API_FAILED_HANDLE_ID } from '../../config';
+import {
+  INPUT_HANDLE_ID,
+  OUTPUT_HANDLE_ID,
+  REACT_FLOW_DRAG_CLASS_NAME,
+  REQUEST_API_FAILED_HANDLE_ID,
+} from '../../config';
 import styles from './style.module.scss';
+import { useActionFlow } from '../../context';
 
 export type TRequestAPINode = Node<TLogicRequestAPIItem, 'RequestAPINode'>;
 
 export const RequestAPINode = (props: NodeProps<TRequestAPINode>) => {
-  const { data, isConnectable, selected, ...restProps } = props;
+  const { data, isConnectable } = props;
+  const { onDataChange } = useActionFlow();
   const reactFlowInstance = useReactFlow();
   ensureKeyExist(data, DEV_CONFIG_KEY, {});
   const devConfigObj = data[DEV_CONFIG_KEY]!;
@@ -42,14 +49,14 @@ export const RequestAPINode = (props: NodeProps<TRequestAPINode>) => {
     const newVal = {
       id: data.id,
       type: data.type,
-      apiPath: '',
-      body: {},
-      query: {},
-      header: {},
-      method: 'GET',
-      responseVarName: '',
-      afterFailedResponse: [],
-      afterSuccessResponse: [],
+      apiPath: data.apiPath,
+      body: data.body,
+      query: data.query,
+      header: data.header,
+      method: data.method || 'GET',
+      responseVarName: data.responseVarName || '',
+      afterSuccessResponse: data.afterSuccessResponse || [],
+      afterFailedResponse: data.afterFailedResponse || [],
     } as TLogicRequestAPIItem;
     formRef.current?.setFields(newVal);
     setFormValue(newVal);
@@ -110,6 +117,8 @@ export const RequestAPINode = (props: NodeProps<TRequestAPINode>) => {
       id: newNodeData.id,
       type: newNodeData.type,
       position: newNodePosition,
+      /** 必须 */
+      dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
       data: {
         ...newNodeData,
       },
@@ -208,6 +217,8 @@ export const RequestAPINode = (props: NodeProps<TRequestAPINode>) => {
               customSetterMap={BUILD_IN_SETTER_MAP}
               onValueChange={(newFormData) => {
                 setFormValue(newFormData as any);
+                Object.assign(data, newFormData);
+                onDataChange();
               }}
             >
               <div className={styles.line}>

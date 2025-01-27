@@ -1,6 +1,6 @@
 import { LogicType } from '@chamn/model';
 import { AssignValueNode } from './AssignValueNode';
-import { StartNode } from './BaseNode';
+import { StartNode } from './StartNode';
 import { CallNodeMethodNode } from './CallNodeMethodNode';
 import { JumpLinkNode } from './JumpLinkNode';
 import { RequestAPINode } from './RequestAPINode';

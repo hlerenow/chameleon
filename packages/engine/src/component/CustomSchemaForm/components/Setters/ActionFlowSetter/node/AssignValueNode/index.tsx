@@ -1,6 +1,6 @@
 import { BUILD_IN_SETTER_MAP, CustomSchemaFormInstance } from '@/component/CustomSchemaForm';
 import { AssignValueType, DEV_CONFIG_KEY, TLogicAssignValueItem } from '@chamn/model';
-import { Handle, NodeProps, Position, Node, useReactFlow } from '@xyflow/react';
+import { NodeProps, Node } from '@xyflow/react';
 import { Radio } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { CForm } from '../../../../Form';
@@ -14,11 +14,14 @@ import { CCustomSchemaFormContext } from '@/component/CustomSchemaForm/context';
 import { ensureKeyExist } from '@/utils';
 import { NodeCard } from '../../component/NodeCard';
 import { CommonDynamicValueSetter } from '../../util';
+import { useActionFlow } from '../../context';
 
 export type TAssignValueNode = Node<TLogicAssignValueItem, 'AssignValueNode'>;
 
 export const AssignValueNode = (props: NodeProps<TAssignValueNode>) => {
-  const { data, isConnectable, selected, ...restProps } = props;
+  const { data } = props;
+  const { onDataChange, pageModel } = useActionFlow();
+
   ensureKeyExist(data, DEV_CONFIG_KEY, {});
   const devConfigObj = data[DEV_CONFIG_KEY]!;
   const [isReady, setIsReady] = useState(false);
@@ -68,6 +71,7 @@ export const AssignValueNode = (props: NodeProps<TAssignValueNode>) => {
             onValueChange={(newVal) => {
               Object.assign(data, newVal);
               setFormValue(newVal as any);
+              onDataChange();
             }}
           >
             {isReady && (
@@ -94,7 +98,7 @@ export const AssignValueNode = (props: NodeProps<TAssignValueNode>) => {
                 <div className={styles.line}>
                   {formValue?.valueType === 'STATE' && (
                     <CField name={'targetValueName'} label="Var Name" valueChangeEventName="onChange">
-                      <SelectNodeState pageModel={devConfigObj.pageModel} />
+                      <SelectNodeState pageModel={pageModel} />
                     </CField>
                   )}
 

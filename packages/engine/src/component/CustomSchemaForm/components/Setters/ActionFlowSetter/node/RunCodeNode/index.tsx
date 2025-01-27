@@ -1,30 +1,18 @@
-import { CustomSchemaFormInstance } from '@/component/CustomSchemaForm';
 import { DEV_CONFIG_KEY, TLogicRunCodeItem } from '@chamn/model';
-import { Handle, NodeProps, Position, Node } from '@xyflow/react';
-import { useEffect, useRef, useState } from 'react';
+import { NodeProps, Node } from '@xyflow/react';
 
 import { ensureKeyExist } from '@/utils';
 import { FunctionSetter } from '../../../FunctionSetter';
 import { NodeCard } from '../../component/NodeCard';
+import { useActionFlow } from '../../context';
 
 export type TRunCodeNode = Node<TLogicRunCodeItem, 'RunCodeNode'>;
 
 export const RunCodeNode = (props: NodeProps<TRunCodeNode>) => {
-  const { data, isConnectable, selected, ...restProps } = props;
+  const { data } = props;
   ensureKeyExist(data, DEV_CONFIG_KEY, {});
-  const devConfigObj = data[DEV_CONFIG_KEY]!;
-  const formRef = useRef<CustomSchemaFormInstance>(null);
-  const [formValue, setFormValue] = useState<TLogicRunCodeItem>();
-  useEffect(() => {
-    const newVal = {
-      id: data.id,
-      type: data.type,
-      value: data.value,
-      sourceCode: data.sourceCode,
-    };
-    formRef.current?.setFields(newVal);
-    setFormValue(newVal);
-  }, []);
+
+  const { onDataChange } = useActionFlow();
 
   return (
     <div
@@ -43,7 +31,8 @@ export const RunCodeNode = (props: NodeProps<TRunCodeNode>) => {
             height: '300px',
           }}
           onValueChange={(newVal: any) => {
-            data.value = newVal;
+            data.value = newVal.value;
+            onDataChange();
           }}
         />
       </NodeCard>
