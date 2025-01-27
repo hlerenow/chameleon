@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { SetterObjType } from '@chamn/model';
 import InnerSetters from '../Setters/index';
 import { CField, CFieldProps } from '../Form/Field';
@@ -7,8 +7,9 @@ import { SwapOutlined } from '@ant-design/icons';
 import styles from './style.module.scss';
 import { CCustomSchemaFormContext } from '../../context';
 import { CFormContext } from '../Form/context';
-import { CSetter, CSetterProps } from '../Setters/type';
-import { getDefaultSetterByValue } from '../../utils';
+import { CSetter } from '../Setters/type';
+import { SetterSwitcherCore } from './core';
+import BUILD_IN_SETTER_MAP from '../Setters';
 
 export type SetterSwitcherProps = {
   // 支持的 setter 列表
@@ -22,56 +23,6 @@ export type SetterSwitcherProps = {
   /** 是否实用 CFile 包裹 */
   useField?: boolean;
 } & Omit<CFieldProps, 'children'>;
-
-export const SetterSwitcherCore = ({
-  setters,
-  keyPaths,
-  currentSetter,
-  setCurrentSetter,
-  ...props
-}: Pick<SetterSwitcherProps, 'setters' | 'keyPaths'> & {
-  value?: any;
-  setterContext?: Partial<CSetterProps['setterContext']>;
-  currentSetter: SetterObjType;
-  setCurrentSetter: (setter: SetterObjType) => void;
-}) => {
-  const { customSetterMap } = useContext(CFormContext);
-  const { defaultSetterConfig } = useContext(CCustomSchemaFormContext);
-  const allSetterMap = {
-    ...InnerSetters,
-    ...customSetterMap,
-  };
-
-  useEffect(() => {
-    const currentSetterName = defaultSetterConfig[keyPaths.join('.')]?.setter || '';
-    const devConfigSetter = setters.find((el) => el.componentName === currentSetterName);
-    const st = devConfigSetter || getDefaultSetterByValue(props.value, setters) || setters[0];
-    setCurrentSetter(st);
-  }, []);
-
-  let CurrentSetterComp = null;
-  if (currentSetter?.componentName) {
-    CurrentSetterComp = allSetterMap[currentSetter?.componentName] || currentSetter.component;
-  }
-
-  if (!CurrentSetterComp) {
-    CurrentSetterComp = function EmptySetter() {
-      return (
-        <div
-          style={{
-            backgroundColor: 'whitesmoke',
-            margin: '5px 0',
-            padding: '5px',
-            borderRadius: '2px',
-            color: 'gray',
-          }}
-        >{`${currentSetter?.componentName} is not found.`}</div>
-      );
-    };
-  }
-
-  return <CurrentSetterComp {...props} />;
-};
 
 export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, ...props }: SetterSwitcherProps) => {
   const [visible, setVisible] = useState(true);
@@ -166,6 +117,11 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
   );
 
   const filedView = useMemo(() => {
+    const customSetterMap = {
+      ...BUILD_IN_SETTER_MAP,
+      ...(props.customSetterMap || {}),
+    };
+
     const cFiledProps = {
       labelWidth,
       labelAlign,
@@ -186,6 +142,7 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
           setCurrentSetter={setCurrentSetter}
           {...props}
           {...setterProps}
+          customSetterMap={customSetterMap}
           setterContext={setterContext}
         />
       );
@@ -198,6 +155,7 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
           currentSetter={currentSetter}
           setCurrentSetter={setCurrentSetter}
           {...setterProps}
+          customSetterMap={customSetterMap}
           setterContext={setterContext}
         />
       </CField>

@@ -3,10 +3,10 @@ import { isExpression, isFunction, TLogicJumpLinkItem } from '@chamn/model';
 import { NodeProps, Node } from '@xyflow/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CForm } from '../../../Form';
-import { CFiledWithSwitchSetter } from '../CFiledWithSwitchSetter';
 import { NodeCard } from '../component/NodeCard';
 import { CommonDynamicValueSetter } from '../util';
 import { useActionFlow } from '../context';
+import { CFiledWithSwitchSetter } from '../../../CFiledWithSwitchSetter';
 
 export type TJumpLinkNode = Node<TLogicJumpLinkItem, 'JumpLinkNode'>;
 

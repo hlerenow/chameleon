@@ -4,7 +4,6 @@ import { NodeProps, Node } from '@xyflow/react';
 import { Radio } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { CForm } from '../../../../Form';
-import { CFiledWithSwitchSetter } from '../../CFiledWithSwitchSetter';
 import { CField } from '../../../../Form/Field';
 import { SelectNodeState } from '../../component/SelectNodeState/index';
 import styles from './style.module.scss';
@@ -15,6 +14,7 @@ import { ensureKeyExist } from '@/utils';
 import { NodeCard } from '../../component/NodeCard';
 import { CommonDynamicValueSetter } from '../../util';
 import { useActionFlow } from '../../context';
+import { CFiledWithSwitchSetter } from '@/component/CustomSchemaForm/components/CFiledWithSwitchSetter';
 
 export type TAssignValueNode = Node<TLogicAssignValueItem, 'AssignValueNode'>;
 

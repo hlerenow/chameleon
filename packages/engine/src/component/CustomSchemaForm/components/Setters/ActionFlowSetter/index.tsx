@@ -209,3 +209,5 @@ export const ActionFlowSetter = (props: TActionFlowSetterCore) => {
     </>
   );
 };
+
+ActionFlowSetter.setterName = '逻辑流设置器';

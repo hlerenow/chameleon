@@ -9,7 +9,6 @@ import { NodeCard } from '../../component/NodeCard';
 import { CForm } from '@/component/CustomSchemaForm/components/Form';
 import { CCustomSchemaFormContext } from '@/component/CustomSchemaForm/context';
 import { CField } from '@/component/CustomSchemaForm/components/Form/Field';
-import { CFiledWithSwitchSetter } from '../../CFiledWithSwitchSetter';
 import { methodOptions, requestParamsSchemaSetterList } from './helper';
 import { CreateNewNodePopup } from '../../component/CreateNewNodePopup';
 import { InputHandle } from '../../component/InputHandle';
@@ -22,6 +21,7 @@ import {
 } from '../../config';
 import styles from './style.module.scss';
 import { useActionFlow } from '../../context';
+import { CFiledWithSwitchSetter } from '@/component/CustomSchemaForm/components/CFiledWithSwitchSetter';
 
 export type TRequestAPINode = Node<TLogicRequestAPIItem, 'RequestAPINode'>;
 

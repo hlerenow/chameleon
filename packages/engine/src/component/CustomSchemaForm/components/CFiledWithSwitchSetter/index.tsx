@@ -1,13 +1,12 @@
 import { useContext, useMemo, useState } from 'react';
-import BUILD_IN_SETTER_MAP from '../..';
-import { CField, CFieldProps } from '../../../Form/Field';
 import { SetterObjType, SetterType } from '@chamn/model';
 import { Dropdown, MenuProps } from 'antd';
 import { SwapOutlined } from '@ant-design/icons';
 import { CCustomSchemaFormContext } from '@/component/CustomSchemaForm/context';
 import { getSetterList } from '@/component/CustomSchemaForm/utils';
 import styles from './style.module.scss';
-import { SetterSwitcherCore } from '../../../SetterSwitcher';
+import { CField, CFieldProps } from '../Form/Field';
+import { SetterSwitcherCore } from '../SetterSwitcher/core';
 
 export const CFiledWithSwitchSetter = (
   props: Omit<CFieldProps, 'children'> & {
@@ -32,7 +31,7 @@ export const CFiledWithSwitchSetter = (
 
   const menuItems = setterList.map((setter) => {
     const setterName = setter?.componentName || '';
-    const setterRuntime = BUILD_IN_SETTER_MAP[setterName];
+    const setterRuntime = ({} as any)[setterName];
     return {
       key: setter.componentName,
       label: setterRuntime?.setterName || setter.componentName,
