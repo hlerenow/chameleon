@@ -46,7 +46,7 @@ export const MoveableModal = (props: ModalProps) => {
               setModalTransform(res);
             }}
           >
-            <ModalDragView modal={modal} transform={modalTransform} />
+            <ModalDragView modal={modal} transform={modalTransform} setModalTransform={setModalTransform} />
           </DndContext>
         );
       }}
@@ -54,7 +54,15 @@ export const MoveableModal = (props: ModalProps) => {
   );
 };
 
-const ModalDragView = ({ modal, transform }: { modal: React.ReactNode; transform: Transform }) => {
+const ModalDragView = ({
+  modal,
+  transform,
+  setModalTransform,
+}: {
+  modal: React.ReactNode;
+  transform: Transform;
+  setModalTransform: any;
+}) => {
   const id = useRef(getRandomStr());
   const {
     setNodeRef,
@@ -80,6 +88,15 @@ const ModalDragView = ({ modal, transform }: { modal: React.ReactNode; transform
       }}
     >
       <div
+        onDoubleClick={() => {
+          setModalTransform((oldValue) => {
+            return {
+              ...oldValue,
+              x: 0,
+              y: 0,
+            };
+          });
+        }}
         ref={setNodeRef}
         style={{
           cursor: 'move',

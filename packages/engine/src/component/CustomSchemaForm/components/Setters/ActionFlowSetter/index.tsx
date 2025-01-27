@@ -10,17 +10,17 @@ import {
   useNodesState,
   useReactFlow,
   Node,
-  Edge,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { TActionLogicItem } from '@chamn/model';
-import { getLayoutedElements, parseActionLogicToNodeList, revertNodeToActionLogic } from './util';
+import { calculateElementLayout, parseActionLogicToNodeList, revertNodeToActionLogic } from './util';
 import { NODE_MAP, NODE_TYPE } from './node';
 import { CSetterProps } from '../type';
 import { REACT_FLOW_DRAG_CLASS_NAME } from './config';
 import { ActionFlowContext } from './context';
 import { Button } from 'antd';
+import { MoveableModal } from '@/component/MoveableModal';
 
 export type TActionFlowSetterCore = CSetterProps<{
   value?: TActionLogicItem;
@@ -51,9 +51,9 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
   /** 重新布局 */
   const layoutGraph = useCallback(
     (options?: { fitView: boolean }) => {
-      const layouted = getLayoutedElements(latestNodeRef.current, edges, { direction: 'TB' });
-      setNodes([...layouted.nodes]);
-      setEdges([...layouted.edges]);
+      const layoutInfo = calculateElementLayout(latestNodeRef.current, edges, { direction: 'TB' });
+      setNodes([...layoutInfo.nodes]);
+      setEdges([...layoutInfo.edges]);
       setTimeout(() => {
         setFlowMount(true);
         if (options?.fitView !== false) {
@@ -168,9 +168,44 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
 };
 
 export const ActionFlowSetter = (props: TActionFlowSetterCore) => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <ReactFlowProvider>
-      <ActionFlowSetterCore {...props}></ActionFlowSetterCore>
-    </ReactFlowProvider>
+    <>
+      <Button
+        size="small"
+        style={{
+          marginTop: '5px',
+          width: '100%',
+          color: '#676767',
+          fontSize: '12px',
+        }}
+        onClick={() => setOpen(true)}
+      >
+        Edit Flow
+      </Button>
+      <MoveableModal
+        destroyOnClose
+        open={open}
+        centered
+        title="Edit Flow"
+        width="calc(100vw - 200px)"
+        onCancel={() => setOpen(false)}
+        onOk={() => {
+          setOpen(false);
+        }}
+      >
+        <div
+          style={{
+            width: '100%',
+            height: 'calc(100vh - 200px)',
+          }}
+        >
+          <ReactFlowProvider>
+            <ActionFlowSetterCore {...props}></ActionFlowSetterCore>
+          </ReactFlowProvider>
+        </div>
+      </MoveableModal>
+    </>
   );
 };

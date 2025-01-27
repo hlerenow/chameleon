@@ -5,7 +5,7 @@ import { INPUT_HANDLE_ID, OUTPUT_HANDLE_ID, REACT_FLOW_DRAG_CLASS_NAME, REQUEST_
 import { NODE_TYPE } from './node';
 
 /** 自动布局 flow node */
-export const getLayoutedElements = (
+export const calculateElementLayout = (
   nodes: Node[],
   edges: Edge[],
   options: {
