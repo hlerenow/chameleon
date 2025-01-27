@@ -5,6 +5,7 @@ import { CRightPanelItem } from '../RightPanel/view';
 
 import styles from './style.module.scss';
 import { CustomSchemaForm, CustomSchemaFormInstance, CustomSchemaFormProps } from '../../component/CustomSchemaForm';
+import { BUILD_IN_ADVANCE_SETTER_MAP } from '@/component/CustomSchemaForm/components/Setters/AdvanceSetterList';
 
 export const PropertyPanel = (props: { node: CNode | CRootNode | null; pluginCtx: CPluginCtx }) => {
   const { node } = props;
@@ -55,7 +56,10 @@ export const PropertyPanel = (props: { node: CNode | CRootNode | null; pluginCtx
         properties={properties}
         initialValue={value}
         ref={formRef}
-        customSetterMap={customSetterMap}
+        customSetterMap={{
+          ...BUILD_IN_ADVANCE_SETTER_MAP,
+          customSetterMap,
+        }}
         onValueChange={onValueChange}
       />
     </div>
