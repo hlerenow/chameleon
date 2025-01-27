@@ -66,10 +66,6 @@ const createFlowEdge = (source: string, target: string, sourceHandle = OUTPUT_HA
 };
 
 export const parseActionLogicToNodeList = (value: TActionLogicItem) => {
-  if (!value?.handler?.length) {
-    return { nodes: [], edges: [] };
-  }
-
   const nodes: Node[] = [
     createFlowNode({
       id: NODE_TYPE.START_NODE,
@@ -77,6 +73,10 @@ export const parseActionLogicToNodeList = (value: TActionLogicItem) => {
     }),
   ];
   const edges: Edge[] = [];
+
+  if (!value?.handler?.length) {
+    return { nodes: nodes, edges: edges };
+  }
 
   const processNodes = (items: TLogicItemHandlerFlow, previousNodeId: string) => {
     items.forEach((item) => {

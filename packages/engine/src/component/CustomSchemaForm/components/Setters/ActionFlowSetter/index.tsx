@@ -170,6 +170,8 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
 export const ActionFlowSetter = (props: TActionFlowSetterCore) => {
   const [open, setOpen] = useState(false);
 
+  const newValueRef = useRef(props.value);
+
   return (
     <>
       <Button
@@ -192,6 +194,7 @@ export const ActionFlowSetter = (props: TActionFlowSetterCore) => {
         width="calc(100vw - 200px)"
         onCancel={() => setOpen(false)}
         onOk={() => {
+          props.onValueChange?.(newValueRef.current);
           setOpen(false);
         }}
       >
@@ -202,7 +205,12 @@ export const ActionFlowSetter = (props: TActionFlowSetterCore) => {
           }}
         >
           <ReactFlowProvider>
-            <ActionFlowSetterCore {...props}></ActionFlowSetterCore>
+            <ActionFlowSetterCore
+              {...props}
+              onValueChange={(newVal) => {
+                newValueRef.current = newVal;
+              }}
+            ></ActionFlowSetterCore>
           </ReactFlowProvider>
         </div>
       </MoveableModal>

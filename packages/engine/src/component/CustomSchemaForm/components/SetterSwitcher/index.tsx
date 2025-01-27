@@ -9,7 +9,6 @@ import { CCustomSchemaFormContext } from '../../context';
 import { CFormContext } from '../Form/context';
 import { CSetter } from '../Setters/type';
 import { SetterSwitcherCore } from './core';
-import BUILD_IN_SETTER_MAP from '../Setters';
 
 export type SetterSwitcherProps = {
   // 支持的 setter 列表
@@ -115,10 +114,8 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
     }),
     [formRef, keyPaths, pluginCtx, props.label, specialSetter]
   );
-
   const filedView = useMemo(() => {
     const customSetterMap = {
-      ...BUILD_IN_SETTER_MAP,
       ...(props.customSetterMap || {}),
     };
 

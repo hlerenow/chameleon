@@ -6,7 +6,6 @@ import {
   AssignValueType,
   TLogicAssignValueItem,
   TLogicJumpLinkItem,
-  TActionLogicItem,
   TLogicItemHandlerFlow,
   getRandomStr,
 } from '@chamn/model';

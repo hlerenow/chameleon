@@ -10,6 +10,7 @@ import { ConfigProvider } from 'antd';
 import { CCustomSchemaFormContext } from './context';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CFormContextData } from './components/Form/context';
+import { BUILD_IN_ADVANCE_SETTER_MAP } from './components/Setters/AdvanceSetterList';
 
 export type CustomSchemaFormInstance = CForm;
 
@@ -78,6 +79,8 @@ const CustomSchemaFormCore = (props: CustomSchemaFormProps, ref: Ref<CustomSchem
                 const keyPaths = [property.name];
                 return (
                   <SetterSwitcher
+                    // 只能在这里注入高级设置器
+                    customSetterMap={{ ...BUILD_IN_ADVANCE_SETTER_MAP }}
                     key={property.name}
                     condition={property.condition}
                     keyPaths={keyPaths}
