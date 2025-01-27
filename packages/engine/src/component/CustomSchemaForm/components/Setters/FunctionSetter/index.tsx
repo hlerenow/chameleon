@@ -15,7 +15,7 @@ export const FunctionSetter: CSetter<any> = ({
   mode: 'modal' | 'inline';
   containerStyle?: React.CSSProperties;
   minimap?: boolean;
-  lineNumber?: 'on' | 'off';
+  lineNumber?: boolean;
   editorOptions?: EditorType['options'];
 }>) => {
   const editorRef = useRef<MonacoEditorInstance | null>(null);
@@ -27,6 +27,17 @@ export const FunctionSetter: CSetter<any> = ({
       value: newValStr,
     });
   };
+
+  let lineNumberOptions = {};
+  if (props.lineNumber === false) {
+    lineNumberOptions = {
+      lineNumbers: 'off',
+      lineDecorationsWidth: 0,
+      lineNumbersMinChars: 0,
+      glyphMargin: false,
+    };
+  }
+
   const editorView = (
     <MonacoEditor
       beforeMount={(monaco) => {
@@ -58,10 +69,11 @@ export const FunctionSetter: CSetter<any> = ({
       options={{
         automaticLayout: true,
         tabSize: 2,
-        lineNumbers: props.lineNumber ?? 'on',
+
         minimap: {
           enabled: props.minimap ?? true,
         },
+        ...lineNumberOptions,
         ...(editorOptions || {}),
       }}
       onChange={() => {

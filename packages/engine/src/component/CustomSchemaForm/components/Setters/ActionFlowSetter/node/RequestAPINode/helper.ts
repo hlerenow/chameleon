@@ -26,12 +26,7 @@ export const requestParamsSchemaSetterList: SetterType[] = [
         width: '470px',
         height: '150px',
       },
-      editorOptions: {
-        lineNumbers: 'off',
-        lineDecorationsWidth: 0,
-        lineNumbersMinChars: 0,
-        glyphMargin: false,
-      },
+      lineNumber: false,
     },
   },
 ];

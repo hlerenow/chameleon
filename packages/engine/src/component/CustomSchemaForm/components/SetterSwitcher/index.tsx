@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { SetterObjType } from '@chamn/model';
 import InnerSetters from '../Setters/index';
 import { CField, CFieldProps } from '../Form/Field';
@@ -7,7 +7,8 @@ import { SwapOutlined } from '@ant-design/icons';
 import styles from './style.module.scss';
 import { CCustomSchemaFormContext } from '../../context';
 import { CFormContext } from '../Form/context';
-import { CSetter } from '../Setters/type';
+import { CSetter, CSetterProps } from '../Setters/type';
+import { getDefaultSetterByValue } from '../../utils';
 
 export type SetterSwitcherProps = {
   // 支持的 setter 列表
@@ -22,18 +23,31 @@ export type SetterSwitcherProps = {
   useField?: boolean;
 } & Omit<CFieldProps, 'children'>;
 
-export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, ...props }: SetterSwitcherProps) => {
-  const [visible, setVisible] = useState(true);
+export const SetterSwitcherCore = ({
+  setters,
+  keyPaths,
+  currentSetter,
+  setCurrentSetter,
+  ...props
+}: Pick<SetterSwitcherProps, 'setters' | 'keyPaths'> & {
+  value?: any;
+  setterContext?: Partial<CSetterProps['setterContext']>;
+  currentSetter: SetterObjType;
+  setCurrentSetter: (setter: SetterObjType) => void;
+}) => {
   const { customSetterMap } = useContext(CFormContext);
-  const { onSetterChange, defaultSetterConfig, formRef, pluginCtx } = useContext(CCustomSchemaFormContext);
+  const { defaultSetterConfig } = useContext(CCustomSchemaFormContext);
   const allSetterMap = {
     ...InnerSetters,
     ...customSetterMap,
   };
-  const [currentSetter, setCurrentSetter] = useState<SetterObjType>(() => {
+
+  useEffect(() => {
     const currentSetterName = defaultSetterConfig[keyPaths.join('.')]?.setter || '';
-    return [...setters].find((el) => el.componentName === currentSetterName) || setters[0];
-  });
+    const devConfigSetter = setters.find((el) => el.componentName === currentSetterName);
+    const st = devConfigSetter || getDefaultSetterByValue(props.value, setters) || setters[0];
+    setCurrentSetter(st);
+  }, []);
 
   let CurrentSetterComp = null;
   if (currentSetter?.componentName) {
@@ -55,6 +69,23 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
       );
     };
   }
+
+  return <CurrentSetterComp {...props} />;
+};
+
+export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, ...props }: SetterSwitcherProps) => {
+  const [visible, setVisible] = useState(true);
+  const { customSetterMap } = useContext(CFormContext);
+  const { onSetterChange, defaultSetterConfig, formRef, pluginCtx } = useContext(CCustomSchemaFormContext);
+  const allSetterMap = {
+    ...InnerSetters,
+    ...customSetterMap,
+  };
+  const [currentSetter, setCurrentSetter] = useState<SetterObjType>(() => {
+    const currentSetterName = defaultSetterConfig[keyPaths.join('.')]?.setter || '';
+    const devConfigSetter = setters.find((el) => el.componentName === currentSetterName);
+    return devConfigSetter || setters[0];
+  });
 
   const menuItems = setters.map((setter) => {
     const setterName = setter?.componentName || '';
@@ -145,23 +176,43 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
         setVisible(val);
       },
     };
+
     if (useField === false) {
-      return <CurrentSetterComp {...setterProps} setterContext={setterContext} />;
+      return (
+        <SetterSwitcherCore
+          setters={setters}
+          keyPaths={keyPaths}
+          currentSetter={currentSetter}
+          setCurrentSetter={setCurrentSetter}
+          {...props}
+          {...setterProps}
+          setterContext={setterContext}
+        />
+      );
     }
     return (
       <CField {...cFiledProps} {...props}>
-        <CurrentSetterComp {...setterProps} setterContext={setterContext} />
+        <SetterSwitcherCore
+          setters={setters}
+          keyPaths={keyPaths}
+          currentSetter={currentSetter}
+          setCurrentSetter={setCurrentSetter}
+          {...setterProps}
+          setterContext={setterContext}
+        />
       </CField>
     );
   }, [
-    CurrentSetterComp,
     condition,
+    currentSetter,
     hiddenLabel,
+    keyPaths,
     labelAlign,
     labelWidth,
     props,
     setterContext,
     setterProps,
+    setters,
     specialSetter,
     useField,
   ]);

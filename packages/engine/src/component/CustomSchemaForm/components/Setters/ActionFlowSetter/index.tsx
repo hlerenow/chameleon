@@ -107,6 +107,8 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
             defaultEdgeOptions={{
               type: 'smoothstep',
             }}
+            minZoom={0.2}
+            maxZoom={1}
             onInit={() => {
               setTimeout(() => {
                 layoutGraph();

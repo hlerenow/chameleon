@@ -13,10 +13,7 @@ import { isValidJSVariableName } from './util';
 import { CCustomSchemaFormContext } from '@/component/CustomSchemaForm/context';
 import { ensureKeyExist } from '@/utils';
 import { NodeCard } from '../../component/NodeCard';
-import { getNewNodePosInfo, UseNodeHasConnected } from '../../util';
-import { CreateNewNodePopup } from '../../component/CreateNewNodePopup';
-import { InputHandle } from '../../component/InputHandle';
-import { OutputHandle } from '../../component/OutputHandle';
+import { CommonDynamicValueSetter } from '../../util';
 
 export type TAssignValueNode = Node<TLogicAssignValueItem, 'AssignValueNode'>;
 
@@ -24,6 +21,7 @@ export const AssignValueNode = (props: NodeProps<TAssignValueNode>) => {
   const { data, isConnectable, selected, ...restProps } = props;
   ensureKeyExist(data, DEV_CONFIG_KEY, {});
   const devConfigObj = data[DEV_CONFIG_KEY]!;
+  const [isReady, setIsReady] = useState(false);
   const formRef = useRef<CustomSchemaFormInstance>(null);
   const [formValue, setFormValue] = useState<TLogicAssignValueItem>();
   useEffect(() => {
@@ -36,6 +34,7 @@ export const AssignValueNode = (props: NodeProps<TAssignValueNode>) => {
     };
     formRef.current?.setFields(newVal);
     setFormValue(newVal);
+    setIsReady(true);
   }, []);
 
   return (
@@ -71,81 +70,70 @@ export const AssignValueNode = (props: NodeProps<TAssignValueNode>) => {
               setFormValue(newVal as any);
             }}
           >
-            <div className={styles.line}>
-              <CField
-                name={'valueType'}
-                label="Var Type"
-                valueChangeEventName="onChange"
-                formatEventValue={({ target: { value } }: any) => {
-                  return value;
-                }}
-              >
-                <Radio.Group
-                  optionType="button"
-                  buttonStyle="solid"
-                  options={[
-                    { label: 'Memory', value: AssignValueType.MEMORY },
-                    { label: 'Node', value: AssignValueType.STATE },
-                  ]}
-                />
-              </CField>
-            </div>
-            <div className={styles.line}>
-              {formValue?.valueType === 'STATE' && (
-                <CField name={'targetValueName'} label="Var Name" valueChangeEventName="onChange">
-                  <SelectNodeState pageModel={devConfigObj.pageModel} />
-                </CField>
-              )}
+            {isReady && (
+              <>
+                <div className={styles.line}>
+                  <CField
+                    name={'valueType'}
+                    label="Var Type"
+                    valueChangeEventName="onChange"
+                    formatEventValue={({ target: { value } }: any) => {
+                      return value;
+                    }}
+                  >
+                    <Radio.Group
+                      optionType="button"
+                      buttonStyle="solid"
+                      options={[
+                        { label: 'Memory', value: AssignValueType.MEMORY },
+                        { label: 'Node', value: AssignValueType.STATE },
+                      ]}
+                    />
+                  </CField>
+                </div>
+                <div className={styles.line}>
+                  {formValue?.valueType === 'STATE' && (
+                    <CField name={'targetValueName'} label="Var Name" valueChangeEventName="onChange">
+                      <SelectNodeState pageModel={devConfigObj.pageModel} />
+                    </CField>
+                  )}
 
-              {formValue?.valueType === 'MEMORY' && (
-                <CFiledWithSwitchSetter
-                  name={'targetValueName'}
-                  label="Var Name"
-                  labelWidth="auto"
-                  labelAlign={'start'}
-                  tips={
-                    '变量名必须以字母（a-z、A-Z）、下划线（_）或美元符号（$）开头。后续字符可以是字母、数字（0-9）、下划线或美元符号。变量名不能是保留关键字（例如 if、while 等）'
-                  }
-                  setterList={[
-                    {
-                      componentName: 'TextAreaSetter',
-                      props: {
-                        valueValidator: isValidJSVariableName,
-                      } as TTextAreaSetterProps,
-                    },
-                  ]}
-                ></CFiledWithSwitchSetter>
-              )}
-            </div>
-            <div
-              className={styles.line}
-              style={{
-                minWidth: '450px',
-              }}
-            >
-              <CFiledWithSwitchSetter
-                name={'currentValue'}
-                label="Value"
-                labelWidth="60px"
-                labelAlign={'start'}
-                setterList={[
-                  'TextAreaSetter',
-                  'NumberSetter',
-                  'ExpressionSetter',
-                  {
-                    componentName: 'FunctionSetter',
-                    props: {
-                      mode: 'inline',
-                      minimap: false,
-                      containerStyle: {
-                        width: '600px',
-                        height: '400px',
-                      },
-                    },
-                  },
-                ]}
-              ></CFiledWithSwitchSetter>
-            </div>
+                  {formValue?.valueType === 'MEMORY' && (
+                    <CFiledWithSwitchSetter
+                      name={'targetValueName'}
+                      label="Var Name"
+                      labelWidth="auto"
+                      labelAlign={'start'}
+                      tips={
+                        '变量名必须以字母（a-z、A-Z）、下划线（_）或美元符号（$）开头。后续字符可以是字母、数字（0-9）、下划线或美元符号。变量名不能是保留关键字（例如 if、while 等）'
+                      }
+                      setterList={[
+                        {
+                          componentName: 'TextAreaSetter',
+                          props: {
+                            valueValidator: isValidJSVariableName,
+                          } as TTextAreaSetterProps,
+                        },
+                      ]}
+                    ></CFiledWithSwitchSetter>
+                  )}
+                </div>
+                <div
+                  className={styles.line}
+                  style={{
+                    minWidth: '450px',
+                  }}
+                >
+                  <CFiledWithSwitchSetter
+                    name={'currentValue'}
+                    label="Value"
+                    labelWidth="60px"
+                    labelAlign={'start'}
+                    setterList={CommonDynamicValueSetter}
+                  ></CFiledWithSwitchSetter>
+                </div>
+              </>
+            )}
           </CForm>
         </NodeCard>
       </div>

@@ -1,31 +1,35 @@
 import { REACT_FLOW_DRAG_CLASS_NAME } from '@/component/CustomSchemaForm/components/Setters/ActionFlowSetter/config';
 import { NODE_TYPE } from '@/component/CustomSchemaForm/components/Setters/ActionFlowSetter/node';
-import { LogicType, DEV_CONFIG_KEY, AssignValueType, TLogicAssignValueItem, TLogicJumpLinkItem } from '@chamn/model';
+import {
+  LogicType,
+  DEV_CONFIG_KEY,
+  AssignValueType,
+  TLogicAssignValueItem,
+  TLogicJumpLinkItem,
+  TActionLogicItem,
+  TLogicItemHandlerFlow,
+  getRandomStr,
+} from '@chamn/model';
 
 export const mockNodeList = [
   {
-    id: '1',
-    data: { id: '1' },
+    data: {},
     position: { x: 0, y: 0 },
     type: NODE_TYPE.START_NODE,
     dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
     selectable: false,
   },
   {
-    id: '999',
-    type: 'RunCodeNode',
+    type: NODE_TYPE.RUN_CODE,
     data: {
-      id: '13',
       value: 'console.log(123)',
     },
     dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
     position: { x: 0, y: 0 },
   },
   {
-    id: '13',
     type: LogicType.REQUEST_API,
     data: {
-      id: '13',
       value: 'console.log(123)',
     },
     dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
@@ -33,11 +37,9 @@ export const mockNodeList = [
   },
 
   {
-    id: '7',
     type: LogicType.ASSIGN_VALUE,
     data: {
       ...{
-        id: '7',
         type: 'ASSIGN_VALUE',
         nodeId: 'globalStateText',
         methodName: 'doAlert',
@@ -52,11 +54,7 @@ export const mockNodeList = [
   },
 ];
 
-export const logicListSchema: any[] = [
-  {
-    type: 'JUMP_LINK',
-    link: '------',
-  },
+export const logicListSchema: TLogicItemHandlerFlow = [
   {
     type: 'JUMP_LINK',
     link: {
@@ -104,4 +102,31 @@ export const logicListSchema: any[] = [
     },
     targetValueName: 'Asd',
   } as TLogicAssignValueItem,
+  {
+    id: getRandomStr(),
+    type: LogicType.REQUEST_API,
+    apiPath: '',
+    method: 'GET',
+    header: {},
+    query: {},
+    responseVarName: `responseData_${getRandomStr()}`,
+    afterSuccessResponse: [
+      {
+        type: 'ASSIGN_VALUE',
+        valueType: 'MEMORY',
+        currentValue: {
+          type: 'FUNCTION',
+          value: 'console.log(12444)',
+        },
+        targetValueName: 'Asd',
+      } as TLogicAssignValueItem,
+    ],
+    afterFailedResponse: [
+      {
+        id: getRandomStr(),
+        type: LogicType.RUN_CODE,
+        value: 'console.error("API request failed:", $$response)',
+      },
+    ],
+  },
 ];

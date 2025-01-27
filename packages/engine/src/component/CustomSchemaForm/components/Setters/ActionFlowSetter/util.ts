@@ -1,7 +1,7 @@
 import { Edge, Node, useReactFlow } from '@xyflow/react';
 import Dagre from '@dagrejs/dagre';
 import { getRandomStr, SetterType, TActionLogicItem } from '@chamn/model';
-import { INPUT_HANDLE_ID, OUTPUT_HANDLE_ID, REACT_FLOW_DRAG_CLASS_NAME } from './config';
+import { INPUT_HANDLE_ID, OUTPUT_HANDLE_ID, REACT_FLOW_DRAG_CLASS_NAME, REQUEST_API_FAILED_HANDLE_ID } from './config';
 import { NODE_TYPE } from './node';
 
 /** 自动布局 flow node */
@@ -40,58 +40,70 @@ export const getLayoutedElements = (
   };
 };
 
+const createFlowNode = (nodeData: any) => {
+  const nodeId = nodeData.id || getRandomStr();
+  return {
+    id: nodeId,
+    type: nodeData.type,
+    position: { x: 0, y: 0 },
+    dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
+    data: {
+      ...nodeData,
+      id: nodeId,
+    },
+  };
+};
+
+const createFlowEdge = (source: string, target: string, sourceHandle = OUTPUT_HANDLE_ID) => {
+  return {
+    id: `${source}_${target}`,
+    source,
+    sourceHandle,
+    target,
+    targetHandle: INPUT_HANDLE_ID,
+  };
+};
+
 export const parseActionLogicToNodeList = (value: TActionLogicItem) => {
   if (!value?.handler?.length) {
-    return {
-      nodes: [],
-      edges: [],
-    };
+    return { nodes: [], edges: [] };
   }
 
   const nodes: Node[] = [
-    {
+    createFlowNode({
       id: NODE_TYPE.START_NODE,
       type: NODE_TYPE.START_NODE,
-      position: { x: 0, y: 0 },
-      dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
-      data: { id: NODE_TYPE.START_NODE },
-    },
+    }),
   ];
 
   const edges: Edge[] = [];
-  let previousNodeId = NODE_TYPE.START_NODE;
+  let previousNodeId: any = NODE_TYPE.START_NODE;
 
   value.handler.forEach((item) => {
-    const currentNodeId = item.id || getRandomStr();
+    const currentNode = createFlowNode(item);
+    nodes.push(currentNode);
+    edges.push(createFlowEdge(previousNodeId, currentNode.id));
 
-    // 创建节点
-    nodes.push({
-      id: currentNodeId,
-      type: item.type,
-      position: { x: 0, y: 0 },
-      dragHandle: `.${REACT_FLOW_DRAG_CLASS_NAME}`,
-      data: {
-        ...item,
-        id: currentNodeId,
-      },
-    });
+    if (item.type === 'REQUEST_API') {
+      // 处理成功分支节点
+      item.afterSuccessResponse?.forEach((successNode) => {
+        const newNode = createFlowNode(successNode);
+        nodes.push(newNode);
+        edges.push(createFlowEdge(currentNode.id, newNode.id));
+      });
 
-    // 创建边
-    edges.push({
-      id: `${previousNodeId}_${currentNodeId}`,
-      source: previousNodeId,
-      sourceHandle: OUTPUT_HANDLE_ID,
-      target: currentNodeId,
-      targetHandle: INPUT_HANDLE_ID,
-    });
+      // 处理失败分支节点
+      item.afterFailedResponse?.forEach((failedNode) => {
+        const newNode = createFlowNode(failedNode);
+        nodes.push(newNode);
+        edges.push(createFlowEdge(currentNode.id, newNode.id, REQUEST_API_FAILED_HANDLE_ID));
+      });
+    }
 
-    previousNodeId = currentNodeId;
+    previousNodeId = currentNode.id;
   });
 
-  return {
-    nodes,
-    edges,
-  };
+  return { nodes, edges };
 };
 
 export const revertNodeToActionLogic = (params: { node: any[]; edges: any[] }) => {
@@ -113,6 +125,7 @@ export const CommonDynamicValueSetter: SetterType[] = [
     props: {
       mode: 'inline',
       minimap: false,
+      lineNumber: false,
       containerStyle: {
         width: '600px',
         height: '300px',

@@ -7,6 +7,7 @@ import { SwapOutlined } from '@ant-design/icons';
 import { CCustomSchemaFormContext } from '@/component/CustomSchemaForm/context';
 import { getSetterList } from '@/component/CustomSchemaForm/utils';
 import styles from './style.module.scss';
+import { SetterSwitcherCore } from '../../../SetterSwitcher';
 
 export const CFiledWithSwitchSetter = (
   props: Omit<CFieldProps, 'children'> & {
@@ -24,14 +25,10 @@ export const CFiledWithSwitchSetter = (
   const { onSetterChange, defaultSetterConfig, formRef, pluginCtx } = useContext(CCustomSchemaFormContext);
   const keyPaths = [props.name];
 
-  const [currentSetter, setCurrentSetter] = useState<SetterObjType | null>(() => {
+  const [currentSetter, setCurrentSetter] = useState<SetterObjType>(() => {
     const currentSetterName = defaultSetterConfig[keyPaths.join('.')]?.setter || defaultSetterName || '';
     return [...setterList].find((el) => el.componentName === currentSetterName) || setterList[0];
   });
-
-  const CurrentSetterComp = useMemo(() => {
-    return BUILD_IN_SETTER_MAP[currentSetter?.componentName as any];
-  }, [currentSetter]);
 
   const menuItems = setterList.map((setter) => {
     const setterName = setter?.componentName || '';
@@ -105,8 +102,12 @@ export const CFiledWithSwitchSetter = (
       }}
     >
       <CField {...restProps}>
-        <CurrentSetterComp
+        <SetterSwitcherCore
           {...setterProps}
+          setters={setterList}
+          keyPaths={keyPaths}
+          currentSetter={currentSetter}
+          setCurrentSetter={setCurrentSetter}
           setterContext={{
             ...setterContext,
             keyPaths: [props.name],

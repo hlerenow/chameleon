@@ -1,11 +1,11 @@
 import { BUILD_IN_SETTER_MAP, CustomSchemaFormInstance } from '@/component/CustomSchemaForm';
 import { isExpression, isFunction, TLogicJumpLinkItem } from '@chamn/model';
-import { Handle, NodeProps, Position, Node } from '@xyflow/react';
-import { Card } from 'antd';
+import { NodeProps, Node } from '@xyflow/react';
 import { useEffect, useMemo, useRef } from 'react';
 import { CForm } from '../../../Form';
 import { CFiledWithSwitchSetter } from '../CFiledWithSwitchSetter';
 import { NodeCard } from '../component/NodeCard';
+import { CommonDynamicValueSetter } from '../util';
 
 export type TJumpLinkNode = Node<TLogicJumpLinkItem, 'JumpLinkNode'>;
 
@@ -51,27 +51,7 @@ export const JumpLinkNode = (props: NodeProps<TJumpLinkNode>) => {
             labelWidth="auto"
             labelAlign={'start'}
             defaultSetterName={defaultLinkSetter}
-            setterList={[
-              {
-                componentName: 'FunctionSetter',
-                props: {
-                  mode: 'inline',
-                  minimap: false,
-                  containerStyle: {
-                    width: '400px',
-                    height: '200px',
-                  },
-                  editorOptions: {
-                    lineNumbers: 'off',
-                    lineDecorationsWidth: 0,
-                    lineNumbersMinChars: 0,
-                    glyphMargin: false,
-                  },
-                },
-              },
-              'TextAreaSetter',
-              'ExpressionSetter',
-            ]}
+            setterList={CommonDynamicValueSetter}
             onSetterChange={(setterName) => {
               console.log('setterName', setterName);
             }}

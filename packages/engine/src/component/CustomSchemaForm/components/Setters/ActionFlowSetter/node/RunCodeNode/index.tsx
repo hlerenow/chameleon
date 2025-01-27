@@ -38,8 +38,9 @@ export const RunCodeNode = (props: NodeProps<TRunCodeNode>) => {
           mode="inline"
           initialValue={data.value}
           containerStyle={{
+            paddingTop: '10px',
             width: '600px',
-            height: '400px',
+            height: '300px',
           }}
           onValueChange={(newVal: any) => {
             data.value = newVal;
