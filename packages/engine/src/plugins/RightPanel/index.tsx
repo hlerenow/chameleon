@@ -7,6 +7,7 @@ export const RightPanelPlugin: CPlugin = (ctx) => {
   const uiHandle = React.createRef<RightPanel>();
   return {
     name: PLUGIN_NAME,
+    PLUGIN_NAME,
     async init(ctx) {
       const workbench = ctx.getWorkbench();
       workbench.replaceRightView(<RightPanel ref={uiHandle} pluginCtx={ctx} />);
@@ -24,3 +25,5 @@ export const RightPanelPlugin: CPlugin = (ctx) => {
     },
   };
 };
+
+RightPanelPlugin.PLUGIN_NAME = PLUGIN_NAME;

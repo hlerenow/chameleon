@@ -7,6 +7,9 @@ export class HotKeysManager {
   private elements: HTMLElement[];
   private disposeEventCbList: (() => void)[] = [];
 
+  /** 是否禁用热键 */
+  private disable: boolean = false;
+
   /** 快捷操作按键记录 */
   private hotActionMap: Record<string, () => void> = {};
 
@@ -14,6 +17,11 @@ export class HotKeysManager {
     this.elements = options.elements;
     this.init();
   }
+
+  setDisable(status: boolean) {
+    this.disable = status;
+  }
+
   init() {
     // 处理 keyup , 移除按键记录
     const disposeListCb = this.elements.map((el) => this.registerKeyEvent(el));
@@ -79,7 +87,13 @@ export class HotKeysManager {
         return el;
       }
     });
-    this.hotActionMap[newKeysCode.join(this.splitStr)] = cb;
+    this.hotActionMap[newKeysCode.join(this.splitStr)] = () => {
+      // 可以自做一些拦截操作
+      if (this.disable) {
+        return;
+      }
+      cb();
+    };
   }
 
   triggerHotKey() {

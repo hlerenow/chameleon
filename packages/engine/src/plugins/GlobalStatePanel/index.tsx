@@ -103,3 +103,5 @@ export const GlobalStatePanelPlugin: CPlugin = {
     },
   },
 };
+
+GlobalStatePanelPlugin.PLUGIN_NAME = PLUGIN_NAME;

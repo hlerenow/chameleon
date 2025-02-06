@@ -9,6 +9,7 @@ export const DesignerPlugin: DesignerPluginType = () => {
   const designerRef = React.createRef<Designer>();
   return {
     name: PLUGIN_NAME,
+    PLUGIN_NAME,
     async init(ctx) {
       ctx.name = PLUGIN_NAME;
       const workbench = ctx.getWorkbench();
@@ -85,3 +86,5 @@ export const DesignerPlugin: DesignerPluginType = () => {
     },
   };
 };
+
+DesignerPlugin.PLUGIN_NAME = PLUGIN_NAME;

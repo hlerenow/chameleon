@@ -22,10 +22,22 @@ export {
   DesignerPlugin,
   ComponentLibPlugin,
   RightPanelPlugin,
+  OutlineTreePlugin,
   GlobalStatePanelPlugin,
   HistoryPlugin,
   DisplaySourceSchema,
   HotkeysPlugin,
+};
+
+/** 组件唯一名 */
+export const DEFAULT_PLUGIN_NAME_MAP = {
+  HotkeysPlugin: HotkeysPlugin['PLUGIN_NAME']!,
+  ComponentLibPlugin: ComponentLibPlugin['PLUGIN_NAME']!,
+  RightPanelPlugin: RightPanelPlugin['PLUGIN_NAME']!,
+  GlobalStatePanelPlugin: GlobalStatePanelPlugin['PLUGIN_NAME']!,
+  HistoryPlugin: HistoryPlugin['PLUGIN_NAME']!,
+  DesignerPlugin: DesignerPlugin['PLUGIN_NAME']!,
+  OutlineTreePlugin: OutlineTreePlugin['PLUGIN_NAME']!,
 };
 
 export * from './AdvancePanel/index';
