@@ -18,8 +18,8 @@ import { CNodePropsTypeEnum, SlotRenderType } from '../const/schema';
 import { isPlainObject } from '../util/lodash';
 import { CSSType, DEV_CONFIG_KEY } from './base';
 import { CPageDataType } from './page';
-import { CPage } from '@/Page';
-import { CNode } from '@/Page/RootNode/Node';
+import { CPage } from '../Page';
+import { CNode } from '../Page/RootNode/Node';
 
 export type NormalPropType = string | boolean | number | Record<string, any>;
 

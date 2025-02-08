@@ -528,6 +528,8 @@ export type AdvanceCustom = {
     advanceOptions?: {
       /** 是否展示 loop 选项 */
       loop?: boolean;
+      /** 是否展示 render 选项, 如果为 false 会被包裹 div 并设置 display 为 none */
+      render?: boolean;
     };
     property?: boolean;
     customTabs?: {

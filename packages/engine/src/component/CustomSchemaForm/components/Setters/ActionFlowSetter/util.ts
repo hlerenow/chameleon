@@ -11,7 +11,7 @@ export const calculateElementLayout = (
   options: {
     direction: 'TB' | 'LR';
   }
-) => {
+): { nodes: Node[]; edges: Edge[] } => {
   const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
   g.setGraph({ rankdir: options.direction });
 

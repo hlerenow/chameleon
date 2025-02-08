@@ -89,7 +89,7 @@ const ModalDragView = ({
     >
       <div
         onDoubleClick={() => {
-          setModalTransform((oldValue) => {
+          setModalTransform((oldValue: any) => {
             return {
               ...oldValue,
               x: 0,

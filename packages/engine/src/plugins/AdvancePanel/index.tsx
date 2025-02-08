@@ -151,17 +151,29 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
   const { node } = props;
 
   const innerProperties = useMemo(() => {
+    let newList = properties;
+
     // 如果元素是容器不允许 loop, 或者主动指定不然 loop
     const canLoop =
       !node?.material?.value.advanceCustom?.rightPanel?.advanceOptions?.loop === false ||
       !node?.material?.value.isContainer;
-
     if (!canLoop) {
-      return properties.filter((el) => (el as any)?.name !== 'loop');
+      newList = newList.filter((el) => (el as any)?.name !== 'loop');
     }
 
-    return properties;
-  }, [node?.id]);
+    // 如果元素是容器不允许 canRender, 或者主动指定不然 canRender
+    const canRender = !node?.material?.value.advanceCustom?.rightPanel?.advanceOptions?.render === false;
+
+    if (!canRender) {
+      newList = newList.filter((el) => (el as any)?.name !== 'condition');
+    }
+
+    return newList;
+  }, [
+    node?.material?.value.advanceCustom?.rightPanel?.advanceOptions?.loop,
+    node?.material?.value.advanceCustom?.rightPanel?.advanceOptions?.render,
+    node?.material?.value.isContainer,
+  ]);
 
   const onSetterChange: CustomSchemaFormProps['onSetterChange'] = (keyPaths, setterName) => {
     if (!node) {

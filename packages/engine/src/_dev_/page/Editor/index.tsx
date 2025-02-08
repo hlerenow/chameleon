@@ -17,6 +17,7 @@ import { DesignerPluginInstance } from '@/plugins/Designer/type';
 
 import { DesignerSizer } from '@/component/DesignerSizer';
 import { EnginContext } from '@/type';
+import { RefManager } from '@chamn/render/dist/core/refManager';
 
 const win = window as any;
 win.React = React;
@@ -55,6 +56,7 @@ const customRender: LayoutPropsType['customRender'] = async ({
     },
     $$context: {
       thirdLibs,
+      nodeRefs: new RefManager(),
     },
     onMount: (designRenderInstance) => {
       ready(designRenderInstance);

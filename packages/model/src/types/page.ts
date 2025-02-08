@@ -2,9 +2,9 @@ import { any, array, assign, literal, object, optional, string, union } from 'su
 import { LibMetaType, ThirdLibTypeDescribe, LibMetaTypeDescribe, AssetPackage, CSSType } from './base';
 import { FunctionPropType } from './node';
 import { CRootNodeDataType, CRootNodeDataTypeDescribe, FunctionPropertyTypeDescribe } from './rootNode';
-import { CNode } from '@/Page/RootNode/Node';
-import { CPage } from '@/Page';
-import { CRootNode } from '@/Page/RootNode';
+import { CNode } from '../Page/RootNode/Node';
+import { CPage } from '../Page';
+import { CRootNode } from '../Page/RootNode';
 
 export type ComponentMetaType = {
   componentName: string;

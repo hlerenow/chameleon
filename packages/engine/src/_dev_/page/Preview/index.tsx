@@ -29,7 +29,7 @@ export const Preview = () => {
   const renderHandle = useRender();
   const [loading, setLoading] = useState(true);
   const [pageComponents, setPageComponents] = useState({});
-  const [renderContext, setRenderContext] = useState({});
+  const [renderContext, setRenderContext] = useState<any>({});
   // 需要区分 那些 UI 组件那些第三方库的对象，分别注入
   const loadPageAssets = async (pageInfo: CPageDataType) => {
     const assets = pageInfo.assets || [];

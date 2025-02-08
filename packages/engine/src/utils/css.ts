@@ -1,8 +1,8 @@
 import { CSSVal } from '@/component/CSSEditor';
 import { CNodeModelDataType, CSSType, CSSValue, JSExpressionPropType, getRandomStr, isExpression } from '@chamn/model';
 import Color from 'color';
-import { parse, Rule, Declaration } from 'css';
 import { isPlainObject } from 'lodash-es';
+import * as csstree from 'css-tree';
 
 export type StyleArr = {
   property: string;
@@ -81,20 +81,24 @@ export const formatStyleProperty = (styleList: CNodeModelDataType['style'] = [])
 };
 
 export const formatCSSTextProperty = (cssText: string) => {
-  const cssAst = parse(`.node {${cssText}}`);
-  const cssRule = cssAst.stylesheet?.rules[0] as Rule;
-  const cssList =
-    cssRule.declarations?.map((el: Declaration) => {
-      return {
+  // 解析 CSS 代码
+  const ast = csstree.parse(`.node {${cssText}}`);
+
+  const cssList: { id: string; property: string; value: string }[] = [];
+
+  // 遍历 AST 获取属性
+  csstree.walk(ast, function (node) {
+    if (node.type === 'Declaration') {
+      cssList.push({
         id: getRandomStr(),
-        property: el.property || '',
-        value: el.value || '',
-      };
-    }) || [];
+        property: node.property,
+        value: csstree.generate(node.value),
+      });
+    }
+  });
+
   return cssList;
 };
-
-formatCSSTextProperty('');
 
 export const formatCssToNodeVal = (className: string, val: CSSVal): CSSType => {
   type StateType = keyof CSSVal;

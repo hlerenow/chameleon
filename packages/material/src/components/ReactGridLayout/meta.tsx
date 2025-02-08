@@ -248,8 +248,16 @@ export const ReactGridItemMeta: CMaterialType = {
   },
   disableEditorDragDom: true,
   advanceCustom: {
+    rightPanel: {
+      advanceOptions: {
+        render: false,
+        loop: false,
+      },
+    },
     autoGetDom: false,
     toolbarViewRender: ({ node, context, toolBarItemList }) => {
+      // 引擎自带的 显示隐藏，与编辑模式冲突，这里隐藏，不允许隐藏
+      toolBarItemList.splice(1, 1);
       const [posInfo, setPostInfo] = useState({
         label: '',
         w: 0,
@@ -301,6 +309,7 @@ export const ReactGridItemMeta: CMaterialType = {
           removeListener();
         };
       }, []);
+      console.log('toolBarItemList', toolBarItemList);
       return (
         <div
           style={{
@@ -390,6 +399,7 @@ export const ReactGridItemMeta: CMaterialType = {
       return false;
     },
   },
+
   snippets: snippetsGridItem,
 };
 

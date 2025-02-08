@@ -54,6 +54,7 @@ export const getDefaultRender = (components: Record<string, any>) => {
           $$context: {
             thirdLibs,
           },
+
           onMount: (designRenderInstance) => {
             ready(designRenderInstance);
           },
