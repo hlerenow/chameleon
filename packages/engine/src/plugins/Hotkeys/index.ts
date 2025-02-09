@@ -1,14 +1,15 @@
-import { CPlugin } from '../../core/pluginManager';
 import { DesignerPluginInstance } from '../Designer/type';
 import { HotKeysManager } from './hotKeyManager';
 import localize from './localize';
 import { actionMap } from './action';
+import { HotKeysPluginType } from './type';
 
-const PLUGIN_NAME = 'Hotkeys';
+const PLUGIN_NAME = 'Hotkeys' as const;
 const i18nNamespace = `plugin:${PLUGIN_NAME}`;
 
-export const HotkeysPlugin: CPlugin = {
+export const HotkeysPlugin: HotKeysPluginType = {
   name: PLUGIN_NAME,
+  PLUGIN_NAME,
   async init(ctx) {
     console.log('init plugin hotkey');
     const { i18n } = ctx;
@@ -70,20 +71,23 @@ export const HotkeysPlugin: CPlugin = {
     hotkeyManager.addHotAction(['backspace'], () => {
       actionMap.deleteNode(ctx);
     });
-
     (ctx as any).hotkeyManager = hotkeyManager;
+    ctx.pluginReadyOk();
   },
   async destroy(ctx) {
     const hotkeyManager: HotKeysManager = (ctx as any).hotkeyManager;
     hotkeyManager?.destroy();
   },
   export: (ctx) => {
-    const hotkeyManager: HotKeysManager = (ctx as any).hotkeyManager;
-
     return {
       /** 注册快捷操作 */
       addHotAction: (actionKey: (string | number)[], cb: () => void) => {
+        const hotkeyManager: HotKeysManager = (ctx as any).hotkeyManager;
         hotkeyManager.addHotAction(actionKey, cb);
+      },
+      disable: (status: boolean) => {
+        const hotkeyManager: HotKeysManager = (ctx as any).hotkeyManager;
+        hotkeyManager.setDisable(status);
       },
     };
   },
@@ -93,3 +97,6 @@ export const HotkeysPlugin: CPlugin = {
     },
   },
 };
+
+/** 必须 */
+HotkeysPlugin.PLUGIN_NAME = PLUGIN_NAME;

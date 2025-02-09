@@ -9,6 +9,7 @@ const i18nNamespace = `plugin:${PLUGIN_NAME}`;
 
 export const OutlineTreePlugin: CPlugin = {
   name: PLUGIN_NAME,
+  PLUGIN_NAME,
   async init(ctx) {
     const { i18n } = ctx;
     Object.keys(localize).forEach((lng) => {
@@ -24,6 +25,8 @@ export const OutlineTreePlugin: CPlugin = {
       icon: <ApartmentOutlined />,
       render: <TreeViewWithLocalize pluginCtx={ctx} />,
     });
+
+    ctx.pluginReadyOk();
   },
   async destroy(ctx) {
     console.log('destroy', ctx);
@@ -37,3 +40,5 @@ export const OutlineTreePlugin: CPlugin = {
     },
   },
 };
+
+OutlineTreePlugin.PLUGIN_NAME = PLUGIN_NAME;

@@ -7,6 +7,7 @@ import { AssetsPackageListManager } from './assetPackagesListManage';
 
 export type PluginObj<C, E = any> = {
   name: string;
+  PLUGIN_NAME?: string;
   init: (ctx: CPluginCtx<C>) => Promise<void>;
   destroy: (ctx: CPluginCtx<C>) => Promise<void>;
   /** 用于暴露给外部重载插件 */
@@ -20,7 +21,12 @@ export type PluginObj<C, E = any> = {
   };
 };
 
-export type CPlugin<C = Record<string, any>, E = any> = PluginObj<C, E> | ((ctx: CPluginCtx<C>) => PluginObj<C, E>);
+interface PluginFunction<C, E> {
+  (ctx: CPluginCtx<C>): PluginObj<C, E>;
+  ['PLUGIN_NAME']?: string;
+}
+
+export type CPlugin<C = Record<string, any>, E = any> = PluginObj<C, E> | PluginFunction<C, E>;
 
 type PluginManagerOptions = {
   getWorkbench: () => Workbench;

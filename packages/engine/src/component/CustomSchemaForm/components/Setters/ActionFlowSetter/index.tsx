@@ -21,6 +21,8 @@ import { REACT_FLOW_DRAG_CLASS_NAME } from './config';
 import { ActionFlowContext } from './context';
 import { Button } from 'antd';
 import { MoveableModal } from '@/component/MoveableModal';
+import { DEFAULT_PLUGIN_NAME_MAP } from '@/plugins';
+import { HotKeysPluginInstance } from '@/plugins/Hotkeys/type';
 
 export type TActionFlowSetterCore = CSetterProps<{
   value?: TActionLogicItem;
@@ -172,6 +174,14 @@ export const ActionFlowSetter = (props: TActionFlowSetterCore) => {
 
   const newValueRef = useRef(props.value);
 
+  const disableLowcodeHotKey = async (status: boolean) => {
+    // 启用 lowcode 编辑器热键
+    const hotkey = await props.setterContext?.pluginCtx?.pluginManager.get<HotKeysPluginInstance>(
+      DEFAULT_PLUGIN_NAME_MAP.HotkeysPlugin
+    );
+    hotkey?.export.disable(status);
+  };
+
   return (
     <>
       <Button
@@ -182,7 +192,11 @@ export const ActionFlowSetter = (props: TActionFlowSetterCore) => {
           color: '#676767',
           fontSize: '12px',
         }}
-        onClick={() => setOpen(true)}
+        onClick={async () => {
+          // 禁用 lowcode 编辑器热键
+          await disableLowcodeHotKey(true);
+          setOpen(true);
+        }}
       >
         Edit Flow
       </Button>
@@ -192,9 +206,13 @@ export const ActionFlowSetter = (props: TActionFlowSetterCore) => {
         centered
         title="Edit Flow"
         width="calc(100vw - 200px)"
-        onCancel={() => setOpen(false)}
-        onOk={() => {
+        onCancel={() => {
+          setOpen(false);
+          disableLowcodeHotKey(false);
+        }}
+        onOk={async () => {
           props.onValueChange?.(newValueRef.current);
+          await disableLowcodeHotKey(false);
           setOpen(false);
         }}
       >

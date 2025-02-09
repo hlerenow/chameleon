@@ -267,6 +267,7 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
 
 export const ComponentLibPlugin: CPlugin = {
   name: PLUGIN_NAME,
+  PLUGIN_NAME,
   async init(ctx) {
     const ComponentLibViewWithLocalize = withTranslation(i18nNamespace)(ComponentLibView);
     const Title = withTranslation(i18nNamespace)(({ t }) => {
@@ -279,6 +280,7 @@ export const ComponentLibPlugin: CPlugin = {
       icon: <AppstoreAddOutlined />,
       render: <ComponentLibViewWithLocalize pluginCtx={ctx} />,
     });
+    ctx.pluginReadyOk();
   },
   reload: async () => {
     console.log(PLUGIN_NAME, 'not suooprt reload');
@@ -295,3 +297,5 @@ export const ComponentLibPlugin: CPlugin = {
     },
   },
 };
+
+ComponentLibPlugin.PLUGIN_NAME = PLUGIN_NAME;
