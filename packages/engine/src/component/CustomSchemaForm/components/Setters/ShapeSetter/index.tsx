@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { ConfigProvider } from 'antd';
 import { CSetter, CSetterProps } from '../type';
 import { CForm } from '../../Form';
