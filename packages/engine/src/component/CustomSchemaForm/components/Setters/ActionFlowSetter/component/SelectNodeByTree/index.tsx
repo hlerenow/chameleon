@@ -28,6 +28,7 @@ export const SelectNodeByTree = (props: {
   return (
     <div ref={boxDomRef} style={{ width: 250 }}>
       <TreeSelect
+        virtual={false}
         showSearch
         style={{ width: '100%' }}
         value={props.value}

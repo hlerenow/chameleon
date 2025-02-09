@@ -1,0 +1,10 @@
+.eventBox {
+  padding: 0 20px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  :global {
+    .ant-input-affix-wrapper .ant-input-prefix {
+      margin-inline-end: 0;
+    }
+  }
+}

@@ -8,7 +8,7 @@ import {
 } from '@chamn/model';
 import { ContextType } from '../adapter';
 import React from 'react';
-import { DYNAMIC_COMPONENT_TYPE } from '../../const';
+import { DYNAMIC_COMPONENT_TYPE, INNER_EVENT_LIST, ON_DID_RENDER, ON_WILL_DESTROY } from '../../const';
 import { StoreApi } from 'zustand';
 
 import {
@@ -29,14 +29,6 @@ type PropsType = {
   $$context: ContextType;
   $$nodeModel: CNode | CRootNode;
 };
-
-/** 内部事件，组件渲染之后 */
-const ON_DID_RENDER = 'ON_DID_RENDER';
-
-/** 组件销毁之前 */
-const ON_WILL_DESTROY = 'ON_WILL_DESTROY';
-
-const INNER_EVENT_LIST = [ON_DID_RENDER, ON_WILL_DESTROY];
 
 export const convertModelToComponent = (
   originalComponent: any,

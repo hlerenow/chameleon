@@ -6,3 +6,4 @@ export * from './util/assetsLoader';
 export * from './util';
 
 export * from './core/ReactAdapter/type';
+export * from './const/index';

@@ -305,7 +305,10 @@ export type TFunctionOrEventParameter = {
 export type CMaterialEventType =
   | string
   | {
-      name: string;
+      /** 对外展示的描述 */
+      name?: string;
+      /** 事件 key */
+      event: string;
       descriptions?: string;
       // 事件参数描述
       params?: TFunctionOrEventParameter[];
@@ -315,7 +318,8 @@ export type CMaterialEventType =
 export const CMaterialEventTypeDescribe = union([
   string(),
   object({
-    name: string(),
+    event: string(),
+    name: optional(string()),
     describe: optional(string()),
     params: optional(
       array(
@@ -326,7 +330,7 @@ export const CMaterialEventTypeDescribe = union([
         })
       )
     ),
-    template: string(),
+    template: optional(string()),
   }),
 ]);
 
@@ -581,7 +585,7 @@ export type CMaterialType<PropsSetter extends string = ''> = {
     tsType?: string;
     template?: string;
   }[];
-  /** TODO: 组件可能触发的事件 */
+  /**  组件可能触发的事件 */
   events?: CMaterialEventType[];
   /** 定制组件高级编辑行为 */
   advanceCustom?: AdvanceCustom;
@@ -623,6 +627,7 @@ export const CMaterialTypeDescribe = object({
       }),
     ])
   ),
+  events: optional(any()),
   methods: optional(any()),
   fixedProps: optional(any()),
   // 可以拖入组件

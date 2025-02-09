@@ -26,6 +26,7 @@ import { HotKeysPluginInstance } from '@/plugins/Hotkeys/type';
 
 export type TActionFlowSetterCore = CSetterProps<{
   value?: TActionLogicItem;
+  children?: React.ReactNode;
 }>;
 
 export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
@@ -182,24 +183,32 @@ export const ActionFlowSetter = (props: TActionFlowSetterCore) => {
     hotkey?.export.disable(status);
   };
 
+  const triggerView = props.children || (
+    <Button
+      size="small"
+      style={{
+        marginTop: '5px',
+        width: '100%',
+        color: '#676767',
+        fontSize: '12px',
+      }}
+    >
+      Edit Flow
+    </Button>
+  );
+
   return (
     <>
-      <Button
-        size="small"
-        style={{
-          marginTop: '5px',
-          width: '100%',
-          color: '#676767',
-          fontSize: '12px',
-        }}
+      <div
         onClick={async () => {
           // 禁用 lowcode 编辑器热键
           await disableLowcodeHotKey(true);
           setOpen(true);
         }}
       >
-        Edit Flow
-      </Button>
+        {triggerView}
+      </div>
+
       <MoveableModal
         destroyOnClose
         open={open}
