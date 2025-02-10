@@ -18,6 +18,7 @@ export const SelectNodeByTree = (props: {
     const treeData = transformPageSchemaToTreeData(props.pageModel?.export(), props.pageModel);
     traverseTree(treeData, (el: any) => {
       el.value = el.key;
+      el.title = <div style={{ flexWrap: 'nowrap', display: 'flex', width: '100px' }}>{el.title}</div>;
       el.sourceData = el;
       return false;
     });
