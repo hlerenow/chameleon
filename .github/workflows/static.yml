@@ -1,41 +1,32 @@
-# Simple workflow for deploying static content to GitHub Pages
 name: Deploy static content to Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches: [master]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow one concurrent deployment
 concurrency:
   group: 'pages'
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  build:
+    permissions: write-all
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - name: Use Node.js 18.x
         uses: actions/setup-node@v3
         with:
           node-version: 18.18.0
-      - name: Checkout
+
+      - name: Checkout code
         uses: actions/checkout@v3
+
       - uses: pnpm/action-setup@v2
         with:
           version: 8
+
       - run: |
           pnpm -v
           node -v
@@ -43,20 +34,32 @@ jobs:
           pnpm install --no-frozen-lockfile
           pnpm run build
           cd packages/engine-website-app/dist
-          pwd
           mkdir documents
-          cp -r  ../../docs-app/dist/* ./documents
-      - name: current path
-        run: pwd
+          cp -r ../../docs-app/dist/* ./documents
+
+      - name: Upload build artifacts
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: github-pages
+          path: 'packages/engine-website-app/dist'
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build # Ensure deployment happens after build
+    permissions: write-all
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+
       - name: Setup Pages
         uses: actions/configure-pages@v2
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          # Upload entire repository
-          name: my-artifact-${{ matrix.runs-on }},
-          path: 'packages/engine-website-app/dist',
-          overwrite: true
+
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4
