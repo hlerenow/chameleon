@@ -22,6 +22,9 @@ concurrency:
 
 jobs:
   deploy:
+    permissions:
+      pages: write # to deploy to Pages
+      id-token: write # to verify the deployment originates from an appropriate source
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -54,8 +57,16 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           # Upload entire repository
+          name: file-${{ matrix.runs-on }}.txt
           path: 'packages/engine-website-app/dist'
           overwrite: true
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: my-artifact-*
+          merge-multiple: true
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4
+        with:
+          branch: gh-pages # 部署到 gh-pages 分支
