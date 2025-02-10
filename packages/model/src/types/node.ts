@@ -158,6 +158,8 @@ export type TLogicItemHandlerFlow = (
 export type TActionLogicItem = {
   type: CNodePropsTypeEnum.ACTION | `${CNodePropsTypeEnum.ACTION}`;
   handler: TLogicItemHandlerFlow;
+  /** 调用方传入的参数列表 */
+  params?: string[];
 };
 
 export type SpecialProp = RenderPropType | JSExpressionPropType | FunctionPropType | TActionLogicItem;

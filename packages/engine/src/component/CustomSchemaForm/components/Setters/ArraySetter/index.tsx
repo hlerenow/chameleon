@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button, ConfigProvider } from 'antd';
 import { CSetterProps } from '../type';
 import { getSetterList } from '../../../utils';

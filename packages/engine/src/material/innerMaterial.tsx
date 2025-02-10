@@ -1,5 +1,6 @@
 import { CMaterialPropsType, CMaterialType, HTMl_TAGS } from '@chamn/model';
 import { capitalize } from 'lodash-es';
+import { eventList } from './evetList';
 
 const customAttributesMeta: CMaterialPropsType[number] = {
   name: '$$attributes',
@@ -449,6 +450,9 @@ const BaseComponentMeta: CMaterialType[] = [
     ],
   },
 ];
+BaseComponentMeta.forEach((el) => {
+  el.events = eventList;
+});
 
 const BaseComponentMetaWithVersion = BaseComponentMeta.map((el) => {
   return {

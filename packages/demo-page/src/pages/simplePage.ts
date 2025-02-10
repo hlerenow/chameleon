@@ -78,8 +78,8 @@ export const SamplePage: CPageDataType = {
                 },
               } as TLogicJumpLinkItem,
               {
-                id: 3,
-                next: 4,
+                id: '3',
+                next: '4',
                 type: 'JUMP_LINK',
                 link: {
                   type: 'FUNCTION',

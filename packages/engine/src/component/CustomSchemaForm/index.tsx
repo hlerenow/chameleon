@@ -39,6 +39,7 @@ const CustomSchemaFormCore = (props: CustomSchemaFormProps, ref: Ref<CustomSchem
     <CCustomSchemaFormContext.Provider
       value={{
         defaultSetterConfig,
+        // 设置全局 setter map
         customSetterMap,
         onSetterChange,
         formRef: ref,

@@ -38,7 +38,8 @@ export const transformActionNode = (propVal: TActionLogicItem, options: CommonOp
       if (item.type === 'RUN_CODE') {
         const codeFunc = convertCodeStringToFunction({
           funcName: '',
-          funcBody: item.value,
+          funcBody: `function() {
+           ${item.value} }`,
           nodeContext: context,
           storeManager: storeManager,
           $$response: options.$$response,
@@ -249,8 +250,6 @@ const buildRequestAPI = (item: TLogicRequestAPIItem, option: CommonOption) => {
 
 const buildCallNodeMethod = (item: TLogicCallNodeMethodItem, option: CommonOption) => {
   return (...args: any[]): any => {
-    console.log(item);
-
     const codeFunc = convertCodeStringToFunction({
       funcName: '',
       funcBody: `
@@ -263,7 +262,6 @@ const buildCallNodeMethod = (item: TLogicCallNodeMethodItem, option: CommonOptio
             func.apply(null, args);
           }
         }
-        return 999;
       }`,
       nodeContext: option.context,
       storeManager: option.storeManager,
