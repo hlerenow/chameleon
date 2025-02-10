@@ -55,7 +55,7 @@ jobs:
         with:
           # Upload entire repository
           name: my-artifact-${{ matrix.runs-on }},
-          path: 'packages/engine-website-app/dist',
+          path: 'packages/engine-website-app/dist'
           overwrite: true
       - name: Deploy to GitHub Pages
         id: deployment
