@@ -1,21 +1,15 @@
-# Simple workflow for deploying static content to GitHub Pages
 name: Deploy static content to Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches: [master]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow one concurrent deployment
 concurrency:
   group: 'pages'
   cancel-in-progress: true
@@ -23,8 +17,8 @@ concurrency:
 jobs:
   deploy:
     permissions:
-      pages: write # to deploy to Pages
-      id-token: write # to verify the deployment originates from an appropriate source
+      pages: write
+      id-token: write
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -34,11 +28,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.18.0
+
       - name: Checkout
         uses: actions/checkout@v3
+
       - uses: pnpm/action-setup@v2
         with:
           version: 8
+
       - run: |
           pnpm -v
           node -v
@@ -46,27 +43,21 @@ jobs:
           pnpm install --no-frozen-lockfile
           pnpm run build
           cd packages/engine-website-app/dist
-          pwd
           mkdir documents
-          cp -r  ../../docs-app/dist/* ./documents
-      - name: current path
-        run: pwd
+          cp -r ../../docs-app/dist/* ./documents
+
       - name: Setup Pages
         uses: actions/configure-pages@v2
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          # Upload entire repository
-          name: file-${{ matrix.runs-on }}.txt
+          name: github-pages-artifact
           path: 'packages/engine-website-app/dist'
           overwrite: true
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: my-artifact-*
-          merge-multiple: true
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          branch: gh-pages # 部署到 gh-pages 分支
+          token: ${{ secrets.GITHUB_TOKEN }}
