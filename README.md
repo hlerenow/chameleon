@@ -6,6 +6,8 @@ A web visual programming engine, help to build a web page with 5 minutes. every 
 
 [Docs](https://hlerenow.github.io/chameleon/documents/) | [Demo](https://hlerenow.github.io/chameleon/)
 
+[Online(Beta) Service](https://www.hai-fe.com)
+
 ## Install
 
 ```shell
