@@ -42,12 +42,14 @@ jobs:
         with:
           name: github-pages
           path: 'packages/engine-website-app/dist'
-          overwrite: true
 
   deploy:
     runs-on: ubuntu-latest
     needs: build # Ensure deployment happens after build
     permissions: write-all
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Download build artifact
