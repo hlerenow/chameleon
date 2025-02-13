@@ -50,5 +50,6 @@ export * from './History';
 export * from './OutlineTree';
 export * from './PropertyPanel';
 export * from './RightPanel';
+export * from './RightPanel/type';
 export * from './VisualPanelPlus';
 export * from './Hotkeys';

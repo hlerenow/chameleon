@@ -22,12 +22,22 @@ import {
 import styles from './style.module.scss';
 import { useActionFlow } from '../../context';
 import { CFiledWithSwitchSetter } from '@/component/CustomSchemaForm/components/CFiledWithSwitchSetter';
+import { RightPanelConfig } from '@/plugins/RightPanel/type';
 
 export type TRequestAPINode = Node<TLogicRequestAPIItem, 'RequestAPINode'>;
 
 export const RequestAPINode = (props: NodeProps<TRequestAPINode>) => {
   const { data, isConnectable } = props;
-  const { onDataChange } = useActionFlow();
+  const { onDataChange, pluginCtx } = useActionFlow();
+  const pluginConfig: RightPanelConfig = pluginCtx.config || {};
+
+  const CustomAPISelectInput: any = useMemo(() => {
+    if (pluginConfig.requestAPINode?.customAPIInput) {
+      return pluginConfig.requestAPINode?.customAPIInput;
+    }
+    return Input;
+  }, [pluginConfig.requestAPINode?.customAPIInput]);
+
   const reactFlowInstance = useReactFlow();
   ensureKeyExist(data, DEV_CONFIG_KEY, {});
   const devConfigObj = data[DEV_CONFIG_KEY]!;
@@ -60,6 +70,7 @@ export const RequestAPINode = (props: NodeProps<TRequestAPINode>) => {
     } as TLogicRequestAPIItem;
     formRef.current?.setFields(newVal);
     setFormValue(newVal);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateKeySetterConfig = (keyPaths: string[], setterName: string) => {
@@ -228,7 +239,7 @@ export const RequestAPINode = (props: NodeProps<TRequestAPINode>) => {
                   valueChangeEventName="onChange"
                   formatEventValue={(el) => el.target.value}
                 >
-                  <Input />
+                  <CustomAPISelectInput />
                 </CField>
               </div>
               <div className={styles.line}>

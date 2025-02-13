@@ -87,6 +87,7 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
   return (
     <ActionFlowContext.Provider
       value={{
+        pluginCtx: props.setterContext?.pluginCtx,
         pageModel: props.setterContext?.pluginCtx?.pageModel,
         onDataChange: saveData,
       }}
