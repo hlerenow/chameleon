@@ -1,60 +1,45 @@
-import { transformPageSchemaToTreeData, traverseTree } from '@/plugins/OutlineTree/util';
-import { TreeSelect } from 'antd';
-import { useMemo, useRef } from 'react';
+import { Button } from 'antd';
+import { useMemo, useState } from 'react';
 import { CPage } from '@chamn/model';
-import { getNodeInfo } from './util';
+import { SelectNodeModal } from './modal';
 
 export const SelectNodeByTree = (props: {
   pageModel: CPage;
   onChange?: (data: { nodeId: string; title: string }) => void;
   value?: any;
 }) => {
-  const boxDomRef = useRef<HTMLDivElement>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [innerValue, setInnerValue] = useState<{ nodeId: string }>(props.value);
 
-  const treeData = useMemo(() => {
-    if (!props.pageModel) {
-      return;
+  const nodeTitle = useMemo(() => {
+    const nodeInfo = props.pageModel.getNode(innerValue?.nodeId);
+    if (nodeInfo) {
+      return nodeInfo.value.title || '';
     }
-    const treeData = transformPageSchemaToTreeData(props.pageModel?.export(), props.pageModel);
-    traverseTree(treeData, (el: any) => {
-      el.value = el.key;
-      el.title = <div style={{ flexWrap: 'nowrap', display: 'flex', width: '100px' }}>{el.title}</div>;
-      el.sourceData = el;
-      return false;
-    });
-
-    return treeData;
-  }, [props.pageModel]);
+    return '';
+  }, [props.pageModel, innerValue?.nodeId]);
 
   return (
-    <div ref={boxDomRef} style={{ width: 250 }}>
-      <TreeSelect
-        virtual={false}
-        showSearch
-        style={{ width: '100%' }}
-        value={props.value}
-        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-        allowClear
-        onClear={() => {
-          props.onChange?.({
-            nodeId: '',
-            title: '',
-          });
+    <>
+      <Button
+        style={{
+          width: '200px',
         }}
-        filterTreeNode={(inputValue, treeNode: any) => {
-          return treeNode.title.toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
+        onClick={() => setModalOpen(true)}
+      >
+        {nodeTitle ?? '选择节点'}
+      </Button>
+      <SelectNodeModal
+        open={modalOpen}
+        onCancel={() => setModalOpen(false)}
+        onOk={(data) => {
+          props.onChange?.(data);
+          setInnerValue(data);
+          setModalOpen(false);
         }}
-        getPopupContainer={() => boxDomRef.current!}
-        treeDefaultExpandAll
-        onChange={(newVal) => {
-          const nodeInfo = getNodeInfo(newVal, (treeData as any) ?? []);
-          props.onChange?.({
-            nodeId: newVal,
-            title: (nodeInfo as any)?.sourceData?.title,
-          });
-        }}
-        treeData={treeData}
+        pageModel={props.pageModel}
+        value={innerValue.nodeId}
       />
-    </div>
+    </>
   );
 };

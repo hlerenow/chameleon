@@ -15,6 +15,7 @@ export const SelectNodeState = (props: {
       <Space>
         <SelectNodeByTree
           pageModel={props.pageModel}
+          value={props.value}
           onChange={(data) => {
             props.onChange?.({
               nodeId: data.nodeId,
