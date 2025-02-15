@@ -2,7 +2,7 @@ import { CPluginCtx } from '../../../../core/pluginManager';
 
 export type CSetter<T = any> = {
   (props: CSetterProps<T>): JSX.Element;
-  setterName: string;
+  setterName?: string;
 };
 
 export type CSetterProps<T = { _: any }> = {

@@ -17,6 +17,7 @@ import {
   EnginContext,
   Engine,
   InnerComponentMeta,
+  RightPanelConfig,
 } from '@chamn/engine';
 import '@chamn/engine/dist/style.css';
 import { DesignerPluginInstance } from '@chamn/engine/dist/plugins/Designer/type';
@@ -354,7 +355,7 @@ export const App = () => {
       assetPackagesList={assetPackagesList}
       beforePluginRun={({ pluginManager }) => {
         pluginManager.customPlugin('RightPanel', (pluginInstance: PluginInstance<RightPanelConfig>) => {
-          pluginInstance.ctx.config.pluginInstance.ctx.config.customPropertySetterMap = {
+          pluginInstance.ctx.config.customPropertySetterMap = {
             TestSetter: (props: any) => {
               useEffect(() => {
                 console.log(props);
