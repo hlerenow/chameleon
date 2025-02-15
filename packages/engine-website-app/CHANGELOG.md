@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.0](https://github.com/ByteCrazy/chameleon/compare/v0.2.4...v0.3.0) (2025-02-15)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, engine-website-app, material, model, render:** 🐛 fixed GRL hidden offsetY loop add size ([3df132b](https://github.com/ByteCrazy/chameleon/commit/3df132b6493026b42435d4868d77915b9f7316b2))
+
+### ✨ Features | 新功能
+
+* **docs-app, engine, engine-website-app, layout, material, model, render:** 🎸 do ActionFlowSetter 50% ([6399466](https://github.com/ByteCrazy/chameleon/commit/6399466c7253436591e071df25828a357bb7089e))
+* **engine, engine-website-app, render:** 🎸 RequestAPINode support custom select ([5b72385](https://github.com/ByteCrazy/chameleon/commit/5b72385673bb646aff3ad2c5a9d8fffa142733dd))
+
 ## [0.2.4](https://github.com/ByteCrazy/chameleon/compare/v0.2.3...v0.2.4) (2024-12-08)
 
 **Note:** Version bump only for package @chamn/engine-website-app

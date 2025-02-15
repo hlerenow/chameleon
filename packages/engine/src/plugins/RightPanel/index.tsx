@@ -1,9 +1,10 @@
 import React from 'react';
 import { CPlugin } from '../../core/pluginManager';
 import { RightPanel } from './view';
+import { RightPanelConfig } from './type';
 
 const PLUGIN_NAME = 'RightPanel';
-export const RightPanelPlugin: CPlugin = (ctx) => {
+export const RightPanelPlugin: CPlugin<RightPanelConfig> = (ctx) => {
   const uiHandle = React.createRef<RightPanel>();
   return {
     name: PLUGIN_NAME,

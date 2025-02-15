@@ -131,7 +131,6 @@ export const transformActionNode = (propVal: TActionLogicItem, options: CommonOp
       const tempNode = handler.find((el) => nextNode?.next && el.id === nextNode?.next);
       nextNode = tempNode;
     }
-    console.log('resultMap', resultMap);
   };
 };
 

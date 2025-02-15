@@ -11,7 +11,7 @@ import { InnerComponentMeta } from '../../../material/innerMaterial';
 import { RollbackOutlined } from '@ant-design/icons';
 import { LayoutPropsType } from '@chamn/layout';
 
-import { collectVariable, flatObject, getThirdLibs, RefManager } from '@chamn/render';
+import { collectVariable, flatObject, getThirdLibs } from '@chamn/render';
 import { HistoryPluginInstance } from '@/plugins/History/type';
 import { DesignerPluginInstance } from '@/plugins/Designer/type';
 
@@ -55,7 +55,6 @@ const customRender: LayoutPropsType['customRender'] = async ({
     },
     $$context: {
       thirdLibs,
-      nodeRefs: new RefManager(),
     },
     onMount: (designRenderInstance) => {
       ready(designRenderInstance);

@@ -46,6 +46,11 @@ export const NodeCard = ({
       {inputHandle !== false && <InputHandle isConnectable={isConnectable} />}
       {outputHandle !== false && (
         <CreateNewNodePopup
+          style={{
+            position: 'absolute',
+            left: '50%',
+            bottom: '0',
+          }}
           onNewNodeAdd={(data) => {
             /** 外部有自定义 handle 时，取消事件触发 */
             if (customHandle) {
@@ -59,7 +64,13 @@ export const NodeCard = ({
           }}
           disabled={outputNodeHasConnected}
         >
-          <OutputHandle isConnectable={isConnectable} />
+          <OutputHandle
+            isConnectable={isConnectable}
+            style={{
+              width: '10px',
+              height: '10px',
+            }}
+          />
         </CreateNewNodePopup>
       )}
     </>

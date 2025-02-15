@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.0](https://github.com/ByteCrazy/chameleon/compare/v0.2.4...v0.3.0) (2025-02-15)
+
+### ✨ Features | 新功能
+
+* **docs-app, engine, engine-website-app, layout, material, model, render:** 🎸 do ActionFlowSetter 50% ([6399466](https://github.com/ByteCrazy/chameleon/commit/6399466c7253436591e071df25828a357bb7089e))
+
 ## [0.2.4](https://github.com/ByteCrazy/chameleon/compare/v0.2.3...v0.2.4) (2024-12-08)
 
 **Note:** Version bump only for package docs-app

@@ -21,7 +21,6 @@ import { REACT_FLOW_DRAG_CLASS_NAME } from './config';
 import { ActionFlowContext } from './context';
 import { Button } from 'antd';
 import { MoveableModal } from '@/component/MoveableModal';
-import { DEFAULT_PLUGIN_NAME_MAP } from '@/plugins';
 import { HotKeysPluginInstance } from '@/plugins/Hotkeys/type';
 
 export type TActionFlowSetterCore = CSetterProps<{
@@ -87,6 +86,7 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
   return (
     <ActionFlowContext.Provider
       value={{
+        pluginCtx: props.setterContext?.pluginCtx,
         pageModel: props.setterContext?.pluginCtx?.pageModel,
         onDataChange: saveData,
       }}
@@ -177,9 +177,7 @@ export const ActionFlowSetter = (props: TActionFlowSetterCore) => {
 
   const disableLowcodeHotKey = async (status: boolean) => {
     // 启用 lowcode 编辑器热键
-    const hotkey = await props.setterContext?.pluginCtx?.pluginManager.get<HotKeysPluginInstance>(
-      DEFAULT_PLUGIN_NAME_MAP.HotkeysPlugin
-    );
+    const hotkey = await props.setterContext?.pluginCtx?.pluginManager?.get<HotKeysPluginInstance>('Hotkeys');
     hotkey?.export.disable(status);
   };
 

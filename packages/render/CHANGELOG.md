@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.0](https://github.com/ByteCrazy/chameleon/compare/v0.2.4...v0.3.0) (2025-02-15)
+
+### ♻️ Code Refactoring | 代码重构
+
+* **render:** 💡 optimize convertModelToComponent code logic ([3334dd5](https://github.com/ByteCrazy/chameleon/commit/3334dd5f421b0d1b78ccde403c9673cadcea91da))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, engine-website-app, material, model, render:** 🐛 fixed GRL hidden offsetY loop add size ([3df132b](https://github.com/ByteCrazy/chameleon/commit/3df132b6493026b42435d4868d77915b9f7316b2))
+
+### ✨ Features | 新功能
+
+* **demo-page, engine, model, render:** 🎸 action node use link struct ([599ece4](https://github.com/ByteCrazy/chameleon/commit/599ece4927523f7c0e330cac722c9c9e6976ea3c))
+* **demo-page, engine, model, render:** 🎸 add event panel ([e8c5648](https://github.com/ByteCrazy/chameleon/commit/e8c5648017b40cbae42c576267d1e3b9d9660918))
+* **demo-page, engine, model, render:** 🎸 support TActionLogicItem prop ([e1b9d1e](https://github.com/ByteCrazy/chameleon/commit/e1b9d1e150ae810750249322ddf906b62eee9969))
+* **demo-page, model, render:** 🎸 optimize afterResponse ([b4060ba](https://github.com/ByteCrazy/chameleon/commit/b4060ba0a0a01960ae5f8dffea159e2d5ea680b6))
+* **demo-page, model, render:** 🎸 support ASSIGN_VALUE node ([74c395b](https://github.com/ByteCrazy/chameleon/commit/74c395baec55911de734e47d4a270f9cf016ee21))
+* **demo-page, render:** 🎸 getMethods support get methods from ref ([0a26967](https://github.com/ByteCrazy/chameleon/commit/0a2696739eee29c3e30b805d537605a06496ebc5))
+* **demo-page, render:** 🎸 support eventListener attr ([fa0977f](https://github.com/ByteCrazy/chameleon/commit/fa0977fab37b961d1b7a0b04c8e528e43ab9503f))
+* **demo-page, render:** 🎸 support ON_DID_RENDER and ON_WILL_DESTROY inner event ([b4743e8](https://github.com/ByteCrazy/chameleon/commit/b4743e855766b69a8c5bc58ea3849694948bd501))
+* **docs-app, engine, engine-website-app, layout, material, model, render:** 🎸 do ActionFlowSetter 50% ([6399466](https://github.com/ByteCrazy/chameleon/commit/6399466c7253436591e071df25828a357bb7089e))
+* **engine, engine-website-app, render:** 🎸 RequestAPINode support custom select ([5b72385](https://github.com/ByteCrazy/chameleon/commit/5b72385673bb646aff3ad2c5a9d8fffa142733dd))
+* **model, render:** 🎸 add acion logic type defined ([a7c32a3](https://github.com/ByteCrazy/chameleon/commit/a7c32a33f80a00458fe16fbc4d0c34631c103b61))
+* **model, render:** 🎸 optimize render react adapter code struct ([d9fa3d0](https://github.com/ByteCrazy/chameleon/commit/d9fa3d0a72e4d7e04e4e86e62d2a4f6f31bd808e))
+* **render:** 🎸 add findDOMNode API ([2898452](https://github.com/ByteCrazy/chameleon/commit/2898452491554afddf36a795876182ff0d1bfc59))
+
 ## [0.2.4](https://github.com/ByteCrazy/chameleon/compare/v0.2.3...v0.2.4) (2024-12-08)
 
 **Note:** Version bump only for package @chamn/render

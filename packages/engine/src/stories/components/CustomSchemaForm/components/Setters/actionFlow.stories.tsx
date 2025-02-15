@@ -1,6 +1,5 @@
 import { ActionFlowSetter } from '@/component/CustomSchemaForm/components/Setters/ActionFlowSetter';
 import { CNodePropsTypeEnum, CPage } from '@chamn/model';
-import { fn } from '@storybook/test';
 import { SamplePage, Material } from '@chamn/demo-page';
 import { logicListSchema } from './mock';
 import { useEffect, useState } from 'react';

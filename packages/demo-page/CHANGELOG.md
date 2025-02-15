@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.0](https://github.com/ByteCrazy/chameleon/compare/v0.2.4...v0.3.0) (2025-02-15)
+
+### ✨ Features | 新功能
+
+* **demo-page, engine, model, render:** 🎸 action node use link struct ([599ece4](https://github.com/ByteCrazy/chameleon/commit/599ece4927523f7c0e330cac722c9c9e6976ea3c))
+* **demo-page, engine, model, render:** 🎸 add event panel ([e8c5648](https://github.com/ByteCrazy/chameleon/commit/e8c5648017b40cbae42c576267d1e3b9d9660918))
+* **demo-page, engine, model, render:** 🎸 support TActionLogicItem prop ([e1b9d1e](https://github.com/ByteCrazy/chameleon/commit/e1b9d1e150ae810750249322ddf906b62eee9969))
+* **demo-page, model, render:** 🎸 optimize afterResponse ([b4060ba](https://github.com/ByteCrazy/chameleon/commit/b4060ba0a0a01960ae5f8dffea159e2d5ea680b6))
+* **demo-page, model, render:** 🎸 support ASSIGN_VALUE node ([74c395b](https://github.com/ByteCrazy/chameleon/commit/74c395baec55911de734e47d4a270f9cf016ee21))
+* **demo-page, model:** 🎸 define action and event type ([f7ca5d3](https://github.com/ByteCrazy/chameleon/commit/f7ca5d3b8ad7610f840845f555bfcdb2adddae0a))
+* **demo-page, render:** 🎸 getMethods support get methods from ref ([0a26967](https://github.com/ByteCrazy/chameleon/commit/0a2696739eee29c3e30b805d537605a06496ebc5))
+* **demo-page, render:** 🎸 support eventListener attr ([fa0977f](https://github.com/ByteCrazy/chameleon/commit/fa0977fab37b961d1b7a0b04c8e528e43ab9503f))
+* **demo-page, render:** 🎸 support ON_DID_RENDER and ON_WILL_DESTROY inner event ([b4743e8](https://github.com/ByteCrazy/chameleon/commit/b4743e855766b69a8c5bc58ea3849694948bd501))
+
 ## [0.2.4](https://github.com/ByteCrazy/chameleon/compare/v0.2.3...v0.2.4) (2024-12-08)
 
 **Note:** Version bump only for package @chamn/demo-page

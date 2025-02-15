@@ -20,6 +20,7 @@ import {
 } from '@chamn/engine';
 import '@chamn/engine/dist/style.css';
 import { DesignerPluginInstance } from '@chamn/engine/dist/plugins/Designer/type';
+import { PluginInstance } from '@chamn/engine/dist/core/pluginManager';
 
 const win = window as any;
 win.React = React;
@@ -352,8 +353,8 @@ export const App = () => {
       // 组件物料对应的 js 运行库，只能使用 umd 模式的 js
       assetPackagesList={assetPackagesList}
       beforePluginRun={({ pluginManager }) => {
-        pluginManager.customPlugin('RightPanel', (pluginInstance) => {
-          pluginInstance.ctx.config.customPropertySetterMap = {
+        pluginManager.customPlugin('RightPanel', (pluginInstance: PluginInstance<RightPanelConfig>) => {
+          pluginInstance.ctx.config.pluginInstance.ctx.config.customPropertySetterMap = {
             TestSetter: (props: any) => {
               useEffect(() => {
                 console.log(props);
