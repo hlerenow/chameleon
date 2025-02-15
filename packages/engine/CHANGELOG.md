@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.0](https://github.com/ByteCrazy/chameleon/compare/v0.2.4...v0.3.0) (2025-02-15)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, engine-website-app, material, model, render:** 🐛 fixed GRL hidden offsetY loop add size ([3df132b](https://github.com/ByteCrazy/chameleon/commit/3df132b6493026b42435d4868d77915b9f7316b2))
+* **engine:** 🐛 fixed ActionFlowSetter cicle deps ([b9bd177](https://github.com/ByteCrazy/chameleon/commit/b9bd177e38be054a8860d19516651d9ab813e27b))
+* **engine:** 🐛 fixed ActionFlowSetter cycle deps ([e69dfd7](https://github.com/ByteCrazy/chameleon/commit/e69dfd7df7129a88c54e238a05b96bb3270fbb2f))
+* **engine:** 🐛 fixed ActionFlowSetter update problem ([0034848](https://github.com/ByteCrazy/chameleon/commit/0034848e31c3b30b6782723af10e7f8e0152390a))
+* **engine:** 🐛 fixed outline drag excepetion after remove page ([82ff3fd](https://github.com/ByteCrazy/chameleon/commit/82ff3fd80ffce58b2b840ae219d29e61dd34a6e4))
+* **engine:** 🐛 resolve hot key confict with action flow setter ([e91898c](https://github.com/ByteCrazy/chameleon/commit/e91898c8deae98805ea2df7a1e8f3bc382bd3873))
+
+### ✨ Features | 新功能
+
+* **demo-page, engine, model, render:** 🎸 action node use link struct ([599ece4](https://github.com/ByteCrazy/chameleon/commit/599ece4927523f7c0e330cac722c9c9e6976ea3c))
+* **demo-page, engine, model, render:** 🎸 add event panel ([e8c5648](https://github.com/ByteCrazy/chameleon/commit/e8c5648017b40cbae42c576267d1e3b9d9660918))
+* **demo-page, engine, model, render:** 🎸 support TActionLogicItem prop ([e1b9d1e](https://github.com/ByteCrazy/chameleon/commit/e1b9d1e150ae810750249322ddf906b62eee9969))
+* **docs-app, engine, engine-website-app, layout, material, model, render:** 🎸 do ActionFlowSetter 50% ([6399466](https://github.com/ByteCrazy/chameleon/commit/6399466c7253436591e071df25828a357bb7089e))
+* **engine, engine-website-app, render:** 🎸 RequestAPINode support custom select ([5b72385](https://github.com/ByteCrazy/chameleon/commit/5b72385673bb646aff3ad2c5a9d8fffa142733dd))
+* **engine, model:** 🎸 add  call node method node ([1a5e79c](https://github.com/ByteCrazy/chameleon/commit/1a5e79c49964c589da167b64985327a3cbb03da8))
+* **engine, model:** 🎸 add run code node ([7ac6182](https://github.com/ByteCrazy/chameleon/commit/7ac61829586a19d4fcdc1765fa878d6a16008858))
+* **engine, model:** 🎸 request API 70% ([cee1228](https://github.com/ByteCrazy/chameleon/commit/cee1228c2a3265320cb32579f6f7b532b6962908))
+* **engine:** 🎸 add react-flow ([fafaaf9](https://github.com/ByteCrazy/chameleon/commit/fafaaf95c589c0c99ce0953f285bf53a0e423e21))
+* **engine:** 🎸 JumpLinkNode 100% ([ed0707e](https://github.com/ByteCrazy/chameleon/commit/ed0707e0232bf82bedc7b0db569c908d2001e6d7))
+* **engine:** 🎸 optimize ActionFlowSetter ([fa9af2f](https://github.com/ByteCrazy/chameleon/commit/fa9af2fba32f921411ed05e8d7e68293de5dde88))
+* **engine:** 🎸 optimize call node method node ([0b00029](https://github.com/ByteCrazy/chameleon/commit/0b00029627d6f90381b658ccc7f125e9b6116dcf))
+* **engine:** 🎸 optimize MoveableModal interactive ([2eccb94](https://github.com/ByteCrazy/chameleon/commit/2eccb942b447fa4e54bcd6f9207a2ed053e06526))
+* **engine:** 🎸 optimize RequestAPINode custom ([0440695](https://github.com/ByteCrazy/chameleon/commit/044069501608b1a8b62a08600c3c2d293e1ebe54))
+* **engine:** 🎸 optimize selectNodeByTree ([b6959d9](https://github.com/ByteCrazy/chameleon/commit/b6959d98714a16669b3896b677ebb78aa080d8f3))
+* **engine:** 🎸 optimize SetterSwitcher code struct ([d481fe6](https://github.com/ByteCrazy/chameleon/commit/d481fe68665f4fc7b1034e8b1ef9e2bfbe517012))
+* **engine:** 🎸 parseActionLogicToNodeList 30% ([f120154](https://github.com/ByteCrazy/chameleon/commit/f1201549a5537f170dbdce7efca7c85ce3add2ad))
+* **engine:** 🎸 support labelAlign config ([9590f86](https://github.com/ByteCrazy/chameleon/commit/9590f861fe8efebcd81ba38df3b159a528e066b6))
+* **engine:** 🎸 support render flow by schema data ([e04e76d](https://github.com/ByteCrazy/chameleon/commit/e04e76d23115c64823dc6fbf5d460f589df98b3d))
+
 ## [0.2.4](https://github.com/ByteCrazy/chameleon/compare/v0.2.3...v0.2.4) (2024-12-08)
 
 ### 🐛 Bug Fixes | Bug 修复

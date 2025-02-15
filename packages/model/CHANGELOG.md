@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.0](https://github.com/ByteCrazy/chameleon/compare/v0.2.4...v0.3.0) (2025-02-15)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, engine-website-app, material, model, render:** 🐛 fixed GRL hidden offsetY loop add size ([3df132b](https://github.com/ByteCrazy/chameleon/commit/3df132b6493026b42435d4868d77915b9f7316b2))
+
+### ✨ Features | 新功能
+
+* **demo-page, engine, model, render:** 🎸 action node use link struct ([599ece4](https://github.com/ByteCrazy/chameleon/commit/599ece4927523f7c0e330cac722c9c9e6976ea3c))
+* **demo-page, engine, model, render:** 🎸 add event panel ([e8c5648](https://github.com/ByteCrazy/chameleon/commit/e8c5648017b40cbae42c576267d1e3b9d9660918))
+* **demo-page, engine, model, render:** 🎸 support TActionLogicItem prop ([e1b9d1e](https://github.com/ByteCrazy/chameleon/commit/e1b9d1e150ae810750249322ddf906b62eee9969))
+* **demo-page, model, render:** 🎸 optimize afterResponse ([b4060ba](https://github.com/ByteCrazy/chameleon/commit/b4060ba0a0a01960ae5f8dffea159e2d5ea680b6))
+* **demo-page, model, render:** 🎸 support ASSIGN_VALUE node ([74c395b](https://github.com/ByteCrazy/chameleon/commit/74c395baec55911de734e47d4a270f9cf016ee21))
+* **demo-page, model:** 🎸 define action and event type ([f7ca5d3](https://github.com/ByteCrazy/chameleon/commit/f7ca5d3b8ad7610f840845f555bfcdb2adddae0a))
+* **docs-app, engine, engine-website-app, layout, material, model, render:** 🎸 do ActionFlowSetter 50% ([6399466](https://github.com/ByteCrazy/chameleon/commit/6399466c7253436591e071df25828a357bb7089e))
+* **engine, model:** 🎸 add  call node method node ([1a5e79c](https://github.com/ByteCrazy/chameleon/commit/1a5e79c49964c589da167b64985327a3cbb03da8))
+* **engine, model:** 🎸 add run code node ([7ac6182](https://github.com/ByteCrazy/chameleon/commit/7ac61829586a19d4fcdc1765fa878d6a16008858))
+* **engine, model:** 🎸 request API 70% ([cee1228](https://github.com/ByteCrazy/chameleon/commit/cee1228c2a3265320cb32579f6f7b532b6962908))
+* **model, render:** 🎸 add acion logic type defined ([a7c32a3](https://github.com/ByteCrazy/chameleon/commit/a7c32a33f80a00458fe16fbc4d0c34631c103b61))
+* **model, render:** 🎸 optimize render react adapter code struct ([d9fa3d0](https://github.com/ByteCrazy/chameleon/commit/d9fa3d0a72e4d7e04e4e86e62d2a4f6f31bd808e))
+
 ## [0.2.4](https://github.com/ByteCrazy/chameleon/compare/v0.2.3...v0.2.4) (2024-12-08)
 
 **Note:** Version bump only for package @chamn/model
