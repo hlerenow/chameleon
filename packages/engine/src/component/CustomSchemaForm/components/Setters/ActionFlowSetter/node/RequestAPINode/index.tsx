@@ -183,6 +183,11 @@ export const RequestAPINode = (props: NodeProps<TRequestAPINode>) => {
             <>
               <InputHandle type="target" isConnectable={isConnectable} />
               <CreateNewNodePopup
+                style={{
+                  position: 'absolute',
+                  left: '50%',
+                  bottom: '0',
+                }}
                 title="请求成功时"
                 onNewNodeAdd={(data) => handleNewNodeAdd(data, OUTPUT_HANDLE_ID)}
                 disabled={isOutputHandleConnected}
@@ -202,14 +207,15 @@ export const RequestAPINode = (props: NodeProps<TRequestAPINode>) => {
                 disabled={isAfterFailedResponseHandleConnected}
               >
                 <OutputHandle
-                  id={REQUEST_API_FAILED_HANDLE_ID}
-                  isConnectable={isConnectable}
                   style={{
+                    left: '75%',
+                    bottom: '0',
                     width: '10px',
                     height: '10px',
                     background: '#ff4d4f',
-                    left: '75%',
                   }}
+                  id={REQUEST_API_FAILED_HANDLE_ID}
+                  isConnectable={isConnectable}
                 />
               </CreateNewNodePopup>
             </>
@@ -239,7 +245,7 @@ export const RequestAPINode = (props: NodeProps<TRequestAPINode>) => {
                   valueChangeEventName="onChange"
                   formatEventValue={(el) => el.target.value}
                 >
-                  <CustomAPISelectInput />
+                  <CustomAPISelectInput form={formRef} />
                 </CField>
               </div>
               <div className={styles.line}>

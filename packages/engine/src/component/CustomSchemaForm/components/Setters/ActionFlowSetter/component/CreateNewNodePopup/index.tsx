@@ -1,12 +1,13 @@
 import { Popover } from 'antd';
+import { useState } from 'react';
 import { DEFAULT_NODE_LIST } from './initData';
 import { TLogicItemHandlerFlow } from '@chamn/model';
-import { useState } from 'react';
 
 export const CreateNewNodePopup = (props: {
   title?: string;
   children: React.ReactNode;
   disabled?: boolean;
+  style?: React.CSSProperties;
   onNewNodeAdd: (data: TLogicItemHandlerFlow[number]) => void;
 }) => {
   const { title = 'Next Step' } = props;
@@ -48,6 +49,7 @@ export const CreateNewNodePopup = (props: {
     <Popover
       onOpenChange={handleOpenChange}
       open={open}
+      trigger={'hover'}
       content={
         <div
           style={{
@@ -72,13 +74,7 @@ export const CreateNewNodePopup = (props: {
       }
       title={title}
     >
-      <div
-        onMouseDown={() => {
-          setOpen(false);
-        }}
-      >
-        {props.children}
-      </div>
+      {props.children}
     </Popover>
   );
 };

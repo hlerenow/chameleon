@@ -14,7 +14,7 @@ export const SelectNodeByTree = (props: {
   const nodeTitle = useMemo(() => {
     const nodeInfo = props.pageModel.getNode(innerValue?.nodeId);
     if (nodeInfo) {
-      return nodeInfo.value.title || '';
+      return nodeInfo.value.title || nodeInfo.material?.value.title || '';
     }
     return '';
   }, [props.pageModel, innerValue?.nodeId]);
@@ -38,7 +38,7 @@ export const SelectNodeByTree = (props: {
           setModalOpen(false);
         }}
         pageModel={props.pageModel}
-        value={innerValue.nodeId}
+        value={innerValue?.nodeId}
       />
     </>
   );
