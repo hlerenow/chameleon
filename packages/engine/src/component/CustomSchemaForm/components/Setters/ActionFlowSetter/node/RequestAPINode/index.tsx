@@ -81,7 +81,7 @@ export const RequestAPINode = (props: NodeProps<TRequestAPINode>) => {
           ...newValue,
         };
         formRef.current?.setFields({
-          newValueObj,
+          ...newValueObj,
         });
         setFormValue(newValueObj);
       },
