@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1](https://github.com/ByteCrazy/chameleon/compare/v0.3.0...v0.3.1) (2025-02-16)
+
+### ✨ Features | 新功能
+
+* **engine, render:** 🎸 optimize CustomAPISelectInput from and event list label ([8dbf5af](https://github.com/ByteCrazy/chameleon/commit/8dbf5af08e50c60c5ff7adc5c7e644c4ca1a9c08))
+
 ## [0.3.0](https://github.com/ByteCrazy/chameleon/compare/v0.2.4...v0.3.0) (2025-02-15)
 
 ### ♻️ Code Refactoring | 代码重构
