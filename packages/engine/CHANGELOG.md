@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.3](https://github.com/ByteCrazy/chameleon/compare/v0.3.2...v0.3.3) (2025-02-16)
+
+### ✨ Features | 新功能
+
+* **engine:** 🎸 JSON setter support reactive value ([0262067](https://github.com/ByteCrazy/chameleon/commit/0262067fc641b8dd3c812cd3cf1f114df7e33f9c))
+
 ## [0.3.2](https://github.com/ByteCrazy/chameleon/compare/v0.3.1...v0.3.2) (2025-02-16)
 
 ### ✨ Features | 新功能
