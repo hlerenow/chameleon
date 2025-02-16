@@ -22,6 +22,15 @@ export const ensureKeyExist = (obj: any, key: string, defaultValue: any) => {
   obj[key] = defaultValue;
 };
 
+export const sageJSONParse = function (jsonStr: string, errorValue: any) {
+  try {
+    const res = JSON.parse(jsonStr);
+    return res;
+  } catch (e) {
+    return errorValue ?? null;
+  }
+};
+
 export * from './css';
 export * from './defaultEngineConfig';
 export * from './logger';

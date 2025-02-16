@@ -89,7 +89,7 @@ export const RequestAPINode = (props: NodeProps<TRequestAPINode>) => {
         return formRef.current?.getFieldsValue();
       },
     };
-  }, []);
+  }, [formValue]);
 
   const updateKeySetterConfig = (keyPaths: string[], setterName: string) => {
     if (!devConfigObj.defaultSetterMap) {
@@ -125,7 +125,7 @@ export const RequestAPINode = (props: NodeProps<TRequestAPINode>) => {
     });
 
     return items;
-  }, [formValue?.method]);
+  }, [formValue?.method, formValue]);
 
   const handleNewNodeAdd = (newNodeData: any, handleType: string) => {
     const currentNode = reactFlowInstance.getNode(String(data.id));

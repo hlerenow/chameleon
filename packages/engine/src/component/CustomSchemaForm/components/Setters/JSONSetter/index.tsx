@@ -1,8 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, ConfigProvider } from 'antd';
 import { CSetter, CSetterProps } from '../type';
 import { EditorType, MonacoEditor, MonacoEditorInstance } from '../../../../MonacoEditor';
 import { MoveableModal } from '@/component/MoveableModal';
+import { sageJSONParse } from '@/utils';
 
 const EditorConfig = {
   options: {
@@ -18,23 +19,35 @@ const EditorConfig = {
   },
 };
 
-const JsonEditor = ({ editor, value, initialValue, onChange, height, editorOptions }: any) => (
-  <div style={{ height: height || EditorConfig.style.height }}>
-    <MonacoEditor
-      onDidMount={(editorInstance) => {
-        editor.current = editorInstance;
-      }}
-      onChange={onChange}
-      initialValue={JSON.stringify(value ?? (initialValue || {}), null, 2)}
-      language="json"
-      options={{
-        ...EditorConfig.options,
-        ...editorOptions,
-      }}
-    />
-  </div>
-);
-
+const JsonEditor = ({ editor, value, initialValue, onChange, height, editorOptions }: any) => {
+  const editorRef = useRef<MonacoEditorInstance>();
+  const oldValueRef = useRef();
+  oldValueRef.current = value;
+  useEffect(() => {
+    const oldVal = sageJSONParse(editorRef.current?.getValue() || '', {});
+    if (JSON.stringify(value) === JSON.stringify(oldVal)) {
+      return;
+    }
+    editorRef.current?.setValue(JSON.stringify(value, null, 2));
+  }, [value]);
+  return (
+    <div style={{ height: height || EditorConfig.style.height }}>
+      <MonacoEditor
+        onDidMount={(editorInstance) => {
+          editor.current = editorInstance;
+          editorRef.current = editorInstance;
+        }}
+        onChange={onChange}
+        initialValue={JSON.stringify(value ?? (initialValue || {}), null, 2)}
+        language="json"
+        options={{
+          ...EditorConfig.options,
+          ...editorOptions,
+        }}
+      />
+    </div>
+  );
+};
 export const JSONSetter: CSetter<any> = ({
   onValueChange,
   initialValue,
