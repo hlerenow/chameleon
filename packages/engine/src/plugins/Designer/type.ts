@@ -1,7 +1,7 @@
 import { CPlugin, PluginInstance } from '@/core/pluginManager';
 import { DragAndDrop, IFrameContainer, Layout, LayoutPropsType } from '@chamn/layout';
 import { AdvanceCustom, AssetPackage, CPageDataType } from '@chamn/model';
-import { RenderInstance } from '@chamn/render';
+import { RenderInstance, RenderPropsType } from '@chamn/render';
 import { Designer } from './components/Canvas';
 
 export type DesignerExport = {
@@ -35,6 +35,8 @@ export type DesignerPluginConfig = Omit<
   Pick<
     AdvanceCustom,
     'selectRectViewRender' | 'hoverRectViewRender' | 'dropViewRender' | 'ghostViewRender' | 'toolbarViewRender'
-  >;
+  > & {
+    renderProps?: Partial<RenderPropsType>;
+  };
 export type DesignerPluginType = CPlugin<DesignerPluginConfig, DesignerExport>;
 export type DesignerPluginInstance = PluginInstance<DesignerPluginConfig, DesignerExport>;

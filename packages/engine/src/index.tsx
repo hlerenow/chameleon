@@ -69,7 +69,10 @@ export class Engine extends React.Component<EngineProps> {
     // 使用默认的渲染策略
     pluginManager.customPlugin<DesignerPluginInstance>('Designer', (pluginInstance) => {
       pluginInstance.ctx.config.beforeInitRender = beforeInitRender;
-      pluginInstance.ctx.config.customRender = getDefaultRender(this.props.components || {});
+      pluginInstance.ctx.config.customRender = getDefaultRender({
+        components: this.props.components || {},
+        renderProps: this.props.renderProps || {},
+      });
       pluginInstance.ctx.config.components = this.props.components;
       return pluginInstance;
     });

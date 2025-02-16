@@ -1,6 +1,7 @@
 import { CPageDataType, CMaterialType, AssetPackage } from '@chamn/model';
 import { Engine } from '.';
 import { PluginManager, CPlugin } from './core/pluginManager';
+import { RenderPropsType } from '@chamn/render';
 
 export type EnginContext = {
   pluginManager: PluginManager;
@@ -21,4 +22,5 @@ export type EngineProps = {
   renderJSUrl?: string;
   style?: React.CSSProperties;
   className?: string;
+  renderProps?: Partial<RenderPropsType>;
 };

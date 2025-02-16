@@ -1,6 +1,6 @@
 import { getUniqueAssetsList } from '@/core/assetPackagesListManage';
 import { LayoutPropsType } from '@chamn/layout';
-import { collectVariable, flatObject, getThirdLibs } from '@chamn/render';
+import { collectVariable, flatObject, getThirdLibs, RenderPropsType } from '@chamn/render';
 
 /** 默认使用 react 18 模式渲染 */
 export const beforeInitRender: LayoutPropsType['beforeInitRender'] = async ({ iframe }) => {
@@ -14,7 +14,10 @@ export const beforeInitRender: LayoutPropsType['beforeInitRender'] = async ({ if
 };
 
 /** 默认使用 react 18 模式渲染 */
-export const getDefaultRender = (components: Record<string, any>) => {
+export const getDefaultRender = (options: {
+  components: Record<string, any>;
+  renderProps: Partial<RenderPropsType>;
+}) => {
   const defaultRender: LayoutPropsType['customRender'] = async ({
     iframe: iframeContainer,
     assets,
@@ -50,14 +53,14 @@ export const getDefaultRender = (components: Record<string, any>) => {
           adapter: CRender?.ReactAdapter,
           page: page,
           pageModel: pageModel,
-          components: { ...componentsLibs, ...components },
+          components: { ...componentsLibs, ...(options.components || {}) },
           $$context: {
             thirdLibs,
           },
-
           onMount: (designRenderInstance) => {
             ready(designRenderInstance);
           },
+          ...((options?.renderProps as any) || {}),
         });
         IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
       })

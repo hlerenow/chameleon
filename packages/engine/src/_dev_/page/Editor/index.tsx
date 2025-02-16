@@ -17,6 +17,7 @@ import { DesignerPluginInstance } from '@/plugins/Designer/type';
 
 import { DesignerSizer } from '@/component/DesignerSizer';
 import { EnginContext } from '@/type';
+import renderAsURL from '@chamn/render/dist/index.umd.js?url';
 
 const win = window as any;
 win.React = React;
@@ -55,6 +56,9 @@ const customRender: LayoutPropsType['customRender'] = async ({
     },
     $$context: {
       thirdLibs,
+    },
+    requestAPI: async (params) => {
+      return console.log(222, params);
     },
     onMount: (designRenderInstance) => {
       ready(designRenderInstance);
@@ -332,14 +336,20 @@ export const App = () => {
           return pluginInstance;
         });
 
-        pluginManager.customPlugin('Designer', (pluginInstance) => {
+        pluginManager.customPlugin('Designer', (pluginInstance: DesignerPluginInstance) => {
           if (__RUN_MODE__ !== 'APP') {
             pluginInstance.ctx.config.customRender = customRender;
           }
           return pluginInstance;
         });
       }}
+      renderJSUrl={renderAsURL}
       onReady={onReady}
+      renderProps={{
+        requestAPI: async (params) => {
+          return console.log(7788, params);
+        },
+      }}
     />
   );
 };

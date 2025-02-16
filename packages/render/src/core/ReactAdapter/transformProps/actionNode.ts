@@ -142,7 +142,13 @@ function buildJumpLink(item: TLogicJumpLinkItem, option: CommonOption) {
 const buildDynamicValue = (dynamicValue: TDynamicValue, option: CommonOption) => {
   return function (...args: any[]): any {
     if (isExpression(dynamicValue)) {
-      const res = runExpression(dynamicValue.value, option.context);
+      const res = runExpression(dynamicValue.value, {
+        ...option.context,
+        nodeContext: option.context,
+        storeManager: option.storeManager,
+        $$response: option.$$response,
+        actionVariableSpace: option.actionVariableSpace,
+      });
       return res;
     }
     if (isFunction(dynamicValue)) {

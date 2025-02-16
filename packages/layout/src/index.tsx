@@ -1,6 +1,5 @@
 /* eslint-disable react/no-find-dom-node */
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { RenderInstance } from '@chamn/render';
 import { DesignRender, DesignRenderProp } from '@chamn/render';
 import { IFrameContainer } from './core/iframeContainer';

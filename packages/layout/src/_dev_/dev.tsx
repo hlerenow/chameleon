@@ -64,12 +64,14 @@ const customRender: LayoutPropsType['customRender'] = async ({
   // 从子窗口获取物料对象
   const componentCollection = collectVariable(assets, iframeWindow);
   const components = flatObject(componentCollection);
-
   const App = IframeReact?.createElement(CRender.DesignRender, {
     adapter: CRender?.ReactAdapter,
     page: page,
     pageModel: pageModel,
     components,
+    requestAPI: async (params) => {
+      return console.log(222, params);
+    },
     onMount: (designRenderInstance) => {
       ready(designRenderInstance);
     },
