@@ -1,10 +1,19 @@
 import { CSetter } from '@/component';
-import { CForm } from '@/component/CustomSchemaForm/components/Form';
-import { Ref } from 'react';
+import { TLogicRequestAPIItem } from '@chamn/model';
 
 export type RightPanelConfig = {
   customPropertySetterMap?: Record<string, CSetter>;
   requestAPINode?: {
-    customAPIInput?: (props: { value: any; onChange: (value: any) => void; form: Ref<CForm> }) => React.ReactNode;
+    customAPIInput?: (props: {
+      value: any;
+      onChange: (value: any) => void;
+      form: {
+        updateFields: (newValue: Partial<TLogicRequestAPIItem>) => void;
+        getFields: () => Pick<
+          TLogicRequestAPIItem,
+          'apiPath' | 'body' | 'header' | 'query' | 'method' | 'responseVarName'
+        >;
+      };
+    }) => React.ReactNode;
   };
 };

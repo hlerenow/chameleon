@@ -103,14 +103,8 @@ export class DefineReactAdapter {
 
   /** 请求 API */
   requestAPI: AdapterOptionType['requestAPI'] = async (params) => {
-    console.log('🚀 ~ DefineReactAdapter ~ requestAPI ~ params:', params);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          a: 5555,
-        });
-      }, 100);
-    });
+    console.log(params);
+    throw new Error('Need to implement requestAPI for Render');
   };
 
   clear() {

@@ -5,12 +5,23 @@ import styles from './style.module.scss';
 import { Button, Select } from 'antd';
 import { ActionFlowSetter } from '@/component/CustomSchemaForm/components/Setters/ActionFlowSetter';
 import { DeleteOutlined } from '@ant-design/icons';
-import { INNER_EVENT_LIST } from '@chamn/render';
+import { ON_DID_RENDER, ON_WILL_DESTROY } from '@chamn/render';
 
 export type EventPanelProps = {
   node: CNode | CRootNode | null;
   pluginCtx: CPluginCtx;
 };
+
+const INNER_EVENT_LIST_MAP = [
+  {
+    label: '初始化完成后',
+    value: ON_DID_RENDER,
+  },
+  {
+    label: '组件销毁之前',
+    value: ON_WILL_DESTROY,
+  },
+];
 
 export const EventPanel = (props: EventPanelProps) => {
   const { node } = props;
@@ -37,15 +48,7 @@ export const EventPanel = (props: EventPanelProps) => {
           value: evt.event,
         };
       }) || [];
-    updateEventList([
-      ...INNER_EVENT_LIST.map((key) => {
-        return {
-          value: key,
-          label: key,
-        };
-      }),
-      ...list,
-    ]);
+    updateEventList([...INNER_EVENT_LIST_MAP, ...list]);
   }, [node?.id, node?.material?.value.events]);
   const [currentEvent, updateCurrentEvent] = useState<string>();
 
@@ -98,56 +101,59 @@ export const EventPanel = (props: EventPanelProps) => {
         </Button>
       </div>
       <div style={{ marginTop: '16px' }}>
-        {nodeEventList?.map((event: any, index: number) => (
-          <div
-            key={index}
-            style={{
-              padding: '8px 12px',
-              borderRadius: '4px',
-              backgroundColor: '#f5f5f5',
-              marginBottom: '8px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              cursor: 'pointer',
-            }}
-          >
+        {nodeEventList?.map((event: any, index: number) => {
+          const eventLabel = eventList.find((el) => el.value === event.name);
+          return (
             <div
+              key={index}
               style={{
-                width: '100%',
+                padding: '8px 12px',
+                borderRadius: '4px',
+                backgroundColor: '#f5f5f5',
+                marginBottom: '8px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                cursor: 'pointer',
               }}
             >
-              <ActionFlowSetter
-                value={event.func}
-                onValueChange={(val: { handler: any }) => {
-                  event.func.handler = val.handler;
-                  node?.updateValue();
-                }}
-                setterContext={{
-                  pluginCtx: props.pluginCtx,
-                  onSetterChange: () => {},
-                  keyPaths: [''],
-                  label: '',
+              <div
+                style={{
+                  width: '100%',
                 }}
               >
-                <span>{event.name}</span>
-              </ActionFlowSetter>
+                <ActionFlowSetter
+                  value={event.func}
+                  onValueChange={(val: { handler: any }) => {
+                    event.func.handler = val.handler;
+                    node?.updateValue();
+                  }}
+                  setterContext={{
+                    pluginCtx: props.pluginCtx,
+                    onSetterChange: () => {},
+                    keyPaths: [''],
+                    label: '',
+                  }}
+                >
+                  <span>{eventLabel?.label || event.name}</span>
+                </ActionFlowSetter>
+              </div>
+              <Button
+                type="text"
+                size="small"
+                danger
+                icon={<DeleteOutlined />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const newEventList = [...(node?.value.eventListener || [])];
+                  newEventList.splice(index, 1);
+                  node!.value.eventListener = newEventList;
+                  node?.updateValue();
+                }}
+              />
             </div>
-            <Button
-              type="text"
-              size="small"
-              danger
-              icon={<DeleteOutlined />}
-              onClick={(e) => {
-                e.stopPropagation();
-                const newEventList = [...(node?.value.eventListener || [])];
-                newEventList.splice(index, 1);
-                node!.value.eventListener = newEventList;
-                node?.updateValue();
-              }}
-            />
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

@@ -73,6 +73,24 @@ export const RequestAPINode = (props: NodeProps<TRequestAPINode>) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const formHandler = useMemo(() => {
+    return {
+      updateFields: (newValue: any) => {
+        const newValueObj = {
+          ...formValue,
+          ...newValue,
+        };
+        formRef.current?.setFields({
+          newValueObj,
+        });
+        setFormValue(newValueObj);
+      },
+      getFields: () => {
+        return formRef.current?.getFieldsValue();
+      },
+    };
+  }, []);
+
   const updateKeySetterConfig = (keyPaths: string[], setterName: string) => {
     if (!devConfigObj.defaultSetterMap) {
       devConfigObj.defaultSetterMap = {};
@@ -245,7 +263,7 @@ export const RequestAPINode = (props: NodeProps<TRequestAPINode>) => {
                   valueChangeEventName="onChange"
                   formatEventValue={(el) => el.target.value}
                 >
-                  <CustomAPISelectInput form={formRef} />
+                  <CustomAPISelectInput form={formHandler} />
                 </CField>
               </div>
               <div className={styles.line}>
