@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { ConfigProvider, Input, Popover } from 'antd';
 import { CSetter, CSetterProps } from '../type';
 import { SketchPicker } from 'react-color';
@@ -28,8 +27,10 @@ export const ColorSetter: CSetter = ({ onValueChange, initialValue, value }: CSe
           />
         }
         placement={'bottomLeft'}
-        overlayInnerStyle={{
-          padding: 0,
+        styles={{
+          body: {
+            padding: 0,
+          },
         }}
         arrow={{
           pointAtCenter: false,

@@ -7,7 +7,7 @@ export enum SetterTypeEnum {
   STRING_SETTER = 'StringSetter',
   BOOLEAN_SETTER = 'BooleanSetter',
   JSON_SETTER = 'JSONSetter',
-  SElECT_SETTER = 'SelectSetter',
+  SELECT_SETTER = 'SelectSetter',
   NUMBER_SETTER = 'NumberSetter',
   EXPRESSION_SETTER = 'ExpressionSetter',
   FUNCTION_SETTER = 'FunctionSetter',
