@@ -1,5 +1,5 @@
 import { CPageDataType, CMaterialType, AssetPackage } from '@chamn/model';
-import { Engine } from '.';
+import { Engine, WorkbenchPropsType } from '.';
 import { PluginManager, CPlugin } from './core/pluginManager';
 import { RenderPropsType } from '@chamn/render';
 
@@ -23,4 +23,6 @@ export type EngineProps = {
   style?: React.CSSProperties;
   className?: string;
   renderProps?: Partial<RenderPropsType>;
+  /** 配置 workbench 的属性，初始化时生效，后续修改不会生效，只能通过 API 变更 */
+  workbenchConfig?: Partial<WorkbenchPropsType>;
 };

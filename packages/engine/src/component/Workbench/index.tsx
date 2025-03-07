@@ -27,6 +27,12 @@ export type WorkbenchCustomView = {
   view: React.ReactNode;
 };
 
+type TWidgetVisible = {
+  hiddenTopBar?: boolean;
+  hiddenLeftPanel?: boolean;
+  hiddenRightPanel?: boolean;
+};
+
 type WorkbenchStateType = {
   leftBoxVisible: boolean;
   leftBoxSize: {
@@ -46,11 +52,11 @@ type WorkbenchStateType = {
   topToolBarView: React.ReactNode | null;
   subTopToolBarView: React.ReactNode | null;
   customViewList: WorkbenchCustomView[];
-};
+} & TWidgetVisible;
 
 export type WorkbenchPropsType = {
   emitter: Emitter<any>;
-};
+} & TWidgetVisible;
 
 export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStateType> {
   emitter: Emitter<any>;
@@ -78,7 +84,17 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
       topToolBarView: null,
       subTopToolBarView: null,
       customViewList: [],
+      hiddenTopBar: props.hiddenTopBar ?? false,
+      hiddenLeftPanel: props.hiddenLeftPanel ?? false,
+      hiddenRightPanel: props.hiddenRightPanel ?? false,
     };
+  }
+
+  /** 隐藏编辑器的小部件 */
+  hiddenWidget(config: Partial<TWidgetVisible>) {
+    this.setState({
+      ...(config || {}),
+    });
   }
 
   addLeftPanel = (panel: PanelItem) => {
@@ -269,6 +285,9 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
       topToolBarView,
       subTopToolBarView,
       customViewList,
+      hiddenTopBar,
+      hiddenLeftPanel,
+      hiddenRightPanel,
     } = this.state;
     const leftBoContentStyle: React.CSSProperties = {};
     if (!leftBoxFixed) {
@@ -283,96 +302,107 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
     const { onPluginIconClick, toggleRightPanel, toggleLeftPanel, onLeftBoxResizeStop } = this;
     return (
       <div className={styles.workbenchContainer}>
-        <div className={styles.topToolBarBox}>
-          <div className={styles.topToolBarView}>{topToolBarView}</div>
-        </div>
-        <div className={styles.bodyContent}>
-          <div className={styles.leftBox} ref={this.leftPanelContentRef}>
-            <div className={styles.pluginIconBar}>
-              {leftPanels.map((pl) => {
-                return (
-                  <div
-                    key={pl.name}
-                    onClick={() => onPluginIconClick(pl)}
-                    className={clsx([styles.pluginIconItem, currentActivePluginObj?.name === pl.name && styles.active])}
-                  >
-                    {pl.icon}
-                  </div>
-                );
-              })}
-            </div>
-            {leftBoxVisible && (
-              <Resizable
-                className={styles.pluginPanelBoxResizeBox}
-                size={leftBoxSize}
-                style={leftBoContentStyle}
-                minWidth={300}
-                maxWidth={600}
-                enable={{
-                  right: leftBoxVisible,
-                }}
-                onResizeStop={onLeftBoxResizeStop}
-              >
-                <div className={styles.pluginHeader}>
-                  <span className={styles.pluginNameText}>
-                    {currentActivePluginObj?.title || currentActivePluginObj?.name}
-                  </span>
-                  <Button
-                    className={clsx([styles.fixedBtn])}
-                    type="text"
-                    size="small"
-                    onClick={() => {
-                      this.setState({
-                        leftBoxFixed: !this.state.leftBoxFixed,
-                      });
-                    }}
-                  >
-                    <PushpinOutlined className={clsx([leftBoxFixed && styles.active])} />
-                  </Button>
-                  <Button className={styles.closeBtn} type="text" size="small" onClick={toggleLeftPanel}>
-                    <CloseOutlined />
-                  </Button>
-                </div>
-                <div className={styles.pluginPanelBox}>{CurrentPluginRenderView}</div>
-              </Resizable>
-            )}
+        {!hiddenTopBar && (
+          <div className={styles.topToolBarBox}>
+            <div className={styles.topToolBarView}>{topToolBarView}</div>
           </div>
+        )}
+
+        <div className={styles.bodyContent}>
+          {!hiddenLeftPanel && (
+            <div className={styles.leftBox} ref={this.leftPanelContentRef}>
+              <div className={styles.pluginIconBar}>
+                {leftPanels.map((pl) => {
+                  return (
+                    <div
+                      key={pl.name}
+                      onClick={() => onPluginIconClick(pl)}
+                      className={clsx([
+                        styles.pluginIconItem,
+                        currentActivePluginObj?.name === pl.name && styles.active,
+                      ])}
+                    >
+                      {pl.icon}
+                    </div>
+                  );
+                })}
+              </div>
+              {leftBoxVisible && (
+                <Resizable
+                  className={styles.pluginPanelBoxResizeBox}
+                  size={leftBoxSize}
+                  style={leftBoContentStyle}
+                  minWidth={300}
+                  maxWidth={600}
+                  enable={{
+                    right: leftBoxVisible,
+                  }}
+                  onResizeStop={onLeftBoxResizeStop}
+                >
+                  <div className={styles.pluginHeader}>
+                    <span className={styles.pluginNameText}>
+                      {currentActivePluginObj?.title || currentActivePluginObj?.name}
+                    </span>
+                    <Button
+                      className={clsx([styles.fixedBtn])}
+                      type="text"
+                      size="small"
+                      onClick={() => {
+                        this.setState({
+                          leftBoxFixed: !this.state.leftBoxFixed,
+                        });
+                      }}
+                    >
+                      <PushpinOutlined className={clsx([leftBoxFixed && styles.active])} />
+                    </Button>
+                    <Button className={styles.closeBtn} type="text" size="small" onClick={toggleLeftPanel}>
+                      <CloseOutlined />
+                    </Button>
+                  </div>
+                  <div className={styles.pluginPanelBox}>{CurrentPluginRenderView}</div>
+                </Resizable>
+              )}
+            </div>
+          )}
+
           <div className={styles.centerBox}>
             {subTopToolBarView && <div className={styles.subTopToolbarBox}>{subTopToolBarView}</div>}
             <div className={styles.canvasBox}>
               <div className={styles.scrollBox}>{bodyView}</div>
             </div>
           </div>
-          <div className={styles.rightResizeBox}>
-            <div className={styles.arrowCursor} onClick={toggleRightPanel}>
-              <DoubleRightOutlined className={clsx([!rightBoxVisible && styles.active])} />
-            </div>
-            <div
-              style={{
-                display: rightBoxVisible ? 'block' : 'none',
-                height: '100%',
-              }}
-            >
-              <Resizable
-                minWidth={400}
-                maxWidth={600}
-                enable={{
-                  left: rightBoxVisible,
-                }}
-                size={rightBoxSize}
-                onResizeStop={(_e, _direction, _ref, d) => {
-                  this.setState({
-                    rightBoxSize: {
-                      width: this.state.rightBoxSize.width + d.width,
-                      height: this.state.rightBoxSize.height,
-                    },
-                  });
+          {!hiddenRightPanel && (
+            <div className={styles.rightResizeBox}>
+              <div className={styles.arrowCursor} onClick={toggleRightPanel}>
+                <DoubleRightOutlined className={clsx([!rightBoxVisible && styles.active])} />
+              </div>
+              <div
+                style={{
+                  display: rightBoxVisible ? 'block' : 'none',
+                  height: '100%',
                 }}
               >
-                <div className={styles.rightBox}>{rightView}</div>
-              </Resizable>
+                <Resizable
+                  minWidth={400}
+                  maxWidth={600}
+                  enable={{
+                    left: rightBoxVisible,
+                  }}
+                  size={rightBoxSize}
+                  onResizeStop={(_e, _direction, _ref, d) => {
+                    this.setState({
+                      rightBoxSize: {
+                        width: this.state.rightBoxSize.width + d.width,
+                        height: this.state.rightBoxSize.height,
+                      },
+                    });
+                  }}
+                >
+                  <div className={styles.rightBox}>{rightView}</div>
+                </Resizable>
+              </div>
             </div>
-          </div>
+          )}
         </div>
         {createPortal(
           <div className={styles.customViewBox}>

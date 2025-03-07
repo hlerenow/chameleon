@@ -27,6 +27,8 @@ export class Engine extends React.Component<EngineProps> {
   emitter: Emitter<any>;
   assetsPackageListManager: AssetsPackageListManager;
 
+  workbenchConfig?: EngineProps['workbenchConfig'] = {};
+
   constructor(props: EngineProps) {
     super(props);
     this.pageSchema = props.schema;
@@ -34,6 +36,7 @@ export class Engine extends React.Component<EngineProps> {
     this.currentSelectNode = null;
     (window as any).__CHAMELEON_ENG__ = this;
     this.assetsPackageListManager = new AssetsPackageListManager(props.assetPackagesList || []);
+    this.workbenchConfig = props.workbenchConfig || {};
 
     try {
       this.pageModel = new CPage(this.pageSchema, {
@@ -172,7 +175,7 @@ export class Engine extends React.Component<EngineProps> {
   render() {
     return (
       <div className={clsx([styles.engineContainer, this.props.className])} style={this.props.style}>
-        <Workbench ref={this.workbenchRef} emitter={this.emitter} />
+        <Workbench ref={this.workbenchRef} emitter={this.emitter} {...this.workbenchConfig} />
       </div>
     );
   }
