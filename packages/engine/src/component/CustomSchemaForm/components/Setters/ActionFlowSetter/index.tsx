@@ -43,6 +43,9 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
   ]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<any>([]);
 
+  const latesEdgesRef = useRef<any[]>([]);
+  latesEdgesRef.current = edges;
+
   const onConnect = useCallback<OnConnect>((params) => setEdges((eds) => addEdge({ ...params }, eds)), [setEdges]);
 
   const latestNodeRef = useRef<Node[]>([]);
@@ -78,10 +81,12 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
     }, 500);
   }, [props.value, setEdges, setNodes]);
 
-  const saveData = () => {
-    const newSchemaValue = revertNodeToActionLogic({ nodes, edges });
-    props.onValueChange?.(newSchemaValue);
-  };
+  const saveData = useCallback(() => {
+    setTimeout(() => {
+      const newSchemaValue = revertNodeToActionLogic({ nodes: latestNodeRef.current, edges: latesEdgesRef.current });
+      props.onValueChange?.(newSchemaValue);
+    });
+  }, [props]);
 
   return (
     <ActionFlowContext.Provider
