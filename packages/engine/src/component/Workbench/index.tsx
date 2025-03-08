@@ -31,6 +31,8 @@ type TWidgetVisible = {
   hiddenTopBar?: boolean;
   hiddenLeftPanel?: boolean;
   hiddenRightPanel?: boolean;
+  /** canvas 区域不添加任何 padding margining */
+  canvasFull?: boolean;
 };
 
 type WorkbenchStateType = {
@@ -87,6 +89,7 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
       hiddenTopBar: props.hiddenTopBar ?? false,
       hiddenLeftPanel: props.hiddenLeftPanel ?? false,
       hiddenRightPanel: props.hiddenRightPanel ?? false,
+      canvasFull: props.canvasFull ?? false,
     };
   }
 
@@ -310,7 +313,10 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
 
         <div className={styles.bodyContent}>
           {!hiddenLeftPanel && (
-            <div className={styles.leftBox} ref={this.leftPanelContentRef}>
+            <div
+              className={clsx([styles.leftBox, hiddenLeftPanel ?? styles.hiddenLeftPanel])}
+              ref={this.leftPanelContentRef}
+            >
               <div className={styles.pluginIconBar}>
                 {leftPanels.map((pl) => {
                   return (
@@ -367,42 +373,41 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
 
           <div className={styles.centerBox}>
             {subTopToolBarView && <div className={styles.subTopToolbarBox}>{subTopToolBarView}</div>}
-            <div className={styles.canvasBox}>
+            <div className={clsx([styles.canvasBox, this.state.canvasFull !== true && styles.canvasBoxPadding])}>
               <div className={styles.scrollBox}>{bodyView}</div>
             </div>
           </div>
-          {!hiddenRightPanel && (
-            <div className={styles.rightResizeBox}>
-              <div className={styles.arrowCursor} onClick={toggleRightPanel}>
-                <DoubleRightOutlined className={clsx([!rightBoxVisible && styles.active])} />
-              </div>
-              <div
-                style={{
-                  display: rightBoxVisible ? 'block' : 'none',
-                  height: '100%',
+
+          <div className={clsx([styles.rightResizeBox, hiddenRightPanel && styles.hiddenRightPanel])}>
+            <div className={styles.arrowCursor} onClick={toggleRightPanel}>
+              <DoubleRightOutlined className={clsx([!rightBoxVisible && styles.active])} />
+            </div>
+            <div
+              style={{
+                display: rightBoxVisible ? 'block' : 'none',
+                height: '100%',
+              }}
+            >
+              <Resizable
+                minWidth={400}
+                maxWidth={600}
+                enable={{
+                  left: rightBoxVisible,
+                }}
+                size={rightBoxSize}
+                onResizeStop={(_e, _direction, _ref, d) => {
+                  this.setState({
+                    rightBoxSize: {
+                      width: this.state.rightBoxSize.width + d.width,
+                      height: this.state.rightBoxSize.height,
+                    },
+                  });
                 }}
               >
-                <Resizable
-                  minWidth={400}
-                  maxWidth={600}
-                  enable={{
-                    left: rightBoxVisible,
-                  }}
-                  size={rightBoxSize}
-                  onResizeStop={(_e, _direction, _ref, d) => {
-                    this.setState({
-                      rightBoxSize: {
-                        width: this.state.rightBoxSize.width + d.width,
-                        height: this.state.rightBoxSize.height,
-                      },
-                    });
-                  }}
-                >
-                  <div className={styles.rightBox}>{rightView}</div>
-                </Resizable>
-              </div>
+                <div className={styles.rightBox}>{rightView}</div>
+              </Resizable>
             </div>
-          )}
+          </div>
         </div>
         {createPortal(
           <div className={styles.customViewBox}>

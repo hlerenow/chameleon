@@ -4,6 +4,8 @@ import { CPage, CPageDataType } from '@chamn/model';
 import { PLUGIN_NAME } from './config';
 import { Designer } from './components/Canvas';
 import { DesignerPluginType } from './type';
+import { LayoutMode } from '@chamn/layout';
+import { layout } from '@dagrejs/dagre';
 
 export const DesignerPlugin: DesignerPluginType = () => {
   const designerRef = React.createRef<Designer>();
@@ -20,6 +22,16 @@ export const DesignerPlugin: DesignerPluginType = () => {
     },
     export: () => {
       return {
+        /** 设置 canvas 的渲染模式 */
+        setMode(newMode) {
+          return designerRef.current?.layoutRef.current?.setMode(newMode);
+        },
+        setPreviewMode() {
+          return designerRef.current?.layoutRef.current?.setMode(LayoutMode.PREVIEW);
+        },
+        setEditMode() {
+          return designerRef.current?.layoutRef.current?.setMode(LayoutMode.EDIT);
+        },
         setCanvasWidth(width: number | string) {
           const iframeContainer = designerRef.current?.getIframeDom();
 

@@ -1,5 +1,5 @@
 import { CPlugin, PluginInstance } from '@/core/pluginManager';
-import { DragAndDrop, IFrameContainer, Layout, LayoutPropsType } from '@chamn/layout';
+import { DragAndDrop, IFrameContainer, Layout, LayoutMode, LayoutPropsType } from '@chamn/layout';
 import { AdvanceCustom, AssetPackage, CPageDataType } from '@chamn/model';
 import { RenderInstance, RenderPropsType } from '@chamn/render';
 import { Designer } from './components/Canvas';
@@ -21,6 +21,9 @@ export type DesignerExport = {
   updateRenderComponents: (newComponentMap: Record<string, string>) => void;
   /** set canvas width, width must below visible area width*/
   setCanvasWidth: (width: number | string) => void;
+  setMode: (mode: LayoutMode) => void;
+  setPreviewMode: () => void;
+  setEditMode: () => void;
 };
 
 export type DesignerPluginConfig = Omit<

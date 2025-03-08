@@ -9,7 +9,7 @@ import { DEFAULT_PLUGIN_LIST } from '../../../plugins';
 import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 import { InnerComponentMeta } from '../../../material/innerMaterial';
 import { RollbackOutlined } from '@ant-design/icons';
-import { LayoutPropsType } from '@chamn/layout';
+import { LayoutMode, LayoutPropsType } from '@chamn/layout';
 
 import { collectVariable, flatObject, getThirdLibs } from '@chamn/render';
 import { HistoryPluginInstance } from '@/plugins/History/type';
@@ -18,6 +18,7 @@ import { DesignerPluginInstance } from '@/plugins/Designer/type';
 import { DesignerSizer } from '@/component/DesignerSizer';
 import { EnginContext } from '@/type';
 import renderAsURL from '@chamn/render/dist/index.umd.js?url';
+import staticMethods from 'antd/es/message';
 
 const win = window as any;
 win.React = React;
@@ -100,6 +101,23 @@ export const ComponentEditor = () => {
     engineRef.current?.engine.getI18n()?.changeLanguage(lang);
 
     const designer: DesignerPluginInstance = await ctx.pluginManager.onPluginReadyOk('Designer');
+    // designer.export?.setMode?.(LayoutMode.EDIT);
+
+    // setTimeout(() => {
+    //   designer.export?.setMode?.(LayoutMode.PREVIEW);
+    //   setTimeout(() => {
+    //     designer.export?.setMode?.(LayoutMode.EDIT);
+    //   }, 3 * 1000);
+    // }, 5 * 1000);
+
+    engineRef.current?.engine.preview();
+
+    setTimeout(() => {
+      engineRef.current?.engine.existPreview();
+      setTimeout(() => {
+        engineRef.current?.engine.preview();
+      }, 5000);
+    }, 3000);
 
     const workbench = ctx.engine.getWorkbench();
 

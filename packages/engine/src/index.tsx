@@ -172,6 +172,32 @@ export class Engine extends React.Component<EngineProps> {
     return customI18n;
   }
 
+  /** 进入预览模式 */
+  async preview() {
+    this.workbenchRef.current?.hiddenWidget({
+      hiddenLeftPanel: true,
+      hiddenRightPanel: true,
+      hiddenTopBar: true,
+      canvasFull: true,
+    });
+
+    const designerPlugin = await this.pluginManager.get<DesignerPluginInstance>('Designer');
+    const designerPluginExport = designerPlugin?.export;
+    designerPluginExport?.setPreviewMode();
+  }
+
+  async existPreview() {
+    this.workbenchRef.current?.hiddenWidget({
+      hiddenLeftPanel: false,
+      hiddenRightPanel: false,
+      hiddenTopBar: false,
+      canvasFull: false,
+    });
+    const designerPlugin = await this.pluginManager.get<DesignerPluginInstance>('Designer');
+    const designerPluginExport = designerPlugin?.export;
+    designerPluginExport?.setEditMode();
+  }
+
   render() {
     return (
       <div className={clsx([styles.engineContainer, this.props.className])} style={this.props.style}>

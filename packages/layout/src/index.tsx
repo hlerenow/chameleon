@@ -29,7 +29,15 @@ import intersection from 'lodash-es/intersection';
 
 export type LayoutDragEvent<T = LayoutDragAndDropExtraDataType> = DragAndDropEventObj<T>;
 
+export enum LayoutMode {
+  EDIT = 'EDIT',
+  /** 不触发任何编辑器的选择、拖拽、高亮、hover 交互 */
+  PREVIEW = 'PREVIEW',
+}
+
 export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
+  /** 渲染模式 */
+  mode?: LayoutMode;
   renderJSUrl?: string;
   /** 编辑模式下需要额外加在的资源信息 */
   assets?: AssetPackage[];
@@ -121,6 +129,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   iframeDomId: string;
   /** 在 layout 层取消拖动行为，实际上 senor 的拖动行为仍然发生 */
   isCancelDrag: boolean;
+  /** 渲染模式  */
+  mode: LayoutMode = LayoutMode.EDIT;
+
   constructor(props: LayoutPropsType) {
     super(props);
     this.iframeDomId = getRandomStr();
@@ -128,6 +139,8 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     this.iframeContainer = new IFrameContainer();
     this.eventExposeHandler = [];
     this.isCancelDrag = false;
+    this.mode = props.mode ?? LayoutMode.EDIT;
+
     this.state = {
       isDragging: false,
       ready: false,
@@ -199,6 +212,14 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     return this.init();
   }
 
+  setMode(newMode: LayoutMode) {
+    this.mode = newMode;
+    if (this.mode === LayoutMode.PREVIEW) {
+      // 取消高亮
+      this.clearSelectNode();
+    }
+  }
+
   init() {
     this.dnd.clearSensors();
     this.iframeContainer.destroy();
@@ -259,7 +280,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
   }
 
-  /** 回复节点选中 */
+  /** 恢复节点选中 */
   recoverSelectNode() {
     this.setState({
       canSelectNode: true,
@@ -296,6 +317,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         iframeDoc.body,
         'click',
         async (e) => {
+          if (this.mode === LayoutMode.PREVIEW) {
+            return;
+          }
           if (!this.designRenderRef.current) {
             return;
           }
@@ -331,17 +355,26 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
     this.eventExposeHandler.push(
       addEventListenerReturnCancel(subWin as any, 'resize', () => {
+        if (this.mode === LayoutMode.PREVIEW) {
+          return;
+        }
         this.highlightCanvasRef.current?.update();
       })
     );
 
     this.eventExposeHandler.push(
       addEventListenerReturnCancel(subDoc as any, 'resize', () => {
+        if (this.mode === LayoutMode.PREVIEW) {
+          return;
+        }
         this.highlightCanvasRef.current?.update();
       })
     );
     this.eventExposeHandler.push(
       addEventListenerReturnCancel(subDoc as any, 'scroll', () => {
+        if (this.mode === LayoutMode.PREVIEW) {
+          return;
+        }
         this.highlightCanvasRef.current?.update();
       })
     );
@@ -353,6 +386,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       return;
     }
     const hoverInstance = (e: MouseEvent) => {
+      if (this.mode === LayoutMode.PREVIEW) {
+        return;
+      }
       if (!e.target) {
         return;
       }
@@ -417,6 +453,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           iframeDoc.body,
           ev,
           async (e) => {
+            if (this.mode === LayoutMode.PREVIEW) {
+              return;
+            }
             const targetComponentInstance = this.designRenderRef.current?.getInstanceByDom(e.target as HTMLElement);
             const targetNode = targetComponentInstance?._NODE_MODEL;
             if (targetNode) {
@@ -464,6 +503,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
 
     sensor.setCanDrag(async (eventObj) => {
+      if (this.mode === LayoutMode.PREVIEW) {
+        return;
+      }
       const startInstance = this.designRenderRef.current?.getInstanceByDom(eventObj.event.target as HTMLElement);
       // 木有可选中元素结束
       if (!startInstance) {
@@ -569,7 +611,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     dnd.registerSensor(sensor);
     const { onSelectNode } = this.props;
     sensor.emitter.on('dragStart', async (eventObj) => {
-      if (this.isCancelDrag) {
+      if (this.mode === LayoutMode.PREVIEW || this.isCancelDrag) {
         return;
       }
       this.setState({
@@ -666,7 +708,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
 
     sensor.emitter.on('dragging', async (e) => {
-      if (!this.designRenderRef.current || this.isCancelDrag) {
+      if (!this.designRenderRef.current || this.isCancelDrag || this.mode === LayoutMode.PREVIEW) {
         return;
       }
       const extraData = e.extraData;
@@ -721,6 +763,13 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
     // 监听所有感应区的鼠标移动事件
     const onMouseMove = (e: { pointer: any }) => {
+      if (this.mode === LayoutMode.PREVIEW) {
+        this.setState({
+          mousePointer: null,
+          selectLockStyle: {},
+        });
+        return;
+      }
       if (this.state.isDragging) {
         this.setState({
           mousePointer: e.pointer,
@@ -816,6 +865,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   }
 
   selectRectViewItemRender: HighlightCanvasCoreProps['itemRender'] = (props) => {
+    if (this.mode === LayoutMode.PREVIEW) {
+      return <></>;
+    }
     const { selectRectViewRender } = this.props;
     const Comp = selectRectViewRender;
     if (!Comp) {
@@ -825,6 +877,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   };
 
   hoverRectViewItemRender: HighlightCanvasCoreProps['itemRender'] = (props) => {
+    if (this.mode === LayoutMode.PREVIEW) {
+      return <></>;
+    }
     const { hoverRectViewRender } = this.props;
     const Comp = hoverRectViewRender;
     if (!Comp) {
