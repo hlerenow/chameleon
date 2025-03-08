@@ -123,11 +123,16 @@ export const transformActionNode = (propVal: TActionLogicItem, options: CommonOp
         resultMap[item.id] = await res;
       }
     };
-    // 从第一节点开始执行逻辑知道，next 为空
+    // 从第一节点开始执行逻辑直到，next 为空
     let nextNode: TLogicItemHandlerFlow[number] | undefined = handler[0];
-
+    const hasProcessNodeList = new Set();
     while (nextNode) {
+      if (hasProcessNodeList.has(nextNode.id)) {
+        // 避免死循环
+        return;
+      }
       await buildNode(nextNode);
+      hasProcessNodeList.add(nextNode.id);
       const tempNode = handler.find((el) => nextNode?.next && el.id === nextNode?.next);
       nextNode = tempNode;
     }
@@ -229,7 +234,7 @@ const buildRequestAPI = (item: TLogicRequestAPIItem, option: CommonOption) => {
     if (!item.afterFailedResponse) {
       return response;
     }
-
+    // 请求或者成功的的同级逻辑可以复用，不允许死循环
     const allNodeList = [...(item.afterFailedResponse || []), ...(item.afterSuccessResponse || [])];
 
     const func = transformActionNode(

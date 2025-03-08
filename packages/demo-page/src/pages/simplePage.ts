@@ -249,24 +249,6 @@ export const SamplePage: CPageDataType = {
               ],
             },
           },
-          {
-            name: 'onMouseEnter',
-            func: {
-              type: CNodePropsTypeEnum.ACTION,
-              handler: [
-                {
-                  id: '125',
-                  type: 'RUN_CODE',
-                  value: `
-                    function (params) {
-                      console.log('12321312', $$context, params);
-                      return 'Hello eventListener logic'
-                    };
-                  `,
-                },
-              ],
-            },
-          },
         ],
         methods: [
           {

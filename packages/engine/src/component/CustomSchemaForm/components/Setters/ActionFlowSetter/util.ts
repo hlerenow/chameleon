@@ -3,6 +3,7 @@ import Dagre from '@dagrejs/dagre';
 import { getRandomStr, SetterType, TActionLogicItem, TLogicItemHandlerFlow } from '@chamn/model';
 import { INPUT_HANDLE_ID, OUTPUT_HANDLE_ID, REACT_FLOW_DRAG_CLASS_NAME, REQUEST_API_FAILED_HANDLE_ID } from './config';
 import { NODE_TYPE } from './node';
+import { message } from 'antd';
 
 /** 自动布局 flow node */
 export const calculateElementLayout = (
@@ -55,6 +56,7 @@ const createFlowNode = (nodeData: Partial<Node>): Node => {
   };
 };
 
+/** 创建边 */
 const createFlowEdge = (source: string, target: string, sourceHandle = OUTPUT_HANDLE_ID) => {
   return {
     id: `${source}_${target}`,
@@ -65,6 +67,7 @@ const createFlowEdge = (source: string, target: string, sourceHandle = OUTPUT_HA
   };
 };
 
+/** 将 json schema 转换为 react-flow 节点和边信息 */
 export const parseActionLogicToNodeList = (value: TActionLogicItem) => {
   const nodes: Node[] = [
     createFlowNode({
@@ -78,36 +81,48 @@ export const parseActionLogicToNodeList = (value: TActionLogicItem) => {
     return { nodes: nodes, edges: edges };
   }
 
-  const processNodes = (items: TLogicItemHandlerFlow, previousNodeId: string) => {
+  const processNodes = (
+    items: TLogicItemHandlerFlow,
+    options?: {
+      /**
+       * 用于标记是从那种类型的 output flag  id 导出的 flow
+       */
+      sourceHandler: string;
+    }
+  ) => {
     items.forEach((item) => {
       const currentNode = createFlowNode(item);
       nodes.push(currentNode);
-      edges.push(createFlowEdge(previousNodeId, currentNode.id));
+      if (item.next) {
+        edges.push(createFlowEdge(item.id, String(item.next), options?.sourceHandler));
+      }
 
       if (item.type === 'REQUEST_API') {
         // 处理成功分支节点
         if (item.afterSuccessResponse?.length) {
-          processNodes(item.afterSuccessResponse, currentNode.id);
+          edges.push(createFlowEdge(item.id, String(item.afterSuccessResponse[0].id)));
+          processNodes(item.afterSuccessResponse);
         }
 
         // 处理失败分支节点
         if (item.afterFailedResponse?.length) {
-          item.afterFailedResponse.forEach((failedNode) => {
-            const newNode = createFlowNode(failedNode);
-            nodes.push(newNode);
-            edges.push(createFlowEdge(currentNode.id, newNode.id, REQUEST_API_FAILED_HANDLE_ID));
+          edges.push(createFlowEdge(item.id, String(item.afterFailedResponse[0].id)));
+          processNodes(item.afterFailedResponse, {
+            sourceHandler: REQUEST_API_FAILED_HANDLE_ID,
           });
         }
       }
-
-      previousNodeId = currentNode.id;
     });
   };
 
-  processNodes(value.handler, NODE_TYPE.START_NODE);
+  const nextItem = value.handler[0];
+  edges.push(createFlowEdge(NODE_TYPE.START_NODE, nextItem.id));
+
+  processNodes(value.handler);
   return { nodes, edges };
 };
 
+/** 将节点格式化json schema */
 export const revertNodeToActionLogic = (params: { nodes: Node[]; edges: Edge[] }): TActionLogicItem => {
   const { nodes, edges } = params;
   const result: TActionLogicItem = {
@@ -129,7 +144,7 @@ export const revertNodeToActionLogic = (params: { nodes: Node[]; edges: Edge[] }
     if (!currentNode) return [];
 
     const handlers = [];
-    const nodeData: any = { ...currentNode.data };
+    const nodeData: any = { ...currentNode.data, id: currentNodeId };
 
     if (currentNode.type === 'REQUEST_API') {
       // 获取成功分支节点
@@ -153,17 +168,23 @@ export const revertNodeToActionLogic = (params: { nodes: Node[]; edges: Edge[] }
 
     handlers.push(nodeData);
 
-    // 获取下一个主流程节点
+    // 获取下一个主流程节点, 理论上只有能一个， 分叉逻辑需要使用特殊节点处理
     const nextEdges = edges.filter((e) => e.source === currentNodeId && e.sourceHandle === OUTPUT_HANDLE_ID);
-
-    nextEdges.forEach((edge) => {
-      const nextHandlers = traverseNodes(edge.target);
-      handlers.push(...nextHandlers);
-    });
+    if (nextEdges.length > 1) {
+      message.error('不允许存在一个节点连接多个节点');
+      throw new Error('不允许存在一个节点连接多个节点');
+    }
+    if (nextEdges.length !== 0) {
+      /** 理论上只会有一个元素 */
+      nextEdges.forEach((edge) => {
+        const nextHandlers = traverseNodes(edge.target);
+        handlers.push(...nextHandlers);
+        nodeData.next = nextHandlers[0]?.id ?? null;
+      });
+    }
 
     return handlers;
   };
-
   const handler = traverseNodes(startNode.id);
   // 移除 start node
   handler.shift();
