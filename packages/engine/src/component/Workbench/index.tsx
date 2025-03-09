@@ -27,7 +27,7 @@ export type WorkbenchCustomView = {
   view: React.ReactNode;
 };
 
-type TWidgetVisible = {
+export type TWidgetVisible = {
   hiddenTopBar?: boolean;
   hiddenLeftPanel?: boolean;
   hiddenRightPanel?: boolean;
@@ -90,6 +90,14 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
       hiddenLeftPanel: props.hiddenLeftPanel ?? false,
       hiddenRightPanel: props.hiddenRightPanel ?? false,
       canvasFull: props.canvasFull ?? false,
+    };
+  }
+
+  getHiddenWidgetConfig() {
+    return {
+      hiddenTopBar: this.state.hiddenTopBar,
+      hiddenLeftPanel: this.state.hiddenLeftPanel,
+      hiddenRightPanel: this.state.hiddenRightPanel,
     };
   }
 

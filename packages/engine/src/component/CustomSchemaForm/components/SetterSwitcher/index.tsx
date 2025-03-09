@@ -103,7 +103,7 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
   const labelWidth = currentSetter?.labelWidth;
   const labelAlign = currentSetter?.labelAlign || 'center';
   const collapse = (currentSetter?.props as any)?.collapse;
-  const specialSetter = ['ArraySetter', 'ShapeSetter'].includes(currentSetter.componentName);
+  const specialSetter = ['ArraySetter', 'ShapeSetter'].includes(currentSetter?.componentName);
   const setterContext = useMemo(
     () => ({
       formRef,

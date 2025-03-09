@@ -1,5 +1,5 @@
 import React from 'react';
-import { Workbench } from './component/Workbench';
+import { TWidgetVisible, Workbench } from './component/Workbench';
 
 import styles from './Engine.module.scss';
 import i18n from './i18n/index';
@@ -28,6 +28,9 @@ export class Engine extends React.Component<EngineProps> {
   assetsPackageListManager: AssetsPackageListManager;
 
   workbenchConfig?: EngineProps['workbenchConfig'] = {};
+  _oldHiddenWidgetConfig:
+    | { hiddenTopBar: boolean | undefined; hiddenLeftPanel: boolean | undefined; hiddenRightPanel: boolean | undefined }
+    | undefined;
 
   constructor(props: EngineProps) {
     super(props);
@@ -174,6 +177,8 @@ export class Engine extends React.Component<EngineProps> {
 
   /** 进入预览模式 */
   async preview() {
+    const oldHiddenWidgetConfig = this.workbenchRef.current?.getHiddenWidgetConfig();
+    this._oldHiddenWidgetConfig = oldHiddenWidgetConfig;
     this.workbenchRef.current?.hiddenWidget({
       hiddenLeftPanel: true,
       hiddenRightPanel: true,
@@ -188,14 +193,16 @@ export class Engine extends React.Component<EngineProps> {
 
   async existPreview() {
     this.workbenchRef.current?.hiddenWidget({
-      hiddenLeftPanel: false,
-      hiddenRightPanel: false,
-      hiddenTopBar: false,
+      ...(this._oldHiddenWidgetConfig || {}),
       canvasFull: false,
     });
     const designerPlugin = await this.pluginManager.get<DesignerPluginInstance>('Designer');
     const designerPluginExport = designerPlugin?.export;
     designerPluginExport?.setEditMode();
+  }
+
+  hiddenWidget(config: Partial<TWidgetVisible>) {
+    this.workbenchRef.current?.hiddenWidget(config || {});
   }
 
   render() {
