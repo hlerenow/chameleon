@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.5](https://github.com/ByteCrazy/chameleon/compare/v0.3.4...v0.3.5) (2025-03-09)
+
+### ✨ Features | 新功能
+
+* **engine, layout:** 🎸 support controll preview mode ([97b83e5](https://github.com/ByteCrazy/chameleon/commit/97b83e58f0f22c76da51e5a3d22db2c82a2f70d2))
+* **engine:** 🎸 add workbench widget control config ([0fcab5b](https://github.com/ByteCrazy/chameleon/commit/0fcab5b5ad715762327c26d3f7eae4680604644b))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **demo-page, engine, render:** 🐛 fixed action flow only run first node ([c4bdb85](https://github.com/ByteCrazy/chameleon/commit/c4bdb85d0ca6ed09c6c66d15847de5bd14da556e))
+* **engine, model:** 🐛 update select setter name ([054fd48](https://github.com/ByteCrazy/chameleon/commit/054fd48f49ec1d1bdb79d7bac44acedb601d6fdf))
+* **engine:** 🐛 fixed last connect line not save ([2bacb15](https://github.com/ByteCrazy/chameleon/commit/2bacb1541cbc753df15a0216df9d6d6aac86cb1d))
+
 ## [0.3.4](https://github.com/ByteCrazy/chameleon/compare/v0.3.3...v0.3.4) (2025-02-16)
 
 ### ✨ Features | 新功能

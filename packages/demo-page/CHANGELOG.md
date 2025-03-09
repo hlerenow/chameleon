@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.5](https://github.com/ByteCrazy/chameleon/compare/v0.3.4...v0.3.5) (2025-03-09)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **demo-page, engine, render:** 🐛 fixed action flow only run first node ([c4bdb85](https://github.com/ByteCrazy/chameleon/commit/c4bdb85d0ca6ed09c6c66d15847de5bd14da556e))
+
 ## [0.3.4](https://github.com/ByteCrazy/chameleon/compare/v0.3.3...v0.3.4) (2025-02-16)
 
 **Note:** Version bump only for package @chamn/demo-page

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.5](https://github.com/ByteCrazy/chameleon/compare/v0.3.4...v0.3.5) (2025-03-09)
+
+### ✨ Features | 新功能
+
+* **engine, layout:** 🎸 support controll preview mode ([97b83e5](https://github.com/ByteCrazy/chameleon/commit/97b83e58f0f22c76da51e5a3d22db2c82a2f70d2))
+
 ## [0.3.4](https://github.com/ByteCrazy/chameleon/compare/v0.3.3...v0.3.4) (2025-02-16)
 
 ### ✨ Features | 新功能
