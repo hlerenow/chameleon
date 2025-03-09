@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.6](https://github.com/ByteCrazy/chameleon/compare/v0.3.5...v0.3.6) (2025-03-09)
+
+### ✨ Features | 新功能
+
+* **engine:** 🎸 add hiddenWidget for eng and optimize setter ([42b9846](https://github.com/ByteCrazy/chameleon/commit/42b984681a9efc7cdee7dc4287cd994fd37c592c))
+
 ## [0.3.5](https://github.com/ByteCrazy/chameleon/compare/v0.3.4...v0.3.5) (2025-03-09)
 
 ### ✨ Features | 新功能
