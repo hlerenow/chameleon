@@ -90,6 +90,7 @@ export class DefineReactAdapter {
       onComponentDestroy: onComponentDestroy!,
       renderMode: renderMode!,
       requestAPI: requestAPI,
+      components: this.components,
     });
 
     const props: Record<string, any> = {};

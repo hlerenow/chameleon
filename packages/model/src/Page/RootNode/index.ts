@@ -42,6 +42,8 @@ export const parseSchema = (
       propsSetter: {},
       advanceSetter: {},
     }),
+    /** 需要注入给特定组件的运行时引擎的内置变量 */
+    injectEnvList: data.injectEnvList,
   };
   let child: any = [];
   if (isArray(data.children)) {
@@ -96,6 +98,7 @@ export class CRootNode {
   listenerHandle: (() => void)[];
   onChangeCbQueue: OnNodeChangeType[];
   parent: CPage | null;
+
   constructor(data: any, { parent, materials }: { parent: CPage | null; materials: CMaterials }) {
     this.materialsModel = materials;
     this.rawData = JSON.parse(JSON.stringify(data));

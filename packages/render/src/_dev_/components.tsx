@@ -7,7 +7,8 @@ export const components: any = {
   Page: ({ children }: any) => {
     return <div style={{ padding: '10px' }}>{children}</div>;
   },
-  div: ({ children, ...props }: any) => {
+  div: ({ children, COMPONENTS, ...props }: any) => {
+    console.log('🚀 ~ COMPONENTS:', COMPONENTS);
     useEffect(() => {
       console.log('init', props, Date.now());
     }, []);

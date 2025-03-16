@@ -114,6 +114,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
   }
 
   updateComponents(newComponents: Record<string, string> = {}) {
+    // 只能 assign, 保持变量引用地址不变
     this._components = Object.assign(this._components, newComponents);
     this.forceUpdate();
   }

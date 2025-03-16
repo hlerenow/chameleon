@@ -1,6 +1,7 @@
 import {
   CNode,
   CRootNode,
+  ENGEnvEnum,
   getRandomStr,
   InnerComponentNameEnum,
   isExpression,
@@ -158,7 +159,7 @@ export const convertModelToComponent = (
         })
         .filter(Boolean);
       const uniqueList = Array.from(new Set(storeNameList));
-      // TODO: list need now repeat
+      // TODO: list need no repeat
       const disposeList: (() => void)[] = [];
       if (uniqueList.length) {
         uniqueList.forEach((storeName) => {
@@ -475,6 +476,22 @@ export const convertModelToComponent = (
       return newContext;
     }
 
+    injectEngEnv() {
+      const res: any = {};
+      const injectEnvList = nodeModel.value.injectEnvList || [];
+      if (Array.isArray(nodeModel.value.injectEnvList)) {
+        const map = {
+          [ENGEnvEnum.COMPONENTS]: options.components,
+        };
+        injectEnvList.reduce((result, el) => {
+          result[el] = map[el];
+          return result;
+        }, res);
+      }
+
+      return res;
+    }
+
     renderCore(): React.ReactNode {
       const { $$context: _, ...props } = this.props;
       const newOriginalProps = {
@@ -492,6 +509,10 @@ export const convertModelToComponent = (
         $$context: newContext,
         ...commonRenderOptions,
       });
+
+      // 处理特殊的组件，需要注入 eng 的上下文变量
+      const engEnvProps = this.injectEngEnv();
+      Object.assign(newProps, engEnvProps);
 
       // 处理 className
       const finalClsx = this.processNodeClassName(newProps.className, newContext);
@@ -566,6 +587,10 @@ export const convertModelToComponent = (
             $$context: loopContext,
             ...commonRenderOptions,
           });
+
+          // 处理特殊的组件，需要注入 eng 的上下文变量
+          const engEnvProps = this.injectEngEnv();
+          Object.assign(newProps, engEnvProps);
 
           // 处理 className
           const finalClsx = this.processNodeClassName(newProps.className, loopContext);

@@ -225,6 +225,11 @@ export type ClassNameType = {
   status?: JSExpressionPropType;
 };
 
+/** 支持注入到运行时组件的引擎内置变量名列表 */
+export enum ENGEnvEnum {
+  COMPONENTS = 'COMPONENTS',
+}
+
 export type CNodeDataType = {
   id?: string;
   title?: string;
@@ -292,6 +297,8 @@ export type CNodeDataType = {
     key?: JSExpressionPropType | string;
     name?: string;
   };
+  /** 需要注入运行时组件的环境变量列表，可以在组件内部通过 props 获取 */
+  injectEnvList?: (ENGEnvEnum | `${ENGEnvEnum}`)[];
   // 是否渲染
   condition?: boolean | JSExpressionPropType;
   extra?: Record<any, any>;

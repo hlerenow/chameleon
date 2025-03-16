@@ -20,6 +20,7 @@ export const SamplePage: CPageDataType = {
       {
         id: 'globalStateText',
         componentName: 'div',
+        injectEnvList: ['COMPONENTS'],
         props: {
           children: {
             type: 'EXPRESSION',
