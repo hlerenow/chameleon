@@ -1,4 +1,4 @@
-import { isff } from './utils';
+export const isff = typeof navigator !== 'undefined' ? navigator.userAgent.toLowerCase().indexOf('firefox') > 0 : false;
 
 // Special Keys
 export const _keyMap: Record<string, number> = {

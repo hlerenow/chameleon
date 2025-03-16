@@ -2,20 +2,26 @@ import { CPluginCtx } from '@/core/pluginManager';
 import { DesignerPluginInstance } from '../Designer/type';
 import { CNode } from '@chamn/model';
 import { HistoryPluginInstance } from '../History/type';
+import { message } from 'antd';
 
 export const actionMap = {
   deleteNode: async (ctx: CPluginCtx) => {
+    const designer = await ctx.pluginManager.get<DesignerPluginInstance>('Designer');
     const activeNode = ctx.engine.getActiveNode();
     if (activeNode) {
-      ctx.pageModel.deleteNode(activeNode);
-      return true;
+      const flag = await designer?.export?.deleteNode(activeNode.id);
+      if (!flag) {
+        message.error('该节点不能删除');
+      }
+      return flag;
     }
   },
   copyNode: async (ctx: CPluginCtx) => {
+    const designer = await ctx.pluginManager.get<DesignerPluginInstance>('Designer');
     const activeNode = ctx.engine.getActiveNode();
     if (activeNode) {
-      ctx.pageModel.copyNodeById(activeNode.id);
-      return true;
+      const flag = await designer?.export?.copyNode(activeNode.id);
+      return flag;
     }
   },
   moveToUp: async (ctx: CPluginCtx) => {
@@ -27,8 +33,8 @@ export const actionMap = {
     const activeNode = ctx.engine.getActiveNode();
     const parentNode = activeNode?.parent;
     if (parentNode && parentNode.nodeType !== 'PAGE') {
-      designer?.export?.selectNode(parentNode.id);
-      return true;
+      const flag = await designer?.export?.selectNode(parentNode.id);
+      return flag;
     }
   },
   moveToSiblingUp: async (ctx: CPluginCtx) => {
@@ -47,8 +53,7 @@ export const actionMap = {
     }
     const child = children?.[nextIndex] as CNode;
     if (child && (child as any).id) {
-      designer?.export?.selectNode(child.id);
-      return true;
+      return await designer?.export?.selectNode(child.id);
     }
   },
   moveToDown: async (ctx: CPluginCtx) => {
@@ -57,11 +62,10 @@ export const actionMap = {
     const children = activeNode?.value.children;
     const child = children?.[0] as CNode;
     if (child && (child as any).id) {
-      designer?.export?.selectNode(child.id);
-      return true;
+      return await designer?.export?.selectNode(child.id);
     }
 
-    await actionMap.moveToSiblingDown(ctx);
+    return await actionMap.moveToSiblingDown(ctx);
   },
   moveToSiblingDown: async (ctx: CPluginCtx) => {
     const designer = await ctx.pluginManager.get<DesignerPluginInstance>('Designer');
@@ -80,8 +84,7 @@ export const actionMap = {
     }
     const child = children?.[nextIndex] as CNode;
     if (child && (child as any).id) {
-      designer?.export?.selectNode(child.id);
-      return true;
+      return await designer?.export?.selectNode(child.id);
     }
   },
   redo: async (ctx: CPluginCtx) => {

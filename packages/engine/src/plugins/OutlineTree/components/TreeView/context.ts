@@ -21,9 +21,9 @@ export type CTreeContextData = {
   sensor?: Sensor;
   state: ContextState;
   updateState: (state: Partial<ContextState>) => void;
-  onSelectNode: (params: { keys: string[]; node: TreeNodeData }) => void;
-  onDeleteNode: (id: string) => void;
-  onCopyNode: (id: string) => void;
+  onSelectNode: (params: { keys: string[]; node: TreeNodeData }) => Promise<boolean>;
+  onDeleteNode: (id: string) => Promise<boolean>;
+  onCopyNode: (id: string) => Promise<boolean>;
   getDesignerHandler?: () => Promise<DesignerExport>;
 };
 
@@ -37,7 +37,13 @@ export const CTreeContext = React.createContext<CTreeContextData>({
     pageModel: null,
   },
   updateState: () => {},
-  onSelectNode: () => {},
-  onDeleteNode: (id: string) => {},
-  onCopyNode: (id: string) => {},
+  onSelectNode: async () => {
+    return true;
+  },
+  onDeleteNode: async (id: string) => {
+    return true;
+  },
+  onCopyNode: async (id: string) => {
+    return true;
+  },
 });

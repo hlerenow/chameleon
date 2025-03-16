@@ -54,13 +54,13 @@ export const DesignerPlugin: DesignerPluginType = () => {
           return designerRef.current?.layoutRef.current?.dnd;
         },
         selectNode: async (nodeId) => {
-          designerRef.current?.toSelectNode(nodeId);
+          return await designerRef.current?.toSelectNode(nodeId);
         },
         copyNode: async (nodeId) => {
-          designerRef.current?.toCopyNode(nodeId);
+          return await designerRef.current?.toCopyNode(nodeId);
         },
         deleteNode: async (nodeId) => {
-          designerRef.current?.toDeleteNode(nodeId);
+          return await designerRef.current?.toDeleteNode(nodeId);
         },
         getSelectedNodeId: () => {
           return designerRef.current?.layoutRef.current?.state.currentSelectId;

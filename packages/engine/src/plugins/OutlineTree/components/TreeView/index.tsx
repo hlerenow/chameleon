@@ -10,6 +10,7 @@ import { TreeNodeData } from './dataStruct';
 import styles from './style.module.scss';
 import { DRAG_ITEM_KEY, TreeNode } from './treeNode';
 import { DesignerPluginInstance } from '@/plugins/Designer/type';
+import { message } from 'antd';
 
 interface TreeViewProps extends WithTranslation {
   pluginCtx: CPluginCtx;
@@ -397,15 +398,17 @@ export class TreeView extends React.Component<
             const designer = await pluginCtx.pluginManager.get<DesignerPluginInstance>('Designer');
             if (!designer) {
               console.warn('Designer is empty');
-              return;
+              return false;
             }
             const nodeId = sk?.[0] || '';
             const nn = pluginCtx.pageModel.getNode(nodeId);
-            const designerExport = designer.export;
-            designerExport.selectNode(nodeId);
-            if (nn) {
-              pluginCtx.engine.updateCurrentSelectNode(nn);
+            if (!nn) {
+              return false;
             }
+
+            const designerExport = designer.export;
+            const flag = await designerExport.selectNode(nodeId);
+            return flag;
           },
           updateState: (newVal) => {
             this.setState(newVal as any);
@@ -414,19 +417,29 @@ export class TreeView extends React.Component<
             const designer = await pluginCtx.pluginManager.get<DesignerPluginInstance>('Designer');
             if (!designer) {
               console.warn('Designer is empty');
-              return;
+              return false;
             }
             const designerExport = designer.export;
-            designerExport.deleteNode(id);
+            const nodeId = id;
+            const nn = pluginCtx.pageModel.getNode(nodeId);
+            if (!nn) {
+              message.error('该节点不能删除');
+              return false;
+            }
+            const flag = await designerExport.deleteNode(id);
+            if (!flag) {
+              message.error('该节点不能删除');
+            }
+            return flag;
           },
           onCopyNode: async (id) => {
             const designer = await pluginCtx.pluginManager.get<DesignerPluginInstance>('Designer');
             if (!designer) {
               console.warn('Designer is empty');
-              return;
+              return false;
             }
             const designerExport = designer.export;
-            designerExport.copyNode(id);
+            return await designerExport.copyNode(id);
           },
         }}
       >

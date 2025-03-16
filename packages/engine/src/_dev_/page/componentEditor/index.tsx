@@ -24,7 +24,7 @@ const assetPackagesList = [] as any[];
 export const ComponentEditor = () => {
   const [ready, setReady] = useState(false);
   const [page, setPage] = useState(BasePage);
-  const [lang, setLang] = useState(() => {
+  const [lang] = useState(() => {
     const lang = localStorage.getItem('lang') || 'zh_CN';
     return lang;
   });

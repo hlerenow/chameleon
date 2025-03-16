@@ -63,7 +63,7 @@ export const TreeNode = (props: TreeNodeProps) => {
   };
   const selected = ctxState.currentSelectNodeKeys.find((el) => el === item.key);
   const titleEditInputRef = useRef<InputRef>(null);
-  const toggleSelectNode = () => {
+  const toggleSelectNode = async () => {
     toggleExpandNode(true);
     if (titleEditable) {
       titleEditInputRef?.current?.focus();
@@ -75,14 +75,16 @@ export const TreeNode = (props: TreeNodeProps) => {
     let newKeys = ctxState.currentSelectNodeKeys;
     if (!ctxState.multiSelect) {
       if (item.key) {
-        onSelectNode?.({ keys: [item.key], node: item });
+        const flag = await onSelectNode?.({ keys: [item.key], node: item });
+        if (flag) {
+          updateState({
+            currentSelectNodeKeys: [String(item.key)],
+          });
+        }
       } else {
         onSelectNode?.({ keys: [], node: item });
       }
 
-      updateState({
-        currentSelectNodeKeys: [String(item.key)],
-      });
       return;
     }
     if (selected) {

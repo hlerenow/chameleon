@@ -216,7 +216,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     } else {
       if (extraData.dropNode?.id === extraData.dragNode?.id) {
         console.warn('dragNode and dropNode id is the same');
-        return;
+        return false;
       }
       const res = pageModel.moveNodeById(extraData.dragNode?.id || '', extraData?.dropNode?.id || '', posFlag);
       if (!res) {
@@ -224,17 +224,22 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
         return false;
       }
     }
-    setTimeout(async () => {
-      if (dragNode) {
-        const flag = await this.onSelectNode(dragNode, null);
-        if (flag === false) {
-          layoutRef.current?.selectNode('');
-          return;
-        }
-      }
-      layoutRef.current?.selectNode(extraData.dragNode?.id || '');
-    }, 150);
+
     this.props.pluginCtx.emitter.emit('onDrop', eventObj);
+    return new Promise((resolve) => {
+      // 延迟去选中，因为节点放置下去，可能还没有渲染
+      setTimeout(async () => {
+        if (dragNode) {
+          const flag = await this.onSelectNode(dragNode, null);
+          if (flag === false) {
+            layoutRef.current?.selectNode('');
+            return resolve(false);
+          }
+        }
+        layoutRef.current?.selectNode(extraData.dragNode?.id || '');
+        resolve(true);
+      }, 150);
+    });
   };
 
   onSelectNode: Required<LayoutPropsType>['onSelectNode'] = async (node: CNode | CRootNode | null, event) => {
@@ -247,7 +252,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       this.setState({
         selectToolbarView: null,
       });
-      return;
+      return false;
     }
     const flag = await node.material?.value.advanceCustom?.onSelect?.(node, {
       context: this.props.pluginCtx,
@@ -266,13 +271,15 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       selectRectViewRender:
         this.customAdvanceHook.getSelectRectViewRender(node) || this.props.pluginCtx.config.selectRectViewRender,
     });
+
+    return true;
   };
 
   onDragStart: LayoutPropsType['onNodeDragStart'] = async (e) => {
     const extraData = e.extraData;
     const dragNode = extraData?.dragNode;
     if (!dragNode) {
-      return;
+      return false;
     }
 
     const commonParam = {
@@ -304,6 +311,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       ghostView: ghostView,
       dropViewRender: this.customAdvanceHook.getDropViewRender(dragNode) || this.props.pluginCtx.config.dropViewRender,
     });
+    return true;
   };
 
   getGhostView = (dragNode: CNode | CRootNode, commonParam: AdvanceCustomFuncParam) => {
@@ -322,7 +330,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     const node = ctx.pageModel.getNode(nodeId);
     const flag = await this.onSelectNode(node || null, null);
     if (flag === false) {
-      return;
+      return false;
     } else {
       this.layoutRef.current?.selectNode(nodeId);
       return true;
@@ -335,6 +343,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     const newNode = await this.customAdvanceHook.onCopy(cpNode as CNode);
     if (newNode) {
       this.toSelectNode(newNode.id);
+      return true;
     }
   };
 
@@ -346,9 +355,10 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     }
     const delRes = await this.customAdvanceHook.onDelete(node);
     if (delRes === false) {
-      return;
+      return false;
     }
     this.toSelectNode('');
+    return true;
   };
 
   toHidden = (id: string) => {
@@ -360,6 +370,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     devState.condition = false;
     targetNodeModel.value.configure.devState = devState;
     targetNodeModel.updateValue();
+    return true;
   };
 
   getToolbarView = (node: CNode | CRootNode) => {

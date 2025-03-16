@@ -1,7 +1,5 @@
 import { _keyMap, _modifier } from './keymap';
 
-export const isff = typeof navigator !== 'undefined' ? navigator.userAgent.toLowerCase().indexOf('firefox') > 0 : false;
-
 // 修饰键转换成对应的键码
 export function getMods(modifier: string[], key: string[]) {
   const mods = key.slice(0, key.length - 1);
