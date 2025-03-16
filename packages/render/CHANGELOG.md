@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.7](https://github.com/ByteCrazy/chameleon/compare/v0.3.6...v0.3.7) (2025-03-16)
+
+### ✨ Features | 新功能
+
+* **demo-page, engine, model, render:** 🎸 support inject eng inner env to runtime ([baa5c11](https://github.com/ByteCrazy/chameleon/commit/baa5c11d389019a7e4e4b8e000433a99038b4ae3))
+
 ## [0.3.6](https://github.com/ByteCrazy/chameleon/compare/v0.3.5...v0.3.6) (2025-03-09)
 
 **Note:** Version bump only for package @chamn/render
