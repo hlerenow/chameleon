@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.8](https://github.com/ByteCrazy/chameleon/compare/v0.3.7...v0.3.8) (2025-03-16)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine:** 🐛 fixed customAdvanceHook not rect on outline and hotkey ([c21bdb0](https://github.com/ByteCrazy/chameleon/commit/c21bdb0e275ebe4ae096d18b90bd406874c9de79))
+
 ## [0.3.7](https://github.com/ByteCrazy/chameleon/compare/v0.3.6...v0.3.7) (2025-03-16)
 
 ### ✨ Features | 新功能
