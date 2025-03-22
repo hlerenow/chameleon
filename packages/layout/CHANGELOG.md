@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.10](https://github.com/ByteCrazy/chameleon/compare/v0.3.9...v0.3.10) (2025-03-22)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **layout:** 🐛 fixed placeholder UI ([7134583](https://github.com/ByteCrazy/chameleon/commit/71345836c5575399f2fadcd4be5773c593efb95f))
+
 ## [0.3.9](https://github.com/ByteCrazy/chameleon/compare/v0.3.8...v0.3.9) (2025-03-22)
 
 ### ✨ Features | 新功能

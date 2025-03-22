@@ -1,6 +1,6 @@
 {
   "name": "@chamn/engine",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "type": "module",
   "files": [
     "dist"
