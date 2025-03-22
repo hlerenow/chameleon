@@ -24,6 +24,7 @@ export const DefaultDropPlaceholder = (props: {
         cursor: 'default',
         width: width,
         height: height,
+        boxSizing: 'border-box',
       }}
     >
       {placeholder}
