@@ -444,6 +444,11 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     const iframeDoc = this.iframeContainer.getDocument();
     const subWin = this.iframeContainer.getWindow();
 
+    // 禁用右键菜单
+    iframeDoc?.addEventListener('contextmenu', function (event) {
+      event.preventDefault();
+    });
+
     if (!iframeDoc || !subWin) {
       return;
     }

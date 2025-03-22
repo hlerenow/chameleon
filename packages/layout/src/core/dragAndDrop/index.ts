@@ -51,6 +51,7 @@ export class DragAndDrop<E = Record<string, any>> {
       shakeDistance?: number;
     };
   }) {
+    this.preventDefaultEvent();
     this.doc = options.doc;
     this.win = options.win;
     if (options.dragConfig?.shakeDistance !== undefined) {
@@ -71,7 +72,6 @@ export class DragAndDrop<E = Record<string, any>> {
     sensor.emitter.on('mouseDown', async (mouseMoveEventObj) => {
       this.emitter.emit('mouseDown', mouseMoveEventObj);
       this.mousePressStatus = 'DOWN';
-      this.recoverEventList;
       return;
     });
 
@@ -114,15 +114,18 @@ export class DragAndDrop<E = Record<string, any>> {
 
     sensor.emitter.on('mouseUp', (e) => {
       this.mousePressStatus = 'UP';
-      if (this.currentSensor !== null) {
-        return;
-      }
       this.currentState = 'NORMAL';
       this.dragStartObj = null;
       this.batchSensorEmit('dragEnd', {} as any);
     });
 
     this.globalSenor = sensor;
+  }
+
+  preventDefaultEvent() {
+    document.addEventListener('contextmenu', (event) => {
+      event.preventDefault(); // 阻止默认右键菜单
+    });
   }
 
   batchSensorEmit(eventName: keyof SensorEventType, eventObj: SensorEventType[keyof SensorEventType]) {

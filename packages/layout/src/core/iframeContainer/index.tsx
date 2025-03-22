@@ -31,14 +31,14 @@ export class IFrameContainer {
       <head>
         <meta charset="utf-8"/>
         <style>
-          html,body{
+          html,body,#app {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             width: 100%;
             height: 100%;
-          }
-          div {
+          };
+          * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;

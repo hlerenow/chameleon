@@ -133,6 +133,10 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
         container,
         'mousedown',
         (e) => {
+          if (e.button === 2) {
+            // 鼠标右键按下
+            return;
+          }
           const fixedSensorInfo = this.getTargetSensor?.({
             sensor: this,
             event: e,
