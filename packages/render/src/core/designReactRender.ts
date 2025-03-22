@@ -91,6 +91,7 @@ export const DefaultDropPlaceholder: React.FC<{ node: CNode | CRootNode }> = (pr
         minHeight: '50px',
         width: width,
         height: height,
+        boxSizing: 'border-box',
         ...style,
       },
     },
