@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.11](https://github.com/ByteCrazy/chameleon/compare/v0.3.10...v0.3.11) (2025-03-22)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **render:** 🐛 fixed PlaceHoder UI ([349a951](https://github.com/ByteCrazy/chameleon/commit/349a951ac9e2351acb0c556bc0ecb4295367e94e))
+
 ## [0.3.10](https://github.com/ByteCrazy/chameleon/compare/v0.3.9...v0.3.10) (2025-03-22)
 
 ### 🐛 Bug Fixes | Bug 修复
