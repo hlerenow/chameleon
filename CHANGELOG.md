@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.9](https://github.com/ByteCrazy/chameleon/compare/v0.3.8...v0.3.9) (2025-03-22)
+
+### ✨ Features | 新功能
+
+* **engine, layout:** 🎸 optimize drag interactive ([f512f14](https://github.com/ByteCrazy/chameleon/commit/f512f14ecf3caaa148279543999a74d35ae44701))
+
 ## [0.3.8](https://github.com/ByteCrazy/chameleon/compare/v0.3.7...v0.3.8) (2025-03-16)
 
 ### 🐛 Bug Fixes | Bug 修复
