@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.12](https://github.com/ByteCrazy/chameleon/compare/v0.3.11...v0.3.12) (2025-03-23)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, layout:** 🐛 fixed drag interactive and fixed accetpNode action ([c15d03c](https://github.com/ByteCrazy/chameleon/commit/c15d03cc0406533e5eab55e27ce5eb1223d91c72))
+
 ## [0.3.11](https://github.com/ByteCrazy/chameleon/compare/v0.3.10...v0.3.11) (2025-03-22)
 
 **Note:** Version bump only for package @chamn/layout
