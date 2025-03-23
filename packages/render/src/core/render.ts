@@ -13,6 +13,7 @@ export type RenderPropsType = {
   render?: UseRenderReturnType;
   ref?: React.MutableRefObject<Render | null>;
   renderMode?: 'design' | 'normal';
+  doc?: Document;
 } & Partial<AdapterOptionType>;
 
 export class Render extends React.Component<
@@ -41,6 +42,11 @@ export class Render extends React.Component<
     if (render) {
       render.ref.current = this;
     }
+
+    // 将当前 window 暴露给
+    if (window.parent) {
+      (window.parent as any).__CB_RENDER_WIN__ = window;
+    }
   }
 
   componentWillUnmount(): void {
@@ -55,7 +61,7 @@ export class Render extends React.Component<
 
   render() {
     const { props } = this;
-    const { adapter, onGetComponent, onComponentDestroy, onComponentMount } = props;
+    const { adapter, onGetComponent, onComponentDestroy, onComponentMount, doc } = props;
     const { pageModel } = this.state;
     // todo: 加载 page 资源
     // todo: 收集所有的 第三方库
@@ -84,6 +90,7 @@ export class Render extends React.Component<
       renderMode: props.renderMode,
       requestAPI: props.requestAPI ?? adapter.requestAPI,
       processNodeConfigHook: props.processNodeConfigHook,
+      doc: doc || document,
     });
 
     return PageRoot;

@@ -88,6 +88,8 @@ export type AdapterOptionType = {
     body?: Record<any, any>;
     query?: Record<any, any>;
   }) => Promise<any>;
+  /** 为了更好的适配跨 iframe, 需要将 doc 从外部传入 */
+  doc: Document;
 };
 
 // TODO: 后续考虑去掉

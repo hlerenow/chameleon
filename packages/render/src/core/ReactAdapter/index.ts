@@ -63,6 +63,7 @@ export class DefineReactAdapter {
       renderMode,
       processNodeConfigHook,
       requestAPI,
+      doc,
     }: AdapterOptionType
   ) {
     this.renderMode = renderMode;
@@ -91,6 +92,7 @@ export class DefineReactAdapter {
       renderMode: renderMode!,
       requestAPI: requestAPI,
       components: this.components,
+      doc: doc,
     });
 
     const props: Record<string, any> = {};

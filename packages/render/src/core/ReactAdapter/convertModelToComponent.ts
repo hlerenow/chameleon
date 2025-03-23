@@ -45,6 +45,7 @@ export const convertModelToComponent = (
     refManager,
     processNodeConfigHook,
     requestAPI,
+    doc,
   } = options;
 
   const { ...commonRenderOptions } = options;
@@ -185,7 +186,7 @@ export const convertModelToComponent = (
       const mediaStyleDomMap = this.mediaStyleDomMap;
       let styleEl = mediaStyleDomMap[id];
       if (!styleEl) {
-        styleEl = document.createElement('style');
+        styleEl = doc.createElement('style');
         mediaStyleDomMap[id] = styleEl;
       }
       styleEl.id = id;
@@ -195,7 +196,7 @@ export const convertModelToComponent = (
     addMediaCSS = () => {
       let header = this.domHeader;
       if (!header) {
-        header = document.getElementsByTagName('head')?.[0];
+        header = doc.getElementsByTagName('head')?.[0];
         this.domHeader = header;
       }
 

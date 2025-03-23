@@ -11,6 +11,7 @@ export type TRenderBaseOption = {
   getComponent: (currentNode: CNode | CRootNode) => any;
   /** render 支持的所有的组件映射 */
   components: Record<string, any>;
+  doc: Document;
 } & Pick<
   Required<AdapterOptionType>,
   'onGetRef' | 'processNodeConfigHook' | 'refManager' | 'onComponentDestroy' | 'onComponentMount' | 'renderMode'
