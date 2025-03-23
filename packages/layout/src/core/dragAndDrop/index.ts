@@ -31,6 +31,7 @@ export class DragAndDrop<E = Record<string, any>> {
   /** 触发 dragStart 的移动距离 */
   shakeDistance = 4;
   eventHandler: EmptyFunc[] = [];
+  /** 鼠标当前进入的感应区 */
   currentSensor: Sensor | null = null;
   currentState: 'NORMAL' | 'DRAGGING' | 'CANCEL' = 'NORMAL';
   dragStartObj: SensorEventType['mouseDown'] | null = null;
@@ -112,7 +113,16 @@ export class DragAndDrop<E = Record<string, any>> {
       this.batchSensorEmit(dragEventName, draggingEventObj);
     });
 
-    sensor.emitter.on('mouseUp', (e) => {
+    sensor.emitter.on('mouseUp', (eventObj) => {
+      // 如不是在 业务注册的感应区mouseUp， 需要在全局补偿触发 dragEnd
+      const tempSensor = this.senors.find((s) => {
+        const sensorBox = s.container;
+        const endDom = eventObj.event.target;
+        return sensorBox.contains(endDom as any);
+      });
+      if (tempSensor) {
+        return;
+      }
       this.mousePressStatus = 'UP';
       this.currentState = 'NORMAL';
       this.dragStartObj = null;

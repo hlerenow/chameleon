@@ -29,7 +29,7 @@ export class AdvanceCustomHook {
   }
 
   async canDrag({ dragNode, eventObj }: HookParameter): ReturnType<Required<AdvanceCustom>['canDragNode']> {
-    const nodeAdvanceCustom = dragNode!.material?.value.advanceCustom;
+    const nodeAdvanceCustom = dragNode?.material?.value.advanceCustom;
     if (nodeAdvanceCustom?.canDragNode) {
       const res = nodeAdvanceCustom?.canDragNode(dragNode!, {
         context: this.ctx,
@@ -44,7 +44,8 @@ export class AdvanceCustomHook {
   }
 
   async canDrop({ dragNode, dropNode, eventObj }: HookParameter): ReturnType<Required<AdvanceCustom>['canDropNode']> {
-    const nodeAdvanceCustom = dragNode!.material?.value.advanceCustom;
+    const nodeAdvanceCustom = dragNode?.material?.value.advanceCustom;
+    const dropNodeAdvanceCustom = dropNode!.material?.value.advanceCustom;
     let res: Awaited<ReturnType<Required<AdvanceCustom>['canDropNode']>> = {} as any;
     const commonParams = {
       dropNode,
@@ -57,15 +58,15 @@ export class AdvanceCustomHook {
       res = await nodeAdvanceCustom.canDropNode(dragNode!, commonParams)!;
 
       // 判断 dropNode 是否可以接受 dragNode
-      if (nodeAdvanceCustom?.canAcceptNode) {
+      if (dropNodeAdvanceCustom?.canAcceptNode) {
         let canAcceptFlag: Awaited<ReturnType<Required<AdvanceCustom>['canAcceptNode']>>;
         if (typeof res === 'object') {
-          canAcceptFlag = await nodeAdvanceCustom?.canAcceptNode(res.dragNode!, {
+          canAcceptFlag = await dropNodeAdvanceCustom?.canAcceptNode(res.dragNode!, {
             ...commonParams,
             ...res,
           });
         } else {
-          canAcceptFlag = await nodeAdvanceCustom?.canAcceptNode(dragNode!, {
+          canAcceptFlag = await dropNodeAdvanceCustom?.canAcceptNode(dragNode!, {
             ...commonParams,
           });
         }
@@ -73,8 +74,8 @@ export class AdvanceCustomHook {
       } else {
         return res;
       }
-    } else if (nodeAdvanceCustom?.canAcceptNode) {
-      const canAcceptFlag = await nodeAdvanceCustom?.canAcceptNode(dragNode!, {
+    } else if (dropNodeAdvanceCustom?.canAcceptNode) {
+      const canAcceptFlag = await dropNodeAdvanceCustom?.canAcceptNode(dragNode!, {
         ...commonParams,
       });
       return canAcceptFlag;
