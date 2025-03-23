@@ -37,16 +37,16 @@ export class IFrameContainer {
             box-sizing: border-box;
             width: 100%;
             height: 100%;
-          };
+          }
           * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-          };
+          }
           img,audio,video {
             user-select: none;
             -webkit-user-drag: none;
-          };
+          }
         </style>
       </head>
       <body>
