@@ -42,7 +42,11 @@ export class IFrameContainer {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-          }
+          };
+          img,audio,video {
+            user-select: none;
+            -webkit-user-drag: none;
+          };
         </style>
       </head>
       <body>
