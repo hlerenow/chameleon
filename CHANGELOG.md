@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.13](https://github.com/ByteCrazy/chameleon/compare/v0.3.12...v0.3.13) (2025-03-23)
+
+### ✨ Features | 新功能
+
+* **render:** 🎸 redner support config document context ([8d3c041](https://github.com/ByteCrazy/chameleon/commit/8d3c041263ed567a1e91087abcde382519876b2e))
+
 ## [0.3.12](https://github.com/ByteCrazy/chameleon/compare/v0.3.11...v0.3.12) (2025-03-23)
 
 ### 🐛 Bug Fixes | Bug 修复
