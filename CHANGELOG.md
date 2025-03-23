@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.15](https://github.com/ByteCrazy/chameleon/compare/v0.3.14...v0.3.15) (2025-03-23)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **layout:** 🐛 fixed canvas default css ([41d0ebd](https://github.com/ByteCrazy/chameleon/commit/41d0ebd91b0d9a9fa2d1b7892ec1ec82ecd44a33))
+
 ## [0.3.14](https://github.com/ByteCrazy/chameleon/compare/v0.3.13...v0.3.14) (2025-03-23)
 
 ### ✨ Features | 新功能
