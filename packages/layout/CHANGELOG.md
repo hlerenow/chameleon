@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.14](https://github.com/ByteCrazy/chameleon/compare/v0.3.13...v0.3.14) (2025-03-23)
+
+### ✨ Features | 新功能
+
+* **layout:** 🎸 ban drag img audio viewo el at editor canvas ([0f2624b](https://github.com/ByteCrazy/chameleon/commit/0f2624bd45eada0290610f7bb52e1683c0c84189))
+
 ## [0.3.13](https://github.com/ByteCrazy/chameleon/compare/v0.3.12...v0.3.13) (2025-03-23)
 
 **Note:** Version bump only for package @chamn/layout
