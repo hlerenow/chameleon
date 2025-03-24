@@ -15,6 +15,8 @@ export type CCustomSchemaFormContextData = {
   customSetterMap: CFormContextData['customSetterMap'];
   formRef?: Ref<CustomSchemaFormInstance | CForm>;
   pluginCtx?: CPluginCtx;
+  /** 当前编辑节点的 id */
+  nodeId?: string;
 };
 
 export const CCustomSchemaFormContext = React.createContext<CCustomSchemaFormContextData>({

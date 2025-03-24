@@ -26,7 +26,7 @@ export type SetterSwitcherProps = {
 export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, ...props }: SetterSwitcherProps) => {
   const [visible, setVisible] = useState(true);
   const { customSetterMap } = useContext(CFormContext);
-  const { onSetterChange, defaultSetterConfig, formRef, pluginCtx } = useContext(CCustomSchemaFormContext);
+  const { onSetterChange, defaultSetterConfig, formRef, pluginCtx, nodeId } = useContext(CCustomSchemaFormContext);
   const allSetterMap = {
     ...InnerSetters,
     ...customSetterMap,
@@ -111,8 +111,9 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
       keyPaths: [...keyPaths],
       label: props.label,
       setCollapseHeaderExt: specialSetter ? setCollapseHeaderExt : undefined,
+      nodeModel: pluginCtx?.pageModel.getNode(nodeId) as any,
     }),
-    [formRef, keyPaths, pluginCtx, props.label, specialSetter]
+    [formRef, keyPaths, nodeId, pluginCtx, props.label, specialSetter]
   );
   const filedView = useMemo(() => {
     const customSetterMap = {

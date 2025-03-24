@@ -50,6 +50,7 @@ export const PropertyPanel = (props: { node: CNode | CRootNode | null; pluginCtx
       <CustomSchemaForm
         pluginCtx={props.pluginCtx}
         key={node?.id}
+        nodeId={node?.id}
         defaultSetterConfig={node?.value.configure.propsSetter || {}}
         onSetterChange={onSetterChange}
         properties={properties}

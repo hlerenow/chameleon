@@ -20,6 +20,7 @@ export type SetterSwitcherProps = {
   useField?: boolean;
 } & Omit<CFieldProps, 'children'>;
 
+/** 用于切换设置器 */
 export const SetterSwitcherCore = ({
   setters,
   keyPaths,

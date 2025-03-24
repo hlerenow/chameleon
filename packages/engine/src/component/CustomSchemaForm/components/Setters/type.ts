@@ -1,3 +1,4 @@
+import { CNode } from '@chamn/model';
 import { CPluginCtx } from '../../../../core/pluginManager';
 
 export type CSetter<T = any> = {
@@ -15,5 +16,7 @@ export type CSetterProps<T = { _: any }> = {
     onSetterChange: (keyPaths: string[], setterName: string) => void;
     keyPaths: string[];
     label: string;
+    /** 当前被编辑的节点信息 */
+    nodeModel: CNode;
   };
 } & T;

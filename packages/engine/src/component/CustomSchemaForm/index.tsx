@@ -14,6 +14,7 @@ import { CFormContextData } from './components/Form/context';
 export type CustomSchemaFormInstance = CForm;
 
 export type CustomSchemaFormProps = {
+  nodeId?: string;
   pluginCtx?: CPluginCtx;
   initialValue: Record<string, any>;
   properties: CMaterialPropsType<any>;
@@ -44,6 +45,7 @@ const CustomSchemaFormCore = (props: CustomSchemaFormProps, ref: Ref<CustomSchem
         onSetterChange,
         formRef: ref,
         pluginCtx: pluginCtx,
+        nodeId: props.nodeId,
       }}
     >
       <ConfigProvider
