@@ -79,7 +79,7 @@ export type AdapterOptionType = {
     condition: boolean;
     props: Record<string, any>;
   };
-  renderMode?: 'design' | 'normal';
+  renderMode: 'design' | 'normal';
   /** 请求 API */
   requestAPI?: (params: {
     url: string;

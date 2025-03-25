@@ -87,7 +87,7 @@ export class Render extends React.Component<
         ...$$context,
         nodeRefs: this.refManager,
       },
-      renderMode: props.renderMode,
+      renderMode: props.renderMode || 'normal',
       requestAPI: props.requestAPI ?? adapter.requestAPI,
       processNodeConfigHook: props.processNodeConfigHook,
       doc: doc || document,

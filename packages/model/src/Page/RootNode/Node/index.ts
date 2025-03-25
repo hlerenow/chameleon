@@ -29,11 +29,7 @@ export type CNodeModelDataType = Omit<CNodeDataType, 'children'> & {
   configure: Required<CNodeDataType>['configure'];
 };
 
-export const parseNode = (
-  data: CNodeDataType | CNodeModelDataType,
-  self: CNode | CRootNode,
-  materials: CMaterials = new CMaterials([])
-) => {
+export const parseNode = (data: CNodeDataType | CNodeModelDataType, self: CNode | CRootNode, materials: CMaterials) => {
   if (typeof data === 'string') {
     return data;
   }
@@ -168,8 +164,7 @@ export class CNode {
       ...this.data,
       ...val,
     };
-
-    this.data = parseNode(newVal, this);
+    this.data = parseNode(newVal, this, this.materialsModel);
     return newVal;
   }
 

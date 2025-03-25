@@ -48,8 +48,8 @@ export type CPageDataType = {
 };
 
 export const CPageDataTypeDescribe = object({
-  version: string(),
-  name: string(),
+  version: optional(string()),
+  name: optional(string()),
   css: optional(string()),
   renderType: optional(union([literal(RenderType.COMPONENT), literal(RenderType.PAGE)])),
   loadType: optional(any()),

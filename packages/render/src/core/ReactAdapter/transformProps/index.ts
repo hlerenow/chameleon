@@ -25,7 +25,7 @@ export const transformProps = (
     $$context: ContextType;
   } & TRenderBaseOption
 ) => {
-  const { $$context: parentContext, runtimeComponentCache, getComponent, storeManager } = option;
+  const { $$context: parentContext, getComponent, storeManager } = option;
   const propsModel = originalProps;
   const handlePropVal: (propVal: CPropDataType) => Record<string, any> = (propVal: CPropDataType) => {
     if (Array.isArray(propVal)) {
@@ -43,13 +43,6 @@ export const transformProps = (
       const handleSingleSlot = (it: CNode) => {
         const key = `${it.id}-${DYNAMIC_COMPONENT_TYPE}`;
 
-        // 复用
-        if (runtimeComponentCache.get(it.id)) {
-          return {
-            key: key,
-            component: runtimeComponentCache.get(it.id),
-          };
-        }
         const component = getComponent(it);
         const PropNodeRender = convertModelToComponent(component, it, {
           ...option,

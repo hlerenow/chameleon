@@ -47,7 +47,6 @@ export const convertModelToComponent = (
     requestAPI,
     doc,
   } = options;
-
   const { ...commonRenderOptions } = options;
 
   class DynamicComponent extends React.Component<PropsType> implements IDynamicComponent {
@@ -199,8 +198,8 @@ export const convertModelToComponent = (
         header = doc.getElementsByTagName('head')?.[0];
         this.domHeader = header;
       }
-
       if (!this.domHeader) {
+        console.warn('not found header dom');
         return;
       }
       const css = this._NODE_MODEL.value.css;
@@ -252,6 +251,19 @@ export const convertModelToComponent = (
       this.addMediaCSS();
       onGetRef?.(this.targetComponentRef, nodeModel, this as any);
       onComponentMount?.(this, nodeModel);
+
+      // 注册初始化事件
+      const onDidRenderFlow = nodeModel.value.eventListener?.find((el) => el.name === ON_DID_RENDER);
+      if (onDidRenderFlow) {
+        const func = transformActionNode(onDidRenderFlow.func, {
+          context: this.createCurrentNodeCtx(),
+          storeManager: storeManager,
+          actionVariableSpace: {},
+        });
+        func();
+      }
+
+      // 需要 debounce
       const customForceUpdate = () => {
         // nodeName maybe changed
         storeManager.setStore(nodeModel.value.nodeName || nodeModel.id, this.storeState);
@@ -261,18 +273,7 @@ export const convertModelToComponent = (
         });
         this.rebuildNode();
       };
-      const EVENT_NAME = ON_DID_RENDER;
-      const actionFlow = nodeModel.value.eventListener?.find((el) => el.name === EVENT_NAME);
-      if (actionFlow) {
-        const func = transformActionNode(actionFlow.func, {
-          context: this.createCurrentNodeCtx(),
-          storeManager: storeManager,
-          actionVariableSpace: {},
-        });
-        func();
-      }
-
-      // 设计模式使用
+      // 设计模式使用, 监听节点属性变化，重新构建该节点下的所有组件
       nodeModel.onChange(customForceUpdate);
     }
 

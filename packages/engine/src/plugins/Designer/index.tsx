@@ -5,7 +5,6 @@ import { PLUGIN_NAME } from './config';
 import { Designer } from './components/Canvas';
 import { DesignerPluginType } from './type';
 import { LayoutMode } from '@chamn/layout';
-import { layout } from '@dagrejs/dagre';
 
 export const DesignerPlugin: DesignerPluginType = () => {
   const designerRef = React.createRef<Designer>();
