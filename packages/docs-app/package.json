@@ -1,7 +1,7 @@
 {
   "name": "docs-app",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.3.18",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -10,11 +10,10 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.32.4",
-    "astro": "^5.5.3",
     "@ant-design/icons": "^5.4.0",
     "@astrojs/check": "^0.9.2",
     "@astrojs/react": "^3.6.2",
+    "@astrojs/starlight": "^0.32.4",
     "@chamn/demo-page": "workspace:^",
     "@chamn/engine": "workspace:^",
     "@chamn/model": "workspace:^",
@@ -22,6 +21,7 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "antd": "^5.23.2",
+    "astro": "^5.5.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "typescript": "~5.7.2"
