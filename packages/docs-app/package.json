@@ -1,6 +1,7 @@
 {
   "name": "docs-app",
   "type": "module",
+  "private": true,
   "version": "0.3.18",
   "scripts": {
     "dev": "astro dev",
