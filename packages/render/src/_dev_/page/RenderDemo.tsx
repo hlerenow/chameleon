@@ -76,6 +76,7 @@ export function RenderDemo() {
         components={components}
         render={renderHandle as any}
         adapter={ReactAdapter}
+        renderMode="normal"
         requestAPI={async (params) => {
           const random = Math.random();
           if (random > 0.5) {

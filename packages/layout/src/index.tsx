@@ -208,6 +208,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     }
   };
 
+  /** 重新创建 layout 中的 iframe */
   reload() {
     return this.init();
   }

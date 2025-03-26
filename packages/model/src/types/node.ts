@@ -338,5 +338,6 @@ export const CNodeDataStructDescribe: any = object({
       name: optional(string()),
     })
   ),
+  injectEnvList: optional(array(any())),
   methods: optional(array(any())),
 });

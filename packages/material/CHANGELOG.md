@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.17](https://github.com/ByteCrazy/chameleon/compare/v0.3.16...v0.3.17) (2025-03-25)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, material, model, render:** 🐛 fixed node update value material is undefined ([969174d](https://github.com/ByteCrazy/chameleon/commit/969174da968aec4a1ee1fec7ca44a5e459be56bc))
+
 ## [0.3.16](https://github.com/ByteCrazy/chameleon/compare/v0.3.15...v0.3.16) (2025-03-24)
 
 **Note:** Version bump only for package @chamn/material

@@ -78,7 +78,6 @@ export class DefineReactAdapter {
     //做一些全局 store 操作
     const rootNode = pageModel.value.componentsTree;
     const component = this.getComponent(rootNode);
-
     const newComp = convertModelToComponent(component, pageModel.value.componentsTree, {
       storeManager: this.storeManager,
       variableManager: this.variableManager,

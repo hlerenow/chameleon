@@ -59,7 +59,13 @@ export function DesignerRenderDemo() {
 
   return (
     <div className="App">
-      <DesignRender pageModel={page} components={components} render={renderHandle} adapter={ReactAdapter} />
+      <DesignRender
+        renderMode="design"
+        pageModel={page}
+        components={components}
+        render={renderHandle}
+        adapter={ReactAdapter}
+      />
     </div>
   );
 }

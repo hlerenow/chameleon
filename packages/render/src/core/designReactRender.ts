@@ -341,7 +341,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
           condition: newCondition,
         };
       },
-      // renderMode: 'design',
+      renderMode: 'design',
       ref: this.renderRef,
     });
   }
