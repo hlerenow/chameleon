@@ -1,4 +1,3 @@
-/* eslint-disable react/no-find-dom-node */
 import {
   CNode,
   ContainerConfig,
@@ -69,7 +68,7 @@ export const DefaultDropPlaceholder: React.FC<{ node: CNode | CRootNode }> = (pr
         style: {},
       };
     }
-  }, [props.node]);
+  }, [node]);
 
   const { placeholder, height, width, style } = configInfo;
 

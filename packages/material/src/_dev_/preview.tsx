@@ -19,7 +19,7 @@ const loadAssets = async (assets: AssetPackage[]) => {
     const componentCollection = collectVariable(assets, window);
     const components = flatObject(componentCollection);
     return components;
-  } catch (e) {
+  } catch {
     return null;
   }
 };

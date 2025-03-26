@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unknown-property */
 import React, { CSSProperties, forwardRef, useImperativeHandle } from 'react';
 import { useContext, useEffect, useMemo, useRef } from 'react';
 
@@ -42,7 +41,7 @@ export const GridItem = forwardRef<GridItemRefType, GridItemPropsType>(
     const refDom = useRef<HTMLDivElement>(null);
     const id = useMemo(() => {
       return props?.node?.id || Math.random().toString(32).slice(3, 9);
-    }, []);
+    }, [props?.node?.id]);
 
     /** 配合设计器使用 */
     if (refDom.current) {
@@ -53,7 +52,7 @@ export const GridItem = forwardRef<GridItemRefType, GridItemPropsType>(
       if (ctx.ready) {
         ctx.gridStack?.makeWidget(refDom.current!);
       }
-    }, [ctx.ready]);
+    }, [ctx.gridStack, ctx.ready]);
 
     const currentSizeAndPosInfo = useMemo<ResponsiveItemInfo>(() => {
       const currentResponsiveLabel = ctx.currentBreakpoint.label;
@@ -72,7 +71,7 @@ export const GridItem = forwardRef<GridItemRefType, GridItemPropsType>(
         ...(targetItem || targetItemDefault || ({ info: {} } as any)),
         label: ctx.currentBreakpoint.label,
       };
-    }, [props.responsive, ctx.currentBreakpoint.label]);
+    }, [ctx.currentBreakpoint.label, ctx.ready, props.responsive]);
 
     const currentSizeAndPosInfoRef = useRef<any>(currentSizeAndPosInfo);
     currentSizeAndPosInfoRef.current = currentSizeAndPosInfo;
@@ -84,7 +83,7 @@ export const GridItem = forwardRef<GridItemRefType, GridItemPropsType>(
       ctx.gridStack?.update(id, {
         ...currentSizeAndPosInfo?.info,
       });
-    }, [currentSizeAndPosInfo, ctx]);
+    }, [currentSizeAndPosInfo, ctx, id]);
     const specialRef = useRef<GridItemRefType>();
 
     specialRef.current = {

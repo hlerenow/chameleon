@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BasePage, SamplePage, Material, EmptyPage } from '@chamn/demo-page';
+import { BasePage, Material } from '@chamn/demo-page';
 import { ReactAdapter } from '../../index';
 import '../index.css';
 import { DesignRender, useDesignRender } from '../../core/designReactRender';
@@ -11,9 +11,9 @@ export type AppProp = {
 };
 
 export function DesignerRenderDemo() {
-  SamplePage;
-  BasePage;
-  EmptyPage;
+  // SamplePage;
+  // BasePage;
+  // EmptyPage;
 
   const [page] = useState(
     new CPage(BasePage, {
@@ -55,6 +55,7 @@ export function DesignerRenderDemo() {
     //   tableNode?.props.columns.updateValue();
     // }, 500);
     page.export();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

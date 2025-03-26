@@ -37,7 +37,6 @@ export const transformProps = (
       const tempVal = slotProp.value;
       if (!tempVal) {
         console.warn('slot value is null, this maybe cause some error, pls check it', originalProps);
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
         return () => {};
       }
       const handleSingleSlot = (it: CNode) => {

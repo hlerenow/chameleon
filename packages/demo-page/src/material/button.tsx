@@ -217,7 +217,7 @@ export const ButtonMeta: CMaterialType<
       console.log('onDelete');
       return true;
     },
-    onNewAdd: async (node, params) => {
+    onNewAdd: async (_node, params) => {
       params.viewPortal.setView(<div>123</div>);
       console.log('onNewAdd');
       return new Promise((resolve) => {

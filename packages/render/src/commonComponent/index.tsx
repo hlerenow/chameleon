@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { useEffect } from 'react';
 import { htmlTagNames } from 'html-tag-names';
 import { BaseComponentTagList } from '@chamn/model';
@@ -60,6 +61,7 @@ const CCanvas = ({ afterMount, beforeDestroy, $$attributes = [], ...props }: any
     return () => {
       beforeDestroy?.(props);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return React.createElement('canvas', {
@@ -134,6 +136,7 @@ const CContainer = ({ children, $$attributes = [], afterMount, beforeDestroy, ..
     return () => {
       beforeDestroy?.(props);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

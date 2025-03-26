@@ -1,4 +1,3 @@
-/* eslint-disable quotes */
 import { CPageDataType } from '@chamn/model';
 
 export const BasePage: CPageDataType = {

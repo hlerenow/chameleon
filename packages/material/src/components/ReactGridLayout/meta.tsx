@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { CMaterialType } from '@chamn/model';
 import { snippets, snippetsGridItem } from './snippets';
 import { LayoutWrap } from './edit/layoutWrap';
@@ -307,6 +308,7 @@ export const ReactGridItemMeta: CMaterialType = {
         return () => {
           removeListener();
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, []);
       console.log('toolBarItemList', toolBarItemList);
       return (
@@ -360,7 +362,7 @@ export const ReactGridItemMeta: CMaterialType = {
         );
       };
     },
-    canDropNode: async (node, params) => {
+    canDropNode: async (_node, params) => {
       const { dropNode } = params;
       if (!dropNode) {
         return false;
@@ -386,7 +388,7 @@ export const ReactGridItemMeta: CMaterialType = {
       });
       return true;
     },
-    onNewAdd: async (node, params) => {
+    onNewAdd: async (_node, params) => {
       const { dropNode } = params;
       if (!dropNode) {
         return false;

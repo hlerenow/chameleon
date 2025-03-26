@@ -3,7 +3,6 @@ import { addEventListenerReturnCancel } from '../../utils';
 import { Pointer } from './common';
 import { DEmitter } from './emitter';
 
-/* eslint-disable @typescript-eslint/no-empty-function */
 export type SensorOffsetType = {
   x: number;
   y: number;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BasePage, SamplePage, Material } from '@chamn/demo-page';
+import { SamplePage, Material } from '@chamn/demo-page';
 import { ReactAdapter, Render, useRender } from '../../index';
 import '../index.css';
 import { CPage } from '@chamn/model';
@@ -10,8 +10,8 @@ export type AppProp = {
 };
 
 export function RenderDemo() {
-  SamplePage;
-  BasePage;
+  // SamplePage;
+  // BasePage;
   const [page] = useState(
     new CPage(SamplePage, {
       materials: Material,

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import ReactDOMAll from 'react-dom';
@@ -81,7 +82,7 @@ const customRender: LayoutPropsType['customRender'] = async ({
 };
 
 const App = () => {
-  const [page] = useState<any>(BasePage);
+  const [_page] = useState<any>(BasePage);
   const [ghostView, setGhostView] = useState(<div>213</div>);
   const [pageModel] = useState<any>(
     new CPage(BasePage, {

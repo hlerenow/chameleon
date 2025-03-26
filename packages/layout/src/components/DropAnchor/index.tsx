@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import styles from './style.module.scss';
-import ReactDOM from 'react-dom';
 import { animationFrame, isDOM } from '../../utils';
 import { RenderInstance } from '@chamn/render';
 import { DragAndDropEventType } from '../../core/dragAndDrop';
@@ -51,7 +50,6 @@ export function DropAnchor(props: DropAnchorPropsType<LayoutDragAndDropExtraData
     if (instance?._STATUS === 'DESTROY') {
       return;
     }
-    // eslint-disable-next-line react/no-find-dom-node
     const dom = instance.getDom();
     if (isDOM(dom)) {
       setTargetDom(dom as unknown as HTMLElement);
@@ -59,6 +57,7 @@ export function DropAnchor(props: DropAnchorPropsType<LayoutDragAndDropExtraData
     return () => {
       onRefDestroy?.(ref);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateRef = useRef<() => void>();
@@ -89,7 +88,6 @@ export function DropAnchor(props: DropAnchorPropsType<LayoutDragAndDropExtraData
       return;
     }
 
-    // eslint-disable-next-line react/no-find-dom-node
     const dom = instance.getDom();
     if (isDOM(dom)) {
       instanceDom = dom as unknown as HTMLElement;
@@ -156,11 +154,11 @@ export function DropAnchor(props: DropAnchorPropsType<LayoutDragAndDropExtraData
     const classList = [classNameMap[dropInfo.direction], classNameMap[dropInfo.pos]];
     setPosClassName(classList);
     onDropInfoChange?.(newDropInfo);
-  }, [instance, mouseEvent]);
+  }, [dropInfo, instance, mouseEvent, onDropInfoChange]);
 
   useEffect(() => {
     updatePos();
-  }, [instance, mouseEvent]);
+  }, [instance, mouseEvent, updatePos]);
 
   (ref as any).current = {
     update() {

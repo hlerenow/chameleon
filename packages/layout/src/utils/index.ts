@@ -1,5 +1,3 @@
-import { AssetPackage } from '@chamn/model';
-
 export function addEventListenerReturnCancel<K extends keyof HTMLElementEventMap>(
   dom: HTMLElement | Document | Window,
   type: K,

@@ -46,7 +46,6 @@ export class StoreManager {
       return store.subscribe(cb);
     } else {
       console.warn('store not exits');
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       return () => {};
     }
   }

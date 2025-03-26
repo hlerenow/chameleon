@@ -1,4 +1,4 @@
-/* eslint-disable react/no-find-dom-node */
+/* eslint-disable react-refresh/only-export-components */
 import React from 'react';
 import { RenderInstance } from '@chamn/render';
 import { DesignRender, DesignRenderProp } from '@chamn/render';
@@ -228,7 +228,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
     (window as any).___CHAMELEON_DESIGNER_RENDER___ = this.designRenderRef;
     const iframeContainer = this.iframeContainer;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
     iframeContainer.load(document.getElementById(this.iframeDomId)! as any);
     iframeContainer.onLoadFailed((e) => {
       console.error('iframe canvas load failed', e);
@@ -489,7 +489,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
   }
 
-  cancelDrag(event?: LayoutDragEvent<LayoutDragAndDropExtraDataType>) {
+  cancelDrag(_event?: LayoutDragEvent<LayoutDragAndDropExtraDataType>) {
     // 本次拖动取消后续拖动事件
     this.isCancelDrag = true;
     this.resetDrag();
@@ -626,7 +626,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
       const { currentSelectInstance } = this.state;
       const extraData = eventObj.extraData as LayoutDragAndDropExtraDataType;
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
       const dragStartNode = extraData.dragNode;
       const startInstance: RenderInstance | undefined = (
         this.designRenderRef.current?.getInstancesById(dragStartNode?.id || '') || []

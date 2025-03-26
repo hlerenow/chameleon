@@ -1,5 +1,4 @@
-/* eslint-disable react/display-name */
-import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import * as antD from 'antd';
 
 export const components: any = {
@@ -8,10 +7,6 @@ export const components: any = {
     return <div style={{ padding: '10px' }}>{children}</div>;
   },
   div: ({ children, COMPONENTS, ...props }: any) => {
-    console.log('🚀 ~ COMPONENTS:', COMPONENTS);
-    useEffect(() => {
-      console.log('init', props, Date.now());
-    }, []);
     return <div {...props}>{children}</div>;
   },
   Button: forwardRef((props: any, ref) => {

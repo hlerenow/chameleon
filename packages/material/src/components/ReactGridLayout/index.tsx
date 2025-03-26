@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { ColumnOptions, GridStack } from 'gridstack';
 import 'gridstack/dist/gridstack.min.css';
 import 'gridstack/dist/gridstack-extra.min.css';
@@ -42,7 +42,7 @@ export const GridLayout = ({
   const gridRef = useRef<GridStack>();
   const refDom = useRef<HTMLDivElement>(null);
 
-  const init = async () => {
+  const init = useCallback(async () => {
     const tempGridStack: typeof GridStack =
       (subWin as any)?.GridStack || GridStack;
 
@@ -80,7 +80,7 @@ export const GridLayout = ({
     ctx.onMount?.forEach((el) => {
       el(grid);
     });
-  };
+  }, [ctx.onMount, id, onMount, staticGrid, subWin]);
 
   /** 配合设计器使用 */
   if (refDom.current) {
@@ -92,7 +92,7 @@ export const GridLayout = ({
       gridRef.current?.destroy(false);
       init();
     }
-  }, [props.breakpoints, props.layout]);
+  }, [init, props.breakpoints, props.layout]);
 
   const responseJudge = debounce(() => {
     const sunWinW = (subWin ?? window).innerWidth;
@@ -122,6 +122,7 @@ export const GridLayout = ({
       window.removeEventListener('resize', responseJudge);
       subWin?.removeEventListener('resize', responseJudge);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const finalCtx = useMemo(() => {

@@ -115,5 +115,4 @@ export class DefineReactAdapter {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
 export const ReactAdapter = getAdapter(new DefineReactAdapter());

@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import styles from './style.module.scss';
-import ReactDOM from 'react-dom';
 import { animationFrame, isDOM } from '../../utils';
 import { RenderInstance } from '@chamn/render';
 
@@ -34,7 +33,6 @@ export const HighlightBox = ({
   const instanceRef = useRef<RenderInstance>();
   instanceRef.current = instance;
   const updateTargetDom = (ins: RenderInstance) => {
-    // eslint-disable-next-line react/no-find-dom-node
     let dom = ins.getDom();
     const rootSelector = instance._NODE_MODEL.material?.value.rootSelector;
 
@@ -49,25 +47,23 @@ export const HighlightBox = ({
     return false;
   };
 
-  useEffect(() => {
-    getRef?.(ref);
-    if (instance?._STATUS === 'DESTROY') {
-      return;
-    }
-    updateTargetDom(instance);
-    return () => {
-      onRefDestroy?.(ref);
-    };
-  }, []);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     const handle = animationFrame(() => {
       updatePos();
     });
 
+    getRef?.(ref);
+    if (instance?._STATUS !== 'DESTROY') {
+      updateTargetDom(instance);
+    }
+
     return () => {
       handle();
+      onRefDestroy?.(ref);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateToolBoxPosition = useCallback((targetRect: DOMRect) => {
@@ -99,7 +95,6 @@ export const HighlightBox = ({
       return;
     }
 
-    // eslint-disable-next-line react/no-find-dom-node
     let dom = tempInstance?.getDom();
     if (!dom) {
       return;
@@ -138,11 +133,11 @@ export const HighlightBox = ({
 
     // auto detect tool box position
     updateToolBoxPosition(tempRect);
-  }, []);
+  }, [instance._NODE_MODEL.material?.value.rootSelector, updateToolBoxPosition]);
 
   useEffect(() => {
     updatePos();
-  }, [instance]);
+  }, [instance, updatePos]);
 
   (ref as any).current = {
     update() {

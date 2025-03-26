@@ -103,7 +103,7 @@ export class CMaterials {
       }
       return el;
     });
-    const needAppend = appendMaterial.filter((el, index) => {
+    const needAppend = appendMaterial.filter((_el, index) => {
       return !updateItemIndex.includes(index);
     });
 
