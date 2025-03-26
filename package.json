@@ -31,6 +31,7 @@
     "@lerna-lite/cli": "^3.12.3",
     "@lerna-lite/list": "^3.12.3",
     "@lerna-lite/run": "^3.12.3",
+    "@lerna-lite/version": "^3.12.3",
     "@lerna-lite/watch": "^3.12.3",
     "@types/jest": "^28.1.6",
     "clsx": "^1.1.1",
