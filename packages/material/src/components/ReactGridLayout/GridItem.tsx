@@ -52,7 +52,8 @@ export const GridItem = forwardRef<GridItemRefType, GridItemPropsType>(
       if (ctx.ready) {
         ctx.gridStack?.makeWidget(refDom.current!);
       }
-    }, [ctx.gridStack, ctx.ready]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ctx.ready]);
 
     const currentSizeAndPosInfo = useMemo<ResponsiveItemInfo>(() => {
       const currentResponsiveLabel = ctx.currentBreakpoint.label;
@@ -83,7 +84,7 @@ export const GridItem = forwardRef<GridItemRefType, GridItemPropsType>(
       ctx.gridStack?.update(id, {
         ...currentSizeAndPosInfo?.info,
       });
-    }, [currentSizeAndPosInfo, ctx, id]);
+    }, [ctx, id]);
     const specialRef = useRef<GridItemRefType>();
 
     specialRef.current = {

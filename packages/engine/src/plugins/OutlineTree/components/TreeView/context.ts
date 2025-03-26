@@ -20,9 +20,9 @@ export type CTreeContextData = {
   sensor?: Sensor;
   state: ContextState;
   updateState: (state: Partial<ContextState>) => void;
-  onSelectNode: (params: { keys: string[]; node: TreeNodeData }) => Promise<boolean>;
-  onDeleteNode: (id: string) => Promise<boolean>;
-  onCopyNode: (id: string) => Promise<boolean>;
+  onSelectNode: (params: { keys: string[]; node: TreeNodeData }) => Promise<boolean | undefined>;
+  onDeleteNode: (id: string) => Promise<boolean | undefined>;
+  onCopyNode: (id: string) => Promise<boolean | undefined>;
   getDesignerHandler?: () => Promise<DesignerExport>;
 };
 

@@ -42,6 +42,9 @@ const customAttributesMeta: CMaterialPropsType[number] = {
   ],
 };
 
+const groupName = '内置组件';
+const categoryName = '原子组件';
+
 const INNER_META_VERSION = '1.0.0';
 const PKG_NAME = 'CHAMELEON_INNER_PKG';
 
@@ -74,12 +77,12 @@ const BaseComponentMeta: CMaterialType[] = [
       },
       customAttributesMeta,
     ],
-    groupName: '原子组件',
+    groupName: groupName,
     snippets: [
       {
         title: '块',
         snapshotText: 'Block',
-        category: '基础组件',
+        category: categoryName,
         schema: {
           props: {},
           css: {
@@ -114,12 +117,12 @@ const BaseComponentMeta: CMaterialType[] = [
       },
       customAttributesMeta,
     ],
-    groupName: '原子组件',
+    groupName: groupName,
     snippets: [
       {
         title: '容器',
         snapshotText: 'Con',
-        category: '基础组件',
+        category: categoryName,
         schema: {
           css: {
             value: [
@@ -155,12 +158,12 @@ const BaseComponentMeta: CMaterialType[] = [
       },
     },
 
-    groupName: '原子组件',
+    groupName: groupName,
     snippets: [
       {
         title: '图片',
         snapshotText: 'Img',
-        category: '基础组件',
+        category: categoryName,
         schema: {
           css: {
             value: [
@@ -228,12 +231,12 @@ const BaseComponentMeta: CMaterialType[] = [
         };
       },
     },
-    groupName: '原子组件',
+    groupName: groupName,
     snippets: [
       {
         title: '视频',
         snapshotText: 'Video',
-        category: '基础组件',
+        category: categoryName,
         schema: {
           props: {
             src: 'https://vjs.zencdn.net/v/oceans.mp4',
@@ -253,7 +256,7 @@ const BaseComponentMeta: CMaterialType[] = [
   },
   {
     title: '音频',
-    groupName: '原子组件',
+    groupName: groupName,
     componentName: 'CAudio',
     props: [
       {
@@ -302,7 +305,7 @@ const BaseComponentMeta: CMaterialType[] = [
       {
         title: '音频',
         snapshotText: 'Audio',
-        category: '基础组件',
+        category: categoryName,
         schema: {
           props: {
             src: 'https://vjs.zencdn.net/v/oceans.mp4',
@@ -315,7 +318,7 @@ const BaseComponentMeta: CMaterialType[] = [
   {
     title: '文本',
     componentName: 'CText',
-    groupName: '原子组件',
+    groupName: groupName,
     props: [
       {
         name: 'content',
@@ -329,7 +332,7 @@ const BaseComponentMeta: CMaterialType[] = [
       {
         title: '文本',
         snapshotText: 'Text',
-        category: '基础组件',
+        category: categoryName,
         schema: {
           props: {
             content: 'text',
@@ -356,7 +359,7 @@ const BaseComponentMeta: CMaterialType[] = [
       },
       customAttributesMeta,
     ],
-    groupName: '原子组件',
+    groupName: groupName,
     advanceCustom: {
       onNewAdd: async (node) => {
         const props = node.getPlainProps();
@@ -387,7 +390,7 @@ const BaseComponentMeta: CMaterialType[] = [
       {
         title: '画布',
         snapshotText: 'Cavs',
-        category: '基础组件',
+        category: categoryName,
         schema: {
           props: {
             width: '600px',
@@ -435,12 +438,12 @@ const BaseComponentMeta: CMaterialType[] = [
       customAttributesMeta,
     ],
     isContainer: true,
-    groupName: '原子组件',
+    groupName: groupName,
     snippets: [
       {
         title: 'HTML',
         snapshotText: 'HTML',
-        category: '基础组件',
+        category: categoryName,
         schema: {
           props: {
             htmlTag: 'div',

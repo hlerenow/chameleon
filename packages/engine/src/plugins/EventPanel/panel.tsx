@@ -133,6 +133,7 @@ export const EventPanel = (props: EventPanelProps) => {
                     onSetterChange: () => {},
                     keyPaths: [''],
                     label: '',
+                    nodeModel: node as any,
                   }}
                 >
                   <span>{eventLabel?.label || event.name}</span>

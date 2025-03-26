@@ -32,6 +32,7 @@ export default tseslint.config(
           ignoreRestSiblings: true,
         },
       ],
+      'no-debugger': ['warn'],
     },
   }
 );
