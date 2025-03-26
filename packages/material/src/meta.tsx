@@ -1,7 +1,7 @@
 import { CSetter } from '@chamn/engine';
 import { CMaterialType } from '@chamn/model';
 
-const moduleFiles = import.meta.glob('./src/components/**/*/meta.ts*', {
+const moduleFiles = import.meta.glob('./components/**/*/meta.ts*', {
   eager: true,
 });
 

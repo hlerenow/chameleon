@@ -1,5 +1,6 @@
 import pgk from './package.json';
 import pluginExternal from 'vite-plugin-external';
+
 const GLOBAL_LIB_NAME = 'ChamnCommonComponents';
 
 const envDefine = {
