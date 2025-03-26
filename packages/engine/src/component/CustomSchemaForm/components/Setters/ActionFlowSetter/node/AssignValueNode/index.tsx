@@ -38,6 +38,7 @@ export const AssignValueNode = (props: NodeProps<TAssignValueNode>) => {
     formRef.current?.setFields(newVal);
     setFormValue(newVal);
     setIsReady(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

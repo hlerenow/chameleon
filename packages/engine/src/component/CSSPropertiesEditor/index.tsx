@@ -5,6 +5,7 @@ import styles from './style.module.scss';
 import { ConfigProvider } from 'antd';
 import { SinglePropertyEditorRef, SinglePropertyEditor } from './signleProperty';
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const defaultPropertyOptions = CSSPropertyList.map((el) => {
   return {
     value: el,
@@ -43,6 +44,7 @@ export const CSSPropertiesEditor = forwardRef<CSSPropertiesEditorRef, CSSPropert
       if (props.initialValue) {
         setPropertyList([...props.initialValue]);
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const innerOnValueChange = (val: typeof propertyList) => {

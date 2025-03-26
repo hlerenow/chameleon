@@ -1,6 +1,6 @@
 import { Meta, StoryFn } from '@storybook/react';
 import { VisualPanelPlus } from '../../plugins/VisualPanelPlus';
-import { CNode, CPage } from '@chamn/model';
+import { CPage } from '@chamn/model';
 import { PluginManager } from '../../core/pluginManager';
 import mitt from 'mitt';
 import customI18n from '../../i18n';
@@ -26,39 +26,39 @@ export default {
   ],
 } as Meta<typeof VisualPanelPlus>;
 
-const Template: StoryFn<typeof TargetComponent> = (args) => <TargetComponent />;
+const Template: StoryFn<typeof TargetComponent> = () => <TargetComponent />;
 
-const node = new CNode({
-  props: {
-    width: '100px',
-    height: '100px',
-    style: {
-      width: '100%',
-      'background-repeat': 'no-repeat',
-      'background-position': 'center',
-      'background-size': 'cover',
-      'flex-shrink': '0',
-      height: '100%',
-      'Webkit-transform': 'translate3d(0, 0, 0)',
-      'background-image': {
-        type: 'EXPRESSION',
-        value: '`url("${$$context.loopData.item}")`',
-      },
-    },
-    $$attributes: [],
-  },
-  componentName: 'CBlock',
-  id: 'v59d71',
-  configure: {
-    propsSetter: {},
-    advanceSetter: {
-      'loop.data': {
-        name: 'loop.data',
-        setter: 'ExpressionSetter',
-      },
-    },
-  },
-});
+// const node = new CNode({
+//   props: {
+//     width: '100px',
+//     height: '100px',
+//     style: {
+//       width: '100%',
+//       'background-repeat': 'no-repeat',
+//       'background-position': 'center',
+//       'background-size': 'cover',
+//       'flex-shrink': '0',
+//       height: '100%',
+//       'Webkit-transform': 'translate3d(0, 0, 0)',
+//       'background-image': {
+//         type: 'EXPRESSION',
+//         value: '`url("${$$context.loopData.item}")`',
+//       },
+//     },
+//     $$attributes: [],
+//   },
+//   componentName: 'CBlock',
+//   id: 'v59d71',
+//   configure: {
+//     propsSetter: {},
+//     advanceSetter: {
+//       'loop.data': {
+//         name: 'loop.data',
+//         setter: 'ExpressionSetter',
+//       },
+//     },
+//   },
+// });
 
 const pluginManager = new PluginManager({
   emitter: mitt(),
@@ -72,4 +72,5 @@ const pluginManager = new PluginManager({
 });
 
 const ctx = pluginManager.createPluginCtx();
+console.log('🚀 ~ ctx:', ctx);
 export const Default = () => <Template></Template>;

@@ -1,5 +1,5 @@
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { message, AutoComplete, Button } from 'antd';
+import { AutoComplete, Button } from 'antd';
 import { InputStatus } from 'antd/es/_util/statusUtils';
 import clsx from 'clsx';
 import { BaseSelectRef } from 'rc-select';
@@ -29,8 +29,8 @@ export type SinglePropertyEditorRef = {
 
 export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePropertyEditorProps>(
   function SinglePropertyEditorCore(props, ref) {
-    const [keyFormatStatus, setKeyFormatStatus] = useState<InputStatus>('');
-    const [valueFormatStatus, setValueFormatStatus] = useState<InputStatus>('');
+    const [keyFormatStatus] = useState<InputStatus>('');
+    const [valueFormatStatus] = useState<InputStatus>('');
     const { mode = 'edit' } = props;
     const isCreate = useMemo(() => {
       return mode === 'create';
@@ -82,11 +82,6 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
         value: innerValue?.value || '',
       });
       return true;
-    };
-
-    const resetValidateStatus = () => {
-      setKeyFormatStatus('');
-      setValueFormatStatus('');
     };
 
     const propertyValueRef = useRef<BaseSelectRef | null>(null);

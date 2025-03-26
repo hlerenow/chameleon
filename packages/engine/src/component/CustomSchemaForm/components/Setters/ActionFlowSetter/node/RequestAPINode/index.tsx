@@ -43,7 +43,6 @@ export const RequestAPINode = (props: NodeProps<TRequestAPINode>) => {
   const devConfigObj = data[DEV_CONFIG_KEY]!;
   const formRef = useRef<CustomSchemaFormInstance>(null);
   const [formValue, setFormValue] = useState<TLogicRequestAPIItem>();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const checkHandleConnection = (handleId: string) => {
     const edges = reactFlowInstance.getEdges();
     return edges.some(
@@ -125,7 +124,7 @@ export const RequestAPINode = (props: NodeProps<TRequestAPINode>) => {
     });
 
     return items;
-  }, [formValue?.method, formValue]);
+  }, [formValue]);
 
   const handleNewNodeAdd = (newNodeData: any, handleType: string) => {
     const currentNode = reactFlowInstance.getNode(String(data.id));

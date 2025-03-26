@@ -22,6 +22,7 @@ export const JumpLinkNode = (props: NodeProps<TJumpLinkNode>) => {
       link: data.link,
     });
     setIsReady(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const defaultLinkSetter = useMemo(() => {
@@ -32,7 +33,7 @@ export const JumpLinkNode = (props: NodeProps<TJumpLinkNode>) => {
     } else {
       return 'TextAreaSetter';
     }
-  }, []);
+  }, [data.link]);
 
   return (
     <div

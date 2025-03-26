@@ -8,7 +8,6 @@ export const CSSSizeSetter: CSetter<CSSSizeInputProps> = ({
   initialValue,
   ...props
 }: CSetterProps<CSSSizeInputProps & { initialValue?: string }>) => {
-  const { keyPaths, onSetterChange } = setterContext;
   return (
     <ConfigProvider
       theme={{

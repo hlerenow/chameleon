@@ -94,7 +94,6 @@ export class PluginManager {
       i18n: this.i18n,
       assetsPackageListManager: this.assetsPackageListManager,
       engine: this.engine,
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       pluginReadyOk: () => {},
     };
     return ctx;

@@ -1,9 +1,8 @@
 import styles from './style.module.scss';
 
-import { AutoComplete, Button, ConfigProvider, Dropdown, Input, MenuProps, message } from 'antd';
-import { MinusOutlined, PlusOutlined, SwapOutlined } from '@ant-design/icons';
+import { AutoComplete, Button, ConfigProvider, Input } from 'antd';
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { BaseSelectRef } from 'rc-select';
-import { useDebounceFn } from 'ahooks';
 import clsx from 'clsx';
 import { CNodePropsTypeEnum, JSExpressionPropType, isExpression } from '@chamn/model';
 import { InputStatus } from 'antd/es/_util/statusUtils';
@@ -134,26 +133,6 @@ export const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, Inn
       }
       if (res?.errorKey?.includes('value')) {
         setValueFormatStatus('error');
-      }
-    };
-
-    const onChooseSetter: MenuProps['onClick'] = ({ key }) => {
-      if (innerValueObj.isExp && key === 'text') {
-        props.onValueChange({
-          ...props.value,
-          property: props.value?.property || '',
-          value: (props.value?.value as any).value || '',
-        });
-      }
-
-      if (!innerValueObj.isExp && key === 'expression') {
-        props.onValueChange({
-          property: props.value?.property || '',
-          value: {
-            type: CNodePropsTypeEnum.EXPRESSION,
-            value: (props.value?.value as string) || '',
-          },
-        });
       }
     };
 

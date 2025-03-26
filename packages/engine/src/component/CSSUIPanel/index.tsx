@@ -1,4 +1,3 @@
-/* eslint-disable react/display-name */
 import { Collapse, CollapseProps, ConfigProvider } from 'antd';
 import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
 import styles from './style.module.scss';
@@ -27,7 +26,9 @@ export const CSSUIPanel = forwardRef<CSSUIPanelRef, CSSUIPanelProps>(({ value, i
   const backgroundRef = useRef<InputCommonRef>(null);
   const shadowRef = useRef<InputCommonRef>(null);
   const fontRef = useRef<InputCommonRef>(null);
-  const inputRefs = [dimensionRef, marinRef, paddingRef, borderRef, backgroundRef, shadowRef, fontRef];
+  const inputRefs = useMemo(() => {
+    return [dimensionRef, marinRef, paddingRef, borderRef, backgroundRef, shadowRef, fontRef];
+  }, [dimensionRef, marinRef, paddingRef, borderRef, backgroundRef, shadowRef, fontRef]);
   const tempValueRef = useRef<any>(null);
   const updateAllInnerValue = () => {
     const tempValue = tempValueRef.current ?? value;
@@ -55,7 +56,7 @@ export const CSSUIPanel = forwardRef<CSSUIPanelRef, CSSUIPanelProps>(({ value, i
         },
       };
     },
-    []
+    [inputRefs]
   );
   const items: CollapseProps['items'] = useMemo(() => {
     return [

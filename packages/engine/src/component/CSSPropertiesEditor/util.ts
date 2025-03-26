@@ -1,5 +1,5 @@
 export const getTextWidth = async (text: string, fontSize = 14) => {
-  return new Promise<string>((resolve, reject) => {
+  return new Promise<string>((resolve) => {
     const span = document.createElement('span');
     span.innerHTML = text;
     span.style.fontSize = `${fontSize}px`;

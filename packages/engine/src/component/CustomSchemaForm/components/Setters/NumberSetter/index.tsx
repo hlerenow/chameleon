@@ -8,8 +8,6 @@ export const NumberSetter: CSetter<InputNumberProps> = ({
   initialValue,
   ...props
 }: CSetterProps<InputNumberProps>) => {
-  const { keyPaths, onSetterChange } = setterContext;
-
   return (
     <ConfigProvider
       theme={{

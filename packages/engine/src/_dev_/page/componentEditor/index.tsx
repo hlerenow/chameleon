@@ -45,33 +45,36 @@ export const ComponentEditor = () => {
     }
     setReady(true);
   }, []);
-  const onReady = useCallback(async (ctx: EnginContext) => {
-    engineRef.current = ctx;
-    engineRef.current?.engine.getI18n()?.changeLanguage(lang);
+  const onReady = useCallback(
+    async (ctx: EnginContext) => {
+      engineRef.current = ctx;
+      engineRef.current?.engine.getI18n()?.changeLanguage(lang);
 
-    const designer: DesignerPluginInstance = await ctx.pluginManager.onPluginReadyOk('Designer');
-    // designer.export?.setMode?.(LayoutMode.EDIT);
+      // const designer: DesignerPluginInstance = await ctx.pluginManager.onPluginReadyOk('Designer');
+      // designer.export?.setMode?.(LayoutMode.EDIT);
 
-    // setTimeout(() => {
-    //   designer.export?.setMode?.(LayoutMode.PREVIEW);
-    //   setTimeout(() => {
-    //     designer.export?.setMode?.(LayoutMode.EDIT);
-    //   }, 3 * 1000);
-    // }, 5 * 1000);
+      // setTimeout(() => {
+      //   designer.export?.setMode?.(LayoutMode.PREVIEW);
+      //   setTimeout(() => {
+      //     designer.export?.setMode?.(LayoutMode.EDIT);
+      //   }, 3 * 1000);
+      // }, 5 * 1000);
 
-    engineRef.current?.engine.preview();
+      engineRef.current?.engine.preview();
 
-    setTimeout(() => {
-      engineRef.current?.engine.existPreview();
       setTimeout(() => {
-        engineRef.current?.engine.preview();
-      }, 5000);
-    }, 3000);
+        engineRef.current?.engine.existPreview();
+        setTimeout(() => {
+          engineRef.current?.engine.preview();
+        }, 5000);
+      }, 3000);
 
-    const workbench = ctx.engine.getWorkbench();
+      const workbench = ctx.engine.getWorkbench();
 
-    workbench?.replaceTopBarView(<></>);
-  }, []);
+      workbench?.replaceTopBarView(<></>);
+    },
+    [lang]
+  );
 
   if (!ready) {
     return <>loading...</>;

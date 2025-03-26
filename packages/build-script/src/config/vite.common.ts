@@ -2,6 +2,7 @@ import path from 'path';
 import react from '@vitejs/plugin-react';
 import { CLI_ARGS_OBJ, PROJECT_ROOT, getCustomConfig } from './base';
 import { defineConfig } from 'vite';
+import eslint from 'vite-plugin-eslint2';
 
 // https://vitejs.dev/config/
 export const getCommonConfig = async () => {
@@ -30,7 +31,7 @@ export const getCommonConfig = async () => {
         },
       },
     },
-    plugins: [react()],
+    plugins: [react(), eslint()],
   });
 
   if (CUSTOM_CONFIG.libMode === false) {

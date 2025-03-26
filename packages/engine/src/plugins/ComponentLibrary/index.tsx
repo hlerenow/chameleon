@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { DOMAttributes } from 'react';
 import { AppstoreAddOutlined } from '@ant-design/icons';
 import { LayoutDragAndDropExtraDataType, Sensor } from '@chamn/layout';
@@ -288,7 +289,7 @@ export const ComponentLibPlugin: CPlugin = {
   async destroy(ctx) {
     console.log('destroy', ctx);
   },
-  export: (ctx) => {
+  export: () => {
     return {};
   },
   meta: {

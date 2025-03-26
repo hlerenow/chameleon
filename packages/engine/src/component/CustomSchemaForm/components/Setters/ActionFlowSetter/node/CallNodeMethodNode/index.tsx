@@ -34,6 +34,7 @@ export const CallNodeMethodNode = (props: NodeProps<TCallNodeMethodNode>) => {
     };
     formRef.current?.setFields(newVal);
     setFormValue(newVal);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const methodList = useMemo(() => {

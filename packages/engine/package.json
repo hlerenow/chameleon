@@ -25,7 +25,7 @@
     "build": "cross-env BUILD_TYPE=PKG build-script --build",
     "build:w": "cross-env BUILD_TYPE=PKG build-script --build --watch",
     "build:analyze": "cross-env BUILD_TYPE=PKG  build-script --build --analyze",
-    "lint": "eslint",
+    "lint": "eslint ./src",
     "prettier": "prettier --write ./src",
     "test": "jest",
     "storybook": "storybook dev -p 6006",

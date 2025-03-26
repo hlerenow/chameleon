@@ -54,6 +54,7 @@
     "typescript": "~5.7.2",
     "vite": "^6.2.2",
     "vite-plugin-dts": "^4.3.0",
+    "vite-plugin-eslint2": "^5.0.3",
     "yargs-parser": "^21.0.1"
   },
   "config": {},

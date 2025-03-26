@@ -91,7 +91,6 @@ export const HistoryPlugin: HistoryPluginType = (ctx) => {
   return {
     name: PLUGIN_NAME,
     PLUGIN_NAME,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     async init(ctx) {
       ctx.pageModel.emitter.on('onNodeChange', () => {
         debounceAddStep();

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { CPlugin } from '../core/pluginManager';
 import { ComponentLibPlugin } from './ComponentLibrary';
 import { DesignerPlugin } from './Designer';

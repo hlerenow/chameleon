@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { ConfigProvider, InputProps, Select } from 'antd';
 import { MouseEventHandler, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './style.module.scss';
@@ -50,20 +51,17 @@ export const useDragSize = function (options?: {
     mouseDown: false,
   });
 
-  const processEnd: MouseEventHandler<any> = useCallback(
-    (e) => {
-      cumulativeInfo.current.mouseDown = false;
-      const { processing } = cumulativeInfo.current;
+  const processEnd: MouseEventHandler<any> = useCallback(() => {
+    cumulativeInfo.current.mouseDown = false;
+    const { processing } = cumulativeInfo.current;
 
-      options?.onEnd?.({ ...processing });
-      cumulativeInfo.current.status = '';
-      cumulativeInfo.current.processing.cumulativeX = 0;
-      cumulativeInfo.current.processing.cumulativeY = 0;
-    },
-    [options]
-  );
+    options?.onEnd?.({ ...processing });
+    cumulativeInfo.current.status = '';
+    cumulativeInfo.current.processing.cumulativeX = 0;
+    cumulativeInfo.current.processing.cumulativeY = 0;
+  }, [options]);
 
-  const onMouseDown: MouseEventHandler<any> = useCallback((e) => {
+  const onMouseDown: MouseEventHandler<any> = useCallback(() => {
     cumulativeInfo.current.mouseDown = true;
   }, []);
 
@@ -273,7 +271,7 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
         value: nV,
       });
     },
-    [originalValObj.unit, originalValObj.value]
+    [originalValObj.value, processNewVal]
   );
 
   const onDragEnd = useCallback(

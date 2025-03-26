@@ -39,7 +39,7 @@ export const SortItemOrderModal = ({
       id: getRandomStr(),
     }));
     setListValue(innerList);
-  }, [modalProps.open]);
+  }, [list, modalProps.open]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {

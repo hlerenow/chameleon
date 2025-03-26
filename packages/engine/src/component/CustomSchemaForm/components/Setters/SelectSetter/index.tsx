@@ -8,8 +8,6 @@ export const SelectSetter: CSetter<SelectProps> = ({
   initialValue,
   ...props
 }: CSetterProps<SelectProps>) => {
-  const { keyPaths, onSetterChange } = setterContext;
-
   return (
     <ConfigProvider
       theme={{

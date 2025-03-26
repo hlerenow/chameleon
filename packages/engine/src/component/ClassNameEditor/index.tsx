@@ -1,10 +1,7 @@
-import React from 'react';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import { ConfigProvider } from 'antd';
 import { CustomSchemaForm, CustomSchemaFormInstance } from '../CustomSchemaForm';
 import { ClassNameType, CMaterialPropsType, CNodePropsTypeEnum } from '@chamn/model';
-
-import styles from './style.module.scss';
 
 export type ClassNameEditorProps = {
   initialValue?: ClassNameType[];
@@ -90,7 +87,6 @@ export const ClassNameEditor = forwardRef<ClassNameEditorRef, ClassNameEditorPro
           ref={formRef}
           initialValue={[]}
           properties={properties}
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
           onSetterChange={function () {}}
           onValueChange={(newVal) => {
             props.onValueChange?.(newVal.className || []);

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import { Sensor } from '@chamn/layout';
 import { CPage } from '@chamn/model';
 import React from 'react';
@@ -40,10 +39,10 @@ export const CTreeContext = React.createContext<CTreeContextData>({
   onSelectNode: async () => {
     return true;
   },
-  onDeleteNode: async (id: string) => {
+  onDeleteNode: async () => {
     return true;
   },
-  onCopyNode: async (id: string) => {
+  onCopyNode: async () => {
     return true;
   },
 });

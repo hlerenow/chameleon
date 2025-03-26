@@ -3,6 +3,7 @@ import { CNodePropsTypeEnum, CPage } from '@chamn/model';
 import { SamplePage, Material } from '@chamn/demo-page';
 import { logicListSchema } from './mock';
 import { useEffect, useState } from 'react';
+import { node } from 'globals';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 export default {
@@ -15,10 +16,9 @@ export default {
   argTypes: {},
 };
 
-// More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Demo = {
   args: {},
-  render: () => {
+  render: function UseRender() {
     const [value, setValue] = useState<any>();
     const [ready, setReady] = useState(false);
 
@@ -53,6 +53,7 @@ export const Demo = {
               onSetterChange: function () {},
               keyPaths: [],
               label: '',
+              nodeModel: node as any,
             }}
             onValueChange={(newValue) => {
               localStorage.setItem('ActionFlowSetterSchema', JSON.stringify(newValue));

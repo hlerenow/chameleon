@@ -33,8 +33,10 @@ export const DesignerSizer = (props: { ctx: EnginContext }) => {
     return () => {
       subWin?.removeEventListener('resize', resizeHandler);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const setCanvasWidth = useCallback(
     debounce((w: number) => {
       const designer = designerRef.current;

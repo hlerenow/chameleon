@@ -31,7 +31,7 @@ export const OutlineTreePlugin: CPlugin = {
   async destroy(ctx) {
     console.log('destroy', ctx);
   },
-  export: (ctx) => {
+  export: () => {
     return {};
   },
   meta: {

@@ -19,7 +19,7 @@ const loadAssets = async (assets: AssetPackage[]) => {
     // 从子窗口获取物料对象
     const componentCollection = collectVariable(assets, window);
     return componentCollection;
-  } catch (e) {
+  } catch {
     return null;
   }
 };

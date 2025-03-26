@@ -14,7 +14,6 @@ export const TextAreaSetter: CSetter<TTextAreaSetterProps> = ({
   valueValidator,
   ...props
 }: CSetterProps<TTextAreaSetterProps>) => {
-  const { keyPaths, onSetterChange } = setterContext;
   const [checkValueStatus, setCheckValueStatus] = useState<TextAreaProps['status']>('');
   return (
     <ConfigProvider

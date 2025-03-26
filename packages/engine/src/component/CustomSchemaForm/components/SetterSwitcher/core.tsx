@@ -48,6 +48,7 @@ export const SetterSwitcherCore = ({
     const devConfigSetter = setters.find((el) => el.componentName === currentSetterName);
     const st = devConfigSetter || getDefaultSetterByValue(props.value, setters) || setters[0];
     setCurrentSetter(st);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let CurrentSetterComp = null;

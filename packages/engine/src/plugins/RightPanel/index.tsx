@@ -4,7 +4,7 @@ import { RightPanel } from './view';
 import { RightPanelConfig } from './type';
 
 const PLUGIN_NAME = 'RightPanel';
-export const RightPanelPlugin: CPlugin<RightPanelConfig> = (ctx) => {
+export const RightPanelPlugin: CPlugin<RightPanelConfig> = () => {
   const uiHandle = React.createRef<RightPanel>();
   return {
     name: PLUGIN_NAME,
@@ -13,10 +13,8 @@ export const RightPanelPlugin: CPlugin<RightPanelConfig> = (ctx) => {
       const workbench = ctx.getWorkbench();
       workbench.replaceRightView(<RightPanel ref={uiHandle} pluginCtx={ctx} />);
     },
-    async destroy(ctx) {
-      console.log('destroy', ctx);
-    },
-    export: (ctx) => {
+    async destroy() {},
+    export: () => {
       return uiHandle?.current;
     },
     meta: {

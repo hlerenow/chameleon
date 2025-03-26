@@ -12,7 +12,7 @@ export function isValidJSVariableName(name: string) {
   try {
     new Function(`let ${name};`);
     return true;
-  } catch (e) {
+  } catch {
     return false;
   }
 }

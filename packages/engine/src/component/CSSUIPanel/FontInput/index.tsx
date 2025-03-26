@@ -1,4 +1,3 @@
-/* eslint-disable react/display-name */
 import { CSSSizeInput } from '@/component/CSSSizeInput';
 import { Row, Col, Radio } from 'antd';
 import styles from '../style.module.scss';

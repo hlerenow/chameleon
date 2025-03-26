@@ -37,7 +37,7 @@ export const ArraySetter = ({
   const { keyPaths, label } = setterContext;
   const listValue: any[] = useMemo(() => {
     return formatValue(props.value ?? initialValue);
-  }, [props.value]);
+  }, [initialValue, props.value]);
 
   const [sortVisible, setSortVisible] = useState(false);
   const innerSetters = getSetterList(
@@ -67,7 +67,7 @@ export const ArraySetter = ({
         </Button>
       );
     }
-  }, []);
+  }, [setterContext]);
 
   return (
     <ConfigProvider

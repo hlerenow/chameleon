@@ -49,7 +49,6 @@ export const _keyMap: Record<string, number> = {
   '-': isff ? 173 : 189,
   '=': isff ? 61 : 187,
   ';': isff ? 59 : 186,
-  // eslint-disable-next-line quotes
   "'": 222,
   '[': 219,
   ']': 221,

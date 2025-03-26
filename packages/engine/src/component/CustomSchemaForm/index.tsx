@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { Ref } from 'react';
 import { CMaterialPropsType, getMTitleTip } from '@chamn/model';
 import { CForm } from './components/Form';

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import styles from './style.module.scss';
 
 export function EmptySetter(props: { setterName: string }) {
@@ -15,7 +16,6 @@ export function EmptySetter(props: { setterName: string }) {
 }
 
 export const getEmptySetter = (setterName: string) => {
-  // eslint-disable-next-line react/display-name
   return () => <EmptySetter setterName={setterName} />;
 };
 

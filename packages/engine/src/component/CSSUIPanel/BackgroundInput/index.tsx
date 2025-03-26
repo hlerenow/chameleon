@@ -1,5 +1,4 @@
-/* eslint-disable react/display-name */
-import { Row, Col, ColorPicker, Radio, Input } from 'antd';
+import { Row, Col, Radio, Input } from 'antd';
 import styles from '../style.module.scss';
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { DEFAULT_PRESET_COLORS } from '@/config/colorPickerColorList';

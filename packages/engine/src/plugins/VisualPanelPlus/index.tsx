@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { CNode, CRootNode } from '@chamn/model';
 import { CRightPanelItem, RightPanelOptions } from '../RightPanel/view';
 
@@ -22,7 +23,7 @@ import { CSSUIPanel, CSSUIPanelRef } from '@/component/CSSUIPanel';
 
 export const VisualPanelPlus = (props: RightPanelOptions) => {
   const styleVariableRef = useRef<CSSPropertiesVariableBindEditorRef>(null);
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
   const node = props.node!;
   const classNameList = useMemo(() => {
     const tempList = node.value.classNames || [];

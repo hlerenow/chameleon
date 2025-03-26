@@ -12,7 +12,6 @@ type CSSValueSetterProps = {
 
 export const CSSValueSetter: CSetter<CSSValueSetterProps> = ({
   onValueChange,
-  setterContext,
   propertyKey = '',
   value,
   initialValue,

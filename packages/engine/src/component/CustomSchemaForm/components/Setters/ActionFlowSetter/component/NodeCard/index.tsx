@@ -25,7 +25,7 @@ export const NodeCard = ({
   customHandle?: React.ReactNode;
   handleNewNodeAdd?: (newNodeData: any) => void;
 }) => {
-  const { data, isConnectable, selected, ...restProps } = nodeProps;
+  const { data, isConnectable, selected } = nodeProps;
   const reactFlowInstance = useReactFlow();
   const outputNodeHasConnected = UseNodeHasConnected(data, OUTPUT_HANDLE_ID);
 

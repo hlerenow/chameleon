@@ -34,6 +34,7 @@ export const CSSPropertiesVariableBindEditor = forwardRef<
     if (props.initialValue) {
       setPropertyList(props.initialValue);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [newProperty, setNewProperty] = useState<{

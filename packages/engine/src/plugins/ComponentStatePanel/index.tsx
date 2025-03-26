@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { useEffect, useRef } from 'react';
 import { CNode, CRootNode } from '@chamn/model';
 import { CPluginCtx } from '../../core/pluginManager';
@@ -10,7 +11,6 @@ export type ComponentStatePanelProps = {
 };
 
 export const ComponentStatePanel = (props: ComponentStatePanelProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const node = props.node!;
 
   const nodeState = node.value.state || {};

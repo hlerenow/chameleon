@@ -27,7 +27,7 @@ export const DragComponentItem = (props: DragComponentItemProps) => {
     } else {
       return props.icon;
     }
-  }, [props.icon]);
+  }, [props.icon, props.iconText]);
 
   const contentView = (
     <div className={clsx([styles.square, props.containerClassName])}>

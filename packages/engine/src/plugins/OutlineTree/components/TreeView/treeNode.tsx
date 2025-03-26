@@ -1,10 +1,9 @@
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { CopyOutlined, DeleteOutlined, EyeInvisibleOutlined, EyeOutlined, RightOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
 import { CTreeContext, DragState } from './context';
 import { TreeNodeData } from './dataStruct';
 import styles from './style.module.scss';
-import { LOGGER } from '../../../../utils/logger';
 import { CNode } from '@chamn/model';
 import { Input, InputRef } from 'antd';
 import { CPluginCtx } from '@/core/pluginManager';
@@ -157,6 +156,7 @@ export const TreeNode = (props: TreeNodeProps) => {
       document.removeEventListener('click', clickHandle);
       sunWin?.removeEventListener('click', clickHandle);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const targetNodeModel = ctxState.pageModel?.getNode(item.key || '') as CNode;

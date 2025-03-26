@@ -7,7 +7,6 @@ export const StringSetter: CSetter<InputProps> = ({
   initialValue,
   ...props
 }: CSetterProps<InputProps & { initialValue?: string }>) => {
-  const { keyPaths, onSetterChange } = setterContext;
   return (
     <ConfigProvider
       theme={{

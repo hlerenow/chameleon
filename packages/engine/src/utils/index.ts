@@ -26,7 +26,7 @@ export const sageJSONParse = function (jsonStr: string, errorValue: any) {
   try {
     const res = JSON.parse(jsonStr);
     return res;
-  } catch (e) {
+  } catch (_e) {
     return errorValue ?? null;
   }
 };

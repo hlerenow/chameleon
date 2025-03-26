@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { useEffect, useRef } from 'react';
 import { DatabaseOutlined } from '@ant-design/icons';
 import { CPlugin, CPluginCtx } from '../../core/pluginManager';
@@ -23,14 +24,14 @@ const GlobalStatePanel = (props: GlobalStatePanelProps) => {
   useEffect(() => {
     editorRef?.current?.setValue(JSON.stringify(rootState, null, 2));
     // 正常情况下, 只有 reloadPage  才需要同步数据
-    pluginCtx.pageModel.emitter.on('onReloadPage', (e) => {
-      console.log('onReloadPage 111');
+    pluginCtx.pageModel.emitter.on('onReloadPage', () => {
       if (triggerChangeBySelf) {
         triggerChangeBySelf = false;
         return;
       }
       editorRef.current?.setValue(JSON.stringify(pluginCtx.pageModel.value.componentsTree.value.state, null, 2));
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onValueChange = (newValStr?: string) => {
@@ -61,7 +62,7 @@ const GlobalStatePanel = (props: GlobalStatePanelProps) => {
         onDidMount={(editor) => {
           editorRef.current = editor;
         }}
-        beforeMount={(monaco) => {
+        beforeMount={() => {
           // monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
           //   validate: true,
           //   allowComments: true, // 启用注释
@@ -91,10 +92,8 @@ export const GlobalStatePanelPlugin: CPlugin = {
       render: <GlobalStatePanelWithLocalize pluginCtx={ctx} />,
     });
   },
-  async destroy(ctx) {
-    console.log('destroy', ctx);
-  },
-  export: (ctx) => {
+  async destroy() {},
+  export: () => {
     return {};
   },
   meta: {

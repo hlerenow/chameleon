@@ -7,7 +7,6 @@ export const SliderSetter: CSetter<SliderSingleProps> = ({
   initialValue,
   ...props
 }: CSetterProps<SliderSingleProps & { initialValue?: string }>) => {
-  const { keyPaths, onSetterChange } = setterContext;
   return (
     <Slider
       {...props}

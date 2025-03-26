@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { useMemo, useState } from 'react';
 import { CopyOutlined, DeleteOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import styles from './style.module.scss';

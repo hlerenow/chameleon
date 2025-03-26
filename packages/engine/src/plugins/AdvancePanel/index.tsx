@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { useEffect, useMemo, useRef } from 'react';
 import { CMaterialPropsType, CNode, CRootNode } from '@chamn/model';
 import { CustomSchemaForm, CustomSchemaFormInstance, CustomSchemaFormProps } from '../../component/CustomSchemaForm';
@@ -187,10 +188,10 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
     };
   };
 
-  const loopObj = node?.value.loop;
   const formRef = useRef<CustomSchemaFormInstance>(null);
 
   useEffect(() => {
+    const loopObj = node?.value.loop;
     const newValue = {
       id: node?.id,
       condition: node?.value.condition ?? true,
