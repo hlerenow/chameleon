@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.21](https://github.com/ByteCrazy/chameleon/compare/v0.3.20...v0.3.21) (2025-03-26)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, material:** 🐛 fixed RGLEL cycle update item ([f045818](https://github.com/ByteCrazy/chameleon/commit/f045818d6d1e1b4dbcf107d727976f6d92600b94))
+
 ## [0.3.20](https://github.com/ByteCrazy/chameleon/compare/v0.3.19...v0.3.20) (2025-03-26)
 
 ### 🐛 Bug Fixes | Bug 修复
