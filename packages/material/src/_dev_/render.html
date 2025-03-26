@@ -25,7 +25,8 @@
   <script>
     window.React = window.parent.React;
     window.ReactDOM = window.parent.ReactDOM;
-    window.ReactDOMClient = window.parent.ReactDOMClient;
+    window.ReactDOMClient = window.parent.ReactDOMClient || window.parent.ReactDOM;
+
   </script>
 </head>
 

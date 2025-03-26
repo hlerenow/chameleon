@@ -74,7 +74,6 @@ const customRender: LayoutPropsType['customRender'] = async ({
   IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
 };
 
-// console.log('customMaterial', customMaterial.setter);
 const win = window as any;
 win.React = React;
 win.ReactDOM = ReactDOM;

@@ -26,7 +26,7 @@
     "build": "pnpm run build:lib && pnpm run build:meta",
     "build:lib": "cross-env LIB_NAME=comp  build-script --build",
     "build:meta": "cross-env LIB_NAME=meta build-script --build",
-    "lint": "eslint --ext .tsx,.ts src/",
+    "lint": "eslint ./src",
     "prettier": "prettier --write ./src",
     "test": "jest"
   },
@@ -59,8 +59,7 @@
     "cross-env": "^7.0.3",
     "react-router-dom": "^6.10.0",
     "sass": "^1.62.0",
-    "typescript": "^4.9.3",
-    "vite": "^4.2.0"
+    "vite-plugin-external": "^6.0.1"
   },
   "config": {},
   "gitHead": "dc3e55fdeb903a8012f6ebd3ebc018ed61ad89db"

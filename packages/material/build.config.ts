@@ -1,4 +1,5 @@
 import pgk from './package.json';
+import pluginExternal from 'vite-plugin-external';
 const GLOBAL_LIB_NAME = 'ChamnCommonComponents';
 
 const envDefine = {
@@ -14,7 +15,14 @@ let buildConfig: any = {
   entry: './src/index.tsx',
   vite: {
     define: envDefine,
-    plugins: [],
+    plugins: [
+      pluginExternal({
+        externals: {
+          react: 'React',
+          'react-dom/client': 'ReactDOM',
+        },
+      }),
+    ],
   },
 };
 

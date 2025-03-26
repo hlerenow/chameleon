@@ -5,11 +5,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chameleon Material develop</title>
+  <script src="/node_modules/react/umd/react.development.js"></script>
+  <script src="/node_modules/react-dom/umd/react-dom.development.js"></script>
 </head>
 
 <body>
   <div id="root"></div>
-  <script type="module" src="/src/_dev_/index.tsx"></script>
+  <script>
+    console.log(window.React)
+    console.log(window.ReactDOM)
+  </script>
+  <script type="module" src="./src/_dev_/index.tsx"></script>
 </body>
 
 </html>

@@ -14,5 +14,8 @@ export const devConfig = async () => {
       port: 3000,
     },
   });
-  return mergeConfig(config, CUSTOM_CONFIG?.vite || {});
+  const finalConfig = mergeConfig(config, CUSTOM_CONFIG?.vite || {});
+  // const fp = `${PROJECT_ROOT}/.temp.vite.config.json`;
+
+  return finalConfig;
 };
