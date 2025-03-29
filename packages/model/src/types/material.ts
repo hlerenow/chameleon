@@ -26,8 +26,8 @@ import {
   SetterTypeEnum,
 } from './base';
 import { CNodeDataStructDescribe, CNodeDataType } from './node';
-import { CNode } from '../Page/RootNode/Node';
-import { CRootNode } from '../Page/RootNode';
+import type { CNode } from '../Page/RootNode/Node';
+import type { CRootNode } from '../Page/RootNode';
 
 export enum BaseDataType {
   STRING = 'string',

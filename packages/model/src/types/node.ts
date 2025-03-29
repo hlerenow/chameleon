@@ -17,9 +17,8 @@ import {
 import { CNodePropsTypeEnum, SlotRenderType } from '../const/schema';
 import { isPlainObject } from '../util/lodash';
 import { CSSType, DEV_CONFIG_KEY } from './base';
-import { CPageDataType } from './page';
-import { CPage } from '../Page';
-import { CNode } from '../Page/RootNode/Node';
+import type { CPage } from '../Page';
+import type { CNode } from '../Page/RootNode/Node';
 
 export type NormalPropType = string | boolean | number | Record<string, any>;
 
@@ -230,7 +229,7 @@ export enum ENGEnvEnum {
   COMPONENTS = 'COMPONENTS',
 }
 
-export type CNodeDataType = {
+export type CNodeDataType<ExtraT = any> = {
   id?: string;
   title?: string;
   componentName: string;
@@ -246,8 +245,6 @@ export type CNodeDataType = {
     func: TActionLogicItem;
   }[];
   nodeName?: string;
-  /** TODO: if type is dynamic, schema is required */
-  schema?: CPageDataType;
   children?: (string | CNodeDataType)[];
   /**
    * only used in dev mode, if you are run in prod, this key will be undefined
@@ -301,7 +298,7 @@ export type CNodeDataType = {
   injectEnvList?: (ENGEnvEnum | `${ENGEnvEnum}`)[];
   // 是否渲染
   condition?: boolean | JSExpressionPropType;
-  extra?: Record<any, any>;
+  extra?: ExtraT;
 };
 
 const JSExpressionDescribe = object({

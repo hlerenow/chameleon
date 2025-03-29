@@ -1,10 +1,10 @@
-import { any, array, assign, literal, object, optional, string, union } from 'superstruct';
+import { any, array, assign, object, optional, string } from 'superstruct';
 import { LibMetaType, ThirdLibTypeDescribe, LibMetaTypeDescribe, AssetPackage, CSSType } from './base';
 import { FunctionPropType } from './node';
 import { CRootNodeDataType, CRootNodeDataTypeDescribe, FunctionPropertyTypeDescribe } from './rootNode';
-import { CNode } from '../Page/RootNode/Node';
-import { CPage } from '../Page';
-import { CRootNode } from '../Page/RootNode';
+import type { CNode } from '../Page/RootNode/Node';
+import type { CPage } from '../Page';
+import type { CRootNode } from '../Page/RootNode';
 
 export type ComponentMetaType = {
   componentName: string;
@@ -20,16 +20,11 @@ export type LifecycleItem = {
   run: (params: { ctx: any }) => void;
 };
 
-export type CPageDataType = {
+export type CPageDataType<T = any> = {
   version: string;
   name: string;
   // TODO
   css?: CSSType[];
-  // TODO
-  renderType?: RenderType;
-  // TODO
-  /** 当 renderType 为 COMPONENT 时有效 */
-  loadType?: 'async' | 'sync' | '';
   // TODO
   lifecycle?: {
     beforeMount?: LifecycleItem[];
@@ -45,14 +40,13 @@ export type CPageDataType = {
   componentsTree: CRootNodeDataType;
   // runtime render need
   assets?: AssetPackage[];
+  extra?: T;
 };
 
 export const CPageDataTypeDescribe = object({
   version: optional(string()),
   name: optional(string()),
   css: optional(string()),
-  renderType: optional(union([literal(RenderType.COMPONENT), literal(RenderType.PAGE)])),
-  loadType: optional(any()),
   lifecycle: optional(any()),
   props: optional(any()),
   methods: optional(array(FunctionPropertyTypeDescribe)),
@@ -67,6 +61,7 @@ export const CPageDataTypeDescribe = object({
   thirdLibs: optional(ThirdLibTypeDescribe),
   componentsTree: CRootNodeDataTypeDescribe,
   assets: optional(array(any())),
+  extra: optional(any()),
 });
 
 export type CPageNode = CNode | CPage | CRootNode;

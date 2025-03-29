@@ -6,7 +6,7 @@ export enum InnerComponentNameEnum {
   ROOT_CONTAINER = 'RootContainer',
 }
 
-export type CRootNodeDataType = CNodeDataType & {
+export type CRootNodeDataType<ExtraT = any> = CNodeDataType<ExtraT> & {
   componentName: InnerComponentNameEnum | `${InnerComponentNameEnum}`;
 };
 
