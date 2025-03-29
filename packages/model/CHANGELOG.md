@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.0](https://github.com/ByteCrazy/chameleon/compare/v0.3.21...v0.4.0) (2025-03-29)
+
+### ✨ Features | 新功能
+
+* **model:** 🎸 update model define, add extra T ([f098ad2](https://github.com/ByteCrazy/chameleon/commit/f098ad26dc7525749d280445202971ede12490f4))
+
 ## [0.3.21](https://github.com/ByteCrazy/chameleon/compare/v0.3.20...v0.3.21) (2025-03-26)
 
 **Note:** Version bump only for package @chamn/model
