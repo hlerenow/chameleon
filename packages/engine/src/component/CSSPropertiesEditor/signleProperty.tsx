@@ -115,7 +115,7 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
         >
           <AutoComplete
             ref={propertyKeyRef}
-            bordered={false}
+            variant={'borderless'}
             disabled={!isCreate}
             onSearch={onSearch}
             status={keyFormatStatus}
@@ -171,7 +171,7 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
           :
         </span>
         <AutoComplete
-          bordered={false}
+          variant={'borderless'}
           ref={propertyValueRef}
           status={valueFormatStatus}
           popupMatchSelectWidth={200}

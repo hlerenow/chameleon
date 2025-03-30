@@ -1,6 +1,7 @@
 .ListBox {
   display: flex;
   flex-wrap: wrap;
+  overflow: auto;
   :global {
     .ant-collapse .ant-collapse-content > .ant-collapse-content-box {
       padding: 0;

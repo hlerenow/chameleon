@@ -1,14 +1,14 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { DOMAttributes } from 'react';
-import { AppstoreAddOutlined } from '@ant-design/icons';
+import { AppstoreAddOutlined, SearchOutlined } from '@ant-design/icons';
 import { LayoutDragAndDropExtraDataType, Sensor } from '@chamn/layout';
-import { Tabs } from 'antd';
+import { Input, Tabs } from 'antd';
 import { CPlugin, CPluginCtx } from '../../core/pluginManager';
 import localize from './localize';
 import styles from './style.module.scss';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { ListView } from './components/ListView';
-import { getTargetMNodeKeyVal } from './util';
+import { getTargetMNodeKeyVal, searchComponentSnippets } from './util';
 import { DRAG_ITEM_KEY } from './components/DragItem';
 import {
   CNode,
@@ -18,13 +18,14 @@ import {
   findContainerNode,
   isPageModel,
   SnippetsCollection,
+  SnippetsType,
 } from '@chamn/model';
 import { capitalize } from 'lodash-es';
 import { InsertNodePosType } from '@chamn/model/src';
 import { DesignerPluginInstance } from '../Designer/type';
 
 interface ComponentLibViewProps extends WithTranslation {
-  pluginCtx: CPluginCtx;
+  pluginCtx: CPluginCtx<ComponentLibPluginConfig>;
 }
 
 export const PLUGIN_NAME = 'ComponentLib';
@@ -36,6 +37,19 @@ const TabTitle = ({ children }: { children: any }) => {
 
 type ComponentLibViewState = {
   componentsList: SnippetsCollection;
+  searchString: string;
+  searchMode: boolean;
+  searchResultList: {
+    name: string;
+    list: SnippetsType[];
+  }[];
+};
+
+export type ComponentLibPluginConfig = {
+  customSearchBar: (props: {
+    defaultInputView: React.ReactNode;
+    updateState: (newState: Partial<ComponentLibViewState>) => string;
+  }) => React.ReactNode;
 };
 
 class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentLibViewState> {
@@ -48,6 +62,9 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
     this.containerRef = React.createRef<HTMLDivElement>();
     this.state = {
       componentsList: [],
+      searchString: '',
+      searchMode: false,
+      searchResultList: [],
     };
   }
 
@@ -242,9 +259,24 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
     });
   };
 
+  onSearch = () => {
+    if (!this.state.searchString.length) {
+      this.setState({
+        searchResultList: [],
+        searchMode: false,
+      });
+    }
+    const newList = searchComponentSnippets(this.state.componentsList, this.state.searchString);
+    this.setState({
+      searchResultList: newList,
+      searchMode: true,
+    });
+  };
+
   render(): React.ReactNode {
-    const { componentsList } = this.state;
+    const { componentsList, searchString, searchResultList, searchMode } = this.state;
     const { toAddNewNode } = this;
+    const CustomSearchBar = this.props.pluginCtx.config.customSearchBar;
     const items = componentsList.map((el) => {
       return {
         label: <TabTitle>{capitalize(el.name)}</TabTitle>,
@@ -252,21 +284,57 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
         children: <ListView dataSource={el.list} />,
       };
     });
+
+    const defaultSearchValue = (
+      <Input
+        value={searchString}
+        placeholder="input search text"
+        suffix={<SearchOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+        onPressEnter={this.onSearch}
+        allowClear
+        onClear={() => {
+          this.setState({
+            searchMode: false,
+            searchResultList: [],
+          });
+        }}
+        onChange={(e) => {
+          this.setState({
+            searchString: e.target.value,
+          });
+        }}
+      />
+    );
     return (
       <div ref={this.containerRef} className={styles.container} onClick={toAddNewNode}>
-        <Tabs
-          defaultActiveKey="BaseComponent"
-          items={items}
-          style={{
-            flex: 1,
-          }}
-        />
+        <div className={styles.header}>
+          {CustomSearchBar ? (
+            <CustomSearchBar defaultInputView={defaultSearchValue} updateState={this.setState.bind(this) as any} />
+          ) : (
+            defaultSearchValue
+          )}
+        </div>
+        {searchMode && (
+          <div>
+            {!searchResultList.length && <div className={styles.notFoundComponent}>暂无相关组件</div>}
+            <ListView dataSource={searchResultList} />
+          </div>
+        )}
+        {!searchResultList.length && !searchMode && (
+          <Tabs
+            defaultActiveKey="BaseComponent"
+            items={items}
+            style={{
+              width: '100%',
+            }}
+          />
+        )}
       </div>
     );
   }
 }
 
-export const ComponentLibPlugin: CPlugin = {
+export const ComponentLibPlugin: CPlugin<ComponentLibPluginConfig> = {
   name: PLUGIN_NAME,
   PLUGIN_NAME,
   async init(ctx) {

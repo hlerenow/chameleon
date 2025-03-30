@@ -3,9 +3,9 @@ import { Button, message, Modal, Select } from 'antd';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMClient from 'react-dom/client';
-import { Engine } from '../../..';
+import { Engine, PluginInstance } from '../../..';
 import '../../index.css';
-import { DEFAULT_PLUGIN_LIST } from '../../../plugins';
+import { ComponentLibPluginConfig, DEFAULT_PLUGIN_LIST, DEFAULT_PLUGIN_NAME_MAP } from '../../../plugins';
 import { DisplaySourceSchema } from '../../../plugins/DisplaySourceSchema';
 import { InnerComponentMeta } from '../../../material/innerMaterial';
 import { RollbackOutlined } from '@ant-design/icons';
@@ -345,6 +345,16 @@ export const App = () => {
           }
           return pluginInstance;
         });
+        /** 自定义组件库插件的搜索框 */
+        pluginManager.customPlugin(
+          DEFAULT_PLUGIN_NAME_MAP.ComponentLibPlugin,
+          (pluginInstance: PluginInstance<ComponentLibPluginConfig>) => {
+            pluginInstance.ctx.config.customSearchBar = ({ defaultInputView }) => {
+              return <div>{defaultInputView}</div>;
+            };
+            return pluginInstance;
+          }
+        );
       }}
       renderJSUrl={renderAsURL}
       onReady={onReady}

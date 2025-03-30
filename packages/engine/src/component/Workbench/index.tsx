@@ -79,7 +79,7 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
         width: 350,
         height: '100%',
       },
-      currentActiveLeftPanel: 'OutlineTree',
+      currentActiveLeftPanel: 'ComponentLib',
       leftPanels: [],
       bodyView: null,
       rightView: null,
