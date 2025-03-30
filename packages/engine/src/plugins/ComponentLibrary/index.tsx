@@ -265,6 +265,7 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
         searchResultList: [],
         searchMode: false,
       });
+      return;
     }
     const newList = searchComponentSnippets(this.state.componentsList, this.state.searchString);
     this.setState({
