@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.0](https://github.com/ByteCrazy/chameleon/compare/v0.4.0...v0.5.0) (2025-03-30)
+
+### ✨ Features | 新功能
+
+* **engine:** 🎸 componentLib add search and customSearchBar ([4801f40](https://github.com/ByteCrazy/chameleon/commit/4801f403da1af705d5dc5eef579e7dba6560b08f))
+
 ## [0.4.0](https://github.com/ByteCrazy/chameleon/compare/v0.3.21...v0.4.0) (2025-03-29)
 
 ### ✨ Features | 新功能
