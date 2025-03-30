@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.0](https://github.com/ByteCrazy/chameleon/compare/v0.5.2...v0.6.0) (2025-03-30)
+
+### ✨ Features | 新功能
+
+* **engine:** 🎸 support config monacoEdito cdn url ([32d08bc](https://github.com/ByteCrazy/chameleon/commit/32d08bcaec7ebe8a187d0b2eae8bd5e4b64b3dc9))
+
 ## [0.5.2](https://github.com/ByteCrazy/chameleon/compare/v0.5.1...v0.5.2) (2025-03-30)
 
 ### ✨ Features | 新功能
