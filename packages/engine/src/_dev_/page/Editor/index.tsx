@@ -356,6 +356,9 @@ export const App = () => {
           }
         );
       }}
+      monacoEditor={{
+        cndUrl: 'https://static.hai-fe.com/code-block/web/dist/monaco-editor/min/vs',
+      }}
       renderJSUrl={renderAsURL}
       onReady={onReady}
       renderProps={{

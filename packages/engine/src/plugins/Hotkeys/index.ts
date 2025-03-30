@@ -11,7 +11,6 @@ export const HotkeysPlugin: HotKeysPluginType = {
   name: PLUGIN_NAME,
   PLUGIN_NAME,
   async init(ctx) {
-    console.log('init plugin hotkey');
     const { i18n } = ctx;
     Object.keys(localize).forEach((lng) => {
       i18n.addResourceBundle(lng, i18nNamespace, localize[lng], true, true);

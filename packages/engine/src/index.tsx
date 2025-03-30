@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import React from 'react';
 import { TWidgetVisible, Workbench } from './component/Workbench';
+import { loader } from '@monaco-editor/react';
 
 import styles from './Engine.module.scss';
 import i18n from './i18n/index';
@@ -41,6 +42,14 @@ export class Engine extends React.Component<EngineProps> {
     (window as any).__CHAMELEON_ENG__ = this;
     this.assetsPackageListManager = new AssetsPackageListManager(props.assetPackagesList || []);
     this.workbenchConfig = props.workbenchConfig || {};
+
+    if (props.monacoEditor?.cndUrl) {
+      loader.config({
+        paths: {
+          vs: props.monacoEditor?.cndUrl,
+        },
+      });
+    }
 
     try {
       this.pageModel = new CPage(this.pageSchema, {

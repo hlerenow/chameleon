@@ -25,4 +25,7 @@ export type EngineProps = {
   renderProps?: Partial<RenderPropsType>;
   /** 配置 workbench 的属性，初始化时生效，后续修改不会生效，只能通过 API 变更 */
   workbenchConfig?: Partial<WorkbenchPropsType>;
+  monacoEditor?: {
+    cndUrl?: string;
+  };
 };
