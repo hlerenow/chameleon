@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.2](https://github.com/ByteCrazy/chameleon/compare/v0.5.1...v0.5.2) (2025-03-30)
+
+### ✨ Features | 新功能
+
+* **model:** 🎸 support export sxtra ([272de8d](https://github.com/ByteCrazy/chameleon/commit/272de8d989c3085830bf37469885c7a92abaf0da))
+
 ## [0.5.1](https://github.com/ByteCrazy/chameleon/compare/v0.5.0...v0.5.1) (2025-03-30)
 
 **Note:** Version bump only for package @chamn/model
