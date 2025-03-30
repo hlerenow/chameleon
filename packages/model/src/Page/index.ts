@@ -319,6 +319,7 @@ export class CPage {
       componentsMeta: finalComponentsMetaList,
       thirdLibs: this.data.thirdLibs,
       assets: [],
+      extra: this.data.extra,
     };
 
     this.data.thirdLibs?.forEach((thirdEl) => {

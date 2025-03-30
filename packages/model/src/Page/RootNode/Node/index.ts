@@ -256,6 +256,7 @@ export class CNode {
       props: props,
       children,
       condition: data.condition,
+      extra: this.data.extra,
     };
     if (mode === 'design') {
       delete newRes.id;
