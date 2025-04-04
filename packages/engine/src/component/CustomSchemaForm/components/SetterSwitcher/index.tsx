@@ -100,6 +100,7 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
 
   let bodyView: any = null;
   const hiddenLabel = currentSetter?.hiddenLabel === true;
+
   const labelWidth = currentSetter?.labelWidth;
   const labelAlign = currentSetter?.labelAlign || 'center';
   const collapse = (currentSetter?.props as any)?.collapse;

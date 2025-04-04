@@ -9,6 +9,7 @@ import { BackgroundInput } from './BackgroundInput';
 import { ShadowInput } from './ShadowInput';
 import { InputCommonRef } from './type';
 import { waitReactUpdate } from '@/utils';
+import { isNil, omitBy } from 'lodash-es';
 
 export type CSSUIPanelProps = {
   initialVal?: Record<string, string>;
@@ -74,7 +75,9 @@ export const CSSUIPanel = forwardRef<CSSUIPanelRef, CSSUIPanelProps>(({ value, i
                 ...val,
               };
               tempValueRef.current = newVal;
-              onValueChange?.(newVal);
+
+              const finalValue = omitBy(newVal, (value) => isNil(value) || value === '');
+              onValueChange?.(finalValue);
             }}
           />
         ),

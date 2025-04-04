@@ -16,6 +16,7 @@ export enum SetterTypeEnum {
   COLOR_SETTER = 'ColorSetter',
   AntDColorSetter = 'AntDColorSetter',
   RadioGroupSetter = 'RadioGroupSetter',
+  ActionFlowSetter = 'ActionFlowSetter',
 }
 
 export type SetterBasicType = string;

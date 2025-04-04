@@ -13,3 +13,4 @@ export * from './types/rootNode';
 export * from './types/page';
 
 export * from './util/index';
+export * from './const/eventList';

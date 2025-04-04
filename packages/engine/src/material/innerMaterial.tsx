@@ -1,6 +1,6 @@
-import { CMaterialPropsType, CMaterialType, HTMl_TAGS } from '@chamn/model';
+import { CMaterialPropsType, CMaterialType, DEFAULT_EVENT_LIST, HTMl_TAGS } from '@chamn/model';
 import { capitalize } from 'lodash-es';
-import { eventList } from './evetList';
+import { containerProps } from './containter.meta';
 
 const customAttributesMeta: CMaterialPropsType[number] = {
   name: '$$attributes',
@@ -102,21 +102,7 @@ const BaseComponentMeta: CMaterialType[] = [
     title: '容器',
     componentName: 'CContainer',
     isContainer: true,
-    props: [
-      {
-        name: 'afterMount',
-        title: '渲染之后',
-        valueType: 'function',
-        setters: ['FunctionSetter', 'ExpressionSetter', 'ActionFlowSetter' as any],
-      },
-      {
-        name: 'beforeDestroy',
-        title: '销毁之前',
-        valueType: 'function',
-        setters: ['FunctionSetter', 'ExpressionSetter'],
-      },
-      customAttributesMeta,
-    ],
+    props: [...(containerProps as any), customAttributesMeta],
     groupName: groupName,
     snippets: [
       {
@@ -454,7 +440,7 @@ const BaseComponentMeta: CMaterialType[] = [
   },
 ];
 BaseComponentMeta.forEach((el) => {
-  el.events = eventList;
+  el.events = DEFAULT_EVENT_LIST;
 });
 
 const BaseComponentMetaWithVersion = BaseComponentMeta.map((el) => {

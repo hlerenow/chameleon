@@ -1,6 +1,6 @@
-import { CMaterialEventType } from '@chamn/model';
+import { CMaterialEventType } from '@/types/material';
 
-export const eventList: CMaterialEventType[] = [
+export const DEFAULT_EVENT_LIST: CMaterialEventType[] = [
   {
     event: 'onClick',
   },

@@ -15,8 +15,10 @@ import { AntDColorSetter } from './AntDColorSetter';
 import { SliderSetter } from './SliderSetter';
 import { RadioGroupSetter } from './RadioGroupSetter';
 import { CSSSizeSetter } from './CSSSizeSetter';
+import { FastLayoutSetter } from './FastLayoutSetter';
 
 export const BUILD_IN_SETTER_MAP = {
+  FastLayoutSetter,
   StringSetter,
   ArraySetter,
   ShapeSetter,
