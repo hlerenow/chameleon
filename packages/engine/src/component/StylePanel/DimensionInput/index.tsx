@@ -1,10 +1,28 @@
 import { CSSSizeInput } from '@/component/CSSSizeInput';
-import { Row, Col, Radio } from 'antd';
+import { Row, Col, Radio, Button } from 'antd';
 import styles from '../style.module.scss';
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 'react';
 import { InputCommonRef } from '../type';
 import { pick } from 'lodash-es';
-import { AlignHorizontalDistributeEnd, AlignHorizontalDistributeStart } from 'lucide-react';
+import {
+  AlignHorizontalDistributeEnd,
+  AlignHorizontalDistributeStart,
+  AlignHorizontalSpaceAround,
+  AlignHorizontalSpaceBetween,
+  AlignVerticalJustifyEnd,
+  AlignVerticalJustifyStart,
+  AlignVerticalSpaceAround,
+  AlignVerticalSpaceBetween,
+  ArrowDownFromLine,
+  ArrowLeftFromLine,
+  ArrowRightFromLine,
+  ArrowUpFromLine,
+  MoveHorizontal,
+  MoveVertical,
+  SquareX,
+  StretchHorizontal,
+  StretchVertical,
+} from 'lucide-react';
 const keyList = [
   'width',
   'height',
@@ -32,7 +50,7 @@ function getDefaultValue(list: string[]): any {
   return list.reduce((res, el) => {
     return {
       ...res,
-      [el]: 'px',
+      [el]: '',
     };
   }, {});
 }
@@ -115,6 +133,170 @@ export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((p
       {realValue.display === 'flex' && (
         <>
           <Row className={styles.row}>
+            <Col
+              span={24}
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
+              <span className={styles.label}>AxisD:</span>
+              <div
+                style={{
+                  width: '200px',
+                  marginLeft: '3px',
+                }}
+              >
+                <Radio.Group
+                  size="small"
+                  value={realValue['flex-direction']}
+                  buttonStyle={'outline'}
+                  options={[
+                    {
+                      label: <ArrowRightFromLine size={14} style={{ top: '3px', position: 'relative' }} />,
+                      value: 'row',
+                    },
+                    {
+                      label: <ArrowLeftFromLine size={14} style={{ top: '3px', position: 'relative' }} />,
+                      value: 'row-reverse',
+                    },
+                    {
+                      label: <ArrowDownFromLine size={14} style={{ top: '3px', position: 'relative' }} />,
+                      value: 'column',
+                    },
+                    {
+                      label: <ArrowUpFromLine size={14} style={{ top: '3px', position: 'relative' }} />,
+                      value: 'column-reverse',
+                    },
+                    {
+                      label: <SquareX size={14} style={{ top: '3px', position: 'relative' }} />,
+                      value: '',
+                    },
+                  ]}
+                  onChange={(e) => {
+                    updateInnerVal({
+                      'flex-direction': e.target.value || '',
+                    });
+                  }}
+                  optionType="button"
+                />
+              </div>
+            </Col>
+          </Row>
+          <Row className={styles.row}>
+            <Col
+              span={24}
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
+              <span className={styles.label}>MAxis:</span>
+              <div
+                style={{
+                  width: '200px',
+                  marginLeft: '3px',
+                }}
+              >
+                <Radio.Group
+                  size="small"
+                  value={realValue['justify-content']}
+                  buttonStyle={'outline'}
+                  options={[
+                    {
+                      label: <AlignHorizontalDistributeStart size={14} style={{ top: '3px', position: 'relative' }} />,
+                      value: 'flex-start',
+                    },
+                    {
+                      label: <AlignHorizontalDistributeEnd size={14} style={{ top: '3px', position: 'relative' }} />,
+                      value: 'flex-end',
+                    },
+                    {
+                      label: <StretchVertical size={14} style={{ top: '3px', position: 'relative' }} />,
+                      value: 'center',
+                    },
+                    {
+                      label: <AlignHorizontalSpaceBetween size={14} style={{ top: '3px', position: 'relative' }} />,
+                      value: 'space-between',
+                    },
+                    {
+                      label: <AlignHorizontalSpaceAround size={14} style={{ top: '3px', position: 'relative' }} />,
+                      value: 'space-around',
+                    },
+                    {
+                      label: <SquareX size={14} style={{ top: '3px', position: 'relative' }} />,
+                      value: '',
+                    },
+                  ]}
+                  onChange={(e) => {
+                    updateInnerVal({
+                      'justify-content': e.target.value || '',
+                    });
+                  }}
+                  optionType="button"
+                />
+              </div>
+            </Col>
+          </Row>
+          <Row className={styles.row}>
+            <Col
+              span={24}
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
+              <span className={styles.label}>CAxis:</span>
+              <div
+                style={{
+                  width: '200px',
+                  marginLeft: '3px',
+                }}
+              >
+                <Radio.Group
+                  size="small"
+                  value={realValue['align-items']}
+                  buttonStyle={'outline'}
+                  options={[
+                    {
+                      label: <AlignVerticalJustifyStart size={14} style={{ top: '3px', position: 'relative' }} />,
+                      value: 'flex-start',
+                    },
+                    {
+                      label: <AlignVerticalJustifyEnd size={14} style={{ top: '3px', position: 'relative' }} />,
+                      value: 'flex-end',
+                    },
+                    {
+                      label: <StretchHorizontal size={14} style={{ top: '3px', position: 'relative' }} />,
+                      value: 'center',
+                    },
+                    {
+                      label: <AlignVerticalSpaceBetween size={14} style={{ top: '3px', position: 'relative' }} />,
+                      value: 'space-between',
+                    },
+                    {
+                      label: <AlignVerticalSpaceAround size={14} style={{ top: '3px', position: 'relative' }} />,
+                      value: 'space-around',
+                    },
+                    {
+                      label: <SquareX size={14} style={{ top: '3px', position: 'relative' }} />,
+                      value: '',
+                    },
+                  ]}
+                  onChange={(e) => {
+                    updateInnerVal({
+                      'align-items': e.target.value || '',
+                    });
+                  }}
+                  optionType="button"
+                />
+              </div>
+            </Col>
+          </Row>
+          <Row className={styles.row}>
             <Col span={12} className="flex">
               <span className={styles.label}>flex:</span>
               <CSSSizeInput
@@ -132,54 +314,23 @@ export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((p
               />
             </Col>
           </Row>
-          <Row className={styles.row}>
-            <Col
-              span={24}
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}
-            >
-              <span className={styles.label}>M-Axis:</span>
-              <div
-                style={{
-                  width: '200px',
-                  marginLeft: '3px',
-                }}
-              >
-                <Radio.Group
-                  size="small"
-                  value={realValue['flex-direction']}
-                  buttonStyle={'outline'}
-                  options={[
-                    {
-                      label: <AlignHorizontalDistributeStart size={14} style={{ top: '3px', position: 'relative' }} />,
-                      value: 'row',
-                    },
-                    {
-                      label: <AlignHorizontalDistributeEnd size={14} style={{ top: '3px', position: 'relative' }} />,
-                      value: 'row-reverse',
-                    },
-                  ]}
-                  onChange={(e) => {
-                    updateInnerVal({
-                      'flex-direction': e.target.value || '',
-                    });
-                  }}
-                  optionType="button"
-                />
-              </div>
-            </Col>
-          </Row>
         </>
       )}
       {/* flex 布局属性 end */}
 
       <Row className={styles.row}>
-        <Col span={12} className="flex">
+        <Col
+          span={24}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
           <span className={styles.label}>width:</span>
           <CSSSizeInput
+            style={{
+              width: '180px',
+            }}
             min={0}
             max={maxVal}
             value={realValue.width}
@@ -191,11 +342,35 @@ export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((p
             className={styles.inputWidth}
             size="small"
           />
+          <Button
+            size="small"
+            style={{
+              marginLeft: '10px',
+            }}
+            onClick={() => {
+              updateInnerVal({
+                width: '100%',
+              });
+            }}
+          >
+            <MoveHorizontal size={14} />
+          </Button>
         </Col>
-        <Col span={12}>
+      </Row>
+      <Row className={styles.row}>
+        <Col
+          span={24}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
           <span className={styles.label}>height:</span>
           <CSSSizeInput
             min={0}
+            style={{
+              width: '180px',
+            }}
             max={maxVal}
             value={realValue.height}
             onValueChange={(val) => {
@@ -206,6 +381,19 @@ export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((p
             className={styles.inputWidth}
             size="small"
           />
+          <Button
+            size="small"
+            style={{
+              marginLeft: '10px',
+            }}
+            onClick={() => {
+              updateInnerVal({
+                height: '100%',
+              });
+            }}
+          >
+            <MoveVertical size={14} />
+          </Button>
         </Col>
       </Row>
       <div>

@@ -2,7 +2,7 @@ import { CSSSizeInputProps } from '@/component/CSSSizeInput';
 import { CSetter, CSetterProps } from '../type';
 import { StyleUIPanel, StyleUIPanelRef } from '@/component/StylePanel';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { formatStyleProperty, styleArr2Obj } from '@/utils';
+import { formatStyleProperty, styleArr2Obj, styleObjToArr } from '@/utils';
 import { CNode, CRootNode } from '@chamn/model';
 
 export const FastLayoutSetter: CSetter<CSSSizeInputProps> = ({
@@ -11,7 +11,6 @@ export const FastLayoutSetter: CSetter<CSSSizeInputProps> = ({
   initialValue,
   ...resetProps
 }: CSetterProps<CSSSizeInputProps & { initialValue?: string }>) => {
-  console.log(value, setterContext, initialValue);
   const cssUIRef = useRef<StyleUIPanelRef>(null);
   const node = setterContext.nodeModel;
   const lastNode = useRef<CNode | CRootNode>();
@@ -45,9 +44,12 @@ export const FastLayoutSetter: CSetter<CSSSizeInputProps> = ({
         {...resetProps}
         initialVal={initialValueInner}
         ref={cssUIRef}
-        // onValueChange={(newNormaCss) => {
-        //   onUpdateStyle(styleObjToArr(newNormaCss));
-        // }}
+        onValueChange={(newNormaCss) => {
+          const newStyle = styleObjToArr(newNormaCss);
+          const { expressionProperty } = formatStyleProperty(node.value.style || []);
+          node.value.style = [...newStyle, ...expressionProperty];
+          node.updateValue();
+        }}
       />
     </div>
   );
