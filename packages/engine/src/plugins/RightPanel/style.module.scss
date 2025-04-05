@@ -1,13 +1,18 @@
 .rightPanelContainer {
   height: 100%;
   width: 100%;
+  overflow: hidden;
   :global {
+    .monaco-editor .overflowingContentWidgets {
+      overflow: visible !important;
+    }
     .ant-tabs .ant-tabs-tab + .ant-tabs-tab {
       margin-left: 0;
     }
     .ant-tabs-content.ant-tabs-content-top {
       height: 100%;
-      overflow: auto;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
     .ant-tabs .ant-tabs-tabpane {
       height: 100%;

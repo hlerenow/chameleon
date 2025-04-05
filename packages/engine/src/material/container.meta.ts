@@ -10,9 +10,7 @@ export const containerProps: CMaterialPropsType<'FastLayoutSetter'> = [
         componentName: 'FastLayoutSetter',
         initialValue: {},
         hiddenLabel: true,
-        props: {
-          noCard: true,
-        },
+        props: {},
       },
     ],
   },

@@ -230,5 +230,5 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
     );
   }
 
-  return <div style={{ display: visible ? 'block' : 'none', overflow: 'auto' }}>{bodyView}</div>;
+  return <div style={{ display: visible ? 'block' : 'none' }}>{bodyView}</div>;
 };

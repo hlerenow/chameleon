@@ -10,7 +10,7 @@ export type MonacoEditorProps = {
   options?: EditorType['options'];
   onChange?: EditorType['onChange'];
   initialValue?: string;
-  language?: 'json' | 'javascript' | 'typescript';
+  language?: 'json' | 'javascript' | 'typescript' | 'css';
   theme?: 'vs-dark' | 'light';
 };
 

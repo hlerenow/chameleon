@@ -56,13 +56,7 @@ const CustomSchemaFormCore = (props: CustomSchemaFormProps, ref: Ref<CustomSchem
           },
         }}
       >
-        <div
-          className={styles.CFromRenderBox}
-          style={{
-            overflow: 'auto',
-            height: '100%',
-          }}
-        >
+        <div className={styles.CFromRenderBox}>
           <CForm
             ref={ref as any}
             name="root-form"

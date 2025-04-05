@@ -48,6 +48,7 @@ export const FastLayoutSetter: CSetter<CSSSizeInputProps> = ({
           const newStyle = styleObjToArr(newNormaCss);
           const { expressionProperty } = formatStyleProperty(node.value.style || []);
           node.value.style = [...newStyle, ...expressionProperty];
+          console.log(node.value.style, 111);
           node.updateValue();
         }}
       />
