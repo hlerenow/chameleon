@@ -19,7 +19,7 @@ import {
   styleArr2Obj,
   styleObjToArr,
 } from '@/utils/css';
-import { CSSUIPanel, CSSUIPanelRef } from '@/component/CSSUIPanel';
+import { StyleUIPanel, StyleUIPanelRef } from '@/component/StylePanel';
 
 export const VisualPanelPlus = (props: RightPanelOptions) => {
   const styleVariableRef = useRef<CSSPropertiesVariableBindEditorRef>(null);
@@ -30,7 +30,7 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
     return tempList;
   }, [node]);
   const cssEditorRef = useRef<CSSEditorRef>(null);
-  const cssUIRef = useRef<CSSUIPanelRef>(null);
+  const cssUIRef = useRef<StyleUIPanelRef>(null);
   const classNameEditorRef = useRef<ClassNameEditorRef>(null);
   const formatStyle = useMemo(() => {
     return formatStyleProperty(node.value.style || []);
@@ -86,7 +86,7 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
           marginBottom: '10px',
         }}
       >
-        <CSSUIPanel
+        <StyleUIPanel
           ref={cssUIRef}
           onValueChange={(newNormaCss) => {
             onUpdateStyle(styleObjToArr(newNormaCss));

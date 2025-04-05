@@ -4,6 +4,7 @@ import { MouseEventHandler, useCallback, useEffect, useMemo, useRef, useState } 
 import styles from './style.module.scss';
 import { addEventListenerReturnCancel } from '@chamn/layout';
 import { InputNumberPlus } from '../InputNumberPlus';
+import clsx from 'clsx';
 
 type CumulativeInfoType = {
   x: number;
@@ -151,6 +152,8 @@ export type CSSSizeInputProps = {
   max?: MinMaxType | number;
   size?: InputProps['size'];
   style?: React.CSSProperties;
+
+  className?: string;
   unit?: boolean;
   /** 累计的偏移量，映射为具体的值，默认 1:1 */
   cumulativeTransform?: (params: CumulativeInfoType) => CumulativeInfoType;
@@ -170,7 +173,7 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
       unit: keyof MinMaxType;
     } = {
       value: undefined,
-      unit: 'px',
+      unit: 'px' as any,
     };
 
     if (props.value === undefined) {
@@ -315,8 +318,7 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
     <span className={styles.unitSelect}>
       <Select
         size={props.size}
-        disabled={valObj.value === undefined}
-        defaultValue="px"
+        defaultValue=""
         value={valObj.unit}
         onChange={(val) => {
           updateValue({
@@ -340,7 +342,7 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
         },
       }}
     >
-      <div className={styles.cssSizeInput} {...dragSizeHandle} style={props.style}>
+      <div className={clsx([styles.cssSizeInput, props?.className])} {...dragSizeHandle} style={props.style}>
         <InputNumberPlus
           size={props.size}
           value={valObj.value}

@@ -1,4 +1,3 @@
-import { CloseCircleOutlined } from '@ant-design/icons';
 import { Input, InputProps } from 'antd';
 import styles from './style.module.scss';
 import { useMemo } from 'react';
@@ -53,28 +52,20 @@ export const InputNumberPlus = ({ min, max, value, onChange, addonAfter, ...rest
         }}
       >
         <Input
+          allowClear
           {...restProps}
           status={isLegal ? undefined : 'error'}
           value={value}
+          onClear={() => {
+            updateInnerVal(undefined);
+          }}
           onChange={(e) => {
             const newNum = parseInt(e.target.value || '0', 10);
             processUpdateVal(newNum);
           }}
-        />
-        <CloseCircleOutlined
-          className={styles.delIcon}
-          style={{
-            position: 'absolute',
-            color: 'gray',
-            right: '2px',
-            top: '5px',
-          }}
-          onClickCapture={() => {
-            updateInnerVal(undefined);
-          }}
+          addonAfter={addonAfter}
         />
       </div>
-      {addonAfter}
     </div>
   );
 };

@@ -288,7 +288,7 @@ export class DragAndDrop<E = Record<string, any>> {
         this.canTriggerClick = false;
         setTimeout(() => {
           this.canTriggerClick = true;
-        }, 100);
+        }, 16.66);
         const canDrop = await sensor.canDrop({
           sensor,
           event,

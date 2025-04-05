@@ -1,6 +1,6 @@
 import { CMaterialPropsType, CMaterialType, DEFAULT_EVENT_LIST, HTMl_TAGS } from '@chamn/model';
 import { capitalize } from 'lodash-es';
-import { containerProps } from './containter.meta';
+import { containerProps } from './container.meta';
 
 const customAttributesMeta: CMaterialPropsType[number] = {
   name: '$$attributes',

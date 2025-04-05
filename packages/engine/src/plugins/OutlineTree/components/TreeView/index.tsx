@@ -151,7 +151,7 @@ export class TreeView extends React.Component<
 
     setTimeout(() => {
       this.scrollNodeToView(node.id);
-    }, 100);
+    }, 16);
   };
 
   containNode = (parentNode: TreeNodeData, targetNode: TreeNodeData) => {

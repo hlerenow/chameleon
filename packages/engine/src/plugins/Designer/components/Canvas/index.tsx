@@ -238,7 +238,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
         }
         layoutRef.current?.selectNode(extraData.dragNode?.id || '');
         resolve(true);
-      }, 150);
+      }, 16);
     });
   };
 
@@ -263,14 +263,18 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     if (flag === false) {
       return flag;
     }
-    pluginCtx.engine.updateCurrentSelectNode(node);
-    const toolbarView = this.getToolbarView(node);
 
+    const toolbarView = this.getToolbarView(node);
     this.setState({
       selectToolbarView: toolbarView,
       selectRectViewRender:
         this.customAdvanceHook.getSelectRectViewRender(node) || this.props.pluginCtx.config.selectRectViewRender,
     });
+
+    // 延迟发送选中事件
+    setTimeout(() => {
+      pluginCtx.engine.updateCurrentSelectNode(node);
+    }, 16.66);
 
     return true;
   };

@@ -3,10 +3,7 @@
  * @param time 毫秒
  * @returns
  */
-export const waitReactUpdate = ({
-  time = (1000 / 60) * 2,
-  cb,
-}: { time?: number; cb?: (...args: any[]) => void } = {}) => {
+export const waitReactUpdate = ({ time = 1000 / 60, cb }: { time?: number; cb?: (...args: any[]) => void } = {}) => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve('ok');

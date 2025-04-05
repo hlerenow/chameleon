@@ -4,8 +4,21 @@ import styles from '../style.module.scss';
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 'react';
 import { InputCommonRef } from '../type';
 import { pick } from 'lodash-es';
-
-const keyList = ['width', 'height', 'min-width', 'max-width', 'min-height', 'max-height', 'flex', 'display'] as const;
+import { AlignHorizontalDistributeEnd, AlignHorizontalDistributeStart } from 'lucide-react';
+const keyList = [
+  'width',
+  'height',
+  'min-width',
+  'max-width',
+  'min-height',
+  'max-height',
+  'flex',
+  'display',
+  'flex-direction',
+  'justify-content',
+  'align-items',
+  'flex-wrap',
+] as const;
 
 type Value = Record<typeof keyList[number], string>;
 
@@ -19,7 +32,7 @@ function getDefaultValue(list: string[]): any {
   return list.reduce((res, el) => {
     return {
       ...res,
-      [el]: '',
+      [el]: 'px',
     };
   }, {});
 }
@@ -78,12 +91,7 @@ export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((p
   return (
     <div>
       <Row className={styles.row}>
-        <Col
-          span={24}
-          style={{
-            display: 'flex',
-          }}
-        >
+        <Col span={24} className="flex">
           <span className={styles.label}>layout:</span>
           <Radio.Group
             value={realValue.display}
@@ -96,19 +104,80 @@ export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((p
             }}
           >
             <Radio.Button value="block">Block</Radio.Button>
+            <Radio.Button value="flex">Flex</Radio.Button>
             <Radio.Button value="inline-block">InlineB</Radio.Button>
             <Radio.Button value="inline">Inline</Radio.Button>
             <Radio.Button value="none">None</Radio.Button>
           </Radio.Group>
         </Col>
       </Row>
+      {/* flex 布局属性 */}
+      {realValue.display === 'flex' && (
+        <>
+          <Row className={styles.row}>
+            <Col span={12} className="flex">
+              <span className={styles.label}>flex:</span>
+              <CSSSizeInput
+                className={styles.inputWidth}
+                unit={false}
+                min={0}
+                max={maxVal}
+                value={realValue['flex']}
+                onValueChange={(newVal) => {
+                  updateInnerVal({
+                    flex: newVal || '',
+                  });
+                }}
+                size="small"
+              />
+            </Col>
+          </Row>
+          <Row className={styles.row}>
+            <Col
+              span={24}
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
+              <span className={styles.label}>M-Axis:</span>
+              <div
+                style={{
+                  width: '200px',
+                  marginLeft: '3px',
+                }}
+              >
+                <Radio.Group
+                  size="small"
+                  value={realValue['flex-direction']}
+                  buttonStyle={'outline'}
+                  options={[
+                    {
+                      label: <AlignHorizontalDistributeStart size={14} style={{ top: '3px', position: 'relative' }} />,
+                      value: 'row',
+                    },
+                    {
+                      label: <AlignHorizontalDistributeEnd size={14} style={{ top: '3px', position: 'relative' }} />,
+                      value: 'row-reverse',
+                    },
+                  ]}
+                  onChange={(e) => {
+                    updateInnerVal({
+                      'flex-direction': e.target.value || '',
+                    });
+                  }}
+                  optionType="button"
+                />
+              </div>
+            </Col>
+          </Row>
+        </>
+      )}
+      {/* flex 布局属性 end */}
+
       <Row className={styles.row}>
-        <Col
-          span={12}
-          style={{
-            display: 'flex',
-          }}
-        >
+        <Col span={12} className="flex">
           <span className={styles.label}>width:</span>
           <CSSSizeInput
             min={0}
@@ -119,9 +188,7 @@ export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((p
                 width: val,
               });
             }}
-            style={{
-              width: '90px',
-            }}
+            className={styles.inputWidth}
             size="small"
           />
         </Col>
@@ -136,26 +203,17 @@ export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((p
                 height: val,
               });
             }}
-            style={{
-              width: '90px',
-            }}
+            className={styles.inputWidth}
             size="small"
           />
         </Col>
       </Row>
       <div>
         <Row className={styles.row}>
-          <Col
-            span={12}
-            style={{
-              display: 'flex',
-            }}
-          >
+          <Col span={12} className="flex">
             <span className={styles.label}>minW:</span>
             <CSSSizeInput
-              style={{
-                width: '90px',
-              }}
+              className={styles.inputWidth}
               min={0}
               max={maxVal}
               value={realValue['min-width']}
@@ -178,25 +236,16 @@ export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((p
                   'min-height': newVal,
                 });
               }}
-              style={{
-                width: '90px',
-              }}
+              className={styles.inputWidth}
               size="small"
             />
           </Col>
         </Row>
         <Row className={styles.row}>
-          <Col
-            span={12}
-            style={{
-              display: 'flex',
-            }}
-          >
+          <Col span={12} className="flex">
             <span className={styles.label}>maxW:</span>
             <CSSSizeInput
-              style={{
-                width: '90px',
-              }}
+              className={styles.inputWidth}
               min={0}
               max={maxVal}
               value={realValue['max-width']}
@@ -211,40 +260,13 @@ export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((p
           <Col span={12}>
             <span className={styles.label}>maxH:</span>
             <CSSSizeInput
-              style={{
-                width: '90px',
-              }}
+              className={styles.inputWidth}
               min={0}
               max={maxVal}
               value={realValue['max-height']}
               onValueChange={(newVal) => {
                 updateInnerVal({
                   'max-height': newVal,
-                });
-              }}
-              size="small"
-            />
-          </Col>
-        </Row>
-        <Row className={styles.row}>
-          <Col
-            span={12}
-            style={{
-              display: 'flex',
-            }}
-          >
-            <span className={styles.label}>flex:</span>
-            <CSSSizeInput
-              style={{
-                width: '90px',
-              }}
-              unit={false}
-              min={0}
-              max={maxVal}
-              value={realValue['flex']}
-              onValueChange={(newVal) => {
-                updateInnerVal({
-                  flex: newVal || '',
                 });
               }}
               size="small"

@@ -1,11 +1,54 @@
 import { CSSSizeInputProps } from '@/component/CSSSizeInput';
 import { CSetter, CSetterProps } from '../type';
+import { StyleUIPanel, StyleUIPanelRef } from '@/component/StylePanel';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { formatStyleProperty, styleArr2Obj } from '@/utils';
+import { CNode, CRootNode } from '@chamn/model';
 
 export const FastLayoutSetter: CSetter<CSSSizeInputProps> = ({
   value,
   setterContext,
   initialValue,
+  ...resetProps
 }: CSetterProps<CSSSizeInputProps & { initialValue?: string }>) => {
   console.log(value, setterContext, initialValue);
-  return <div>12312</div>;
+  const cssUIRef = useRef<StyleUIPanelRef>(null);
+  const node = setterContext.nodeModel;
+  const lastNode = useRef<CNode | CRootNode>();
+
+  const initialValueInner = useMemo(() => {
+    const newStyle = node.value.style || [];
+    const { normalProperty } = formatStyleProperty(newStyle);
+    return styleArr2Obj(normalProperty);
+  }, [node.value.style]);
+
+  const updatePanelValue = useCallback(() => {
+    lastNode.current = node;
+    const newStyle = node.value.style || [];
+    const { normalProperty } = formatStyleProperty(newStyle);
+    cssUIRef.current?.setValue(styleArr2Obj(normalProperty) || {});
+  }, [node]);
+
+  useEffect(() => {
+    updatePanelValue();
+    // node.emitter.on('onNodeChange', updatePanelValue);
+    // node.emitter.on('onReloadPage', updatePanelValue);
+    // return () => {
+    //   node.emitter.off('onNodeChange', updatePanelValue);
+    //   node.emitter.off('onReloadPage', updatePanelValue);
+    // };
+  }, [node.emitter, node.id, updatePanelValue]);
+
+  return (
+    <div>
+      <StyleUIPanel
+        {...resetProps}
+        initialVal={initialValueInner}
+        ref={cssUIRef}
+        // onValueChange={(newNormaCss) => {
+        //   onUpdateStyle(styleObjToArr(newNormaCss));
+        // }}
+      />
+    </div>
+  );
 };

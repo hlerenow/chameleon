@@ -1,5 +1,5 @@
 .label {
-  width: 60px;
+  width: 50px;
   display: inline-block;
   color: $fontColor;
   font-size: 14px;
@@ -22,10 +22,14 @@
   padding-bottom: 10px;
 }
 
-.CSSUIPanel {
+.styleUIPanel {
   :global {
     .ant-radio-button-wrapper {
       font-size: 12px !important;
     }
   }
+}
+
+.inputWidth {
+  width: 95px;
 }
