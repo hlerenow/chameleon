@@ -1,5 +1,5 @@
 import { Button, Card, Collapse, CollapseProps, ConfigProvider } from 'antd';
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import styles from './style.module.scss';
 import { DimensionInput } from './DimensionInput';
 import { MarginAndPaddingInput } from './MarginAndPaddingInput';
@@ -45,46 +45,55 @@ export const StyleUIPanel = forwardRef<StyleUIPanelRef, StyleUIPanelProps>(
     }, [dimensionRef, marinRef, paddingRef, borderRef, backgroundRef, shadowRef, fontRef]);
 
     const tempValueRef = useRef<any>(null);
-    const updateAllInnerValue = () => {
-      const tempValue = tempValueRef.current ?? value;
-      inputRefs.forEach((ref) => {
-        ref.current?.setEmptyValue();
-        ref.current?.setValue(tempValue || {});
-      });
-    };
+
+    const updateInnerVal = useCallback(
+      (newVal: any) => {
+        if (!newVal) {
+          return;
+        }
+        // 外部赋值
+        tempValueRef.current = newVal;
+        if (mode === 'CODE') {
+          cssCodeEditorRef.current?.setValue(newVal);
+          return;
+        }
+
+        inputRefs.forEach((ref) => {
+          setTimeout(() => {
+            ref.current?.setValue(newVal);
+          });
+        });
+      },
+      [inputRefs, mode]
+    );
+
+    const onStyleItemChange = useCallback(
+      (val: any) => {
+        const newVal = {
+          ...(tempValueRef.current || {}),
+          ...val,
+        };
+        tempValueRef.current = newVal;
+
+        const finalValue = omitBy(newVal, (value) => isNil(value) || value === '');
+        onValueChange?.(finalValue);
+      },
+      [onValueChange]
+    );
 
     useEffect(() => {
-      if (mode === 'CODE') {
-        setTimeout(() => {
-          cssCodeEditorRef.current?.setValue(tempValueRef.current);
-        }, 100);
-      } else {
-        setTimeout(() => {
-          updateAllInnerValue();
-        }, 100);
-      }
-    }, []);
+      updateInnerVal(tempValueRef.current);
+    }, [mode, updateInnerVal]);
 
     useImperativeHandle(
       ref,
       () => {
         return {
-          setValue: (newVal) => {
-            // 外部赋值
-            tempValueRef.current = newVal;
-            inputRefs.forEach((ref) => {
-              ref.current?.setEmptyValue();
-              ref.current?.setValue(newVal);
-            });
-          },
-          setEmptyValue: () => {
-            inputRefs.forEach((ref) => {
-              ref.current?.setEmptyValue();
-            });
-          },
+          setValue: updateInnerVal,
+          setEmptyValue: () => updateInnerVal({}),
         };
       },
-      [inputRefs]
+      [updateInnerVal]
     );
 
     const items: CollapseProps['items'] = useMemo(() => {
@@ -97,16 +106,7 @@ export const StyleUIPanel = forwardRef<StyleUIPanelRef, StyleUIPanelProps>(
               ref={dimensionRef}
               initialValue={initialVal as any}
               value={value as any}
-              onChange={(val) => {
-                const newVal = {
-                  ...(tempValueRef.current || {}),
-                  ...val,
-                };
-                tempValueRef.current = newVal;
-
-                const finalValue = omitBy(newVal, (value) => isNil(value) || value === '');
-                onValueChange?.(finalValue);
-              }}
+              onChange={onStyleItemChange}
             />
           ),
         },
@@ -119,14 +119,7 @@ export const StyleUIPanel = forwardRef<StyleUIPanelRef, StyleUIPanelProps>(
               ref={marinRef}
               initialValue={initialVal as any}
               value={value as any}
-              onChange={(val) => {
-                const newVal = {
-                  ...(tempValueRef.current || {}),
-                  ...val,
-                };
-                tempValueRef.current = newVal;
-                onValueChange?.(newVal);
-              }}
+              onChange={onStyleItemChange}
             />
           ),
         },
@@ -139,14 +132,7 @@ export const StyleUIPanel = forwardRef<StyleUIPanelRef, StyleUIPanelProps>(
               initialValue={initialVal as any}
               prefix="padding"
               value={value as any}
-              onChange={(val) => {
-                const newVal = {
-                  ...(tempValueRef.current || {}),
-                  ...val,
-                };
-                tempValueRef.current = newVal;
-                onValueChange?.(newVal);
-              }}
+              onChange={onStyleItemChange}
             />
           ),
         },
@@ -159,14 +145,7 @@ export const StyleUIPanel = forwardRef<StyleUIPanelRef, StyleUIPanelProps>(
               ref={backgroundRef}
               value={value as any}
               initialValue={initialVal as any}
-              onChange={(val) => {
-                const newVal = {
-                  ...(tempValueRef.current || {}),
-                  ...val,
-                };
-                tempValueRef.current = newVal;
-                onValueChange?.(newVal);
-              }}
+              onChange={onStyleItemChange}
             />
           ),
         },
@@ -178,34 +157,14 @@ export const StyleUIPanel = forwardRef<StyleUIPanelRef, StyleUIPanelProps>(
               ref={fontRef}
               initialValue={initialVal as any}
               value={value as any}
-              onChange={(val) => {
-                const newVal = {
-                  ...(tempValueRef.current || {}),
-                  ...val,
-                };
-                tempValueRef.current = newVal;
-                onValueChange?.(newVal);
-              }}
+              onChange={onStyleItemChange}
             />
           ),
         },
         {
           key: 'border',
           label: 'Border',
-          children: (
-            <BorderInput
-              ref={borderRef}
-              initialValue={initialVal as any}
-              onChange={(val) => {
-                const newVal = {
-                  ...(tempValueRef.current || {}),
-                  ...val,
-                };
-                tempValueRef.current = newVal;
-                onValueChange?.(newVal);
-              }}
-            />
-          ),
+          children: <BorderInput ref={borderRef} initialValue={initialVal as any} onChange={onStyleItemChange} />,
         },
         {
           key: 'shadow',
@@ -215,20 +174,12 @@ export const StyleUIPanel = forwardRef<StyleUIPanelRef, StyleUIPanelProps>(
               ref={shadowRef}
               initialValue={initialVal as any}
               value={value as any}
-              onChange={(val) => {
-                const newVal = {
-                  ...(tempValueRef.current || {}),
-                  ...val,
-                };
-                tempValueRef.current = newVal;
-
-                onValueChange?.(newVal);
-              }}
+              onChange={onStyleItemChange}
             />
           ),
         },
       ];
-    }, [initialVal, onValueChange, value]);
+    }, [initialVal, onStyleItemChange, value]);
 
     const coreEditView = (
       <>
@@ -251,7 +202,7 @@ export const StyleUIPanel = forwardRef<StyleUIPanelRef, StyleUIPanelProps>(
             onChange={async () => {
               await waitReactUpdate();
               // 每次展开需要重新同步值
-              updateAllInnerValue();
+              updateInnerVal(tempValueRef.current);
             }}
           />
         )}
@@ -279,14 +230,8 @@ export const StyleUIPanel = forwardRef<StyleUIPanelRef, StyleUIPanelProps>(
                 onClick={() => {
                   setMode((oldVal) => {
                     if (oldVal === 'CODE') {
-                      setTimeout(() => {
-                        updateAllInnerValue();
-                      }, 100);
                       return 'VISUAL';
                     } else {
-                      setTimeout(() => {
-                        cssCodeEditorRef.current?.setValue(tempValueRef.current);
-                      }, 100);
                       return 'CODE';
                     }
                   });

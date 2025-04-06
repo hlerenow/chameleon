@@ -4,6 +4,7 @@ import { StyleUIPanel, StyleUIPanelRef } from '@/component/StylePanel';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { formatStyleProperty, styleArr2Obj, styleObjToArr } from '@/utils';
 import { CNode, CRootNode } from '@chamn/model';
+import { isEqual } from 'lodash-es';
 
 export const FastLayoutSetter: CSetter<CSSSizeInputProps> = ({
   value,
@@ -47,8 +48,11 @@ export const FastLayoutSetter: CSetter<CSSSizeInputProps> = ({
         onValueChange={(newNormaCss) => {
           const newStyle = styleObjToArr(newNormaCss);
           const { expressionProperty } = formatStyleProperty(node.value.style || []);
-          node.value.style = [...newStyle, ...expressionProperty];
-          console.log(node.value.style, 111);
+          const newStyleList = [...newStyle, ...expressionProperty];
+          if (isEqual(node.value.style, newStyleList)) {
+            return;
+          }
+          node.value.style = newStyleList;
           node.updateValue();
         }}
       />

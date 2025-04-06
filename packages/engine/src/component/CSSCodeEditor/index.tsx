@@ -34,7 +34,6 @@ export const CSSCodeEditor = forwardRef<CSSCodeEditorRef, CSSCodeEditorProps>((p
         },
         setValue: (val) => {
           if (isEqual(val, valueRef.current)) {
-            console.log('值一样');
             return;
           }
           valueRef.current = val;
