@@ -3,7 +3,7 @@ import React from 'react';
 import { RenderInstance } from '@chamn/render';
 import { DesignRender, DesignRenderProp } from '@chamn/render';
 import { IFrameContainer } from './core/iframeContainer';
-import { addEventListenerReturnCancel, animationFrame } from './utils';
+import { addEventListenerReturnCancel } from './utils';
 import { HighlightCanvas, HighlightCanvasCoreProps, HighlightCanvasRefType } from './components/HighlightBox';
 import { DragAndDrop, DragAndDropEventType } from './core/dragAndDrop';
 import { Sensor } from './core/dragAndDrop/sensor';
@@ -21,7 +21,6 @@ import {
 } from '@chamn/model';
 import { Pointer } from './core/dragAndDrop/common';
 import { calculateDropPosInfo } from './components/DropAnchor/util';
-// import { Resizable } from 're-resizable';
 import { DragAndDropEventObj, LayoutDragAndDropExtraDataType } from './types/dragAndDrop';
 
 import styles from './index.module.scss';
@@ -174,33 +173,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     this.init();
   }
 
-  registerRealTimeUpdate = () => {
-    this.realTimeSelectNodeInstanceTimer = window.setInterval(() => {
-      // 实时更新选中的节点的实例
-      if (this.state.currentSelectId) {
-        const nodeId = this.state.currentSelectId;
-        let instanceList = this.designRenderRef.current?.getInstancesById(nodeId) || [];
-        instanceList = instanceList.filter((el) => el?._STATUS !== 'DESTROY');
-        if (!instanceList.length) {
-          return;
-        }
-        const instance = instanceList[0];
-        this.setState({
-          currentSelectId: instance._NODE_ID,
-          currentSelectInstance: instance,
-          selectComponentInstances: [...instanceList].filter((el) => {
-            let res: boolean | undefined;
-            const ins = this.designRenderRef.current?.renderRef?.current?.dynamicComponentInstanceMap.get(el._NODE_ID);
-            if (ins) {
-              res = ins._CONDITION;
-            }
-            return res !== false;
-          }),
-        });
-      }
-    }, (1000 / 60) * 2);
-  };
-
   disposeRealTimeUpdate = () => {
     if (this.realTimeSelectNodeInstanceTimer) {
       clearInterval(this.realTimeSelectNodeInstanceTimer);
@@ -311,8 +283,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     if (!iframeDoc || !subWin) {
       return;
     }
-    const subDoc = iframeDoc;
-
     this.eventExposeHandler.push(
       addEventListenerReturnCancel(
         iframeDoc.body,
@@ -330,6 +300,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           }
 
           const instanceList = this.designRenderRef.current.getInstancesById(componentInstance._NODE_ID || '');
+
           if (componentInstance._NODE_MODEL.nodeType !== 'NODE') {
             return;
           }
@@ -341,43 +312,15 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           if (!this.state.canSelectNode) {
             return;
           }
-          this.disposeRealTimeUpdate();
           this.setState({
             currentSelectId: componentInstance._NODE_ID,
             currentSelectInstance: componentInstance,
             selectComponentInstances: [...instanceList],
             hoverComponentInstances: [],
           });
-          this.registerRealTimeUpdate();
         },
         true
       )
-    );
-
-    this.eventExposeHandler.push(
-      addEventListenerReturnCancel(subWin as any, 'resize', () => {
-        if (this.mode === LayoutMode.PREVIEW) {
-          return;
-        }
-        this.highlightCanvasRef.current?.update();
-      })
-    );
-
-    this.eventExposeHandler.push(
-      addEventListenerReturnCancel(subDoc as any, 'resize', () => {
-        if (this.mode === LayoutMode.PREVIEW) {
-          return;
-        }
-        this.highlightCanvasRef.current?.update();
-      })
-    );
-    this.eventExposeHandler.push(
-      addEventListenerReturnCancel(subDoc as any, 'scroll', () => {
-        if (this.mode === LayoutMode.PREVIEW) {
-          return;
-        }
-        this.highlightCanvasRef.current?.update();
-      })
     );
   }
 
@@ -413,14 +356,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       });
     };
     this.eventExposeHandler.push(addEventListenerReturnCancel(iframeDoc.body, 'mouseover', hoverInstance, true));
-    const handler = animationFrame(() => {
-      if (this.highlightHoverCanvasRef.current) {
-        this.highlightHoverCanvasRef.current?.update();
-      } else {
-        handler();
-      }
-    });
-    this.eventExposeHandler.push(handler);
 
     this.eventExposeHandler.push(
       addEventListenerReturnCancel(

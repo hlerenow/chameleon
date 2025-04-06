@@ -35,12 +35,17 @@ export const isDOM = (dom: unknown) => {
 };
 
 export const animationFrame = (stepCb: () => void) => {
+  let lastTimestamp = 0;
+  const interval = 0; // 间隔 100ms
   let handle = true;
-  const innerCb = () => {
-    if (handle) {
-      stepCb();
-      requestAnimationFrame(innerCb);
+  const innerCb = (timestamp: number) => {
+    if (timestamp - lastTimestamp >= interval) {
+      lastTimestamp = timestamp;
+      if (handle) {
+        stepCb();
+      }
     }
+    requestAnimationFrame(innerCb);
   };
   requestAnimationFrame(innerCb);
   return () => {

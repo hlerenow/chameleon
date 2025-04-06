@@ -31,31 +31,29 @@ export const FastLayoutSetter: CSetter<CSSSizeInputProps> = ({
 
   useEffect(() => {
     updatePanelValue();
-    // node.emitter.on('onNodeChange', updatePanelValue);
-    // node.emitter.on('onReloadPage', updatePanelValue);
-    // return () => {
-    //   node.emitter.off('onNodeChange', updatePanelValue);
-    //   node.emitter.off('onReloadPage', updatePanelValue);
-    // };
+    node.emitter.on('onNodeChange', updatePanelValue);
+    node.emitter.on('onReloadPage', updatePanelValue);
+    return () => {
+      node.emitter.off('onNodeChange', updatePanelValue);
+      node.emitter.off('onReloadPage', updatePanelValue);
+    };
   }, [node.emitter, node.id, updatePanelValue]);
 
   return (
-    <div>
-      <StyleUIPanel
-        {...resetProps}
-        initialVal={initialValueInner}
-        ref={cssUIRef}
-        onValueChange={(newNormaCss) => {
-          const newStyle = styleObjToArr(newNormaCss);
-          const { expressionProperty } = formatStyleProperty(node.value.style || []);
-          const newStyleList = [...newStyle, ...expressionProperty];
-          if (isEqual(node.value.style, newStyleList)) {
-            return;
-          }
-          node.value.style = newStyleList;
-          node.updateValue();
-        }}
-      />
-    </div>
+    <StyleUIPanel
+      {...resetProps}
+      initialVal={initialValueInner}
+      ref={cssUIRef}
+      onValueChange={(newNormaCss) => {
+        const newStyle = styleObjToArr(newNormaCss);
+        const { expressionProperty } = formatStyleProperty(node.value.style || []);
+        const newStyleList = [...newStyle, ...expressionProperty];
+        if (isEqual(node.value.style, newStyleList)) {
+          return;
+        }
+        node.value.style = newStyleList;
+        node.updateValue();
+      }}
+    />
   );
 };

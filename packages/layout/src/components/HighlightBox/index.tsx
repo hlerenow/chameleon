@@ -24,12 +24,10 @@ export const HighlightBox = ({
   style,
   children,
 }: HighlightBoxPropsType) => {
-  const [styleObj, setStyleObj] = useState<Record<string, string>>({});
-  const [rect, setRect] = useState<DOMRect>();
+  const [styleObj, setStyleObj] = useState<Record<string, string>>();
   const ref = useRef<HighlightCanvasRefType>(null);
 
   const toolBoxRef = useRef<HTMLDivElement>(null);
-  const [targetDom, setTargetDom] = useState<HTMLElement>();
   const instanceRef = useRef<RenderInstance>();
   instanceRef.current = instance;
   const updateTargetDom = (ins: RenderInstance) => {
@@ -41,13 +39,10 @@ export const HighlightBox = ({
       dom = (dom.querySelector?.(rootSelector) as HTMLElement) || dom;
     }
     if (isDOM(dom)) {
-      setTargetDom(dom!);
       return true;
     }
     return false;
   };
-
-  useEffect(() => {}, []);
 
   useEffect(() => {
     const handle = animationFrame(() => {
@@ -55,6 +50,7 @@ export const HighlightBox = ({
     });
 
     getRef?.(ref);
+
     if (instance?._STATUS !== 'DESTROY') {
       updateTargetDom(instance);
     }
@@ -82,9 +78,7 @@ export const HighlightBox = ({
       } else {
         toolBoxRef.current.style.top = 'auto';
       }
-      if (toolBoxRect.width > parseInt(getComputedStyle(toolBoxRef.current).width)) {
-        toolBoxRef.current.style.width = `${width}px`;
-      }
+      toolBoxRef.current.style.width = `${width}px`;
     }
   }, []);
 
@@ -106,38 +100,35 @@ export const HighlightBox = ({
     }
     if (isDOM(dom)) {
       instanceDom = dom!;
-      setTargetDom(instanceDom!);
     } else {
       return;
     }
 
     const tempRect = instanceDom.getBoundingClientRect();
+
     const transformStr = `translate3d(${tempRect?.left}px, ${tempRect.top}px, 0)`;
     const tempObj = {
       width: tempRect?.width + 'px',
       height: tempRect?.height + 'px',
       transform: transformStr,
     };
-    if (tempRect?.width === 0 || tempRect?.height === 0) {
-      setRect(undefined);
-      return;
-    }
-    setRect(tempRect);
+
+    setStyleObj(tempObj);
     const toolBoxDom = document.getElementById(tempInstance?._UNIQUE_ID || '');
     if (toolBoxDom) {
       toolBoxDom.style.transform = transformStr;
       toolBoxDom.style.width = tempRect?.width + 'px';
       toolBoxDom.style.height = tempRect?.height + 'px';
     }
-    setStyleObj(tempObj);
-
+    console.log(' tempRect?.width', tempRect?.width);
     // auto detect tool box position
     updateToolBoxPosition(tempRect);
   }, [instance._NODE_MODEL.material?.value.rootSelector, updateToolBoxPosition]);
 
   useEffect(() => {
     updatePos();
-  }, [instance, updatePos]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [instance]);
 
   (ref as any).current = {
     update() {
@@ -145,9 +136,10 @@ export const HighlightBox = ({
     },
   };
 
-  if (!targetDom || !instance) {
+  if (!styleObj) {
     return <></>;
   }
+
   return (
     <div
       className={styles.highlightBox}
@@ -155,7 +147,6 @@ export const HighlightBox = ({
       style={{
         ...style,
         ...styleObj,
-        opacity: rect ? 1 : 0,
       }}
     >
       {toolbarView && (
@@ -216,7 +207,7 @@ export const HighlightCanvasCore = (
         return (
           <HighlightBox
             style={style}
-            key={el?._UNIQUE_ID}
+            key={index}
             instance={el}
             toolbarView={toolbarView}
             getRef={(ref) => {

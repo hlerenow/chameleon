@@ -152,7 +152,11 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
 
   componentDidMount(): void {
     const { pluginCtx } = this.props;
-    pluginCtx.globalEmitter.on('onSelectNodeChange', this.onNodeChange);
+    pluginCtx.globalEmitter.on('onSelectNodeChange', (args) => {
+      setTimeout(() => {
+        this.onNodeChange(args);
+      }, 16.66);
+    });
     pluginCtx.pageModel.emitter.on('*', () => {
       const currentSelectNode = pluginCtx.engine.getActiveNode();
       this.onNodeChange({ node: currentSelectNode });
