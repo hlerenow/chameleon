@@ -120,7 +120,6 @@ export const HighlightBox = ({
       toolBoxDom.style.width = tempRect?.width + 'px';
       toolBoxDom.style.height = tempRect?.height + 'px';
     }
-    console.log(' tempRect?.width', tempRect?.width);
     // auto detect tool box position
     updateToolBoxPosition(tempRect);
   }, [instance._NODE_MODEL.material?.value.rootSelector, updateToolBoxPosition]);

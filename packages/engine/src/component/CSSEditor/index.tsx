@@ -127,7 +127,6 @@ export const CSSEditor = (props: CSSEditorProps) => {
     props.handler.current = {
       setValue: async (newVal) => {
         setCssVal(newVal);
-        await waitReactUpdate();
         initRef.current?.();
       },
     };
@@ -135,8 +134,8 @@ export const CSSEditor = (props: CSSEditorProps) => {
 
   // 初始化赋值
   useEffect(() => {
-    initVal();
-  }, [initVal, selectedStateTag]);
+    initRef.current?.();
+  }, [selectedStateTag]);
 
   const updateCss = useCallback(
     (mediaKey: string, val: StyleArr) => {

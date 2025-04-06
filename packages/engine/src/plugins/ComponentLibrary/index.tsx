@@ -46,7 +46,7 @@ type ComponentLibViewState = {
 };
 
 export type ComponentLibPluginConfig = {
-  customSearchBar: (props: {
+  customSearchBar?: (props: {
     defaultInputView: React.ReactNode;
     updateState: (newState: Partial<ComponentLibViewState>) => string;
   }) => React.ReactNode;
