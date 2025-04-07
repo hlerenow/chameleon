@@ -9,15 +9,15 @@ export const SelectNodeByTree = (props: {
   value?: any;
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [innerValue, setInnerValue] = useState<{ nodeId: string }>(props.value);
+  const [innerValue, setInnerValue] = useState<{ nodeId: string; title: string }>(props.value);
 
   const nodeTitle = useMemo(() => {
     const nodeInfo = props.pageModel.getNode(innerValue?.nodeId);
     if (nodeInfo) {
-      return nodeInfo.value.title || nodeInfo.material?.value.title || '';
+      return nodeInfo.value.title || nodeInfo.material?.value.title || innerValue.title || '';
     }
     return '';
-  }, [props.pageModel, innerValue?.nodeId]);
+  }, [props.pageModel, innerValue?.nodeId, innerValue.title]);
 
   return (
     <>

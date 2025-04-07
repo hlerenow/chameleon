@@ -54,6 +54,9 @@ export const transformProps = (
             {
               params,
               nodeRefs: parentContext.nodeRefs,
+              // 使用空函数，避免获取到父节点的方法或者函数
+              getProps: function (): void {},
+              callEventMethod: function (): void {},
             },
             parentContext
           );

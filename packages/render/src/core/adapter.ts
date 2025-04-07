@@ -35,13 +35,16 @@ export type ContextType = {
     state?: Record<any, any>;
     updateState?: (newState: any) => void;
   };
-
+  /** 获取当前节点 props 值 */
+  getProps: () => void;
   /**  用于访访问和管理页面被注册为全局的局部 state 快照，在闭包中使用会存在值不是最新的情况 */
   stateManager?: Record<string, any>;
   /** 循环数据 */
   loopData?: Record<any, any>;
   /** 组件节点的 Ref */
   nodeRefs?: RefManager;
+  /** 模拟调用节点上的事件方法 */
+  callEventMethod: (eventName: string, event: any) => void;
   storeManager?: StoreManager;
   /** 第三方辅助库 */
   thirdLibs?: Record<string, any>;

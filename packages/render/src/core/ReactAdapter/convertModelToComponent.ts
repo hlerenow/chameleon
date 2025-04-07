@@ -25,6 +25,7 @@ import { transformProps } from './transformProps';
 import { buildComponent } from './buildComponent';
 import { IDynamicComponent, TRenderBaseOption } from './type';
 import { transformActionNode } from './transformProps/actionNode';
+import { isEqual } from 'lodash-es';
 
 type PropsType = {
   $$context: ContextType;
@@ -58,8 +59,9 @@ export const convertModelToComponent = (
 
     UNIQUE_ID = `${nodeModel.id}_${getRandomStr()}`;
     targetComponentRef: React.MutableRefObject<any>;
-    listenerHandle: (() => void)[] = [];
+    listenerHandler: (() => void)[] = [];
     storeState: StoreApi<any>;
+    /** 存储清理 store 的监听函数 */
     storeListenDisposeList: (() => void)[] = [];
     /** save dom and media css */
     domHeader: HTMLHeadElement | undefined;
@@ -74,8 +76,13 @@ export const convertModelToComponent = (
     constructor(props: PropsType) {
       super(props);
       this.targetComponentRef = React.createRef();
+      this.listenerHandler = [];
       this.state = nodeModel.value.state || {};
-      const nodeName = nodeModel.value.nodeName || nodeModel.id;
+      let nodeName = nodeModel.value.nodeName || nodeModel.id;
+      // 根节点的 node name 强制为 globalState
+      if (nodeModel.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER) {
+        nodeName = 'globalState';
+      }
       this.nodeName = nodeName;
       const nodeStore = storeManager.getStore(nodeName);
       if (!nodeStore) {
@@ -93,11 +100,10 @@ export const convertModelToComponent = (
       }
 
       // sync storeState to component state;
-      this.storeState.subscribe((newState) => {
-        this.setState({
-          ...newState,
-        });
+      const subscriber = this.storeState.subscribe((newState) => {
+        this.setStateIfChanged(newState);
       });
+      this.storeListenDisposeList.push(subscriber);
       this.connectStore();
 
       // create node variable space, 存储节点的变量空间
@@ -116,6 +122,17 @@ export const convertModelToComponent = (
     updateState = (newState: any) => {
       this.storeState.setState(newState);
     };
+
+    /** 如果值和当前 state 一样了就不触发更新 */
+    setStateIfChanged(updater: any) {
+      this.setState((prevState) => {
+        const nextState = typeof updater === 'function' ? updater(prevState) : updater;
+        if (!isEqual(prevState, { ...prevState, ...nextState })) {
+          return nextState;
+        }
+        return null;
+      });
+    }
 
     connectStore() {
       // props
@@ -171,9 +188,7 @@ export const convertModelToComponent = (
             console.warn(storeManager, storeName, 'not exits');
           }
           const handle = storeManager.connect(storeName, (newState) => {
-            this.setState({
-              ...newState,
-            });
+            this.setStateIfChanged(newState);
           });
           disposeList.push(handle);
         });
@@ -280,6 +295,7 @@ export const convertModelToComponent = (
     componentWillUnmount(): void {
       this.storeListenDisposeList.forEach((el) => el());
       this.removeMediaCSS();
+
       onComponentDestroy?.(this, nodeModel);
       const EVENT_NAME = ON_WILL_DESTROY;
       const actionFlow = nodeModel.value.eventListener?.find((el) => el.name === EVENT_NAME);
@@ -468,6 +484,16 @@ export const convertModelToComponent = (
         getStaticVarById: (nodeId: string) => {
           return variableManager.get(nodeId).staticVar;
         },
+        /** 获取当前节点的事件函数 */
+        callEventMethod: (eventName: string, e: any) => {
+          const nodeRef = refManager.get(nodeId).current;
+          nodeRef?.props[eventName]?.(e);
+        },
+        /** 获取当前 node 的 props  */
+        getProps: () => {
+          const nodeRef = refManager.get(nodeId).current;
+          return nodeRef?.props;
+        },
         nodeRefs: $$context.nodeRefs,
       };
 
@@ -581,6 +607,9 @@ export const convertModelToComponent = (
             {
               [loopDataName]: loopData,
               nodeRefs: newContext.nodeRefs,
+              // 使用空函数，避免获取到父节点的方法或者函数
+              getProps: function (): void {},
+              callEventMethod: function (): void {},
             },
             newContext
           );

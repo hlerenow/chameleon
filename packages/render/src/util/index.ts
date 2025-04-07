@@ -91,7 +91,7 @@ export const convertCodeStringToFunction = (params: {
       let codeBody;
       const actionVariableSpaceKeyList = Object.keys(actionVariableSpace || {});
       const varListCode = actionVariableSpaceKeyList.map((key) => {
-        return `var ${key}=$$actionVariableSpace[${JSON.stringify(key)}];`;
+        return `var ${key} = $$actionVariableSpace[${JSON.stringify(key)}];`;
       });
       try {
         codeBody = `
@@ -101,7 +101,7 @@ export const convertCodeStringToFunction = (params: {
     var __$$storeManager__ = extraParams.storeManager;
     var $$context =  extraParams.$$context;
     var $$response =  extraParams.$$response;
-    var $$actionVariableSpace =  extraParams.actionVariableSpace;
+    var $$actionVariableSpace = extraParams.actionVariableSpace;
     $$context.stateManager = __$$storeManager__.getStateSnapshot();
     ${varListCode.join(';\n')}
 

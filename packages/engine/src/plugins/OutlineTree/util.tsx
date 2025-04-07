@@ -169,7 +169,7 @@ export const transformPageSchemaToTreeData = (pageSchema: CPageDataType, pageMod
 
   const rootNode: TreeNodeData = {
     title: 'Page',
-    key: tree.id || 'Page',
+    key: tree.id || 'globalState',
     rootNode: true,
     children: [],
   };

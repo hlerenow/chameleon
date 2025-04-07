@@ -25,7 +25,7 @@ export interface IDynamicComponent {
   _NODE_ID: string;
   UNIQUE_ID: string;
   targetComponentRef: React.MutableRefObject<any>;
-  listenerHandle: (() => void)[];
+  listenerHandler: (() => void)[];
   storeState: StoreApi<any>;
   storeListenDisposeList: (() => void)[];
   domHeader?: HTMLHeadElement;

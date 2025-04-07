@@ -102,7 +102,7 @@ export class CNode {
   emitter: DataModelEmitterType = DataModelEmitter;
   parent: ParentType;
   materialsModel: CMaterials;
-  listenerHandle: (() => void)[];
+  listenerHandler: (() => void)[];
   onChangeCbQueue: OnNodeChangeType[];
 
   constructor(data: CNodeDataType, options?: { parent?: ParentType; materials: CMaterials | null }) {
@@ -112,7 +112,7 @@ export class CNode {
     this.parent = options?.parent || null;
     this.materialsModel = materials;
     this.data = parseNode(data, this, materials);
-    this.listenerHandle = [];
+    this.listenerHandler = [];
     this.onChangeCbQueue = [];
     this.registerListener();
   }
@@ -125,7 +125,7 @@ export class CNode {
       }
     };
     this.emitter.on('onNodeChange', onNodeChange);
-    this.listenerHandle.push(() => {
+    this.listenerHandler.push(() => {
       this.emitter.off('onNodeChange', onNodeChange);
     });
   }
@@ -138,7 +138,7 @@ export class CNode {
   }
 
   destroy() {
-    this.listenerHandle.forEach((it) => it());
+    this.listenerHandler.forEach((it) => it());
   }
 
   get id() {

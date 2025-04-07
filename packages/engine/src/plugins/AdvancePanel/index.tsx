@@ -46,6 +46,9 @@ const properties: CMaterialPropsType = [
       {
         componentName: 'ShapeSetter',
         props: {
+          collapse: {
+            open: true,
+          },
           elements: [
             {
               name: 'open',

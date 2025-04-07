@@ -197,6 +197,7 @@ export const CommonDynamicValueSetter: SetterType[] = [
   'StringSetter',
   'NumberSetter',
   'ExpressionSetter',
+  'JSONSetter',
   {
     componentName: 'FunctionSetter',
     props: {

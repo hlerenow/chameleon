@@ -95,7 +95,7 @@ export class CRootNode {
   nodeType = InnerComponentNameEnum.ROOT_CONTAINER;
   emitter: DataModelEmitterType = DataModelEmitter;
   materialsModel: CMaterials;
-  listenerHandle: (() => void)[];
+  listenerHandler: (() => void)[];
   onChangeCbQueue: OnNodeChangeType[];
   parent: CPage | null;
 
@@ -103,7 +103,7 @@ export class CRootNode {
     this.materialsModel = materials;
     this.rawData = JSON.parse(JSON.stringify(data));
     this.data = parseSchema(data, this, materials);
-    this.listenerHandle = [];
+    this.listenerHandler = [];
     this.onChangeCbQueue = [];
     this.registerListener();
     this.parent = parent;
@@ -117,7 +117,7 @@ export class CRootNode {
       }
     };
     this.emitter.on('onNodeChange', onNodeChange);
-    this.listenerHandle.push(() => {
+    this.listenerHandler.push(() => {
       this.emitter.off('onNodeChange', onNodeChange);
     });
   }
@@ -221,7 +221,7 @@ export class CRootNode {
   }
 
   destroy() {
-    this.listenerHandle.forEach((it) => it());
+    this.listenerHandler.forEach((it) => it());
   }
 
   clone(id?: string) {
