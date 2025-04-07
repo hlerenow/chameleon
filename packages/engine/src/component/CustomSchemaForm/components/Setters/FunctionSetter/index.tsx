@@ -64,7 +64,7 @@ export const FunctionSetter: CSetter<any> = ({
       onDidMount={(editor) => {
         editorRef.current = editor;
       }}
-      initialValue={props.value?.value ?? (initialValue || '')}
+      initialValue={props.value?.value ?? (initialValue || 'function run() {\n}')}
       language={'javascript'}
       options={{
         automaticLayout: true,

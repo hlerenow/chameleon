@@ -51,6 +51,7 @@ export const runExpression = (expStr: string, context: any) => {
       return `const ${key} = $$context['${key}'];`;
     });
     const executeCode = `
+    $CTX = $$context;
     ${contextVar.join('\n')}
     return ${expStr};
     `;
@@ -100,6 +101,7 @@ export const convertCodeStringToFunction = (params: {
     var extraParams = $$$__args__$$$.pop();
     var __$$storeManager__ = extraParams.storeManager;
     var $$context =  extraParams.$$context;
+    var $CTX =  extraParams.$$context;
     var $$response =  extraParams.$$response;
     var $$actionVariableSpace = extraParams.actionVariableSpace;
     $$context.stateManager = __$$storeManager__.getStateSnapshot();
