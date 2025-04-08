@@ -126,6 +126,7 @@ export const transformNodeSchemaToTreeData = (
         });
       }
     };
+
     const getPropsLabel = (nodeModel: CNode, keyPath: string[]) => {
       const propsLabelMap = getNodePropsLabelMap(nodeModel);
       const newKeyPath = keyPath.map((el) => {

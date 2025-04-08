@@ -34,6 +34,7 @@ const mainConfig: BuildScriptConfig = {
     plugins: plugins,
     ...commonConfig,
     define: {
+      global: 'globalThis',
       'process.env': JSON.stringify('{}'),
       __RUN_MODE__: JSON.stringify(process.env.BUILD_TYPE),
       __PACKAGE_VERSION__: JSON.stringify(pkg.version),

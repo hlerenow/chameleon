@@ -4,6 +4,7 @@ import { CSetter, CSetterProps } from '../type';
 import { EditorType, MonacoEditor, MonacoEditorInstance } from '../../../../MonacoEditor';
 import DefaultTslibSource from './defaultDts?raw';
 import { CNodePropsTypeEnum } from '@chamn/model';
+import { getPageTypeDefined } from './helper';
 
 export const FunctionSetter: CSetter<any> = ({
   onValueChange,
@@ -20,6 +21,7 @@ export const FunctionSetter: CSetter<any> = ({
 }>) => {
   const editorRef = useRef<MonacoEditorInstance | null>(null);
   const [open, setOpen] = useState(false);
+  getPageTypeDefined(setterContext.pluginCtx.pageModel);
   const onInnerValueChange = () => {
     const newValStr = editorRef.current?.getValue() || '';
     onValueChange?.({
@@ -40,7 +42,7 @@ export const FunctionSetter: CSetter<any> = ({
 
   const editorView = (
     <MonacoEditor
-      beforeMount={(monaco) => {
+      beforeMount={async (monaco) => {
         monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
           noSemanticValidation: true,
           noSyntaxValidation: false,
@@ -52,8 +54,10 @@ export const FunctionSetter: CSetter<any> = ({
           allowNonTsExtensions: true,
         });
 
+        const realtimeDts = await getPageTypeDefined(setterContext.pluginCtx.pageModel);
+
         const libUri = 'ts:filename/chameleon.default.variable.d.ts';
-        monaco.languages.typescript.javascriptDefaults.addExtraLib(DefaultTslibSource, libUri);
+        monaco.languages.typescript.javascriptDefaults.addExtraLib(realtimeDts, libUri);
         // When resolving definitions and references, the editor will try to use created models.
         // Creating a model for the library allows "peek definition/references" commands to work with the library.
         const model = monaco.editor.getModel(monaco.Uri.parse(libUri));

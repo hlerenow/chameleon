@@ -161,3 +161,64 @@ export function findContainerNode(
   }
   return findContainerNode(node.parent);
 }
+
+type CBFunction = (node: CNode | CRootNode) => any;
+
+/** 遍历 page 上所有的节点 */
+export const traversePageNode = (pageModel: CPage, cb: CBFunction) => {
+  // 结合物料以及 state 的定义计算出当前页面的 类型提示
+  const pageNodeTree = pageModel.value.componentsTree;
+  const rootNode = pageNodeTree;
+  traversePageNodeCore(rootNode, cb);
+};
+
+export const traversePageNodeCore = (node: CNode | CRootNode | (CNode | CRootNode)[], cb: CBFunction) => {
+  if (isArray(node)) {
+    node.map((e) => {
+      traversePageNodeCore(e, cb);
+    });
+    return;
+  }
+
+  cb(node);
+
+  // 处理 props 中的 节点
+  const processProps = (val: Record<any, CProp>, key: string, keys: string[], cb: CBFunction) => {
+    const flag = isSlotModel(val);
+    if (flag) {
+      if (isArray(val.value.value)) {
+        const nodeList = val.value.value;
+        return traversePageNodeCore(nodeList, cb);
+      } else {
+        return traversePageNodeCore(val.value.value, cb);
+      }
+    }
+    if (isPlainObject(val)) {
+      const tempVal = val as any;
+      Object.keys(tempVal).forEach((newKey) => {
+        processProps(tempVal[newKey], newKey, [...keys, key], cb);
+      });
+    }
+
+    if (Array.isArray(val)) {
+      const tempVal = val as any[];
+      tempVal.forEach((item, index) => {
+        processProps(item, String(index), [...keys, key], cb);
+      });
+    }
+    return;
+  };
+
+  const props = node.props;
+
+  processProps(props, '', [], cb);
+
+  // 处理 children
+  if (node.value.children.length) {
+    node.value.children.forEach((el) => {
+      if (isNodeModel(el)) {
+        traversePageNodeCore(el, cb);
+      }
+    });
+  }
+};
