@@ -19,9 +19,9 @@ export const FunctionSetter: CSetter<any> = ({
   lineNumber?: boolean;
   editorOptions?: EditorType['options'];
 }>) => {
+  getPageTypeDefined(setterContext.pluginCtx.pageModel, setterContext.nodeModel);
   const editorRef = useRef<MonacoEditorInstance | null>(null);
   const [open, setOpen] = useState(false);
-  getPageTypeDefined(setterContext.pluginCtx.pageModel);
   const onInnerValueChange = () => {
     const newValStr = editorRef.current?.getValue() || '';
     onValueChange?.({
@@ -54,7 +54,7 @@ export const FunctionSetter: CSetter<any> = ({
           allowNonTsExtensions: true,
         });
 
-        const realtimeDts = await getPageTypeDefined(setterContext.pluginCtx.pageModel);
+        const realtimeDts = await getPageTypeDefined(setterContext.pluginCtx.pageModel, setterContext.nodeModel);
 
         const libUri = 'ts:filename/chameleon.default.variable.d.ts';
         monaco.languages.typescript.javascriptDefaults.addExtraLib(realtimeDts, libUri);

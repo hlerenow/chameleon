@@ -1,4 +1,4 @@
-import { CPage, traversePageNode } from '@chamn/model';
+import { CNode, CPage, InnerComponentNameEnum, traversePageNode } from '@chamn/model';
 import DefaultTslibSource from './defaultDts?raw';
 
 import { quicktype, InputData, jsonInputForTargetLanguage } from 'quicktype-core';
@@ -22,11 +22,13 @@ export async function quicktypeJSON(typeName: string, jsonString: string) {
     lang: 'typescript',
     rendererOptions: {
       'just-types': 'true',
+      'nice-property-names': 'false',
+      'acronym-style': 'original',
     },
   });
 }
 
-export const getPageTypeDefined = async (pageModel: CPage) => {
+export const getPageTypeDefined = async (pageModel: CPage, currentNode: CNode) => {
   const stateTypeMap: Record<
     string,
     {
@@ -42,26 +44,36 @@ export const getPageTypeDefined = async (pageModel: CPage) => {
     };
     if (node.value.state) {
       const cb = async () => {
-        const tempRes = await quicktypeJSON(`CNode${node.id.toUpperCase()}`, JSON.stringify(node.value.state));
-        stateTypeMap[node.id] = {
+        let typeName = `CNode${node.id.toUpperCase()}`;
+        let id = node.id;
+        if (node.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER) {
+          typeName = 'GlobalState';
+          id = 'GlobalState';
+        }
+        const tempRes = await quicktypeJSON(typeName, JSON.stringify(node.value.state));
+        stateTypeMap[id] = {
           stateTypeDefined: tempRes.lines.join('\n'),
           methodsTypeDefined: '',
         };
       };
+
       pList.push(cb());
     }
   });
 
   await Promise.all(pList);
 
-  // 拼接 整体的 state 类型定义
+  const globalStateDts = stateTypeMap['GlobalState'];
 
+  delete stateTypeMap.GlobalState;
+
+  // 拼接 整体的 paege state 类型定义
   let pageStateDts = '';
   Object.keys(stateTypeMap).forEach((k) => {
     pageStateDts += stateTypeMap[k].stateTypeDefined;
   });
 
-  pageStateDts += `type PAGE_STATE = {\n`;
+  pageStateDts += `type PageState = {\n`;
   const nodeIdList: string[] = [];
 
   Object.keys(stateTypeMap).forEach((k) => {
@@ -73,9 +85,34 @@ export const getPageTypeDefined = async (pageModel: CPage) => {
 
   pageStateDts += `};\n\n`;
 
-  let dtsContent = DefaultTslibSource.replace('type PAGE_STATE = any;', pageStateDts);
-
+  let dtsContent = DefaultTslibSource.replace('type PageState = any;', pageStateDts);
   dtsContent = dtsContent.replace('type NodeId = any;', `type NodeId = ${nodeIdList.join(' | ')};`);
+  dtsContent = dtsContent.replace('type GlobalState = any;', globalStateDts.stateTypeDefined);
+  dtsContent = dtsContent.replace(
+    'Partial<GlobalState>',
+    getBodyDefined('GlobalState', globalStateDts.stateTypeDefined)
+  );
 
+  // 处理当前 node 的 types
+  const currentNodeDts = await quicktypeJSON('CurrentNodeState', JSON.stringify(currentNode.value.state || {}));
+  const currentNodeDtsText = currentNodeDts.lines.join('\n');
+  dtsContent = dtsContent.replace('type CurrentNodeState = any;', currentNodeDtsText);
+  dtsContent = dtsContent.replace('Partial<CurrentNodeState>', getBodyDefined('CurrentNodeState', currentNodeDtsText));
+
+  // 处理 methods 调用
   return dtsContent;
+};
+
+const getBodyDefined = (
+  typeName: string,
+  dtsStr: string,
+  options?: {
+    isPartial: true;
+  }
+) => {
+  const body = dtsStr.replace(`export interface ${typeName}`, '').trim();
+  if (!options?.isPartial) {
+    return body;
+  }
+  return `Partial<${body}>`;
 };
