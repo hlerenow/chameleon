@@ -96,8 +96,8 @@ declare global {
   /** global state */
   const $G_STATE: GlobalState;
 
-  /** 当前页面的 state */
-  const $PageState: PageState;
+  /** 当前页面所有节点的 state */
+  const $ALL_STATE: PageState;
 
   /** 状态更新函数 */
   const $U_STATE: UpdaterMap;

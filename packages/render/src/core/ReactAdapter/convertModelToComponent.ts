@@ -120,11 +120,21 @@ export const convertModelToComponent = (
     }
 
     updateState = (newState: any) => {
-      this.storeState.setState(newState);
+      // 根节点的 node name 强制为 globalState
+      if (nodeModel.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER) {
+        this.setState(newState);
+      } else {
+        this.storeState.setState(newState);
+      }
     };
 
     /** 如果值和当前 state 一样了就不触发更新 */
     setStateIfChanged(updater: any) {
+      // 如果是根节点就不更新 根节点的state, 避免触发全局更新
+      if (nodeModel.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER) {
+        return;
+      }
+
       this.setState((prevState) => {
         const nextState = typeof updater === 'function' ? updater(prevState) : updater;
         if (!isEqual(prevState, { ...prevState, ...nextState })) {
@@ -163,20 +173,23 @@ export const convertModelToComponent = (
         .map((el) => {
           const targetVal: JSExpressionPropType = el.val;
           const regArr = [
-            /\$\$context.stateManager\.(.+?)\./gim,
-            /\$\$context.stateManager\["(.+?)"\]/gim,
-            /\$\$context.stateManager\['(.+?)'\]/gim,
-            /getStateObj\('(.+?)'\)/gim,
-            /getStateObj\("(.+?)"\)/gim,
-            /getStateById\('(.+?)'\)/gim,
-            /getStateById\("(.+?)"\)/gim,
+            // 匹配 $$context.stateManger.xxx.state
+            /(?<=context\.stateManager(?:\.|\[["'])?)\w+(?=(?:["']?\])?(?:\.|\[)?["']?state)/gim,
+            // 匹配 $ALL_STATE.xxx;
+            /\$ALL_STATE(?:\.|(?:\[\s*["']))(\w+)(?=(?:["']\s*\])?)/gim,
+            // 匹配 getStateObj("xxx")
+            /getStateObj\(["']([^"']+)["']\)/gim,
           ];
           const tempList = getMatchVal(targetVal.value, regArr);
           storeNameList = [...storeNameList, ...tempList];
+          const regex = /\$CTX\.globalState|\$G_STATE/;
+          if (regex.test(targetVal.value)) {
+            storeNameList.push('globalState');
+          }
         })
         .filter(Boolean);
       const uniqueList = Array.from(new Set(storeNameList));
-      // TODO: list need no repeat
+
       const disposeList: (() => void)[] = [];
       if (uniqueList.length) {
         uniqueList.forEach((storeName) => {
@@ -185,7 +198,7 @@ export const convertModelToComponent = (
             storeManager.addStore(storeName, () => {
               return {};
             });
-            console.warn(storeManager, storeName, 'not exits');
+            console.warn(storeManager, storeName, 'not exits, auto create');
           }
           const handle = storeManager.connect(storeName, (newState) => {
             this.setStateIfChanged(newState);
