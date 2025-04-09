@@ -1,4 +1,5 @@
 import {
+  CNode,
   isExpression,
   isFunction,
   TActionLogicItem,
@@ -20,6 +21,7 @@ type CommonOption = {
   $$response?: any;
   /** 当前 action 上下文的变量空间 */
   actionVariableSpace: Record<string, string>;
+  nodeModel: CNode;
 };
 
 export const transformActionNode = (propVal: TActionLogicItem, options: CommonOption) => {
@@ -38,12 +40,12 @@ export const transformActionNode = (propVal: TActionLogicItem, options: CommonOp
       if (item.type === 'RUN_CODE') {
         const codeFunc = convertCodeStringToFunction({
           funcName: '',
-          funcBody: `function() {
-           ${item.value} }`,
+          funcBody: `function() {\n${item.value}\n}`,
           nodeContext: context,
           storeManager: storeManager,
           $$response: options.$$response,
           actionVariableSpace: options.actionVariableSpace,
+          nodeModel: options.nodeModel,
         });
 
         let res;
@@ -164,6 +166,7 @@ const buildDynamicValue = (dynamicValue: TDynamicValue, option: CommonOption) =>
         storeManager: option.storeManager,
         $$response: option.$$response,
         actionVariableSpace: option.actionVariableSpace,
+        nodeModel: option.nodeModel,
       });
 
       return func(...args);
@@ -276,6 +279,7 @@ const buildCallNodeMethod = (item: TLogicCallNodeMethodItem, option: CommonOptio
       nodeContext: option.context,
       storeManager: option.storeManager,
       $$response: option.$$response,
+      nodeModel: option.nodeModel,
     });
 
     let customArgs = args;

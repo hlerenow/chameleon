@@ -58,10 +58,8 @@ export const SamplePage: CPageDataType = {
                 type: 'RUN_CODE',
                 sourceCode: '',
                 value: `
-                   function () {
-                     console.log('12321312');
-                     return 555;
-                   }
+                    console.log('12321312');
+                    return 555;
                   `,
                 next: 2,
               },
@@ -128,10 +126,10 @@ export const SamplePage: CPageDataType = {
                     id: 't1',
                     next: 't2',
                     type: 'RUN_CODE',
-                    value: `function (apiResult) {
+                    value: `
                       console.log($$context, $$response);
                       console.log(77889999, apiResult)
-                  }`,
+                  `,
                   },
                   {
                     id: 't2',
@@ -161,10 +159,10 @@ export const SamplePage: CPageDataType = {
                     type: 'RUN_CODE',
                     id: 't3',
                     next: 't4',
-                    value: `function (apiResult) {
+                    value: `
                       console.log(9898989, apiResult, $$context, $$response, $$actionVariableSpace);
                       console.log(77889999,callNodeReturnVar, APIResult)
-                  }`,
+                  `,
                   },
                   {
                     id: 't4',
@@ -201,10 +199,10 @@ export const SamplePage: CPageDataType = {
                     type: 'RUN_CODE',
                     id: 't7',
                     next: 't8',
-                    value: `function (apiResult) {
+                    value: `
                       console.log($$context, $$response);
                       console.log('errrrror', apiResult)
-                  }`,
+                  `,
                   },
                 ],
               },
@@ -221,11 +219,9 @@ export const SamplePage: CPageDataType = {
                   id: '12',
                   type: 'RUN_CODE',
                   value: `
-                  function (params) {
                     console.log('12321312', $$context, params);
                     console.log('Component Did Mount')
                     return 'Component Did Mount'
-                  };
                 `,
                 },
               ],
@@ -240,11 +236,9 @@ export const SamplePage: CPageDataType = {
                   id: '123',
                   type: 'RUN_CODE',
                   value: `
-                  function (params) {
                     console.log('12321312', $$context, params);
                     console.log('Component ON_WILL_DESTROY')
                     return 'Component ON_WILL_DESTROY'
-                  };
                 `,
                 },
               ],

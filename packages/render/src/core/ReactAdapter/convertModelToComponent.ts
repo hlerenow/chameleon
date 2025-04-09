@@ -287,6 +287,7 @@ export const convertModelToComponent = (
           context: this.createCurrentNodeCtx(),
           storeManager: storeManager,
           actionVariableSpace: {},
+          nodeModel: nodeModel as any,
         });
         func();
       }
@@ -317,6 +318,7 @@ export const convertModelToComponent = (
           context: this.createCurrentNodeCtx(),
           storeManager: storeManager,
           actionVariableSpace: {},
+          nodeModel: nodeModel as any,
         });
         func();
       }
@@ -333,6 +335,7 @@ export const convertModelToComponent = (
         {
           $$context: newContext,
           ...commonRenderOptions,
+          nodeModel: nodeModel as any,
         }
       );
       const originalMethods = nodeModel.value.methods || [];
@@ -388,6 +391,7 @@ export const convertModelToComponent = (
         {
           $$context: newContext,
           ...commonRenderOptions,
+          nodeModel: nodeModel as any,
         }
       );
       // font-size to fontSize
@@ -458,6 +462,7 @@ export const convertModelToComponent = (
           context: newContext,
           storeManager: storeManager,
           actionVariableSpace: {},
+          nodeModel: nodeModel as any,
         });
         res[event.name] = func;
       });
@@ -549,6 +554,7 @@ export const convertModelToComponent = (
       let newProps: Record<string, any> = transformProps(newOriginalProps, {
         $$context: newContext,
         ...commonRenderOptions,
+        nodeModel: nodeModel as any,
       });
 
       // 处理特殊的组件，需要注入 eng 的上下文变量
@@ -630,6 +636,7 @@ export const convertModelToComponent = (
           const newProps: Record<string, any> = transformProps(newOriginalProps, {
             $$context: loopContext,
             ...commonRenderOptions,
+            nodeModel: nodeModel as any,
           });
 
           // 处理特殊的组件，需要注入 eng 的上下文变量

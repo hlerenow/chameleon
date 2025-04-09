@@ -3,6 +3,7 @@ import { Component, createElement } from 'react';
 import { ContextType } from '../core/adapter';
 import { StoreManager } from '../core/storeManager';
 import { AssetPackage, CNode, CNodeModelDataType, CRootNode, ComponentMetaType, LibMetaType } from '@chamn/model';
+import { generateObjVarProxy } from './codeRuntimeHelper';
 
 export const isClass = function (val: any) {
   if (!val) {
@@ -76,6 +77,7 @@ export const convertCodeStringToFunction = (params: {
   /** 最近一个 API 的返回响应 */
   $$response?: any;
   actionVariableSpace?: Record<any, any>;
+  nodeModel: CNode;
 }) => {
   const {
     funcBody,
@@ -83,6 +85,7 @@ export const convertCodeStringToFunction = (params: {
     nodeContext: $$context,
     storeManager,
     $$response,
+    nodeModel,
     actionVariableSpace,
   } = params;
   const funcName = functionName || 'anonymous';
@@ -92,20 +95,48 @@ export const convertCodeStringToFunction = (params: {
       let codeBody;
       const actionVariableSpaceKeyList = Object.keys(actionVariableSpace || {});
       const varListCode = actionVariableSpaceKeyList.map((key) => {
-        return `var ${key} = $$actionVariableSpace[${JSON.stringify(key)}];`;
+        return `var ${key} = $$ACTION_VAR_SPACE[${JSON.stringify(key)}];`;
       });
       try {
         codeBody = `
   var $$$__args__$$$ = Array.from(arguments);
   function $$_run_$$() {
-    var extraParams = $$$__args__$$$.pop();
-    var __$$storeManager__ = extraParams.storeManager;
-    var $$context =  extraParams.$$context;
-    var $CTX =  extraParams.$$context;
-    var $$response =  extraParams.$$response;
-    var $$actionVariableSpace = extraParams.actionVariableSpace;
+    var __extraParams = $$$__args__$$$.pop();
+    var __$$storeManager__ = __extraParams.storeManager;
+    var $ALL_NODE_IDS = Array.from(__$$storeManager__.storeMap.keys().filter(Boolean));;
+    var $RESPONSE = __extraParams.$$context;
+    var $CTX =  __extraParams.$$context;
+    var $$context = $CTX;
+    var params = $$context.params;
+
+    var $ACTION_VAR_SPACE = __extraParams.actionVariableSpace;
+    // 新增的变量
+    var $N_ID = ${JSON.stringify(nodeModel.id)};
+    var $NODE_MODAL = __extraParams.nodeModel;
+    var $IDS = $ALL_NODE_IDS.reduce(function (res, id) {
+        res[id] = id;
+        return res;
+    }, {});
+    var $M = {};
+    var $G_STATE = __$$storeManager__.getState('globalState');
+    var $STATE = __$$storeManager__.getState($N_ID);
+    var $LOOP_DATA = $CTX.loopData;
+
+${generateObjVarProxy('$ALL_STATE', {
+  keyListVar: '$ALL_NODE_IDS ',
+  getReadValCode: 'return __$$storeManager__.getState(key);',
+})}
+
+${generateObjVarProxy('$U_STATE', {
+  keyListVar: '$ALL_NODE_IDS ',
+  getReadValCode: 'return function (newVal) { __$$storeManager__.setState(key, newVal); }',
+})}
+
     $$context.stateManager = __$$storeManager__.getStateSnapshot();
+    // action flowACTION_VAR_SPACE 中定义的变量
     ${varListCode.join(';\n')}
+
+    debugger;
 
     var $$_f_$$ = ${funcBody.trim() || 'function () {}'};
 
@@ -114,7 +145,7 @@ export const convertCodeStringToFunction = (params: {
   return $$_run_$$();
         `;
         const f = new Function(codeBody);
-        return f(...args, { $$context, storeManager, $$response, actionVariableSpace });
+        return f(...args, { $$context, storeManager, $$response, actionVariableSpace, nodeModel });
       } catch (e) {
         console.log(codeBody);
         console.warn(e);

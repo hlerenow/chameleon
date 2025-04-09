@@ -23,6 +23,7 @@ export const transformProps = (
   originalProps: Record<string, any> = {},
   option: {
     $$context: ContextType;
+    nodeModel: CNode;
   } & TRenderBaseOption
 ) => {
   const { $$context: parentContext, getComponent, storeManager } = option;
@@ -105,12 +106,14 @@ export const transformProps = (
         funcName: funcProp.name || '',
         nodeContext: parentContext,
         storeManager: storeManager,
+        nodeModel: option.nodeModel,
       });
     } else if (isAction(propVal)) {
       const newVal = transformActionNode(propVal, {
         context: parentContext,
         storeManager: storeManager,
         actionVariableSpace: {},
+        nodeModel: option.nodeModel,
       });
       return newVal;
     } else if (isPlainObject(propVal)) {

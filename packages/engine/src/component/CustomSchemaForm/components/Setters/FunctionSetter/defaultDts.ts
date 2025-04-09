@@ -116,4 +116,7 @@ declare global {
 
   /** 循环数据，如果存在 */
   const $LOOP_DATA: ContextType['loopData'];
+
+  /** action flow 中的局部变量 */
+  const $ACTION_VAR_SPACE: any;
 }
