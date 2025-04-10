@@ -84,11 +84,14 @@ export const getPageTypeDefined = async (pageModel: CPage, currentNode: CNode) =
 
   let dtsContent = DefaultTslibSource.replace('type PageState = any;', pageStateDts);
   dtsContent = dtsContent.replace('type NodeId = any;', `type NodeId = ${nodeIdList.join(' | ')};`);
-  dtsContent = dtsContent.replace('type GlobalState = any;', globalStateDts.stateTypeDefined);
-  dtsContent = dtsContent.replace(
-    'Partial<GlobalState>',
-    getBodyDefined('GlobalState', globalStateDts.stateTypeDefined)
-  );
+  if (globalStateDts?.stateTypeDefined) {
+    dtsContent = dtsContent.replace('type GlobalState = any;', globalStateDts.stateTypeDefined);
+    dtsContent = dtsContent.replace(
+      'Partial<GlobalState>',
+      getBodyDefined('GlobalState', globalStateDts.stateTypeDefined)
+    );
+  }
+
   // 处理当前 node 的 types
   const currentNodeDts = await quicktypeJSON('CurrentNodeState', JSON.stringify(currentNode.value.state || {}));
   const currentNodeDtsText = currentNodeDts.lines.join('\n');
