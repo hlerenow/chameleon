@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.1](https://github.com/ByteCrazy/chameleon/compare/v0.8.0...v0.8.1) (2025-04-10)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine:** 🐛 fixed globalStateDts ([03c0b71](https://github.com/ByteCrazy/chameleon/commit/03c0b714343a7cf76710b164a43008af430b1d7c))
+
 ## [0.8.0](https://github.com/ByteCrazy/chameleon/compare/v0.7.0...v0.8.0) (2025-04-10)
 
 ### ✨ Features | 新功能
