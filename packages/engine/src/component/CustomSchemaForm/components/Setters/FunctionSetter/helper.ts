@@ -64,21 +64,18 @@ export const getPageTypeDefined = async (pageModel: CPage, currentNode: CNode) =
   await Promise.all(pList);
 
   const globalStateDts = stateTypeMap['GlobalState'];
-
   delete stateTypeMap.GlobalState;
 
-  // 拼接 整体的 paege state 类型定义
+  // 拼接 整体的 page state 类型定义
   let pageStateDts = '';
-  Object.keys(stateTypeMap).forEach((k) => {
-    pageStateDts += stateTypeMap[k].stateTypeDefined;
-  });
 
   pageStateDts += `type PageState = {\n`;
   const nodeIdList: string[] = [];
 
   Object.keys(stateTypeMap).forEach((k) => {
     if (stateTypeMap[k].stateTypeDefined) {
-      pageStateDts += `  '${k}': CNode${k.toUpperCase()},\n`;
+      const body = getBodyDefined(`CNode${k.toUpperCase()}`, stateTypeMap[k].stateTypeDefined);
+      pageStateDts += `  '${k}': ${body},\n`;
       nodeIdList.push(`'${k}'`);
     }
   });
@@ -92,7 +89,6 @@ export const getPageTypeDefined = async (pageModel: CPage, currentNode: CNode) =
     'Partial<GlobalState>',
     getBodyDefined('GlobalState', globalStateDts.stateTypeDefined)
   );
-
   // 处理当前 node 的 types
   const currentNodeDts = await quicktypeJSON('CurrentNodeState', JSON.stringify(currentNode.value.state || {}));
   const currentNodeDtsText = currentNodeDts.lines.join('\n');

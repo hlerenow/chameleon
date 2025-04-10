@@ -47,7 +47,7 @@ export const CSSValueSetter: CSetter<CSSValueSetterProps> = ({
       <AutoComplete
         ref={propertyValueRef}
         popupMatchSelectWidth={200}
-        bordered={false}
+        variant={'borderless'}
         value={innerValue}
         onChange={(val) => {
           setInnerVal(val);

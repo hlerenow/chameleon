@@ -46,17 +46,25 @@ export function compWrapper(Comp: any) {
   return WrapperForRef as any;
 }
 
-export const runExpression = (expStr: string, context: any) => {
+export const runExpression = (
+  expStr: string,
+  options: {
+    nodeContext: ContextType;
+    storeManager: StoreManager;
+    /** 最近一个 API 的返回响应 */
+    $$response?: any;
+    actionVariableSpace?: Record<any, any>;
+    nodeModel: CNode;
+  }
+) => {
   const run = (expStr: string) => {
-    const contextVar = Object.keys(context).map((key) => {
-      return `const ${key} = $$context['${key}'];`;
-    });
-    const executeCode = `
-    $CTX = $$context;
-    ${contextVar.join('\n')}
-    return ${expStr};
-    `;
-    return new Function('$$context', executeCode)(context);
+    return convertCodeStringToFunction({
+      funcBody: `function run () { return ${expStr}; }`,
+      funcName: 'run',
+      nodeContext: options.nodeContext,
+      storeManager: options.storeManager,
+      nodeModel: options.nodeModel,
+    })();
   };
   try {
     return run(expStr);
@@ -135,8 +143,6 @@ ${generateObjVarProxy('$U_STATE', {
     $$context.stateManager = __$$storeManager__.getStateSnapshot();
     // action flowACTION_VAR_SPACE 中定义的变量
     ${varListCode.join(';\n')}
-
-    debugger;
 
     var $$_f_$$ = ${funcBody.trim() || 'function () {}'};
 

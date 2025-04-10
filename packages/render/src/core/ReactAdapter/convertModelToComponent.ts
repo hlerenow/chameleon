@@ -365,7 +365,13 @@ export const convertModelToComponent = (
       const classNames =
         nodeModel.value.classNames?.map((it) => {
           const name = it.name;
-          const status = isExpression(it.status) ? runExpression(it.status?.value || '', context) : false;
+          const status = isExpression(it.status)
+            ? runExpression(it.status?.value || '', {
+                nodeContext: context,
+                nodeModel: nodeModel as any,
+                storeManager: storeManager,
+              })
+            : false;
           if (status) {
             return name;
           }
@@ -424,7 +430,11 @@ export const convertModelToComponent = (
       let condition = nodeModel.value.condition ?? true;
       if (typeof condition !== 'boolean') {
         const conditionObj = condition as JSExpressionPropType;
-        condition = runExpression(conditionObj.value, newContext || {}) as boolean;
+        condition = runExpression(conditionObj.value, {
+          nodeContext: newContext || {},
+          nodeModel: nodeModel as any,
+          storeManager: storeManager,
+        }) as boolean;
       }
       let finalNodeConfig = {
         condition,
@@ -611,7 +621,12 @@ export const convertModelToComponent = (
         let loopList: any[] = (loopObj.data as any[]) || [];
         if (isExpression(loopObj.data)) {
           const expProp = loopObj.data as JSExpressionPropType;
-          loopList = runExpression(expProp.value, newContext || {});
+          loopList =
+            runExpression(expProp.value, {
+              nodeContext: newContext || {},
+              storeManager: storeManager,
+              nodeModel: nodeModel as any,
+            }) || [];
         }
         loopRes = loopList.map((...args) => {
           const innerIndex = args[1];
@@ -661,7 +676,11 @@ export const convertModelToComponent = (
           newProps.key = `${newProps.key}-${innerIndex}`;
           if (isExpression(loopObj.key)) {
             const keyObj = loopObj.key as JSExpressionPropType;
-            const specialKey = runExpression(keyObj.value, loopContext || {});
+            const specialKey = runExpression(keyObj.value, {
+              nodeContext: loopContext || {},
+              storeManager: storeManager,
+              nodeModel: nodeModel as any,
+            });
             newProps.key += `-${specialKey}`;
           }
           // loop 渲染特有的 key End

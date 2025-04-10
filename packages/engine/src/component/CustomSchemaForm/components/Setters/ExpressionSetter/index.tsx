@@ -5,6 +5,7 @@ import { EditorType, MonacoEditor, MonacoEditorInstance } from '../../../../Mona
 import DefaultTslibSource from '../FunctionSetter//defaultDts?raw';
 import { CNodePropsTypeEnum } from '@chamn/model';
 import styles from './style.module.scss';
+import { getPageTypeDefined } from '../FunctionSetter/helper';
 export type ExpressionSetterProps = CSetterProps<{
   value: {
     type: string;
@@ -48,7 +49,7 @@ export const ExpressionSetter: CSetter<ExpressionSetterProps> = ({
 
   const editorView = (
     <MonacoEditor
-      beforeMount={(monaco) => {
+      beforeMount={async (monaco) => {
         monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
           noSemanticValidation: true,
           noSyntaxValidation: false,
@@ -60,8 +61,10 @@ export const ExpressionSetter: CSetter<ExpressionSetterProps> = ({
           allowNonTsExtensions: true,
         });
 
+        const realtimeDts = await getPageTypeDefined(setterContext.pluginCtx.pageModel, setterContext.nodeModel);
+
         const libUri = 'ts:filename/chameleon.default.variable.d.ts';
-        monaco.languages.typescript.javascriptDefaults.addExtraLib(DefaultTslibSource, libUri);
+        monaco.languages.typescript.javascriptDefaults.addExtraLib(realtimeDts, libUri);
         // When resolving definitions and references, the editor will try to use created models.
         // Creating a model for the library allows "peek definition/references" commands to work with the library.
         const model = monaco.editor.getModel(monaco.Uri.parse(libUri));
@@ -134,7 +137,7 @@ export const ExpressionSetter: CSetter<ExpressionSetterProps> = ({
         centered
         destroyOnClose
         open={open}
-        title="Function Editor"
+        title="Expression Editor"
         onCancel={() => setOpen(false)}
         width="calc(100vw - 100px)"
         onOk={() => {

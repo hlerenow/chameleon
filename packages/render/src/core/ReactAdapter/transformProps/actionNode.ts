@@ -155,6 +155,7 @@ const buildDynamicValue = (dynamicValue: TDynamicValue, option: CommonOption) =>
         storeManager: option.storeManager,
         $$response: option.$$response,
         actionVariableSpace: option.actionVariableSpace,
+        nodeModel: option.nodeModel,
       });
       return res;
     }

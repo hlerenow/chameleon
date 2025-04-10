@@ -97,7 +97,11 @@ export const transformProps = (
       }
     } else if (isExpression(propVal)) {
       const expProp = propVal;
-      const newVal = runExpression(expProp.value, parentContext || {});
+      const newVal = runExpression(expProp.value, {
+        nodeContext: parentContext,
+        storeManager: option.storeManager,
+        nodeModel: option.nodeModel,
+      });
       return newVal;
     } else if (isFunction(propVal)) {
       const funcProp = propVal as FunctionPropType;

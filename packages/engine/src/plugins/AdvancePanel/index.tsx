@@ -24,7 +24,7 @@ const properties: CMaterialPropsType = [
         componentName: 'StringSetter',
         props: {
           disabled: true,
-          bordered: false,
+          variant: 'borderless',
         },
       },
     ],
@@ -229,7 +229,9 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
   return (
     <div className={styles.advanceBox}>
       <CustomSchemaForm
+        nodeId={props.node?.id}
         key={node.id}
+        pluginCtx={props.pluginCtx}
         defaultSetterConfig={node.value.configure?.advanceSetter || {}}
         onSetterChange={onSetterChange}
         properties={innerProperties}
