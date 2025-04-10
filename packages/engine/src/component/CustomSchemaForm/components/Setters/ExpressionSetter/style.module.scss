@@ -1,0 +1,10 @@
+.expressionCodeEditor {
+  :global {
+    .monaco-editor .suggest-widget {
+      width: 300px !important;
+      left: 0 !important;
+      right: auto !important;
+      transform: none !important; // 防止默认偏移
+    }
+  }
+}
