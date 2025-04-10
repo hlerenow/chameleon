@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.0](https://github.com/ByteCrazy/chameleon/compare/v0.7.0...v0.8.0) (2025-04-10)
+
+### ✨ Features | 新功能
+
+* **demo-page, engine, render:** 🎸 update run time var for function ([d8fb90a](https://github.com/ByteCrazy/chameleon/commit/d8fb90ac72a233d7fdb5fcb36e0b7963f83c5acf))
+* **engine, model, render:** 🎸 fixed cycle update when update value in mount ([9b30922](https://github.com/ByteCrazy/chameleon/commit/9b30922ffac4a5b4fb1fe123c4604cc0fff63911))
+* **engine, render:** 🎸 optimize expression setter ([07c11e9](https://github.com/ByteCrazy/chameleon/commit/07c11e9bdf011f70763623d6a2f185a3c3830e5e))
+* **engine, render:** 🎸 optimize globalState update ([4e7bb6a](https://github.com/ByteCrazy/chameleon/commit/4e7bb6ab68cd69fe6d429abe417587c3ac26eb18))
+* **engine:** 🎸 dynamic generate page dts ([2dc1a0b](https://github.com/ByteCrazy/chameleon/commit/2dc1a0bca0a53223b61b8c4ce216b26a70887c96))
+* **engine:** 🎸 optimize express setter ([37141f9](https://github.com/ByteCrazy/chameleon/commit/37141f97a98e53e0050e328c2de03341984b3ad5))
+
 ## [0.7.0](https://github.com/ByteCrazy/chameleon/compare/v0.6.0...v0.7.0) (2025-04-06)
 
 ### ✨ Features | 新功能

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.0](https://github.com/ByteCrazy/chameleon/compare/v0.7.0...v0.8.0) (2025-04-10)
+
+### ✨ Features | 新功能
+
+* **demo-page, engine, render:** 🎸 update run time var for function ([d8fb90a](https://github.com/ByteCrazy/chameleon/commit/d8fb90ac72a233d7fdb5fcb36e0b7963f83c5acf))
+
 ## [0.7.0](https://github.com/ByteCrazy/chameleon/compare/v0.6.0...v0.7.0) (2025-04-06)
 
 **Note:** Version bump only for package @chamn/demo-page

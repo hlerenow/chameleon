@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.0](https://github.com/ByteCrazy/chameleon/compare/v0.7.0...v0.8.0) (2025-04-10)
+
+### ✨ Features | 新功能
+
+* **engine, model, render:** 🎸 fixed cycle update when update value in mount ([9b30922](https://github.com/ByteCrazy/chameleon/commit/9b30922ffac4a5b4fb1fe123c4604cc0fff63911))
+
 ## [0.7.0](https://github.com/ByteCrazy/chameleon/compare/v0.6.0...v0.7.0) (2025-04-06)
 
 **Note:** Version bump only for package @chamn/model
