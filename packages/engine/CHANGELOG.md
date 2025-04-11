@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.2](https://github.com/ByteCrazy/chameleon/compare/v0.8.1...v0.8.2) (2025-04-11)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, render:** 🐛 fixed functionSeter and expressionSetter dts ([1e326e2](https://github.com/ByteCrazy/chameleon/commit/1e326e288f8d072497c01c1ccb0c06bed0521949))
+
 ## [0.8.1](https://github.com/ByteCrazy/chameleon/compare/v0.8.0...v0.8.1) (2025-04-10)
 
 ### 🐛 Bug Fixes | Bug 修复
