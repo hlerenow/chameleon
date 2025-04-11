@@ -94,6 +94,7 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
         pluginCtx: props.setterContext?.pluginCtx,
         pageModel: props.setterContext?.pluginCtx?.pageModel,
         onDataChange: saveData,
+        nodeModel: props.setterContext.nodeModel,
       }}
     >
       <div

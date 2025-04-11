@@ -20,8 +20,7 @@ export type TAssignValueNode = Node<TLogicAssignValueItem, 'AssignValueNode'>;
 
 export const AssignValueNode = (props: NodeProps<TAssignValueNode>) => {
   const { data } = props;
-  const { onDataChange, pageModel } = useActionFlow();
-
+  const { onDataChange, pageModel, pluginCtx, nodeModel } = useActionFlow();
   ensureKeyExist(data, DEV_CONFIG_KEY, {});
   const devConfigObj = data[DEV_CONFIG_KEY]!;
   const [isReady, setIsReady] = useState(false);
@@ -55,6 +54,8 @@ export const AssignValueNode = (props: NodeProps<TAssignValueNode>) => {
             setter: setterName,
           };
         },
+        pluginCtx: pluginCtx,
+        nodeId: nodeModel?.id,
         customSetterMap: {},
       }}
     >

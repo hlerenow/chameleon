@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Button, ConfigProvider, Modal } from 'antd';
 import { CSetter, CSetterProps } from '../type';
 import { EditorType, MonacoEditor, MonacoEditorInstance } from '../../../../MonacoEditor';
@@ -11,7 +11,6 @@ export type ExpressionSetterProps = CSetterProps<{
     type: string;
     value: string;
   };
-  onChange: ChangeEventHandler<HTMLTextAreaElement>;
   mode: 'modal' | 'inline';
   containerStyle?: React.CSSProperties;
   minimap?: boolean;
@@ -24,6 +23,7 @@ export const ExpressionSetter: CSetter<ExpressionSetterProps> = ({
   initialValue,
   setterContext,
   editorOptions,
+
   mode = 'modal',
   ...props
 }) => {
@@ -131,10 +131,9 @@ export const ExpressionSetter: CSetter<ExpressionSetterProps> = ({
           setOpen(true);
         }}
       >
-        {props.value?.value ?? 'Edit Expression'}
+        {props.value?.value || 'Edit Expression'}
       </Button>
       <Modal
-        centered
         destroyOnClose
         open={open}
         title="Expression Editor"
@@ -145,12 +144,11 @@ export const ExpressionSetter: CSetter<ExpressionSetterProps> = ({
           setOpen(false);
         }}
         style={{
-          maxWidth: '1300px',
+          maxWidth: '800px',
         }}
         styles={{
           body: {
-            minHeight: '500px',
-            height: 'calc(100vh - 280px)',
+            height: '300px',
           },
         }}
       >

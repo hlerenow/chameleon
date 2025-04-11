@@ -1,24 +1,18 @@
 import React, { useRef, useState } from 'react';
 import { Button, ConfigProvider, Modal } from 'antd';
-import { CSetter, CSetterProps } from '../type';
+import { CSetter } from '../type';
 import { EditorType, MonacoEditor, MonacoEditorInstance } from '../../../../MonacoEditor';
 import DefaultTslibSource from './defaultDts?raw';
 import { CNodePropsTypeEnum } from '@chamn/model';
 import { getPageTypeDefined } from './helper';
 
-export const FunctionSetter: CSetter<any> = ({
-  onValueChange,
-  initialValue,
-  setterContext,
-  editorOptions,
-  ...props
-}: CSetterProps<{
+export const FunctionSetter: CSetter<{
   mode: 'modal' | 'inline';
   containerStyle?: React.CSSProperties;
   minimap?: boolean;
   lineNumber?: boolean;
   editorOptions?: EditorType['options'];
-}>) => {
+}> = ({ onValueChange, initialValue, setterContext, editorOptions, ...props }) => {
   getPageTypeDefined(setterContext.pluginCtx.pageModel, setterContext.nodeModel);
   const editorRef = useRef<MonacoEditorInstance | null>(null);
   const [open, setOpen] = useState(false);

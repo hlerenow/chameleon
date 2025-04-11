@@ -41,18 +41,17 @@ export function ArrayItem(props: {
         <SetterSwitcher
           suffix={
             <div
-              onClick={props.onDelete}
               style={{
                 marginLeft: '8px',
                 cursor: 'pointer',
                 fontSize: '12px',
               }}
             >
-              <DeleteOutlined />
+              <DeleteOutlined onClick={props.onDelete} />
             </div>
           }
           name={String(index)}
-          label={`${props.labelPrefix ?? '元素'}${index}`}
+          label={`${props.labelPrefix ?? `元素-${index}`}`}
           keyPaths={[...keyPaths, String(index)]}
           setters={setters}
         ></SetterSwitcher>

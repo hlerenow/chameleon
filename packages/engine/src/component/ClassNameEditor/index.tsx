@@ -1,11 +1,14 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import { ConfigProvider } from 'antd';
 import { CustomSchemaForm, CustomSchemaFormInstance } from '../CustomSchemaForm';
-import { ClassNameType, CMaterialPropsType, CNodePropsTypeEnum } from '@chamn/model';
+import { ClassNameType, CMaterialPropsType, CNode } from '@chamn/model';
+import { CPluginCtx } from '@/core/pluginManager';
 
 export type ClassNameEditorProps = {
   initialValue?: ClassNameType[];
   onValueChange?: (val: ClassNameType[]) => void;
+  pluginContext: CPluginCtx;
+  nodeModel: CNode;
 };
 export type ClassNameEditorRef = {
   setValue: (val: ClassNameType[]) => void;
@@ -16,17 +19,20 @@ const properties: CMaterialPropsType = [
     title: 'Class Names',
     name: 'className',
     valueType: 'array',
+
     setters: [
       {
         componentName: 'ArraySetter',
         props: {
           sortLabelKey: 'name',
+          collapse: {
+            open: true,
+          },
           item: {
             setters: [
               {
                 componentName: 'ShapeSetter',
                 props: {
-                  collapse: false,
                   elements: [
                     {
                       name: 'name',
@@ -47,10 +53,7 @@ const properties: CMaterialPropsType = [
             ],
             initialValue: {
               name: '',
-              status: {
-                type: CNodePropsTypeEnum.EXPRESSION,
-                value: true,
-              },
+              status: true,
             },
           },
         },
@@ -86,6 +89,8 @@ export const ClassNameEditor = forwardRef<ClassNameEditorRef, ClassNameEditorPro
         <CustomSchemaForm
           ref={formRef}
           initialValue={[]}
+          nodeId={props.nodeModel.id}
+          pluginCtx={props.pluginContext}
           properties={properties}
           onSetterChange={function () {}}
           onValueChange={(newVal) => {

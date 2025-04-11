@@ -17,7 +17,7 @@ export type TCallNodeMethodNode = Node<TLogicCallNodeMethodItem, 'CallNodeMethod
 
 export const CallNodeMethodNode = (props: NodeProps<TCallNodeMethodNode>) => {
   const { data } = props;
-  const { pageModel, onDataChange } = useActionFlow();
+  const { pageModel, onDataChange, pluginCtx, nodeModel } = useActionFlow();
   ensureKeyExist(data, DEV_CONFIG_KEY, {});
   const devConfigObj = data[DEV_CONFIG_KEY]!;
 
@@ -138,6 +138,8 @@ export const CallNodeMethodNode = (props: NodeProps<TCallNodeMethodNode>) => {
               >
                 <CustomSchemaForm
                   initialValue={formatArgsToObject(data.args || [])}
+                  pluginCtx={pluginCtx}
+                  nodeId={nodeModel?.id}
                   properties={argsFormSchema}
                   onSetterChange={updateKeySetterConfig}
                   defaultSetterConfig={devConfigObj.defaultSetterMap || {}}

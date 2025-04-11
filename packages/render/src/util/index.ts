@@ -58,8 +58,13 @@ export const runExpression = (
   }
 ) => {
   const run = (expStr: string) => {
+    let funcBody = `function run () { return ${expStr}; }`;
+    if (expStr.includes('return ')) {
+      funcBody = `function runExp () { ${expStr} }`;
+    }
+
     return convertCodeStringToFunction({
-      funcBody: `function run () { return ${expStr}; }`,
+      funcBody: funcBody,
       funcName: 'run',
       nodeContext: options.nodeContext,
       storeManager: options.storeManager,
@@ -103,7 +108,7 @@ export const convertCodeStringToFunction = (params: {
       let codeBody;
       const actionVariableSpaceKeyList = Object.keys(actionVariableSpace || {});
       const varListCode = actionVariableSpaceKeyList.map((key) => {
-        return `var ${key} = $$ACTION_VAR_SPACE[${JSON.stringify(key)}];`;
+        return `var ${key} = $ACTION_VAR_SPACE[${JSON.stringify(key)}];`;
       });
       try {
         codeBody = `
@@ -153,7 +158,6 @@ ${generateObjVarProxy('$U_STATE', {
         const f = new Function(codeBody);
         return f(...args, { $$context, storeManager, $$response, actionVariableSpace, nodeModel });
       } catch (e) {
-        console.log(codeBody);
         console.warn(e);
       }
     },

@@ -21,7 +21,7 @@ export const CFiledWithSwitchSetter = (
     return getSetterList(setters);
   }, [setters]);
 
-  const { onSetterChange, defaultSetterConfig, formRef, pluginCtx } = useContext(CCustomSchemaFormContext);
+  const { onSetterChange, defaultSetterConfig, pluginCtx, nodeId } = useContext(CCustomSchemaFormContext);
   const keyPaths = [props.name];
 
   const [currentSetter, setCurrentSetter] = useState<SetterObjType>(() => {
@@ -88,11 +88,6 @@ export const CFiledWithSwitchSetter = (
     return newProps;
   }, [setterList, currentSetter]);
 
-  const setterContext = {
-    formRef,
-    pluginCtx,
-  };
-
   return (
     <div
       className={styles.fieldBox}
@@ -108,9 +103,10 @@ export const CFiledWithSwitchSetter = (
           currentSetter={currentSetter}
           setCurrentSetter={setCurrentSetter}
           setterContext={{
-            ...setterContext,
+            pluginCtx,
             keyPaths: [props.name],
             label: props.label,
+            nodeModel: pluginCtx?.pageModel.getNode(nodeId) as any,
           }}
         />
       </CField>

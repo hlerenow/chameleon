@@ -1,6 +1,4 @@
-import styles from './style.module.scss';
-
-import { AutoComplete, Button, ConfigProvider, Input } from 'antd';
+import { AutoComplete, Button, ConfigProvider } from 'antd';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { BaseSelectRef } from 'rc-select';
 import clsx from 'clsx';
@@ -8,6 +6,9 @@ import { CNodePropsTypeEnum, JSExpressionPropType, isExpression } from '@chamn/m
 import { InputStatus } from 'antd/es/_util/statusUtils';
 import { CSSPropertyList } from './cssProperties';
 import { forwardRef, useState, useMemo, useEffect, useRef, useImperativeHandle } from 'react';
+import { ExpressionSetter } from '../CustomSchemaForm/components/Setters/ExpressionSetter';
+import { UseCRightPanelContext } from '@/plugins/RightPanel/context';
+import styles from './style.module.scss';
 
 const defaultPropertyOptions = CSSPropertyList.map((el) => {
   return {
@@ -36,7 +37,8 @@ export const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, Inn
   function SinglePropertyEditorCore(props, ref) {
     const [keyFormatStatus, setKeyFormatStatus] = useState<InputStatus>('');
     const [valueFormatStatus, setValueFormatStatus] = useState<InputStatus>('');
-
+    console.log('🚀 ~ SinglePropertyEditorCore ~ valueFormatStatus:', valueFormatStatus);
+    const rightPanelContext = UseCRightPanelContext();
     const { mod = 'create' } = props;
 
     const [innerValue, setInnerVal] = useState<{
@@ -46,6 +48,8 @@ export const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, Inn
       property: props.value?.property || '',
       value: props.value?.value || '',
     });
+
+    console.log('innerValue.value', innerValue.value);
 
     const parseValue = (val: typeof innerValue | undefined) => {
       let isExp;
@@ -166,45 +170,63 @@ export const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, Inn
                 options={propertyOptions}
               />
             </div>
-            <div className={styles.row}>
-              <span className={styles.fieldLabel}>Value</span>
-              <ConfigProvider
-                theme={{
-                  token: {
-                    borderRadius: 4,
-                  },
-                }}
-              >
-                <Input.TextArea
-                  status={valueFormatStatus}
-                  value={parseValue(innerValue).value}
-                  autoSize={{ minRows: innerValueObj.isExp ? 2 : 1 }}
-                  onChange={(e) => {
-                    setValueFormatStatus('');
-                    const newTempVal: JSExpressionPropType = {
-                      type: CNodePropsTypeEnum.EXPRESSION,
-                      value: e.target.value,
-                    };
-                    const isExp = innerValueObj.isExp;
-                    const newVal = {
-                      ...innerValue,
-                      value: isExp ? newTempVal : e.target.value,
-                    };
-                    setInnerVal(newVal);
-                    updateOuterValue(newVal);
+            {mod === 'create' && (
+              <div>
+                <Button
+                  size="small"
+                  block
+                  icon={
+                    <PlusOutlined
+                      style={{
+                        fontSize: '12px',
+                        display: 'inline-flex',
+                      }}
+                    />
+                  }
+                  onClick={innerOnCreate}
+                ></Button>
+              </div>
+            )}
+            {mod !== 'create' && (
+              <div className={styles.row}>
+                <span className={styles.fieldLabel}>Value</span>
+                <ConfigProvider
+                  theme={{
+                    token: {
+                      borderRadius: 4,
+                    },
                   }}
-                  onPressEnter={() => {
-                    if (mod === 'create') {
-                      // 延迟触发，否则 create 事件会比 onChange 事件先触发
-                      setTimeout(() => {
-                        innerOnCreate();
-                        propertyKeyRef.current?.focus();
-                      }, 0);
-                    }
-                  }}
-                />
-              </ConfigProvider>
-            </div>
+                >
+                  <div
+                    style={{
+                      width: '100%',
+                    }}
+                  >
+                    <ExpressionSetter
+                      value={innerValue.value as any}
+                      setterContext={{
+                        pluginCtx: rightPanelContext.pluginCtx!,
+                        setCollapseHeaderExt: undefined,
+                        onSetterChange: function () {},
+                        keyPaths: [],
+                        label: '',
+                        nodeModel: rightPanelContext.nodeModel as any,
+                      }}
+                      onValueChange={function (val) {
+                        const newVal = {
+                          ...innerValue,
+                          value: val,
+                        };
+                        console.log('newVal', newVal);
+                        setInnerVal(newVal);
+                        updateOuterValue(newVal);
+                      }}
+                      mode={'modal'}
+                    />
+                  </div>
+                </ConfigProvider>
+              </div>
+            )}
           </div>
           <div className={styles.rightBox}>
             <div
@@ -228,52 +250,6 @@ export const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, Inn
                   />
                 </Button>
               )}
-              {props.onCreate && mod === 'create' && (
-                <div>
-                  <Button
-                    size="small"
-                    type="text"
-                    icon={
-                      <PlusOutlined
-                        style={{
-                          fontSize: '12px',
-                          display: 'inline-flex',
-                        }}
-                      />
-                    }
-                    onClick={innerOnCreate}
-                  ></Button>
-                </div>
-              )}
-            </div>
-
-            <div
-              className={styles.switchBtn}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-            >
-              {/* <Dropdown
-                trigger={['click']}
-                menu={{
-                  selectable: true,
-                  items: [
-                    {
-                      key: 'text',
-                      label: 'Plain text',
-                    },
-                    {
-                      key: 'expression',
-                      label: 'Expression',
-                    },
-                  ],
-                  onClick: onChooseSetter,
-                  defaultSelectedKeys: [innerValueObj.isExp ? 'expression' : 'text'],
-                }}
-              >
-                <SwapOutlined />
-              </Dropdown> */}
             </div>
           </div>
         </div>

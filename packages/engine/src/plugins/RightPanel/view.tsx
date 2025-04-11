@@ -8,6 +8,7 @@ import { AdvancePanelConfig } from '../AdvancePanel';
 import styles from './style.module.scss';
 import { VisualPanelPlusConfig } from '../VisualPanelPlus';
 import { EventPanelConfig } from '../EventPanel';
+import { CRightPanelContext } from './context';
 
 export type RightPanelOptions = { node: CNode | CRootNode | null; pluginCtx: CPluginCtx; activeTab: string };
 
@@ -187,30 +188,40 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
     const panelParams = { node: node, pluginCtx, activeTab: this.state.activeKey };
 
     return (
-      <div className={styles.rightPanelContainer}>
-        <Tabs
-          activeKey={activeKey}
-          tabPosition="top"
-          style={{
-            flex: 1,
-            height: '100%',
-          }}
-          onChange={(activeKey) => {
-            this.setState({
-              activeKey,
-            });
-          }}
-          items={displayPanels.map((p) => {
-            return {
-              label: (
-                <div style={{ padding: '0 10px' }}>{typeof p.name === 'string' ? p.name : p.name?.(panelParams)}</div>
-              ),
-              key: p.key,
-              children: p.view(panelParams),
-            };
-          })}
-        />
-      </div>
+      <CRightPanelContext.Provider
+        value={{
+          customSetterMap: {},
+          defaultSetterConfig: {},
+          nodeId: this.state.node?.id,
+          nodeModel: this.state.node as any,
+          pluginCtx: this.props.pluginCtx,
+        }}
+      >
+        <div className={styles.rightPanelContainer}>
+          <Tabs
+            activeKey={activeKey}
+            tabPosition="top"
+            style={{
+              flex: 1,
+              height: '100%',
+            }}
+            onChange={(activeKey) => {
+              this.setState({
+                activeKey,
+              });
+            }}
+            items={displayPanels.map((p) => {
+              return {
+                label: (
+                  <div style={{ padding: '0 10px' }}>{typeof p.name === 'string' ? p.name : p.name?.(panelParams)}</div>
+                ),
+                key: p.key,
+                children: p.view(panelParams),
+              };
+            })}
+          />
+        </div>
+      </CRightPanelContext.Provider>
     );
   }
 }

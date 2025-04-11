@@ -97,6 +97,7 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
           style={{
             marginBottom: '10px',
           }}
+          defaultActiveKey={['origin-css-edit']}
           onChange={(val) => {
             if (val.length) {
               updatePanelValue();
@@ -124,8 +125,10 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
           }}
         >
           <ClassNameEditor
+            nodeModel={props.node as any}
             initialValue={classNameList}
             ref={classNameEditorRef}
+            pluginContext={props.pluginCtx}
             onValueChange={(newVal) => {
               node.value.classNames = newVal;
               node.updateValue();

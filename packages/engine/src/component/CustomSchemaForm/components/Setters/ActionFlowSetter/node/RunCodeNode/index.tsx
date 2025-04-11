@@ -12,7 +12,7 @@ export const RunCodeNode = (props: NodeProps<TRunCodeNode>) => {
   const { data } = props;
   ensureKeyExist(data, DEV_CONFIG_KEY, {});
 
-  const { onDataChange } = useActionFlow();
+  const { onDataChange, pluginCtx, nodeModel } = useActionFlow();
 
   return (
     <div
@@ -33,6 +33,14 @@ export const RunCodeNode = (props: NodeProps<TRunCodeNode>) => {
           onValueChange={(newVal: any) => {
             data.value = newVal.value;
             onDataChange();
+          }}
+          setterContext={{
+            pluginCtx: pluginCtx,
+            setCollapseHeaderExt: undefined,
+            onSetterChange: function () {},
+            keyPaths: [],
+            label: '',
+            nodeModel: nodeModel as any,
           }}
         />
       </NodeCard>
