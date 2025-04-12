@@ -2,10 +2,10 @@ import { AutoComplete, Button, ConfigProvider } from 'antd';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { BaseSelectRef } from 'rc-select';
 import clsx from 'clsx';
-import { CNodePropsTypeEnum, JSExpressionPropType, isExpression } from '@chamn/model';
+import { CNodePropsTypeEnum, JSExpressionPropType } from '@chamn/model';
 import { InputStatus } from 'antd/es/_util/statusUtils';
 import { CSSPropertyList } from './cssProperties';
-import { forwardRef, useState, useMemo, useEffect, useRef, useImperativeHandle } from 'react';
+import { forwardRef, useState, useEffect, useRef, useImperativeHandle } from 'react';
 import { ExpressionSetter } from '../CustomSchemaForm/components/Setters/ExpressionSetter';
 import { UseCRightPanelContext } from '@/plugins/RightPanel/context';
 import styles from './style.module.scss';
@@ -36,8 +36,6 @@ export type InnerSinglePropertyEditorRef = {
 export const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, InnerSinglePropertyEditorProps>(
   function SinglePropertyEditorCore(props, ref) {
     const [keyFormatStatus, setKeyFormatStatus] = useState<InputStatus>('');
-    const [valueFormatStatus, setValueFormatStatus] = useState<InputStatus>('');
-    console.log('🚀 ~ SinglePropertyEditorCore ~ valueFormatStatus:', valueFormatStatus);
     const rightPanelContext = UseCRightPanelContext();
     const { mod = 'create' } = props;
 
@@ -48,29 +46,6 @@ export const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, Inn
       property: props.value?.property || '',
       value: props.value?.value || '',
     });
-
-    console.log('innerValue.value', innerValue.value);
-
-    const parseValue = (val: typeof innerValue | undefined) => {
-      let isExp;
-      let value;
-      if (isExpression(val?.value)) {
-        isExp = true;
-        value = (val?.value as JSExpressionPropType)?.value;
-      } else {
-        isExp = false;
-        value = val?.value;
-      }
-      return {
-        isExp,
-        value: value,
-      };
-    };
-
-    const innerValueObj = useMemo(() => {
-      return parseValue(props.value);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.value]);
 
     useEffect(() => {
       if (props.value) {
@@ -122,21 +97,11 @@ export const SinglePropertyEditor = forwardRef<InnerSinglePropertyEditorRef, Inn
         setKeyFormatStatus('error');
         return;
       }
-      if (innerValueObj.isExp) {
-        if (!innerValue.value) {
-          setValueFormatStatus('error');
-          return;
-        }
-      }
 
       setKeyFormatStatus('');
-      setValueFormatStatus('');
       const res = props.onCreate?.(innerValue);
       if (res?.errorKey?.includes('key')) {
         setKeyFormatStatus('error');
-      }
-      if (res?.errorKey?.includes('value')) {
-        setValueFormatStatus('error');
       }
     };
 

@@ -82,7 +82,7 @@ export const ArraySetter = ({
       {listValue.map((val, index) => {
         return (
           <ArrayItem
-            labelPrefix={val[itemLabelPrefixKey || sortLabelKey || ''] ?? itemLabelPrefix}
+            labelPrefix={val[itemLabelPrefixKey || sortLabelKey || ''] || itemLabelPrefix}
             key={index}
             style={{ paddingBottom: '10px' }}
             index={index}
