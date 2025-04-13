@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.5](https://github.com/ByteCrazy/chameleon/compare/v0.8.4...v0.8.5) (2025-04-13)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine:** 🐛 fixed custom seeter not register success ([19d739a](https://github.com/ByteCrazy/chameleon/commit/19d739a97000641846c02ec19555926fe88ce3b4))
+
 ## [0.8.4](https://github.com/ByteCrazy/chameleon/compare/v0.8.3...v0.8.4) (2025-04-13)
 
 ### ✨ Features | 新功能
