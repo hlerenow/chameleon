@@ -1,7 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { useEffect } from 'react';
 import { htmlTagNames } from 'html-tag-names';
-import { BaseComponentTagList } from '@chamn/model';
 
 const transformListToObj = (list: { key: string; value: any }[]) => {
   const res: Record<string, any> = {};
@@ -11,9 +10,7 @@ const transformListToObj = (list: { key: string; value: any }[]) => {
   return res;
 };
 
-const HTMl_TAGS = [...htmlTagNames, ...BaseComponentTagList];
-
-const htmlNativeComponents = HTMl_TAGS.reduce((res, tag) => {
+const htmlNativeComponents = htmlTagNames.reduce((res, tag) => {
   res[tag] = ({ children, $$attributes = [], ...props }: any) => {
     let child = children;
     if (!Array.isArray(children)) {
@@ -32,6 +29,7 @@ const htmlNativeComponents = HTMl_TAGS.reduce((res, tag) => {
 }, {} as Record<string, (props: any) => React.ReactNode>);
 
 const CBlock = ({ children, width, height, $$attributes = [], ...props }: any) => {
+  console.log('props', props);
   let child = children;
   if (!Array.isArray(children)) {
     child = [children];

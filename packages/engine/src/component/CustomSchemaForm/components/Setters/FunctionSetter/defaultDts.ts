@@ -117,6 +117,15 @@ declare global {
   /** 循环数据，如果存在 */
   const $LOOP_DATA: ContextType['loopData'];
 
+  /** 函数传入的参数 */
+  const $PARAMS: ContextType['params'];
+
+  /** 事件对象 */
+  const $Event: MouseEvent;
+
+  /** 函数执行时传入的入参 */
+  const $ARGS: any[];
+
   /** action flow 中的局部变量 */
   const $ACTION_VAR_SPACE: any;
 }

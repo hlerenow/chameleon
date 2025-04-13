@@ -108,7 +108,6 @@ export class Engine extends React.Component<EngineProps> {
     await Promise.all(pList);
 
     this.pageModel.emitter.on('onReloadPage', () => {
-      console.log('🚀 ~ Engine ~ this.pageModel.emitter.on ~ onReloadPage:');
       if (!this.currentSelectNode) {
         return;
       }

@@ -450,6 +450,7 @@ export const convertModelToComponent = (
         return React.createElement(
           'div',
           {
+            key: newProps.key,
             style: {
               display: 'none',
             },
@@ -648,7 +649,7 @@ export const convertModelToComponent = (
             newContext
           );
           // handle props
-          const newProps: Record<string, any> = transformProps(newOriginalProps, {
+          let newProps: Record<string, any> = transformProps(newOriginalProps, {
             $$context: loopContext,
             ...commonRenderOptions,
             nodeModel: nodeModel as any,
@@ -690,6 +691,15 @@ export const convertModelToComponent = (
             this.targetComponentRef.current = this.targetComponentRef.current || [];
             this.targetComponentRef.current[innerIndex] = ref;
           };
+
+          // 处理 eventListener 事件监听
+          if (nodeModel.value.eventListener) {
+            const eventListenerObj = this.processNodeEventListener(loopContext);
+            newProps = {
+              ...newProps,
+              ...eventListenerObj,
+            };
+          }
 
           const renderView = this.processNodeConditionAndConfigHook(newProps, newChildren, loopContext);
 

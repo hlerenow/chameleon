@@ -15,6 +15,9 @@ const customAttributesMeta: CMaterialPropsType[number] = {
             {
               componentName: 'ShapeSetter',
               props: {
+                collapse: {
+                  open: true,
+                },
                 elements: [
                   {
                     name: 'key',
@@ -29,7 +32,6 @@ const customAttributesMeta: CMaterialPropsType[number] = {
                     setters: ['StringSetter', 'NumberSetter', 'JSONSetter', 'FunctionSetter', 'ExpressionSetter'],
                   },
                 ],
-                collapse: false,
               },
               initialValue: {},
             },

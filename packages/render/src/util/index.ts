@@ -59,7 +59,7 @@ export const runExpression = (
 ) => {
   const run = (expStr: string) => {
     let funcBody = `function run () { return ${expStr}; }`;
-    if (expStr.includes('return ')) {
+    if (String(expStr).includes('return ')) {
       funcBody = `function runExp () { ${expStr} }`;
     }
 
@@ -120,7 +120,9 @@ export const convertCodeStringToFunction = (params: {
     var $RESPONSE = __extraParams.$$context;
     var $CTX =  __extraParams.$$context;
     var $$context = $CTX;
-    var params = $$context.params;
+    var $PARAMS = $$context.params || {};
+    var $Event = $$$__args__$$$[0];
+    var $ARGS = $$$__args__$$$;
 
     var $ACTION_VAR_SPACE = __extraParams.actionVariableSpace;
     // 新增的变量
@@ -134,6 +136,7 @@ export const convertCodeStringToFunction = (params: {
     var $G_STATE = __$$storeManager__.getState('globalState');
     var $STATE = __$$storeManager__.getState($N_ID);
     var $LOOP_DATA = $CTX.loopData;
+
 
 ${generateObjVarProxy('$ALL_STATE', {
   keyListVar: '$ALL_NODE_IDS ',
