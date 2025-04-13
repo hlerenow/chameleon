@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.4](https://github.com/ByteCrazy/chameleon/compare/v0.8.3...v0.8.4) (2025-04-13)
+
+### ✨ Features | 新功能
+
+* **engine:** 🎸 optimize action flow layout ([9c970c9](https://github.com/ByteCrazy/chameleon/commit/9c970c9482274d4d5cf6beb76912a10784e62c79))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, render:** 🐛 CSS editor value update error ([209106a](https://github.com/ByteCrazy/chameleon/commit/209106a6a71819862626ee39c887d1835a8b5611))
+* **engine, render:** 🐛 fixed event not trigger when loop ([e3a10a8](https://github.com/ByteCrazy/chameleon/commit/e3a10a8ab77a3c5321f47440c7bdc2ad52e82ee2))
+
 ## [0.8.3](https://github.com/ByteCrazy/chameleon/compare/v0.8.2...v0.8.3) (2025-04-12)
 
 **Note:** Version bump only for package chameleon
