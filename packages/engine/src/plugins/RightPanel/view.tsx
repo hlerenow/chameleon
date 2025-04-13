@@ -39,15 +39,9 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
       panels: [
         // AdvancePanelConfig,
         PropertyPanelConfig,
-        // VisualPanelConfig,
         VisualPanelPlusConfig,
         EventPanelConfig,
         ComponentStatePanelConfig,
-        // {
-        //   key: 'Actions',
-        //   name: 'Actions',
-        //   view: () => <>Actions</>,
-        // },
         AdvancePanelConfig,
       ],
       displayPanels: [],

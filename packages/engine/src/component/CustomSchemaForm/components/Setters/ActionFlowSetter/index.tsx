@@ -62,11 +62,9 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
       setTimeout(() => {
         setFlowMount(true);
         if (options?.fitView !== false) {
-          fitView({
-            duration: 800,
-          });
+          fitView({});
         }
-      }, 500);
+      });
     },
     [edges, fitView, setEdges, setNodes]
   );
@@ -78,7 +76,7 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
     setEdges(edges);
     setTimeout(() => {
       setDataReady(true);
-    }, 500);
+    }, 300);
   }, [props.value, setEdges, setNodes]);
 
   const saveData = useCallback(() => {
@@ -158,9 +156,7 @@ export const ActionFlowSetterCore = (props: TActionFlowSetterCore) => {
               minZoom={0.2}
               maxZoom={1}
               onInit={() => {
-                setTimeout(() => {
-                  layoutGraph();
-                }, 100);
+                layoutGraph();
               }}
               fitView
               nodeTypes={NODE_MAP}

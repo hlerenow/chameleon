@@ -10,14 +10,15 @@ const customAttributesMeta: CMaterialPropsType[number] = {
     {
       componentName: 'ArraySetter',
       props: {
+        collapse: {
+          open: true,
+        },
+        sortLabelKey: 'key',
         item: {
           setters: [
             {
               componentName: 'ShapeSetter',
               props: {
-                collapse: {
-                  open: true,
-                },
                 elements: [
                   {
                     name: 'key',
