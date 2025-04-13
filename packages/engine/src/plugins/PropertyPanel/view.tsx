@@ -58,7 +58,7 @@ export const PropertyPanel = (props: { node: CNode | CRootNode | null; pluginCtx
         ref={formRef}
         customSetterMap={{
           ...BUILD_IN_ADVANCE_SETTER_MAP,
-          customSetterMap,
+          ...customSetterMap,
         }}
         onValueChange={onValueChange}
       />

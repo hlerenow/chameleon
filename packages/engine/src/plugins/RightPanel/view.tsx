@@ -180,11 +180,12 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
       );
     }
     const panelParams = { node: node, pluginCtx, activeTab: this.state.activeKey };
+    const customSetterMap = pluginCtx.config?.customPropertySetterMap;
 
     return (
       <CRightPanelContext.Provider
         value={{
-          customSetterMap: {},
+          customSetterMap: { ...customSetterMap },
           defaultSetterConfig: {},
           nodeId: this.state.node?.id,
           nodeModel: this.state.node as any,

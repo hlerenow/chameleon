@@ -21,7 +21,8 @@ export const CFiledWithSwitchSetter = (
     return getSetterList(setters);
   }, [setters]);
 
-  const { onSetterChange, defaultSetterConfig, pluginCtx, nodeId } = useContext(CCustomSchemaFormContext);
+  const { onSetterChange, defaultSetterConfig, pluginCtx, nodeId, customSetterMap } =
+    useContext(CCustomSchemaFormContext);
   const keyPaths = [props.name];
 
   const [currentSetter, setCurrentSetter] = useState<SetterObjType>(() => {
@@ -101,6 +102,7 @@ export const CFiledWithSwitchSetter = (
           setters={setterList}
           keyPaths={keyPaths}
           currentSetter={currentSetter}
+          customSetterMap={customSetterMap}
           setCurrentSetter={setCurrentSetter}
           setterContext={{
             pluginCtx,
