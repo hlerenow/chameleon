@@ -29,7 +29,6 @@ const htmlNativeComponents = htmlTagNames.reduce((res, tag) => {
 }, {} as Record<string, (props: any) => React.ReactNode>);
 
 const CBlock = ({ children, width, height, $$attributes = [], ...props }: any) => {
-  console.log('props', props);
   let child = children;
   if (!Array.isArray(children)) {
     child = [children];

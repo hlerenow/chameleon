@@ -6,6 +6,7 @@ import CheckableTag from 'antd/es/tag/CheckableTag';
 import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CSSPropertiesEditor, CSSPropertiesEditorRef } from '../CSSPropertiesEditor';
 import styles from './style.module.scss';
+import { isEmpty } from 'lodash-es';
 // state: 'normal' | 'hover' | 'active' | 'focus' | 'first' | 'last' | 'even' | 'odd';
 
 const DOM_CSS_STATUS = [
@@ -126,7 +127,16 @@ export const CSSEditor = (props: CSSEditorProps) => {
   if (props.handler) {
     props.handler.current = {
       setValue: async (newVal) => {
-        setCssVal(newVal);
+        if (isEmpty(newVal)) {
+          setCssVal({
+            normal: {
+              normal: '',
+            },
+          });
+        } else {
+          setCssVal(newVal);
+        }
+        await waitReactUpdate();
         initRef.current?.();
       },
     };
