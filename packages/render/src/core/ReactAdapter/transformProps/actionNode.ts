@@ -82,7 +82,7 @@ export const transformActionNode = (propVal: TActionLogicItem, options: CommonOp
           } else {
             resultMap[item.id] = res;
           }
-
+          resultMap[item.id] = { a: 1 };
           /** 写入变量 */
           if (item.responseVarName) {
             options.actionVariableSpace[item.responseVarName] = resultMap[item.id];
