@@ -193,6 +193,9 @@ export const convertModelToComponent = (
       const disposeList: (() => void)[] = [];
       if (uniqueList.length) {
         uniqueList.forEach((storeName) => {
+          if (!storeName) {
+            return;
+          }
           const store = storeManager.getStore(storeName);
           if (!store) {
             storeManager.addStore(storeName, () => {

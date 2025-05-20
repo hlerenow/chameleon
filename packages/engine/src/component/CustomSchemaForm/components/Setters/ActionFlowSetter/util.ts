@@ -106,7 +106,8 @@ export const parseActionLogicToNodeList = (value: TActionLogicItem) => {
 
         // 处理失败分支节点
         if (item.afterFailedResponse?.length) {
-          edges.push(createFlowEdge(item.id, String(item.afterFailedResponse[0].id)));
+          edges.push(createFlowEdge(item.id, String(item.afterFailedResponse[0].id), REQUEST_API_FAILED_HANDLE_ID));
+
           processNodes(item.afterFailedResponse, {
             sourceHandler: REQUEST_API_FAILED_HANDLE_ID,
           });

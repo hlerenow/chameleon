@@ -219,7 +219,7 @@ export const SamplePage: CPageDataType = {
                   id: '12',
                   type: 'RUN_CODE',
                   value: `
-                    console.log('12321312', $$context, params);
+                    console.log('12321312', $$context, $PARAMS);
                     console.log('Component Did Mount')
                     return 'Component Did Mount'
                 `,

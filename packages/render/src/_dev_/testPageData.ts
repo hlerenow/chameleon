@@ -47,8 +47,7 @@ export const testPageData = {
                       id: '7mmci0',
                       type: 'RUN_CODE',
                       name: 'run_code_7mmci0',
-                      value:
-                        "\nconsole.log('hello world',$$context);\n\nconsole.log($$context.globalState);\nconsole.log($$context.updateGlobalState({a: 2}));\n",
+                      value: "\nconsole.log('hello world',$$context);\n\nconsole.log($$context.globalState);\n",
                       __DEV_CONFIG__: {},
                     },
                   ],

@@ -94,9 +94,7 @@ export const DEFAULT_NODE_LIST = [
         id: id,
         type: LogicType.RUN_CODE,
         name: `run_code_${id}`,
-        value: `
-          console.log('hello world');
-        `,
+        value: `console.log('hello world');`,
       };
 
       return runCodeItem;
