@@ -94,7 +94,11 @@ export const clearSchema = (res: any) => {
     if (isArray(val)) {
       return !val.length;
     }
-    return !val;
+
+    if (val === null || val === undefined) {
+      return true;
+    }
+    return false;
   });
   return newRes;
 };

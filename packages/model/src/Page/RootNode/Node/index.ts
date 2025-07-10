@@ -54,7 +54,7 @@ export const parseNode = (data: CNodeDataType | CNodeModelDataType, self: CNode 
         res.props[propKey] = targetProps;
         return;
       }
-      res.props[propKey] = new CProp(propKey, targetProps || '', {
+      res.props[propKey] = new CProp(propKey, targetProps, {
         parent: self,
         materials,
       });

@@ -16,6 +16,7 @@ import { SliderSetter } from './SliderSetter';
 import { RadioGroupSetter } from './RadioGroupSetter';
 import { CSSSizeSetter } from './CSSSizeSetter';
 import { FastLayoutSetter } from './FastLayoutSetter';
+import { EmptyValueSetter } from './EmptyValueSetter';
 
 export const BUILD_IN_SETTER_MAP = {
   FastLayoutSetter,
@@ -35,6 +36,7 @@ export const BUILD_IN_SETTER_MAP = {
   AntDColorSetter,
   RadioGroupSetter,
   CSSSizeSetter,
+  EmptyValueSetter,
 } as Record<string, CSetter>;
 
 export default BUILD_IN_SETTER_MAP;

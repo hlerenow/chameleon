@@ -20,7 +20,7 @@ export type SetterSwitcherProps = {
   useField?: boolean;
 } & Omit<CFieldProps, 'children'>;
 
-/** 用于切换设置器 */
+/** 用于渲染切换设置器 */
 export const SetterSwitcherCore = ({
   setters,
   keyPaths,
@@ -55,7 +55,6 @@ export const SetterSwitcherCore = ({
   if (currentSetter?.componentName) {
     CurrentSetterComp = allSetterMap[currentSetter?.componentName] || currentSetter.component;
   }
-
   if (!CurrentSetterComp) {
     CurrentSetterComp = function EmptySetter() {
       return (

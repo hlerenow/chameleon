@@ -1,5 +1,5 @@
 import React, { useContext, useMemo, useState } from 'react';
-import { SetterObjType } from '@chamn/model';
+import { SetterObjType, SetterTypeEnum } from '@chamn/model';
 import InnerSetters from '../Setters/index';
 import { CField, CFieldProps } from '../Form/Field';
 import { Collapse, Dropdown, MenuProps } from 'antd';
@@ -23,7 +23,13 @@ export type SetterSwitcherProps = {
   useField?: boolean;
 } & Omit<CFieldProps, 'children'>;
 
-export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, ...props }: SetterSwitcherProps) => {
+export const SetterSwitcher = ({
+  setters: outerSetter,
+  keyPaths,
+  condition,
+  useField = true,
+  ...props
+}: SetterSwitcherProps) => {
   const [visible, setVisible] = useState(true);
   const { customSetterMap } = useContext(CFormContext);
   const { onSetterChange, defaultSetterConfig, formRef, pluginCtx, nodeId } = useContext(CCustomSchemaFormContext);
@@ -31,6 +37,15 @@ export const SetterSwitcher = ({ setters, keyPaths, condition, useField = true, 
     ...InnerSetters,
     ...customSetterMap,
   };
+  // 统一添加一些内置的 setter
+  const setters = useMemo(() => {
+    return [
+      ...outerSetter,
+      {
+        componentName: SetterTypeEnum.EMPTY_VALUE_SETTER,
+      },
+    ];
+  }, [outerSetter]);
   const [currentSetter, setCurrentSetter] = useState<SetterObjType>(() => {
     const currentSetterName = defaultSetterConfig[keyPaths.join('.')]?.setter || '';
     const devConfigSetter = setters.find((el) => el.componentName === currentSetterName);

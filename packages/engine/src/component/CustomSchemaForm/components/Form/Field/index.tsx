@@ -95,9 +95,7 @@ export const CField = (props: CFieldProps) => {
       },
     };
 
-    if ((formState as any)[name] !== undefined) {
-      extraProps.value = (formState as any)[name];
-    }
+    extraProps.value = (formState as any)[name];
     newChildren = React.cloneElement(children, extraProps);
   }
   const condition = props.condition ?? (() => true);

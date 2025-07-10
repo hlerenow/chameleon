@@ -20,7 +20,7 @@ import { CSSType, DEV_CONFIG_KEY } from './base';
 import type { CPage } from '../Page';
 import type { CNode } from '../Page/RootNode/Node';
 
-export type NormalPropType = string | boolean | number | Record<string, any>;
+export type NormalPropType = string | boolean | number | Record<string, any> | undefined | null;
 
 // get enum value list
 type IValue = `${SlotRenderType}`;
