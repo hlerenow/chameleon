@@ -12,12 +12,13 @@ export const SelectNodeByTree = (props: {
   const [innerValue, setInnerValue] = useState<{ nodeId: string; title: string }>(props.value);
 
   const nodeTitle = useMemo(() => {
-    const nodeInfo = props.pageModel.getNode(innerValue?.nodeId);
+    const nodeInfo = props.pageModel.getNode(innerValue?.nodeId || props.value);
+
     if (nodeInfo) {
       return nodeInfo.value.title || nodeInfo.material?.value.title || innerValue?.title || '';
     }
     return '';
-  }, [props.pageModel, innerValue?.nodeId, innerValue?.title]);
+  }, [props.pageModel, props?.value, innerValue?.nodeId, innerValue?.title]);
 
   return (
     <>
@@ -38,7 +39,7 @@ export const SelectNodeByTree = (props: {
           setModalOpen(false);
         }}
         pageModel={props.pageModel}
-        value={innerValue?.nodeId}
+        value={innerValue?.nodeId || props.value}
       />
     </>
   );

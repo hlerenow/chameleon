@@ -33,6 +33,7 @@ export const CallNodeMethodNode = (props: NodeProps<TCallNodeMethodNode>) => {
       returnVarName: data.returnVarName,
     };
     formRef.current?.setFields(newVal);
+
     setFormValue(newVal);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
