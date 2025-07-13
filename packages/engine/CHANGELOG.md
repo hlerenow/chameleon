@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.1](https://github.com/ByteCrazy/chameleon/compare/v0.9.0...v0.9.1) (2025-07-13)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, render:** 🐛 fixed CustomSchemaForm title ([178cddd](https://github.com/ByteCrazy/chameleon/commit/178cddd3e8d9147822e91fcd1ce7d8e08c70d924))
+
 ## [0.9.0](https://github.com/ByteCrazy/chameleon/compare/v0.8.6...v0.9.0) (2025-07-13)
 
 ### ✨ Features | 新功能
