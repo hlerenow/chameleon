@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.0](https://github.com/ByteCrazy/chameleon/compare/v0.8.6...v0.9.0) (2025-07-13)
+
+### 👷 Continuous Integration | CI 配置
+
+* 🎡 upgrade node version to 18.20.8 ([0a68c22](https://github.com/ByteCrazy/chameleon/commit/0a68c22dc7d320c3139687c956c126816b453fb4))
+
+### ✨ Features | 新功能
+
+* **engine, model:** 🎸 support EmptyValueSetter ([da1e36f](https://github.com/ByteCrazy/chameleon/commit/da1e36f9915282b3f7cb40672cf2a000bd4162e5))
+
 ## [0.8.6](https://github.com/ByteCrazy/chameleon/compare/v0.8.5...v0.8.6) (2025-06-21)
 
 ### 🐛 Bug Fixes | Bug 修复
