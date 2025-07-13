@@ -16,11 +16,17 @@ const htmlNativeComponents = htmlTagNames.reduce((res, tag) => {
     if (!Array.isArray(children)) {
       child = [children];
     }
+
+    const finalStyle = {
+      boxSizing: 'border-box',
+      ...(props.style || {}),
+    };
     return React.createElement(
       tag,
       {
         ...props,
         ...transformListToObj($$attributes),
+        style: finalStyle,
       },
       ...child
     );
@@ -38,6 +44,7 @@ const CBlock = ({ children, width, height, $$attributes = [], ...props }: any) =
   const finalStyle = {
     height,
     width,
+    boxSizing: 'border-box',
     ...style,
     ...(props.style || {}),
   };
@@ -60,10 +67,14 @@ const CCanvas = ({ afterMount, beforeDestroy, $$attributes = [], ...props }: any
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  const finalStyle = {
+    boxSizing: 'border-box',
+    ...(props.style || {}),
+  };
   return React.createElement('canvas', {
     ...props,
     ...transformListToObj($$attributes),
+    style: finalStyle,
   });
 };
 
@@ -72,11 +83,17 @@ const CImage = ({ children, $$attributes = [], ...props }: any) => {
   if (!Array.isArray(children)) {
     child = [children];
   }
+
+  const finalStyle = {
+    boxSizing: 'border-box',
+    ...(props.style || {}),
+  };
   return React.createElement(
     'img',
     {
       ...props,
       ...transformListToObj($$attributes),
+      style: finalStyle,
     },
     ...child
   );
@@ -87,11 +104,16 @@ const CVideo = ({ children, $$attributes = [], ...props }: any) => {
   if (!Array.isArray(children)) {
     child = [children];
   }
+  const finalStyle = {
+    boxSizing: 'border-box',
+    ...(props.style || {}),
+  };
   return React.createElement(
     'video',
     {
       ...props,
       ...transformListToObj($$attributes),
+      style: finalStyle,
     },
     ...child
   );
@@ -102,28 +124,38 @@ const CAudio = ({ children, $$attributes = [], ...props }: any) => {
   if (!Array.isArray(children)) {
     child = [children];
   }
+  const finalStyle = {
+    boxSizing: 'border-box',
+    ...(props.style || {}),
+  };
   return React.createElement(
     'audio',
     {
       ...props,
       ...transformListToObj($$attributes),
+      style: finalStyle,
     },
     ...child
   );
 };
 
 const CText = ({ $$attributes = [], content, ...props }: any) => {
+  const finalStyle = {
+    boxSizing: 'border-box',
+    ...(props.style || {}),
+  };
   return React.createElement(
     'span',
     {
       ...props,
       ...transformListToObj($$attributes),
+      style: finalStyle,
     },
     content
   );
 };
 
-const CContainer = ({ children, $$attributes = [], afterMount, beforeDestroy, ...props }: any) => {
+const CContainer = ({ children, $$attributes = [], afterMount, beforeDestroy, style, ...props }: any) => {
   let child = children;
   if (!Array.isArray(children)) {
     child = [children];
@@ -136,10 +168,19 @@ const CContainer = ({ children, $$attributes = [], afterMount, beforeDestroy, ..
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
-    <div {...props} {...transformListToObj($$attributes)}>
-      {child}
-    </div>
+  const finalStyle = {
+    boxSizing: 'border-box',
+    ...(props.style || {}),
+  };
+
+  return React.createElement(
+    'div',
+    {
+      ...props,
+      ...transformListToObj($$attributes),
+      style: finalStyle,
+    },
+    ...child
   );
 };
 
@@ -151,6 +192,7 @@ const CNativeTag = ({ children, $$attributes = [], htmlTag = 'div', ...props }: 
   const { style = {}, ...attributes } = transformListToObj($$attributes);
 
   const finalStyle = {
+    boxSizing: 'border-box',
     ...style,
     ...(props.style || {}),
   };

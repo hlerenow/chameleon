@@ -14,10 +14,10 @@ export const SelectNodeByTree = (props: {
   const nodeTitle = useMemo(() => {
     const nodeInfo = props.pageModel.getNode(innerValue?.nodeId);
     if (nodeInfo) {
-      return nodeInfo.value.title || nodeInfo.material?.value.title || innerValue.title || '';
+      return nodeInfo.value.title || nodeInfo.material?.value.title || innerValue?.title || '';
     }
     return '';
-  }, [props.pageModel, innerValue?.nodeId, innerValue.title]);
+  }, [props.pageModel, innerValue?.nodeId, innerValue?.title]);
 
   return (
     <>

@@ -117,8 +117,11 @@ declare global {
   /** 循环数据，如果存在 */
   const $LOOP_DATA: ContextType['loopData'];
 
-  /** 函数传入的参数 */
+  /** 函数在配置面板传入的参数 */
   const $PARAMS: ContextType['params'];
+
+  /** 函数在运行时传入的参数 */
+  const $PARAMS_RUNTIME: ContextType['params'];
 
   /** 事件对象 */
   const $Event: MouseEvent;

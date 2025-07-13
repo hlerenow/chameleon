@@ -71,7 +71,7 @@ const CustomSchemaFormCore = (props: CustomSchemaFormProps, ref: Ref<CustomSchem
                 console.log('Current not Support type config for props, wait future....');
               } else {
                 const title = getMTitle(property.title);
-                const tip = getMTitleTip(property.title);
+                const tip = getMTitleTip(property.title) || property?.description;
                 const setterList = getSetterList(property.setters);
                 const keyPaths = [property.name];
                 return (

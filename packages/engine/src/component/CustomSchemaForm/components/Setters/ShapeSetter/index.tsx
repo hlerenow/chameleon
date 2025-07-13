@@ -45,7 +45,7 @@ export const ShapeSetter: CSetter<CShapeSetterProps> = ({
         {elements.map((el, index) => {
           const setters = getSetterList(el.setters);
           const title = getMTitle(el.title);
-          const tip = getMTitleTip(el.title);
+          const tip = getMTitleTip(el.title) || el?.description;
           return (
             <div key={index}>
               <SetterSwitcher
