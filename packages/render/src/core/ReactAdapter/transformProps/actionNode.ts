@@ -271,7 +271,12 @@ const buildCallNodeMethod = (item: TLogicCallNodeMethodItem, option: CommonOptio
         var args  = arguments;
         var nodeRef = $$context.nodeRefs.get(${JSON.stringify(item.nodeId)});
         if(nodeRef && nodeRef.current) {
-          var func = nodeRef.current[${JSON.stringify(item.methodName)}];
+          var func = nodeRef.current[${JSON.stringify(item.methodName)}]?.bind(nodeRef.current);
+          var isDev = Boolean(nodeRef.current?.getTargetComponentRef);
+          if (isDev) {
+            const ins = nodeRef.current.getTargetComponentRef()?.current;
+            func = ins?.[${JSON.stringify(item.methodName)}]?.bind(ins);
+          }
           if (func) {
             func.apply(null, args);
           }

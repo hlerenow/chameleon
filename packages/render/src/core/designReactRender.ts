@@ -147,7 +147,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
       _NODE_ID = node.id;
       _UNIQUE_ID = `${node.id}_${getRandomStr()}`;
       _STATUS?: 'DESTROY';
-      _design_target_component: any;
+      _design_target_component = React.createRef<any>();
 
       _dom?: HTMLElement | null;
 
@@ -178,6 +178,12 @@ export class DesignRender extends React.Component<DesignRenderProp> {
 
       render() {
         const { children = [], onlyRenderChild, ...restProps } = this.props;
+        const finalRestProps = {
+          ...restProps,
+          ref: (ref: any) => {
+            (this._design_target_component.current as any) = ref;
+          },
+        };
         let newChildren = children;
         if (!isArray(children)) {
           newChildren = [children];
@@ -201,14 +207,14 @@ export class DesignRender extends React.Component<DesignRenderProp> {
         const autoGetDom = node.material?.value.advanceCustom?.autoGetDom ?? true;
 
         if (autoGetDom) {
-          const coreEl = React.createElement(innerComp, restProps, ...newChildren);
+          const coreEl = React.createElement(innerComp, finalRestProps, ...newChildren);
 
           return coreEl;
         } else {
           const coreEl = React.createElement(
             innerComp,
             {
-              ...restProps,
+              ...finalRestProps,
               //  注入到组件中, 配合设计器使用
               $SET_DOM: (ref: any) => {
                 this._dom = ref;
