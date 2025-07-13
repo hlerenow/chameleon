@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.2](https://github.com/ByteCrazy/chameleon/compare/v0.9.1...v0.9.2) (2025-07-13)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine:** 🐛 fixed call node method setting ([27ea497](https://github.com/ByteCrazy/chameleon/commit/27ea49747ca8dd24f862304ec552e805c9057e62))
+* **render:** 🐛 fixed ref get not correct on designer mode ([14544f4](https://github.com/ByteCrazy/chameleon/commit/14544f45a5dadeacfab5a711504b9a736ee7835e))
+
 ## [0.9.1](https://github.com/ByteCrazy/chameleon/compare/v0.9.0...v0.9.1) (2025-07-13)
 
 ### 🐛 Bug Fixes | Bug 修复
