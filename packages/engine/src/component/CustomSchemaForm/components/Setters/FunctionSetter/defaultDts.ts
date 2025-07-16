@@ -120,11 +120,11 @@ declare global {
   /** 函数在配置面板传入的参数 */
   const $PARAMS: ContextType['params'];
 
-  /** 函数在运行时传入的参数 */
-  const $PARAMS_RUNTIME: ContextType['params'];
+  /** 事件传入的第一个参数，如果需要获取第二个参数，请使用 $ARGS 数组获取*/
+  const $EVENT_PARAMS: any;
 
   /** 事件对象 */
-  const $Event: MouseEvent;
+  const $EVENT: MouseEvent;
 
   /** 函数执行时传入的入参 */
   const $ARGS: any[];

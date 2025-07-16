@@ -121,8 +121,9 @@ export const convertCodeStringToFunction = (params: {
     var $CTX =  __extraParams.$$context;
     var $$context = $CTX;
     var $PARAMS = $$context.params || {};
-    var PARAMS_RUNTIME = $$$__args__$$$[0];
+    var $EVENT_PARAMS = $$$__args__$$$[0];
     var $Event = $$$__args__$$$[0];
+    var $EVENT = $$$__args__$$$[0];
     var $ARGS = $$$__args__$$$;
 
     var $ACTION_VAR_SPACE = __extraParams.actionVariableSpace;
