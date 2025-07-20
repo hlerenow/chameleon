@@ -1,7 +1,7 @@
 import { ConfigProvider, Radio } from 'antd';
 import { CSetter, CSetterProps } from '../type';
 import { CheckboxGroupProps } from 'antd/es/checkbox';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 const emptyValMap = {
   _null_: null,
@@ -35,6 +35,12 @@ export const EmptyValueSetter: CSetter<{ emptyValue?: any }> = ({
 
     return tempValue || '_undefined_';
   }, [initialValue, props.value]);
+
+  // 切换初始化时，直接强制重置为 undefined
+  useEffect(() => {
+    onValueChange?.(undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <ConfigProvider
