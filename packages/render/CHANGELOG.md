@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.3](https://github.com/ByteCrazy/chameleon/compare/v0.9.2...v0.9.3) (2025-07-20)
+
+### ✨ Features | 新功能
+
+* **engine, render:** 🎸 add $EVENT_PARAMS and remove $Event $PARAMS_RUNTIME ([b8e58c1](https://github.com/ByteCrazy/chameleon/commit/b8e58c1e5e98d2e4b3d31e2ba52a26fda256eb47))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **render:** 🐛 fixed style props not apply to dom  from props ([2e0c80a](https://github.com/ByteCrazy/chameleon/commit/2e0c80ad02881319089b1b08225c325e37a41c6c))
+
 ## [0.9.2](https://github.com/ByteCrazy/chameleon/compare/v0.9.1...v0.9.2) (2025-07-13)
 
 ### 🐛 Bug Fixes | Bug 修复
