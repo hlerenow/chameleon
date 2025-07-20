@@ -170,7 +170,7 @@ const CContainer = ({ children, $$attributes = [], afterMount, beforeDestroy, st
 
   const finalStyle = {
     boxSizing: 'border-box',
-    ...(props.style || {}),
+    ...(style || {}),
   };
 
   return React.createElement(

@@ -581,7 +581,10 @@ export const convertModelToComponent = (
 
       // 处理 style
       const newStyle: Record<string, any> = this.processNodeStyle(newContext);
-      newProps.style = newStyle;
+      newProps.style = {
+        ...(newProps?.style || {}),
+        ...(newStyle || {}),
+      };
 
       // handle children
       const { children } = newProps;
@@ -668,7 +671,10 @@ export const convertModelToComponent = (
 
           // 处理 style
           const newStyle: Record<string, any> = this.processNodeStyle(loopContext);
-          newProps.style = newStyle;
+          newProps.style = {
+            ...(newProps?.style || {}),
+            ...(newStyle || {}),
+          };
 
           // handle children
           const { children } = newProps;
