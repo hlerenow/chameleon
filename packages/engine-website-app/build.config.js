@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import pkg from './package.json';
 import commonConfig from './build.common.config';
