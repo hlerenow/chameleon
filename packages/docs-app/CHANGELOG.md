@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.0](https://github.com/hlerenow/chameleon/compare/v0.9.3...v0.10.0) (2025-12-25)
+
+### 📝 Documentation | 文档
+
+* 添加 GridLayout 代码示例和插件开发文档 ([cade905](https://github.com/hlerenow/chameleon/commit/cade90591efff604a8ab3395c905c4f713ba2b93))
+
 ## [0.9.3](https://github.com/ByteCrazy/chameleon/compare/v0.9.2...v0.9.3) (2025-07-20)
 
 **Note:** Version bump only for package docs-app

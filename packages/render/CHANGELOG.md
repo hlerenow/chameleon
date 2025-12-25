@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.0](https://github.com/hlerenow/chameleon/compare/v0.9.3...v0.10.0) (2025-12-25)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* 优化构建配置，修复 ES 模块外部化问题 ([866f0ae](https://github.com/hlerenow/chameleon/commit/866f0ae39472625137d73d143625d88d873f6c00))
+
 ## [0.9.3](https://github.com/ByteCrazy/chameleon/compare/v0.9.2...v0.9.3) (2025-07-20)
 
 ### ✨ Features | 新功能
