@@ -1,9 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { Ref } from 'react';
-import { CMaterialPropsType, getMTitleTip } from '@chamn/model';
+import { CMaterialPropsType, getMTitleTip, getMTitle, isSpecialMaterialPropType } from '@chamn/model';
 import { CForm } from './components/Form';
-import { isSpecialMaterialPropType } from '@chamn/model';
-import { getMTitle } from '@chamn/model/src/types/material';
 import { SetterSwitcher } from './components/SetterSwitcher';
 import { getSetterList } from './utils';
 import styles from './style.module.scss';

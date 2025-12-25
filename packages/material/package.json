@@ -9,14 +9,21 @@
     "dist"
   ],
   "version": "0.9.3",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "module-sync": "./dist/index.js",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "types": "./dist/index.d.ts",
+      "module-sync": "./dist/index.es.js",
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.cjs.js"
+    },
+    "./dist/meta": {
+      "types": "./dist/meta.d.ts",
+      "module-sync": "./dist/meta.es.js",
+      "import": "./dist/meta.es.js",
+      "require": "./dist/meta.cjs.js"
     },
     "./dist/*": "./dist/*"
   },

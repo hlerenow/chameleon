@@ -31,6 +31,7 @@ const mainConfig = {
     plugins: plugins,
     ...commonConfig,
     define: {
+      global: 'globalThis',
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       __RUN_MODE__: JSON.stringify(process.env.BUILD_TYPE),
       __PACKAGE_VERSION__: JSON.stringify(pkg.version),

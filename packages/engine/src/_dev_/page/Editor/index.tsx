@@ -56,6 +56,12 @@ const customRender: LayoutPropsType['customRender'] = async ({
     },
     $$context: {
       thirdLibs,
+      getProps: () => {
+        return {};
+      },
+      callEventMethod: (method: string, params: any) => {
+        console.log(method, params);
+      },
     },
     requestAPI: async (params) => {
       return console.log(222, params);

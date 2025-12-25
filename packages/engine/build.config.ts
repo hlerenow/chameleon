@@ -24,15 +24,15 @@ if (process.env.BUILD_TYPE === 'APP') {
 const mainConfig: BuildScriptConfig = {
   libMode: true,
   entry: './src/index.tsx',
+  libName: 'ChamnEngine',
   fileName: 'index',
-  external: ['react', 'react-dom', 'monaco-editor', 'antd', '@chamn/model', '@chamn/layout'],
   global: {
     react: 'React',
     'react-dom': 'ReactDOM',
   },
   vite: {
-    plugins: plugins,
     ...commonConfig,
+    plugins,
     define: {
       global: 'globalThis',
       'process.env': JSON.stringify('{}'),

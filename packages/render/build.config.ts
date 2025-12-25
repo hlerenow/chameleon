@@ -6,29 +6,15 @@ import path from 'path';
 const env = process.env.BUILD_TYPE === 'PKG' ? 'production' : '';
 export default {
   entry: './src/index.ts',
-  formats: ['es', 'cjs', 'umd'],
+  // formats 会根据构建模式自动设置：生产模式包含 umd，开发模式只有 cjs 和 es
   libName: 'CRender',
   fileName: 'index',
-  external: ['react', 'react-dom'],
   global: {
     react: 'React',
     'react-dom': 'ReactDOM',
   },
   // 额外的 vite 配置
   vite: {
-    build: {
-      lib: {
-        fileName: (format, entryName) => {
-          if (format === 'umd') {
-            return `${entryName}.${format}.js`;
-          }
-          if (format === 'cjs') {
-            return `${entryName}.${format}`;
-          }
-          return `${entryName}.js`;
-        },
-      },
-    },
     define: {
       'process.env.NODE_ENV': JSON.stringify(env),
     },
