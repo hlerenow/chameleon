@@ -1,43 +1,305 @@
 ---
 title: 接入渲染器
-descripttopn:
+description: 了解如何将页面 schema 协议渲染为可运行的 React 页面
 sidebar:
   order: 2
 ---
 
-import { Tabs, TabItem, FileTree, CardGrid, LinkCard, Steps, Code } from '@astrojs/starlight/components';
+import { Tabs, TabItem, Code } from '@astrojs/starlight/components';
 
-import RenderSourceCode from '../../../codeSnippets/render.tsx?raw';
-
-接入编辑器之后，通过页面编辑，最终倒出后可以得到一个页面的 schema json 协议，如何将协议重新渲染为一个可以运行的 React 页面呢?
+接入编辑器之后，通过页面编辑，最终导出后可以得到一个页面的 schema JSON 协议。如何将协议重新渲染为一个可以运行的 React 页面呢？
 
 ## 安装
 
 <Tabs>
-  <TabItem label="npm">```shell npm i @chamn/render ```</TabItem>
-  <TabItem label="pnpm">```shell pnpm i @chamn/render ```</TabItem>
-  <TabItem label="yarn">```shell yarn i @chamn/render ```</TabItem>
+  <TabItem label="npm">```shell npm i @chamn/render @chamn/model ```</TabItem>
+  <TabItem label="pnpm">```shell pnpm i @chamn/render @chamn/model ```</TabItem>
+  <TabItem label="yarn">```shell yarn i @chamn/render @chamn/model ```</TabItem>
 </Tabs>
 
-如果已经安装过则不需要安装。
+## 使用方式
 
-## 用法
+渲染器支持两种使用方式：
 
-<Code code={RenderSourceCode} lang="tsx" title="render.tsx"></Code>
+### 方式一：直接导入 npm 包（推荐）
 
-:::info
-如果你在页面中用了一些第三方组件，比如 antd, 你需要手动的 `improt` 相关库，并将其拍平后传递给 `components` 属性
-:::
-
-Example:
+适用于生产环境，直接导入组件库，无需动态加载资源：
 
 ```tsx
-import * as Antd from 'antd';
-import * as CustomComponents from 'xxx';
+import { useEffect, useState } from 'react';
+import { ReactAdapter, Render, useRender } from '@chamn/render';
+import { CPageDataType } from '@chamn/model';
 
-// 每个 key 都是组件名需要唯一，value 表示对应的运行时组件
-const components: Record<string, any> = {
-  ...Antd,
-  ...CustomComponents,
+// 直接导入组件库
+import * as antd from 'antd';
+import CustomComps from '@custom/material';
+
+const components = {
+  ...antd,
+  ...CustomComps,
+};
+
+export const Preview = () => {
+  const [page, setPage] = useState<CPageDataType>();
+  const renderHandle = useRender();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // 从本地存储或 API 获取页面协议
+    const localPage = localStorage.getItem('pageSchema');
+    if (localPage) {
+      setPage(JSON.parse(localPage));
+      setLoading(false);
+    }
+  }, []);
+
+  if (loading) {
+    return <>加载中...</>;
+  }
+
+  return (
+    <div className="App" style={{ overflow: 'auto', height: '100%' }}>
+      <Render page={page} components={components} render={renderHandle} adapter={ReactAdapter} />
+    </div>
+  );
 };
 ```
+
+### 方式二：动态加载 UMD 资源
+
+适用于需要从页面 schema 中动态加载组件资源的场景：
+
+```tsx
+import { useEffect, useState } from 'react';
+import {
+  ReactAdapter,
+  Render,
+  useRender,
+  AssetLoader,
+  collectVariable,
+  flatObject,
+  getComponentsLibs,
+  getThirdLibs,
+} from '@chamn/render';
+import { AssetPackage, CPageDataType } from '@chamn/model';
+
+// 加载资源并收集组件
+const loadAssets = async (assets: AssetPackage[]) => {
+  const assetLoader = new AssetLoader(assets);
+  try {
+    await assetLoader.load();
+    // 从 window 对象收集组件变量
+    const componentCollection = collectVariable(assets, window);
+    return componentCollection;
+  } catch (e) {
+    console.error('Failed to load assets:', e);
+    return null;
+  }
+};
+
+export const Preview = () => {
+  const [page, setPage] = useState<CPageDataType>();
+  const renderHandle = useRender();
+  const [loading, setLoading] = useState(true);
+  const [pageComponents, setPageComponents] = useState({});
+  const [renderContext, setRenderContext] = useState({});
+
+  // 加载页面资源并区分组件库和第三方库
+  const loadPageAssets = async (pageInfo: CPageDataType) => {
+    const assets = pageInfo.assets || [];
+    const allLibs = (await loadAssets(assets)) || {};
+
+    // 区分 UI 组件库和第三方库
+    const componentsLibs = getComponentsLibs(flatObject(allLibs), pageInfo.componentsMeta || []);
+    const thirdLibs = getThirdLibs(allLibs, pageInfo.thirdLibs || []);
+
+    if (componentsLibs) {
+      setPageComponents(componentsLibs);
+      setRenderContext({ thirdLibs });
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const localPage = localStorage.getItem('pageSchema');
+    if (localPage) {
+      const page: CPageDataType = JSON.parse(localPage);
+      setPage(page);
+      loadPageAssets(page);
+    }
+  }, []);
+
+  if (loading) {
+    return <>加载中...</>;
+  }
+
+  return (
+    <div className="App" style={{ overflow: 'auto', height: '100%' }}>
+      <Render
+        page={page}
+        components={pageComponents}
+        render={renderHandle}
+        adapter={ReactAdapter}
+        $$context={renderContext}
+      />
+    </div>
+  );
+};
+```
+
+## Render 组件 API
+
+### Props
+
+| 属性名                  | 类型                                                | 必填 | 说明                                         |
+| :---------------------- | :-------------------------------------------------- | :--- | :------------------------------------------- |
+| `page`                  | `CPageDataType`                                     | 是   | 页面协议数据                                 |
+| `adapter`               | `AdapterType`                                       | 是   | 适配器，通常使用 `ReactAdapter`              |
+| `components`            | `Record<string, any>`                               | 是   | 组件映射对象，key 为组件名，value 为组件实例 |
+| `render`                | `UseRenderReturnType`                               | 否   | `useRender` hook 返回的句柄，用于控制渲染    |
+| `renderMode`            | `'design' \| 'normal'`                              | 否   | 渲染模式，默认为 `'normal'`                  |
+| `$$context`             | `Record<string, any>`                               | 否   | 上下文对象，可传递第三方库等数据             |
+| `requestAPI`            | `(params: any) => Promise<any>`                     | 否   | API 请求函数                                 |
+| `processNodeConfigHook` | `(config: any) => any`                              | 否   | 节点配置处理钩子                             |
+| `onGetRef`              | `(ref: any, nodeModel: any, instance: any) => void` | 否   | 获取组件 ref 的回调                          |
+| `onComponentMount`      | `(nodeModel: any, instance: any) => void`           | 否   | 组件挂载回调                                 |
+| `onComponentDestroy`    | `(nodeModel: any, instance: any) => void`           | 否   | 组件销毁回调                                 |
+
+### useRender Hook
+
+`useRender` 返回一个对象，包含：
+
+- `ref`: Render 组件的引用
+- `rerender`: 重新渲染函数，可以传入新的页面协议
+
+```tsx
+const renderHandle = useRender();
+
+// 重新渲染页面
+renderHandle.rerender(newPageSchema);
+```
+
+## 工具函数
+
+### AssetLoader
+
+用于动态加载 UMD 格式的资源：
+
+```tsx
+import { AssetLoader } from '@chamn/render';
+
+const assetLoader = new AssetLoader(assets, {
+  window: window, // 可选，指定加载资源的 window 对象
+});
+
+await assetLoader.load({
+  async: false, // 是否并行加载，默认为 false
+});
+```
+
+### collectVariable
+
+从 window 对象收集组件变量：
+
+```tsx
+import { collectVariable } from '@chamn/render';
+
+const componentCollection = collectVariable(assets, window);
+```
+
+### flatObject
+
+拍平对象，将嵌套对象展开：
+
+```tsx
+import { flatObject } from '@chamn/render';
+
+const flatComponents = flatObject(componentCollection);
+```
+
+### getComponentsLibs / getThirdLibs
+
+区分组件库和第三方库：
+
+```tsx
+import { getComponentsLibs, getThirdLibs } from '@chamn/render';
+
+const componentsLibs = getComponentsLibs(flatObject(allLibs), pageInfo.componentsMeta || []);
+
+const thirdLibs = getThirdLibs(allLibs, pageInfo.thirdLibs || []);
+```
+
+## 注意事项
+
+1. **组件名唯一性**：`components` 对象中的每个 key（组件名）必须唯一
+2. **组件导入**：如果使用第三方组件库（如 antd），需要手动导入并拍平后传递给 `components`
+3. **资源加载**：使用动态加载方式时，确保资源路径正确且可访问
+4. **上下文传递**：通过 `$$context` 传递第三方库时，确保库已正确加载
+5. **渲染模式**：`renderMode` 为 `'design'` 时用于设计时预览，`'normal'` 用于生产环境
+
+## 完整示例
+
+```tsx
+import { useEffect, useState } from 'react';
+import { ReactAdapter, Render, useRender } from '@chamn/render';
+import { CPageDataType } from '@chamn/model';
+import * as antd from 'antd';
+import CustomComps from '@custom/material';
+
+const components = {
+  ...antd,
+  ...CustomComps,
+};
+
+export const Preview = () => {
+  const [page, setPage] = useState<CPageDataType>();
+  const renderHandle = useRender();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // 从 API 获取页面协议
+    fetch('/api/page/schema')
+      .then((res) => res.json())
+      .then((data) => {
+        setPage(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('Failed to load page:', err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <div>加载中...</div>;
+  }
+
+  if (!page) {
+    return <div>未找到页面数据</div>;
+  }
+
+  return (
+    <div className="App" style={{ overflow: 'auto', height: '100%' }}>
+      <Render
+        page={page}
+        components={components}
+        render={renderHandle}
+        adapter={ReactAdapter}
+        renderMode="normal"
+        requestAPI={async (params) => {
+          // 自定义 API 请求逻辑
+          const response = await fetch('/api/request', {
+            method: 'POST',
+            body: JSON.stringify(params),
+          });
+          return response.json();
+        }}
+      />
+    </div>
+  );
+};
+```
+
+:::tip
+推荐使用方式一（直接导入 npm 包），这种方式更简单、性能更好，且不需要处理资源加载的复杂性。
+:::

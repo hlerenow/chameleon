@@ -1,0 +1,1257 @@
+---
+sidebar:
+  order: 5
+title: 替换内置插件实战指南
+---
+
+# 替换内置插件实战指南
+
+本指南将通过实际案例，教你如何从零开发自定义插件、替换内置插件，以及实现高度定制的引擎。
+
+## CPlugin 类型定义
+
+在开始之前，先了解 `CPlugin` 的类型定义：
+
+```typescript
+// 插件对象定义
+export type PluginObj<C, E = any> = {
+  name: string; // 插件唯一名称（必需）
+  PLUGIN_NAME?: string; // 插件静态名称（可选，用于类型安全）
+  init: (ctx: CPluginCtx<C>) => Promise<void>; // 初始化方法（必需）
+  destroy: (ctx: CPluginCtx<C>) => Promise<void>; // 销毁方法（必需）
+  reload?: (ctx: CPluginCtx<C>) => Promise<void>; // 重载方法（可选）
+  export: (ctx: CPluginCtx<C>) => E; // 导出 API（必需）
+  meta: {
+    // 元数据（必需）
+    engine: {
+      version: string;
+    };
+  };
+};
+
+// 插件函数定义
+interface PluginFunction<C, E> {
+  (ctx: CPluginCtx<C>): PluginObj<C, E>;
+  ['PLUGIN_NAME']?: string;
+}
+
+// CPlugin 可以是对象或函数
+export type CPlugin<C = Record<string, any>, E = any> =
+  | PluginObj<C, E> // 直接是插件对象
+  | PluginFunction<C, E>; // 或者是返回插件对象的函数
+
+// 插件上下文定义
+export type CPluginCtx<C = any> = {
+  name?: string; // 插件名称
+  globalEmitter: Emitter<any>; // 全局事件发射器
+  emitter: Emitter<any>; // 插件私有事件发射器
+  config: C; // 插件配置对象
+  pluginManager: PluginManager; // 插件管理器
+  pluginReadyOk: () => void; // 通知插件已准备好
+  getWorkbench: () => Workbench; // 获取工作台实例
+  pageModel: CPage; // 页面模型
+  i18n: CustomI18n; // 国际化对象
+  assetsPackageListManager: AssetsPackageListManager; // 资源包管理器
+  engine: Engine; // 引擎实例
+};
+```
+
+### 两种插件定义方式
+
+**方式 1：函数式定义（推荐）**
+
+```typescript
+export const MyPlugin: CPlugin = (ctx) => {
+  // 可以访问 ctx 并创建闭包变量
+  let localState = {};
+
+  return {
+    name: 'MyPlugin',
+    async init(ctx) {
+      // 初始化逻辑
+      ctx.pluginReadyOk();
+    },
+    async destroy(ctx) {
+      // 清理逻辑
+    },
+    export: (ctx) => ({
+      // 导出的 API
+    }),
+    meta: {
+      engine: { version: '1.0.0' },
+    },
+  };
+};
+```
+
+**方式 2：对象式定义**
+
+```typescript
+export const MyPlugin: CPlugin = {
+  name: 'MyPlugin',
+  async init(ctx) {
+    ctx.pluginReadyOk();
+  },
+  async destroy(ctx) {},
+  export: (ctx) => ({}),
+  meta: {
+    engine: { version: '1.0.0' },
+  },
+};
+```
+
+## 开发自定义插件
+
+### 场景 1：开发一个自定义工具栏插件
+
+假设我们要开发一个自定义工具栏插件，提供快速操作功能。
+
+#### 第一步：定义插件结构
+
+```typescript
+// plugins/CustomToolbar/index.tsx
+import { CPlugin } from '@chamn/engine';
+import React from 'react';
+
+const PLUGIN_NAME = 'CustomToolbar' as const;
+
+export const CustomToolbarPlugin: CPlugin = (ctx) => {
+  return {
+    name: PLUGIN_NAME,
+
+    async init(ctx) {
+      const workbench = ctx.getWorkbench();
+
+      // 添加顶部工具栏
+      workbench.addTopBarView({
+        name: PLUGIN_NAME,
+        view: <CustomToolbarView ctx={ctx} />,
+      });
+
+      // 通知插件已准备好
+      ctx.pluginReadyOk();
+    },
+
+    async destroy(ctx) {
+      console.log('CustomToolbar 插件已卸载');
+    },
+
+    export: (ctx) => ({
+      // 暴露给外部的 API
+      refresh() {
+        console.log('刷新工具栏');
+      },
+      addButton(config: any) {
+        console.log('添加自定义按钮', config);
+      },
+    }),
+
+    meta: {
+      engine: {
+        version: '1.0.0',
+      },
+    },
+  };
+};
+
+CustomToolbarPlugin.PLUGIN_NAME = PLUGIN_NAME;
+```
+
+#### 第二步：实现工具栏 UI
+
+```typescript
+// plugins/CustomToolbar/CustomToolbarView.tsx
+import React, { useState } from 'react';
+import { CPluginCtx } from '@chamn/engine';
+
+interface CustomToolbarViewProps {
+  ctx: CPluginCtx;
+}
+
+export const CustomToolbarView: React.FC<CustomToolbarViewProps> = ({ ctx }) => {
+  const [selectedNode, setSelectedNode] = useState<any>(null);
+
+  // 监听节点选中事件
+  React.useEffect(() => {
+    const handleSelect = (node: any) => {
+      setSelectedNode(node);
+    };
+
+    ctx.emitter.on('onSelectNode', handleSelect);
+
+    return () => {
+      ctx.emitter.off('onSelectNode', handleSelect);
+    };
+  }, [ctx]);
+
+  const handleCopy = () => {
+    if (selectedNode) {
+      const nodeData = ctx.pageModel.getNode(selectedNode.id);
+      console.log('复制节点', nodeData);
+      // 实现复制逻辑
+    }
+  };
+
+  const handleDelete = () => {
+    if (selectedNode) {
+      ctx.pageModel.deleteNode(selectedNode.id);
+      ctx.emitter.emit('onDeleteNode', selectedNode);
+    }
+  };
+
+  return (
+    <div style={{ display: 'flex', gap: '8px', padding: '8px' }}>
+      <button onClick={handleCopy} disabled={!selectedNode}>
+        复制节点
+      </button>
+      <button onClick={handleDelete} disabled={!selectedNode}>
+        删除节点
+      </button>
+      <button onClick={() => ctx.pageModel.clear()}>清空画布</button>
+    </div>
+  );
+};
+```
+
+#### 第三步：使用插件
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import { CustomToolbarPlugin } from './plugins/CustomToolbar';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const onReady = async (ctx) => {
+    // 获取自定义工具栏插件
+    const toolbar = await ctx.pluginManager.get('CustomToolbar');
+
+    // 调用插件 API
+    toolbar?.export.addButton({
+      label: '自定义按钮',
+      onClick: () => console.log('点击了自定义按钮'),
+    });
+  };
+
+  return (
+    <Engine
+      plugins={[
+        ...DEFAULT_PLUGIN_LIST,
+        CustomToolbarPlugin, // 添加自定义插件
+      ]}
+      schema={pageSchema}
+      material={materials}
+      onReady={onReady}
+    />
+  );
+}
+```
+
+### 场景 2：开发带配置的插件
+
+开发一个可配置的代码生成器插件。
+
+```typescript
+// plugins/CodeGenerator/index.tsx
+import { CPlugin } from '@chamn/engine';
+
+// 定义插件配置类型
+interface CodeGeneratorConfig {
+  framework: 'react' | 'vue' | 'angular';
+  typescript: boolean;
+  outputPath?: string;
+}
+
+const PLUGIN_NAME = 'CodeGenerator' as const;
+
+export const CodeGeneratorPlugin: CPlugin<CodeGeneratorConfig> = (ctx) => {
+  // 从上下文获取配置
+  const config = ctx.config || {
+    framework: 'react',
+    typescript: true,
+  };
+
+  return {
+    name: PLUGIN_NAME,
+
+    async init(ctx) {
+      const workbench = ctx.getWorkbench();
+
+      // 添加右侧面板
+      workbench.addRightPanel({
+        name: PLUGIN_NAME,
+        title: '代码生成',
+        view: <CodeGeneratorPanel config={config} ctx={ctx} />,
+      });
+
+      ctx.pluginReadyOk();
+    },
+
+    async destroy(ctx) {
+      console.log('CodeGenerator 插件已卸载');
+    },
+
+    export: (ctx) => ({
+      generate() {
+        const schema = ctx.pageModel.export();
+        return generateCode(schema, config);
+      },
+      setConfig(newConfig: Partial<CodeGeneratorConfig>) {
+        Object.assign(config, newConfig);
+      },
+    }),
+
+    meta: {
+      engine: {
+        version: '1.0.0',
+      },
+    },
+  };
+};
+
+function generateCode(schema: any, config: CodeGeneratorConfig) {
+  // 根据配置生成代码
+  if (config.framework === 'react') {
+    return generateReactCode(schema, config.typescript);
+  }
+  // ... 其他框架
+}
+
+CodeGeneratorPlugin.PLUGIN_NAME = PLUGIN_NAME;
+```
+
+#### 使用带配置的插件
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import { CodeGeneratorPlugin } from './plugins/CodeGenerator';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const beforePluginRun = ({ pluginManager }) => {
+    // 在插件初始化前配置插件
+    pluginManager.customPlugin('CodeGenerator', (pluginInstance) => {
+      pluginInstance.ctx.config = {
+        framework: 'react',
+        typescript: true,
+        outputPath: './src/generated',
+      };
+      return pluginInstance;
+    });
+  };
+
+  return (
+    <Engine
+      plugins={[...DEFAULT_PLUGIN_LIST, CodeGeneratorPlugin]}
+      schema={pageSchema}
+      material={materials}
+      beforePluginRun={beforePluginRun}
+    />
+  );
+}
+```
+
+## 替换内置插件
+
+Chameleon Engine 的所有内置插件都可以被替换。替换的核心思路是：**不加载要替换的内置插件，而是加载自己的插件**。
+
+### 内置插件列表
+
+```typescript
+import { plugins } from '@chamn/engine';
+
+// 获取默认插件列表
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+// 单独导入内置插件
+const {
+  DesignerPlugin, // 设计器插件
+  ComponentLibPlugin, // 组件库插件
+  RightPanelPlugin, // 右侧属性面板插件
+  OutlineTreePlugin, // 大纲树插件
+  GlobalStatePanelPlugin, // 全局状态面板插件
+  HistoryPlugin, // 历史记录插件
+  HotkeysPlugin, // 快捷键插件
+} = plugins;
+
+// 获取插件名称常量
+const { DEFAULT_PLUGIN_NAME_MAP } = plugins;
+// {
+//   DesignerPlugin: 'Designer',
+//   ComponentLibPlugin: 'ComponentLib',
+//   RightPanelPlugin: 'RightPanel',
+//   ...
+// }
+```
+
+### 场景 1：替换属性面板插件
+
+假设内置的 `RightPanel` 不满足需求，我们要完全替换它。
+
+#### 第一步：开发自定义属性面板
+
+```typescript
+// plugins/CustomRightPanel/index.tsx
+import { CPlugin } from '@chamn/engine';
+import React from 'react';
+
+const PLUGIN_NAME = 'CustomRightPanel' as const;
+
+export const CustomRightPanelPlugin: CPlugin = (ctx) => {
+  return {
+    name: PLUGIN_NAME,
+
+    async init(ctx) {
+      const workbench = ctx.getWorkbench();
+
+      // 添加完全自定义的右侧面板
+      workbench.replaceRightPanel({
+        name: PLUGIN_NAME,
+        view: <CustomPropertyEditor ctx={ctx} />,
+      });
+
+      ctx.pluginReadyOk();
+    },
+
+    async destroy(ctx) {
+      console.log('CustomRightPanel 插件已卸载');
+    },
+
+    export: (ctx) => ({
+      // 暴露与内置插件兼容的 API
+      updateProperty(key: string, value: any) {
+        const selectedNode = ctx.pageModel.getSelectedNode();
+        if (selectedNode) {
+          ctx.pageModel.updateNode(selectedNode.id, {
+            props: {
+              ...selectedNode.props,
+              [key]: value,
+            },
+          });
+        }
+      },
+    }),
+
+    meta: {
+      engine: {
+        version: '1.0.0',
+      },
+    },
+  };
+};
+
+CustomRightPanelPlugin.PLUGIN_NAME = PLUGIN_NAME;
+```
+
+#### 第二步：实现自定义属性编辑器
+
+```tsx
+// plugins/CustomRightPanel/CustomPropertyEditor.tsx
+import React, { useState, useEffect } from 'react';
+import { CPluginCtx } from '@chamn/engine';
+
+interface CustomPropertyEditorProps {
+  ctx: CPluginCtx;
+}
+
+export const CustomPropertyEditor: React.FC<CustomPropertyEditorProps> = ({ ctx }) => {
+  const [selectedNode, setSelectedNode] = useState<any>(null);
+  const [properties, setProperties] = useState<Record<string, any>>({});
+
+  useEffect(() => {
+    const handleSelect = (node: any) => {
+      setSelectedNode(node);
+      if (node) {
+        const nodeData = ctx.pageModel.getNode(node.id);
+        setProperties(nodeData?.props || {});
+      }
+    };
+
+    ctx.emitter.on('onSelectNode', handleSelect);
+
+    return () => {
+      ctx.emitter.off('onSelectNode', handleSelect);
+    };
+  }, [ctx]);
+
+  const handlePropertyChange = (key: string, value: any) => {
+    if (selectedNode) {
+      ctx.pageModel.updateNode(selectedNode.id, {
+        props: {
+          ...properties,
+          [key]: value,
+        },
+      });
+      setProperties((prev) => ({ ...prev, [key]: value }));
+    }
+  };
+
+  if (!selectedNode) {
+    return <div style={{ padding: '16px' }}>请选择一个节点</div>;
+  }
+
+  return (
+    <div style={{ padding: '16px' }}>
+      <h3>自定义属性面板</h3>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        {Object.entries(properties).map(([key, value]) => (
+          <div key={key}>
+            <label>{key}:</label>
+            <input
+              type="text"
+              value={value}
+              onChange={(e) => handlePropertyChange(key, e.target.value)}
+              style={{ width: '100%', marginTop: '4px' }}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+```
+
+#### 第三步：替换内置插件
+
+**核心思路：从 `DEFAULT_PLUGIN_LIST` 中移除要替换的插件，然后添加自定义插件。**
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import { CustomRightPanelPlugin } from './plugins/CustomRightPanel';
+
+const { DEFAULT_PLUGIN_LIST, RightPanelPlugin } = plugins;
+
+function App() {
+  // 1. 复制默认插件列表
+  const customPlugins = [...DEFAULT_PLUGIN_LIST];
+
+  // 2. 找到要替换的插件的索引
+  const rightPanelIndex = customPlugins.findIndex((plugin) => plugin === RightPanelPlugin);
+
+  // 3. 如果找到了，移除内置插件
+  if (rightPanelIndex !== -1) {
+    customPlugins.splice(rightPanelIndex, 1);
+  }
+
+  // 4. 添加自定义插件
+  customPlugins.push(CustomRightPanelPlugin);
+
+  return <Engine plugins={customPlugins} schema={pageSchema} material={materials} />;
+}
+```
+
+**简化写法（推荐）**
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import { CustomRightPanelPlugin } from './plugins/CustomRightPanel';
+
+const { DEFAULT_PLUGIN_LIST, RightPanelPlugin } = plugins;
+
+function App() {
+  // 过滤掉要替换的插件，然后添加自定义插件
+  const customPlugins = [
+    ...DEFAULT_PLUGIN_LIST.filter((plugin) => plugin !== RightPanelPlugin),
+    CustomRightPanelPlugin,
+  ];
+
+  return <Engine plugins={customPlugins} schema={pageSchema} material={materials} />;
+}
+```
+
+**批量替换多个插件**
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import { CustomRightPanelPlugin } from './plugins/CustomRightPanel';
+import { CustomComponentLibPlugin } from './plugins/CustomComponentLib';
+
+const { DEFAULT_PLUGIN_LIST, RightPanelPlugin, ComponentLibPlugin } = plugins;
+
+function App() {
+  // 要替换的插件列表
+  const pluginsToReplace = [RightPanelPlugin, ComponentLibPlugin];
+
+  // 过滤掉要替换的插件
+  const customPlugins = [
+    ...DEFAULT_PLUGIN_LIST.filter((plugin) => !pluginsToReplace.includes(plugin)),
+    // 添加自定义插件
+    CustomRightPanelPlugin,
+    CustomComponentLibPlugin,
+  ];
+
+  return <Engine plugins={customPlugins} schema={pageSchema} material={materials} />;
+}
+```
+
+### 场景 2：禁用某个插件
+
+如果不需要某个内置插件，可以从 `DEFAULT_PLUGIN_LIST` 中过滤掉，然后将定制后的插件列表传递给引擎。
+
+**禁用单个插件**
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+
+const { DEFAULT_PLUGIN_LIST, GlobalStatePanelPlugin } = plugins;
+
+function App() {
+  // 过滤掉不需要的插件
+  const customPlugins = DEFAULT_PLUGIN_LIST.filter((plugin) => plugin !== GlobalStatePanelPlugin);
+
+  return <Engine plugins={customPlugins} schema={pageSchema} material={materials} />;
+}
+```
+
+**禁用多个插件**
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+
+const { DEFAULT_PLUGIN_LIST, GlobalStatePanelPlugin, OutlineTreePlugin, HotkeysPlugin } = plugins;
+
+function App() {
+  // 要禁用的插件列表
+  const pluginsToDisable = [GlobalStatePanelPlugin, OutlineTreePlugin, HotkeysPlugin];
+
+  // 过滤掉要禁用的插件
+  const customPlugins = DEFAULT_PLUGIN_LIST.filter((plugin) => !pluginsToDisable.includes(plugin));
+
+  return <Engine plugins={customPlugins} schema={pageSchema} material={materials} />;
+}
+```
+
+**使用插件名称禁用**
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+
+const { DEFAULT_PLUGIN_LIST, DEFAULT_PLUGIN_NAME_MAP } = plugins;
+
+function App() {
+  // 要禁用的插件名称列表
+  const pluginNamesToDisable = [
+    DEFAULT_PLUGIN_NAME_MAP.GlobalStatePanelPlugin,
+    DEFAULT_PLUGIN_NAME_MAP.OutlineTreePlugin,
+  ];
+
+  // 通过插件名称过滤
+  const customPlugins = DEFAULT_PLUGIN_LIST.filter((plugin) => !pluginNamesToDisable.includes(plugin.PLUGIN_NAME));
+
+  return <Engine plugins={customPlugins} schema={pageSchema} material={materials} />;
+}
+```
+
+### 场景 3：使用 customPlugin 定制内置插件
+
+如果只需要修改内置插件的部分行为，可以使用 `customPlugin` 而不是完全替换。**重要：`customPlugin` 必须在插件初始化前调用，因此要在 `beforePluginRun` 回调中使用。**
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const beforePluginRun = ({ pluginManager }) => {
+    // 在插件初始化前定制它
+    pluginManager.customPlugin('History', (pluginInstance) => {
+      // 修改插件配置
+      pluginInstance.ctx.config = {
+        ...pluginInstance.ctx.config,
+        maxHistoryLength: 100, // 自定义历史记录长度
+        enableRedo: true,
+      };
+
+      // 修改插件导出的 API
+      const originalExport = pluginInstance.export;
+      pluginInstance.export = {
+        ...originalExport,
+        // 添加自定义方法
+        clearHistory() {
+          console.log('清空历史记录');
+          originalExport.clear();
+        },
+      };
+
+      return pluginInstance;
+    });
+  };
+
+  return (
+    <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} beforePluginRun={beforePluginRun} />
+  );
+}
+```
+
+## 实现高度定制引擎
+
+通过组合自定义插件和内置插件，可以实现完全定制的引擎。
+
+### 场景 1：构建轻量级表单设计器
+
+只保留必要的插件，移除不需要的功能。
+
+```tsx
+// FormDesignerEngine.tsx
+import React from 'react';
+import { Engine, plugins } from '@chamn/engine';
+import { CustomFormToolbarPlugin } from './plugins/CustomFormToolbar';
+import { FormFieldLibraryPlugin } from './plugins/FormFieldLibrary';
+import { FormPropertyEditorPlugin } from './plugins/FormPropertyEditor';
+
+const {
+  DesignerPlugin, // 保留设计器
+  HistoryPlugin, // 保留历史记录
+  HotkeysPlugin, // 保留快捷键
+  OutlineTreePlugin, // 保留大纲树
+  // 移除其他不需要的插件
+} = plugins;
+
+interface FormDesignerEngineProps {
+  schema?: any;
+  materials?: any;
+  onSave?: (schema: any) => void;
+}
+
+export const FormDesignerEngine: React.FC<FormDesignerEngineProps> = ({ schema, materials, onSave }) => {
+  const customPlugins = [
+    // 内置核心插件
+    DesignerPlugin,
+    HistoryPlugin,
+    HotkeysPlugin,
+    OutlineTreePlugin,
+
+    // 自定义表单插件
+    CustomFormToolbarPlugin,
+    FormFieldLibraryPlugin,
+    FormPropertyEditorPlugin,
+  ];
+
+  const beforePluginRun = ({ pluginManager }) => {
+    // 定制历史记录插件
+    pluginManager.customPlugin('History', (pluginInstance) => {
+      pluginInstance.ctx.config = {
+        maxHistoryLength: 50,
+      };
+      return pluginInstance;
+    });
+  };
+
+  const onReady = async (ctx) => {
+    // 隐藏不需要的工作台组件
+    const workbench = ctx.getWorkbench();
+    workbench.hiddenWidget(['TopBar']);
+
+    // 获取自定义工具栏并配置保存功能
+    const toolbar = await ctx.pluginManager.get('CustomFormToolbar');
+    toolbar?.export.onSave(() => {
+      const currentSchema = ctx.pageModel.export();
+      onSave?.(currentSchema);
+    });
+  };
+
+  return (
+    <Engine
+      plugins={customPlugins}
+      schema={schema}
+      material={materials}
+      beforePluginRun={beforePluginRun}
+      onReady={onReady}
+    />
+  );
+};
+
+// 使用表单设计器
+function App() {
+  const handleSave = (schema: any) => {
+    console.log('保存表单配置', schema);
+    // 发送到服务器
+  };
+
+  return <FormDesignerEngine schema={initialFormSchema} materials={formFieldMaterials} onSave={handleSave} />;
+}
+```
+
+### 场景 2：构建移动端页面编辑器
+
+针对移动端场景定制引擎。
+
+```tsx
+// MobilePageEditor.tsx
+import React from 'react';
+import { Engine, plugins } from '@chamn/engine';
+import { MobilePreviewPlugin } from './plugins/MobilePreview';
+import { MobileComponentLibPlugin } from './plugins/MobileComponentLib';
+import { ResponsiveToolbarPlugin } from './plugins/ResponsiveToolbar';
+
+const { DesignerPlugin, HistoryPlugin, HotkeysPlugin } = plugins;
+
+interface MobilePageEditorProps {
+  schema?: any;
+  materials?: any;
+  deviceType?: 'ios' | 'android';
+}
+
+export const MobilePageEditor: React.FC<MobilePageEditorProps> = ({ schema, materials, deviceType = 'ios' }) => {
+  const customPlugins = [
+    DesignerPlugin,
+    HistoryPlugin,
+    HotkeysPlugin,
+    MobilePreviewPlugin,
+    MobileComponentLibPlugin,
+    ResponsiveToolbarPlugin,
+  ];
+
+  const beforePluginRun = ({ pluginManager }) => {
+    // 配置移动端预览插件
+    pluginManager.customPlugin('MobilePreview', (pluginInstance) => {
+      pluginInstance.ctx.config = {
+        deviceType,
+        screenWidth: 375,
+        showDeviceFrame: true,
+      };
+      return pluginInstance;
+    });
+  };
+
+  const onReady = async (ctx) => {
+    const workbench = ctx.getWorkbench();
+
+    // 定制工作台布局
+    workbench.setLayout({
+      leftPanelWidth: 260,
+      rightPanelWidth: 320,
+      showTopBar: false,
+    });
+
+    // 配置移动端特定的快捷键
+    const hotkeys = await ctx.pluginManager.get('Hotkeys');
+    hotkeys?.export.register({
+      'cmd+p': () => {
+        // 切换预览模式
+        const preview = await ctx.pluginManager.get('MobilePreview');
+        preview?.export.togglePreview();
+      },
+      'cmd+d': () => {
+        // 切换设备类型
+        const preview = await ctx.pluginManager.get('MobilePreview');
+        preview?.export.switchDevice();
+      },
+    });
+  };
+
+  return (
+    <Engine
+      plugins={customPlugins}
+      schema={schema}
+      material={materials}
+      beforePluginRun={beforePluginRun}
+      onReady={onReady}
+    />
+  );
+};
+```
+
+### 场景 3：企业级定制引擎
+
+集成权限控制、团队协作、版本管理等企业功能。
+
+```tsx
+// EnterpriseEngine.tsx
+import React from 'react';
+import { Engine, plugins } from '@chamn/engine';
+import { AuthPlugin } from './plugins/Auth';
+import { CollaborationPlugin } from './plugins/Collaboration';
+import { VersionControlPlugin } from './plugins/VersionControl';
+import { AuditLogPlugin } from './plugins/AuditLog';
+import { TemplateMarketPlugin } from './plugins/TemplateMarket';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+interface EnterpriseEngineProps {
+  user: {
+    id: string;
+    name: string;
+    role: 'admin' | 'editor' | 'viewer';
+  };
+  projectId: string;
+  schema?: any;
+  materials?: any;
+}
+
+export const EnterpriseEngine: React.FC<EnterpriseEngineProps> = ({ user, projectId, schema, materials }) => {
+  const enterprisePlugins = [
+    ...DEFAULT_PLUGIN_LIST,
+    AuthPlugin,
+    CollaborationPlugin,
+    VersionControlPlugin,
+    AuditLogPlugin,
+    TemplateMarketPlugin,
+  ];
+
+  const beforePluginRun = ({ pluginManager }) => {
+    // 配置权限插件
+    pluginManager.customPlugin('Auth', (pluginInstance) => {
+      pluginInstance.ctx.config = { user };
+      return pluginInstance;
+    });
+
+    // 配置协作插件
+    pluginManager.customPlugin('Collaboration', (pluginInstance) => {
+      pluginInstance.ctx.config = {
+        projectId,
+        wsUrl: 'wss://collaboration.example.com',
+      };
+      return pluginInstance;
+    });
+
+    // 配置版本控制插件
+    pluginManager.customPlugin('VersionControl', (pluginInstance) => {
+      pluginInstance.ctx.config = {
+        autoSave: true,
+        saveInterval: 30000,
+      };
+      return pluginInstance;
+    });
+  };
+
+  const onReady = async (ctx) => {
+    // 初始化权限控制
+    const auth = await ctx.pluginManager.get('Auth');
+    const permissions = auth?.export.getPermissions();
+
+    // 根据权限控制功能
+    if (permissions?.role === 'viewer') {
+      // 只读模式
+      const designer = await ctx.pluginManager.get('Designer');
+      designer?.export.setReadonly(true);
+
+      const workbench = ctx.getWorkbench();
+      workbench.hiddenWidget(['LeftPanel', 'RightPanel']);
+    }
+
+    // 启动协作
+    const collab = await ctx.pluginManager.get('Collaboration');
+    collab?.export.connect();
+
+    // 监听协作事件
+    ctx.emitter.on('collaboration:userJoin', (user: any) => {
+      console.log(`${user.name} 加入了协作`);
+    });
+
+    ctx.emitter.on('collaboration:change', (change: any) => {
+      console.log('收到远程修改', change);
+    });
+
+    // 启动自动保存
+    const versionControl = await ctx.pluginManager.get('VersionControl');
+    versionControl?.export.startAutoSave();
+
+    // 记录审计日志
+    const auditLog = await ctx.pluginManager.get('AuditLog');
+    auditLog?.export.log('PROJECT_OPENED', {
+      projectId,
+      user: user.name,
+    });
+  };
+
+  return (
+    <Engine
+      plugins={enterprisePlugins}
+      schema={schema}
+      material={materials}
+      beforePluginRun={beforePluginRun}
+      onReady={onReady}
+    />
+  );
+};
+
+// 使用企业版引擎
+function App() {
+  const currentUser = {
+    id: '123',
+    name: 'John Doe',
+    role: 'editor' as const,
+  };
+
+  return (
+    <EnterpriseEngine user={currentUser} projectId="project-456" schema={projectSchema} materials={projectMaterials} />
+  );
+}
+```
+
+## 插件开发最佳实践
+
+### 1. 插件命名规范
+
+```typescript
+// ✅ 推荐：使用描述性名称和常量
+const PLUGIN_NAME = 'CustomFormBuilder' as const;
+
+export const CustomFormBuilderPlugin: CPlugin = (ctx) => {
+  return {
+    name: PLUGIN_NAME,
+    // ...
+  };
+};
+
+CustomFormBuilderPlugin.PLUGIN_NAME = PLUGIN_NAME;
+
+// ❌ 不推荐：使用字符串字面量
+export const MyPlugin: CPlugin = (ctx) => {
+  return {
+    name: 'my-plugin', // 难以追踪和重构
+    // ...
+  };
+};
+```
+
+### 2. 正确管理生命周期
+
+```typescript
+export const MyPlugin: CPlugin = (ctx) => {
+  let unsubscribeList: Array<() => void> = [];
+
+  return {
+    name: 'MyPlugin',
+
+    async init(ctx) {
+      // 订阅事件
+      const off1 = ctx.emitter.on('onSelectNode', handleSelect);
+      const off2 = ctx.globalEmitter.on('onPageChange', handlePageChange);
+
+      unsubscribeList.push(off1, off2);
+
+      // ✅ 重要：通知插件已准备好
+      ctx.pluginReadyOk();
+    },
+
+    async destroy(ctx) {
+      // ✅ 清理所有订阅
+      unsubscribeList.forEach((off) => off());
+      unsubscribeList = [];
+
+      // ✅ 清理其他资源
+      // 移除 DOM 节点、取消定时器等
+    },
+
+    export: () => ({}),
+
+    meta: {
+      engine: { version: '1.0.0' },
+    },
+  };
+};
+```
+
+### 3. 使用 TypeScript 类型安全
+
+```typescript
+// 定义配置类型
+interface MyPluginConfig {
+  theme: 'light' | 'dark';
+  locale: string;
+  features: {
+    autoSave: boolean;
+    collaboration: boolean;
+  };
+}
+
+// 定义导出 API 类型
+interface MyPluginExport {
+  setTheme(theme: 'light' | 'dark'): void;
+  save(): Promise<void>;
+  load(id: string): Promise<any>;
+}
+
+// 使用类型
+export const MyPlugin: CPlugin<MyPluginConfig, MyPluginExport> = (ctx) => {
+  const config = ctx.config || {
+    theme: 'light',
+    locale: 'zh-CN',
+    features: {
+      autoSave: true,
+      collaboration: false,
+    },
+  };
+
+  return {
+    name: 'MyPlugin',
+
+    async init(ctx) {
+      // ctx.config 现在有类型提示
+      console.log(config.theme);
+      ctx.pluginReadyOk();
+    },
+
+    async destroy(ctx) {},
+
+    export: (ctx): MyPluginExport => ({
+      setTheme(theme) {
+        config.theme = theme;
+      },
+      async save() {
+        // 实现保存逻辑
+      },
+      async load(id) {
+        // 实现加载逻辑
+        return {};
+      },
+    }),
+
+    meta: {
+      engine: { version: '1.0.0' },
+    },
+  };
+};
+```
+
+### 4. 插件间通信
+
+```typescript
+// PluginA：发送事件
+export const PluginA: CPlugin = (ctx) => {
+  return {
+    name: 'PluginA',
+
+    async init(ctx) {
+      // 使用全局事件总线通信
+      ctx.globalEmitter.emit('pluginA:dataReady', {
+        data: 'some data',
+      });
+
+      ctx.pluginReadyOk();
+    },
+
+    async destroy(ctx) {},
+
+    export: (ctx) => ({
+      notifyChange(data: any) {
+        ctx.globalEmitter.emit('pluginA:change', data);
+      },
+    }),
+
+    meta: {
+      engine: { version: '1.0.0' },
+    },
+  };
+};
+
+// PluginB：接收事件
+export const PluginB: CPlugin = (ctx) => {
+  return {
+    name: 'PluginB',
+
+    async init(ctx) {
+      // 等待 PluginA 准备好
+      await ctx.pluginManager.onPluginReadyOk('PluginA');
+
+      // 监听 PluginA 的事件
+      ctx.globalEmitter.on('pluginA:change', (data) => {
+        console.log('收到 PluginA 的变化', data);
+      });
+
+      // 获取 PluginA 实例并调用其 API
+      const pluginA = await ctx.pluginManager.get('PluginA');
+      pluginA?.export.notifyChange({ from: 'PluginB' });
+
+      ctx.pluginReadyOk();
+    },
+
+    async destroy(ctx) {},
+
+    export: () => ({}),
+
+    meta: {
+      engine: { version: '1.0.0' },
+    },
+  };
+};
+```
+
+### 5. 错误处理
+
+```typescript
+export const MyPlugin: CPlugin = (ctx) => {
+  return {
+    name: 'MyPlugin',
+
+    async init(ctx) {
+      try {
+        // 可能失败的初始化逻辑
+        await initializePlugin();
+
+        ctx.pluginReadyOk();
+      } catch (error) {
+        console.error('MyPlugin 初始化失败', error);
+
+        // 发送错误事件
+        ctx.globalEmitter.emit('plugin:error', {
+          plugin: 'MyPlugin',
+          error,
+        });
+
+        // 仍然标记为准备好，避免阻塞其他插件
+        ctx.pluginReadyOk();
+      }
+    },
+
+    async destroy(ctx) {
+      try {
+        await cleanupPlugin();
+      } catch (error) {
+        console.error('MyPlugin 清理失败', error);
+      }
+    },
+
+    export: (ctx) => ({
+      async doSomething() {
+        try {
+          // 业务逻辑
+          return { success: true };
+        } catch (error) {
+          console.error('操作失败', error);
+          return { success: false, error };
+        }
+      },
+    }),
+
+    meta: {
+      engine: { version: '1.0.0' },
+    },
+  };
+};
+```
+
+## 总结
+
+通过本指南，你已经学会了：
+
+1. **开发自定义插件**
+
+   - 创建插件的基本结构
+   - 实现插件的生命周期
+   - 暴露插件 API
+   - 处理事件和状态
+
+2. **替换内置插件**
+
+   - 完全替换内置插件
+   - 使用 `customPlugin` 定制内置插件
+   - 保持 API 兼容性
+
+3. **实现高度定制引擎**
+
+   - 构建轻量级编辑器
+   - 针对特定场景定制
+   - 企业级功能集成
+
+4. **最佳实践**
+   - 命名规范
+   - 生命周期管理
+   - 类型安全
+   - 插件间通信
+   - 错误处理
+
+现在你可以根据自己的需求，构建完全定制化的 Chameleon Engine 了！

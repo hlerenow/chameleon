@@ -4,4 +4,292 @@ sidebar:
   order: 3
 ---
 
-准备中...
+import { Code } from '@astrojs/starlight/components';
+import GridLayoutMeta from '../../../../codeSnippets/GridLayoutMeta.tsx?raw';
+import GridLayoutComponent from '../../../../codeSnippets/GridLayoutComponent.tsx?raw';
+import GridLayoutWrap from '../../../../codeSnippets/GridLayoutWrap.tsx?raw';
+import GridItemMeta from '../../../../codeSnippets/GridItemMeta.tsx?raw';
+
+# 高级物料开发
+
+高级物料开发允许你通过 `advanceCustom` 配置项来深度定制组件在设计器中的行为，包括拖拽、选择、工具栏、右侧面板等各个方面。本文档将以 `ReactGridLayout` 组件为例，详细介绍如何使用这些高级特性。
+
+## 什么是高级物料？
+
+高级物料是指那些需要特殊编辑行为的组件，例如：
+
+- **布局容器组件**：需要自定义拖拽和放置逻辑
+- **复杂交互组件**：需要定制工具栏或选择框样式
+- **特殊渲染组件**：需要在编辑模式下包装或修改组件行为
+- **响应式组件**：需要根据断点动态调整布局
+
+通过 `advanceCustom` 配置，你可以完全控制组件在设计器中的编辑体验。
+
+## advanceCustom 配置项概览
+
+`advanceCustom` 提供了丰富的配置选项，主要包括：
+
+### 生命周期钩子
+
+- `onDragStart` / `onDragging` / `onDragEnd`：拖拽生命周期
+- `onSelect`：选中时触发
+- `onCopy`：复制时触发
+- `onDelete`：删除时触发
+- `onNewAdd`：首次添加到画布时触发
+- `onDrop`：放置到目标位置时触发
+
+### 权限控制
+
+- `canDragNode`：控制节点是否可拖拽
+- `canDropNode`：控制节点是否可被放置
+- `canAcceptNode`：控制节点是否可接受子节点
+- `disableEditorDragDom`：禁用编辑器默认的拖拽行为
+
+### 视图定制
+
+- `wrapComponent`：包装组件，定制编辑模式下的行为
+- `toolbarViewRender`：自定义工具栏视图
+- `selectRectViewRender`：自定义选中框视图
+- `hoverRectViewRender`：自定义悬停框视图
+- `dropViewRender`：自定义放置预览视图
+- `ghostViewRender`：自定义拖拽占位视图
+
+### 面板配置
+
+- `rightPanel`：配置右侧属性面板的显示和定制
+- `autoGetDom`：控制是否自动获取 DOM 元素
+
+## ReactGridLayout 示例
+
+`ReactGridLayout` 是一个完整的高级物料示例，它实现了基于 GridStack 的响应式布局系统。让我们逐步分析它的实现。
+
+### 组件结构
+
+ReactGridLayout 包含两个主要组件：
+
+1. **GridLayout**：布局容器，管理整个网格系统
+2. **GridItem**：布局项，每个可拖拽的子元素
+
+### 1. GridLayout 物料定义
+
+<Code code={GridLayoutMeta} lang="tsx" title="meta.tsx" showLineNumbers></Code>
+
+#### 关键配置解析
+
+**`isContainer: true`**
+
+- 标记为容器组件，允许放置子元素
+
+**`advanceCustom.wrapComponent`**
+
+- 包装原始组件，注入设计器相关的逻辑
+- 获取 iframe 窗口引用（设计器运行在 iframe 中）
+- 监听 GridStack 的拖拽事件，与设计器选择状态同步
+
+**`advanceCustom.rightPanel.visual: false`**
+
+- 隐藏可视化面板，因为布局组件不需要可视化编辑
+
+**`advanceCustom.autoGetDom: false`**
+
+- 禁用自动获取 DOM，因为我们需要手动控制 DOM 引用
+
+### 2. GridLayout 组件实现
+
+<Code code={GridLayoutComponent} lang="tsx" title="index.tsx" showLineNumbers></Code>
+
+#### 核心功能
+
+1. **GridStack 初始化**：使用 GridStack 库创建网格布局
+2. **响应式断点**：监听窗口大小变化，切换不同的布局断点
+3. **Context 提供**：通过 React Context 向子组件提供 GridStack 实例和当前断点信息
+
+### 3. LayoutWrap 包装组件
+
+<Code code={GridLayoutWrap} lang="tsx" title="edit/layoutWrap.tsx" showLineNumbers></Code>
+
+#### 设计器集成
+
+`LayoutWrap` 是连接组件和设计器的桥梁：
+
+- **监听布局变化**：当用户拖拽 GridItem 时，GridStack 会触发 `change` 事件
+- **同步到页面模型**：将布局变化同步到 Chameleon 的页面模型中
+- **响应式支持**：根据当前窗口宽度确定断点，更新对应断点的布局信息
+
+### 4. GridItem 物料定义
+
+<Code code={GridItemMeta} lang="tsx" title="item.meta.tsx" showLineNumbers></Code>
+
+#### 高级特性解析
+
+**`disableEditorDragDom: true`**
+
+- 禁用编辑器默认的 DOM 拖拽，使用 GridStack 自己的拖拽系统
+
+**`advanceCustom.toolbarViewRender`**
+
+- 自定义工具栏，显示当前布局信息（宽度、高度、位置）
+- 实时监听窗口大小变化，更新显示的布局信息
+- 移除默认的显示/隐藏按钮（与 GridStack 拖拽冲突）
+
+**`advanceCustom.onDragStart`**
+
+- 返回 `false`，禁用编辑器默认的拖拽行为
+
+**`advanceCustom.wrapComponent`**
+
+- 包装组件，注册组件实例引用
+- 用于在工具栏中获取实时的布局信息
+
+**`advanceCustom.canDropNode`**
+
+- 只允许 GridItem 被放置在 GridLayout 中
+- 确保组件层级关系的正确性
+
+**`advanceCustom.onCopy`**
+
+- 复制时重置 x、y 坐标
+- 避免复制后的元素重叠
+
+**`advanceCustom.onNewAdd`**
+
+- 只允许从 GridLayout 拖入创建新的 GridItem
+
+**`advanceCustom.rightPanel.advanceOptions`**
+
+- 隐藏 loop 和 render 选项
+- 简化属性面板，只显示必要的配置
+
+## 常用场景示例
+
+### 场景 1：自定义拖拽行为
+
+```tsx
+advanceCustom: {
+  onDragStart: async (node) => {
+    // 执行自定义逻辑
+    console.log('开始拖拽', node.id);
+    return true; // 返回 true 允许拖拽
+  },
+  onDragEnd: async (node) => {
+    // 拖拽结束后的清理工作
+    console.log('拖拽结束', node.id);
+  },
+}
+```
+
+### 场景 2：自定义工具栏
+
+```tsx
+advanceCustom: {
+  toolbarViewRender: ({ node, toolBarItemList }) => {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <span>自定义信息: {node.id}</span>
+        {toolBarItemList}
+      </div>
+    );
+  },
+}
+```
+
+### 场景 3：控制放置权限
+
+```tsx
+advanceCustom: {
+  canDropNode: async (node, params) => {
+    const { dropNode } = params;
+    // 只允许放置在特定类型的容器中
+    if (dropNode?.value.componentName === 'MyContainer') {
+      return true;
+    }
+    return false;
+  },
+}
+```
+
+### 场景 4：包装组件注入逻辑
+
+```tsx
+advanceCustom: {
+  wrapComponent: (Comp, options) => {
+    return (props) => {
+      // 注入设计器相关的逻辑
+      const designerCtx = options.ctx;
+
+      return (
+        <div className="design-mode-wrapper">
+          <Comp {...props} />
+        </div>
+      );
+    };
+  },
+}
+```
+
+### 场景 5：自定义右侧面板
+
+```tsx
+advanceCustom: {
+  rightPanel: {
+    visual: false, // 隐藏可视化面板
+    advance: true,
+    advanceOptions: {
+      loop: false, // 隐藏循环选项
+      render: true, // 显示渲染选项
+    },
+    customTabs: [
+      {
+        key: 'custom',
+        name: '自定义配置',
+        view: ({ node }) => {
+          return <div>自定义配置面板</div>;
+        },
+      },
+    ],
+  },
+}
+```
+
+## 最佳实践
+
+### 1. 合理使用 wrapComponent
+
+`wrapComponent` 是一个强大的功能，但要注意：
+
+- ✅ **适合场景**：需要访问设计器上下文、需要监听第三方库事件、需要注入特殊逻辑
+- ❌ **避免场景**：简单的样式修改（应该用 CSS）、不需要设计器交互的组件
+
+### 2. 性能优化
+
+- 使用 `debounce` 或 `throttle` 处理频繁的事件（如 resize）
+- 避免在 `toolbarViewRender` 中执行重计算
+- 合理使用 `useMemo` 和 `useCallback` 优化渲染
+
+### 3. 错误处理
+
+- 所有异步钩子都应该有错误处理
+- 返回 `false` 来阻止操作时，确保用户能理解原因
+
+### 4. 类型安全
+
+- 使用 TypeScript 确保类型安全
+- 为自定义的 props 和 context 定义类型
+
+## 总结
+
+高级物料开发通过 `advanceCustom` 配置提供了强大的定制能力，让你可以：
+
+- 🎯 **完全控制**组件的编辑行为
+- 🎨 **自定义视图**和交互体验
+- 🔌 **深度集成**第三方库（如 GridStack）
+- 📱 **实现响应式**布局和断点管理
+
+`ReactGridLayout` 是一个很好的参考示例，展示了如何将这些高级特性组合使用，创建一个功能完整的布局组件。
+
+## 相关资源
+
+- [物料开发基础文档](./developMaterial.mdx)
+- [物料协议文档](../PageSchema/material.mdx)
+- [插件开发指南](../Plugin/plugin-develop.mdx)
+- [GridStack 官方文档](https://gridstackjs.com/)

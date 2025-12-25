@@ -1,0 +1,1464 @@
+---
+title: Engine API
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+# Engine API
+
+本文档详细介绍了 Chameleon Engine 的所有 API，包括组件 Props、实例方法、事件系统等。
+
+## Engine Props
+
+Engine 组件接受以下 props：
+
+| 属性名              | 类型                                                  | 必填 | 说明                                       |
+| :------------------ | :---------------------------------------------------- | :--- | :----------------------------------------- |
+| `plugins`           | `CPlugin[]`                                           | ✅   | 插件列表                                   |
+| `schema`            | `CPageDataType`                                       | ✅   | 页面协议数据                               |
+| `material`          | `CMaterialType[]`                                     | ❌   | 组件物料描述列表                           |
+| `components`        | `Record<string, any>`                                 | ❌   | 组件映射对象                               |
+| `assetPackagesList` | `AssetPackage[]`                                      | ❌   | 资源包列表                                 |
+| `beforePluginRun`   | `(options: { pluginManager: PluginManager }) => void` | ❌   | 插件运行前的回调                           |
+| `onReady`           | `(ctx: EnginContext) => void`                         | ❌   | 所有插件加载完成后的回调                   |
+| `onMount`           | `(ctx: EnginContext) => void`                         | ❌   | 组件挂载后的回调                           |
+| `renderJSUrl`       | `string`                                              | ❌   | 渲染器 UMD JS 地址，默认 `./render.umd.js` |
+| `style`             | `React.CSSProperties`                                 | ❌   | 自定义样式                                 |
+| `className`         | `string`                                              | ❌   | 自定义类名                                 |
+| `renderProps`       | `Partial<RenderPropsType>`                            | ❌   | 渲染器属性配置                             |
+| `workbenchConfig`   | `Partial<WorkbenchPropsType>`                         | ❌   | 工作台配置（初始化时生效）                 |
+| `monacoEditor`      | `{ cndUrl?: string }`                                 | ❌   | Monaco 编辑器配置                          |
+
+### EnginContext
+
+`EnginContext` 是生命周期回调函数中接收的上下文对象，包含引擎实例和插件管理器。
+
+```typescript
+type EnginContext = {
+  pluginManager: PluginManager;
+  engine: Engine;
+};
+```
+
+**使用示例：**
+
+```tsx
+const onReady = (ctx: EnginContext) => {
+  // 访问插件管理器
+  const pluginManager = ctx.pluginManager;
+
+  // 访问引擎实例
+  const engine = ctx.engine;
+
+  // 获取页面模型
+  const pageModel = engine.pageModel;
+};
+```
+
+### EngineProps 详细说明
+
+#### plugins
+
+插件列表，必填。可以是内置插件或自定义插件。
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+<Engine
+  plugins={DEFAULT_PLUGIN_LIST}
+  // 或自定义插件列表
+  // plugins={[DesignerPlugin, ComponentLibPlugin]}
+/>;
+```
+
+#### schema
+
+页面协议数据，必填。定义了页面的结构、组件、样式等信息。
+
+```tsx
+const pageSchema = {
+  version: '1.0.0',
+  name: 'MyPage',
+  componentsTree: {
+    id: 'root',
+    componentName: 'Page',
+    children: [],
+  },
+  // ... 其他字段
+};
+
+<Engine schema={pageSchema} />;
+```
+
+#### material
+
+组件物料描述列表，可选。定义了组件的属性、事件、样式等信息。
+
+```tsx
+const materials = [
+  {
+    componentName: 'Button',
+    title: '按钮',
+    props: [
+      {
+        name: 'text',
+        title: '文本',
+        setter: 'StringSetter',
+      },
+    ],
+  },
+];
+
+<Engine material={materials} />;
+```
+
+#### components
+
+组件映射对象，可选。用于直接传入组件实例，而不是通过资源包加载。
+
+```tsx
+import { Button } from 'antd';
+
+<Engine
+  components={{
+    Button: Button,
+  }}
+/>;
+```
+
+#### assetPackagesList
+
+资源包列表，可选。定义了组件库的 JS/CSS 资源地址。
+
+```tsx
+const assetPackagesList = [
+  {
+    package: 'antd',
+    version: '5.0.0',
+    urls: ['https://cdn.example.com/antd.js', 'https://cdn.example.com/antd.css'],
+  },
+];
+
+<Engine assetPackagesList={assetPackagesList} />;
+```
+
+#### workbenchConfig
+
+工作台配置，可选。用于初始化时配置工作台的显示状态。
+
+```tsx
+<Engine
+  workbenchConfig={{
+    hiddenLeftPanel: false,
+    hiddenRightPanel: false,
+    hiddenTopBar: false,
+    canvasFull: false,
+  }}
+/>
+```
+
+:::tip
+`workbenchConfig` 只在初始化时生效，后续需要通过 `hiddenWidget` API 来动态修改。
+:::
+
+## Engine 实例属性
+
+Engine 实例提供了以下公共属性：
+
+| 属性名                     | 类型                           | 说明           |
+| :------------------------- | :----------------------------- | :------------- |
+| `pluginManager`            | `PluginManager`                | 插件管理器实例 |
+| `pageModel`                | `CPage`                        | 页面模型实例   |
+| `emitter`                  | `Emitter<any>`                 | 事件发射器     |
+| `currentSelectNode`        | `CNode \| CRootNode \| null`   | 当前选中的节点 |
+| `material`                 | `CMaterialType[] \| undefined` | 组件物料列表   |
+| `pageSchema`               | `CPageDataType \| undefined`   | 页面协议数据   |
+| `assetsPackageListManager` | `AssetsPackageListManager`     | 资源包管理器   |
+
+**访问方式：**
+
+```tsx
+const onReady = (ctx: EnginContext) => {
+  // 通过上下文访问
+  const engine = ctx.engine;
+  const pageModel = engine.pageModel;
+  const pluginManager = ctx.pluginManager;
+
+  // 访问页面模型
+  const rootNode = pageModel.getRootNode();
+  const allNodes = pageModel.getAllNodes();
+
+  // 访问事件发射器
+  engine.emitter.on('onSelectNodeChange', ({ node }) => {
+    console.log('节点变化:', node);
+  });
+};
+```
+
+## Engine 实例方法
+
+### updatePage
+
+更新页面数据。会重新加载整个页面，所有节点都会被重新创建。
+
+```typescript
+updatePage(page: CPageDataType): void
+```
+
+**参数：**
+
+- `page`: 新的页面协议数据
+
+**示例：**
+
+```tsx
+const onReady = (ctx: EnginContext) => {
+  // 从服务器获取新页面数据
+  fetch('/api/page')
+    .then((res) => res.json())
+    .then((newPageSchema) => {
+      ctx.engine.updatePage(newPageSchema);
+    });
+};
+
+// 或者使用本地数据
+const newPageSchema = {
+  version: '1.0.0',
+  name: 'NewPage',
+  componentsTree: {
+    /* ... */
+  },
+};
+ctx.engine.updatePage(newPageSchema);
+```
+
+:::warning
+调用 `updatePage` 会完全替换当前页面，所有未保存的更改都会丢失。建议在更新前先保存当前页面数据。
+:::
+
+### updateMaterials
+
+动态更新物料和资源包。这个方法会：
+
+1. 加载新的资源包到设计器窗口
+2. 收集组件变量
+3. 更新渲染器中的组件库
+4. 更新页面模型中的物料
+
+```typescript
+updateMaterials(
+  materials: CMaterialType[],
+  assetPackagesList: AssetPackage[],
+  options?: {
+    formatComponents?: (componentMap: ComponentsType) => ComponentsType;
+  }
+): Promise<void>
+```
+
+**参数：**
+
+- `materials`: 新的组件物料描述列表
+- `assetPackagesList`: 新的资源包列表
+- `options.formatComponents`: 可选的组件格式化函数，用于自定义组件映射
+
+**示例：**
+
+```tsx
+const onReady = async (ctx: EnginContext) => {
+  // 从服务器动态加载物料
+  const [materials, assetPackages] = await Promise.all([
+    fetch('/api/materials').then((r) => r.json()),
+    fetch('/api/asset-packages').then((r) => r.json()),
+  ]);
+
+  await ctx.engine.updateMaterials(materials, assetPackages, {
+    formatComponents: (components) => {
+      // 例如：给所有组件添加前缀
+      const formatted: Record<string, any> = {};
+      Object.keys(components).forEach((key) => {
+        formatted[`Custom${key}`] = components[key];
+      });
+      return formatted;
+    },
+  });
+
+  console.log('物料更新完成');
+};
+```
+
+:::tip
+`updateMaterials` 是异步方法，需要等待资源包加载完成。建议在更新后监听 `updateMaterials` 事件来确认更新完成。
+:::
+
+### refresh
+
+刷新页面
+
+```typescript
+refresh(): Promise<void>
+```
+
+**示例：**
+
+```tsx
+const onReady = async (ctx: EnginContext) => {
+  await ctx.engine.refresh();
+};
+```
+
+### getActiveNode
+
+获取当前选中的节点
+
+```typescript
+getActiveNode(): CNode | CRootNode | null
+```
+
+**示例：**
+
+```tsx
+const onReady = (ctx: EnginContext) => {
+  const activeNode = ctx.engine.getActiveNode();
+  console.log('当前选中节点:', activeNode);
+};
+```
+
+### preview
+
+进入预览模式
+
+```typescript
+preview(): Promise<void>
+```
+
+预览模式会隐藏所有编辑相关的面板，只显示画布内容。
+
+**示例：**
+
+```tsx
+const onReady = async (ctx: EnginContext) => {
+  await ctx.engine.preview();
+};
+```
+
+### existPreview
+
+退出预览模式
+
+```typescript
+existPreview(): Promise<void>
+```
+
+**示例：**
+
+```tsx
+const onReady = async (ctx: EnginContext) => {
+  await ctx.engine.existPreview();
+};
+```
+
+### hiddenWidget
+
+隐藏或显示工作台组件
+
+```typescript
+hiddenWidget(config: Partial<TWidgetVisible>): void
+```
+
+**配置项：**
+
+| 属性名             | 类型      | 说明         |
+| :----------------- | :-------- | :----------- |
+| `hiddenTopBar`     | `boolean` | 隐藏顶部栏   |
+| `hiddenLeftPanel`  | `boolean` | 隐藏左侧面板 |
+| `hiddenRightPanel` | `boolean` | 隐藏右侧面板 |
+| `canvasFull`       | `boolean` | 画布全屏     |
+
+**示例：**
+
+```tsx
+const onReady = (ctx: EnginContext) => {
+  // 隐藏左侧面板
+  ctx.engine.hiddenWidget({
+    hiddenLeftPanel: true,
+  });
+
+  // 全屏画布
+  ctx.engine.hiddenWidget({
+    hiddenTopBar: true,
+    hiddenLeftPanel: true,
+    hiddenRightPanel: true,
+    canvasFull: true,
+  });
+};
+```
+
+### getWorkbench
+
+获取工作台实例。工作台提供了丰富的 API 用于自定义编辑器界面。
+
+```typescript
+getWorkbench(): Workbench | null
+```
+
+**返回值：**
+
+- `Workbench | null`: 工作台实例，如果工作台未初始化则返回 `null`
+
+**示例：**
+
+```tsx
+const onReady = (ctx: EnginContext) => {
+  const workbench = ctx.engine.getWorkbench();
+
+  if (!workbench) {
+    console.warn('工作台未初始化');
+    return;
+  }
+
+  // 自定义顶部栏
+  workbench.replaceTopBarView(<CustomTopBar />);
+
+  // 自定义画布区域
+  workbench.replaceBodyView(<CustomCanvas />);
+
+  // 自定义右侧面板
+  workbench.replaceRightView(<CustomRightPanel />);
+};
+```
+
+:::info
+工作台 API 的详细说明请参考 [Workbench API](#workbench-api) 章节。
+:::
+
+### getI18n
+
+获取国际化对象
+
+```typescript
+getI18n(): CustomI18n
+```
+
+**示例：**
+
+```tsx
+const onReady = (ctx: EnginContext) => {
+  const i18n = ctx.engine.getI18n();
+  const text = i18n.t('some.key');
+};
+```
+
+### updateCurrentSelectNode
+
+更新当前选中的节点（内部方法，通常由插件调用）
+
+```typescript
+updateCurrentSelectNode(node: CNode | CRootNode | null): void
+```
+
+**参数：**
+
+- `node`: 要选中的节点，传入 `null` 表示取消选中
+
+**说明：**
+
+这个方法会触发 `onSelectNodeChange` 事件，通常由设计器插件在用户点击节点时调用。
+
+## 静态属性
+
+### version
+
+获取 Engine 版本号
+
+```typescript
+Engine.version: string
+```
+
+**示例：**
+
+```tsx
+import { Engine } from '@chamn/engine';
+
+console.log(Engine.version); // "0.9.3"
+
+// 用于版本检查
+if (Engine.version >= '0.9.0') {
+  // 使用新特性
+}
+```
+
+## 事件系统
+
+Engine 内部使用 `mitt` 实现事件系统，可以通过 `emitter` 监听和触发事件。
+
+### 监听事件
+
+```typescript
+// 监听事件
+engine.emitter.on('eventName', (data) => {
+  // 处理事件
+});
+
+// 取消监听
+const handler = (data) => {
+  /* ... */
+};
+engine.emitter.on('eventName', handler);
+engine.emitter.off('eventName', handler);
+
+// 只监听一次
+engine.emitter.once('eventName', (data) => {
+  // 只执行一次
+});
+```
+
+### 事件列表
+
+#### onSelectNodeChange
+
+节点选中变化事件。当用户点击画布中的节点时触发。
+
+```typescript
+ctx.engine.emitter.on('onSelectNodeChange', ({ node }) => {
+  if (node) {
+    console.log('选中节点:', node);
+    console.log('节点ID:', node.id);
+    console.log('组件名:', node.componentName);
+    console.log('节点属性:', node.props);
+  } else {
+    console.log('取消选中');
+  }
+});
+```
+
+**事件数据：**
+
+```typescript
+{
+  node: CNode | CRootNode | null;
+}
+```
+
+**示例：**
+
+```tsx
+const onReady = (ctx: EnginContext) => {
+  ctx.engine.emitter.on('onSelectNodeChange', ({ node }) => {
+    if (node) {
+      // 更新外部状态
+      setSelectedNode(node);
+
+      // 显示节点信息
+      message.info(`选中了 ${node.componentName} 组件`);
+    }
+  });
+};
+```
+
+#### updateMaterials
+
+物料更新事件。当调用 `updateMaterials` 方法完成物料更新后触发。
+
+```typescript
+ctx.engine.emitter.on('updateMaterials', () => {
+  console.log('物料已更新');
+  // 可以在这里刷新组件库面板等
+});
+```
+
+**示例：**
+
+```tsx
+const onReady = (ctx: EnginContext) => {
+  ctx.engine.emitter.on('updateMaterials', () => {
+    // 刷新组件库
+    refreshComponentLibrary();
+
+    // 显示提示
+    message.success('物料更新成功');
+  });
+
+  // 更新物料
+  ctx.engine.updateMaterials(newMaterials, newAssetPackages);
+};
+```
+
+### 触发自定义事件
+
+你也可以通过 `emitter.emit` 触发自定义事件：
+
+```tsx
+const onReady = (ctx: EnginContext) => {
+  // 触发自定义事件
+  ctx.engine.emitter.emit('customEvent', {
+    data: 'some data',
+  });
+
+  // 在其他地方监听
+  ctx.engine.emitter.on('customEvent', ({ data }) => {
+    console.log('收到自定义事件:', data);
+  });
+};
+```
+
+## Workbench API
+
+通过 `getWorkbench()` 获取工作台实例后，可以使用以下方法自定义编辑器界面。
+
+### replaceTopBarView
+
+替换顶部工具栏视图
+
+```typescript
+replaceTopBarView(newView: React.ReactNode): void
+```
+
+**示例：**
+
+```tsx
+const onReady = (ctx: EnginContext) => {
+  const workbench = ctx.engine.getWorkbench();
+  workbench?.replaceTopBarView(
+    <div style={{ padding: '0 20px', display: 'flex', justifyContent: 'space-between' }}>
+      <div>我的编辑器</div>
+      <Button onClick={() => ctx.engine.preview()}>预览</Button>
+    </div>
+  );
+};
+```
+
+### replaceBodyView
+
+替换画布区域视图
+
+```typescript
+replaceBodyView(newView: React.ReactNode): void
+```
+
+**示例：**
+
+```tsx
+const onReady = (ctx: EnginContext) => {
+  const workbench = ctx.engine.getWorkbench();
+  workbench?.replaceBodyView(<CustomCanvas />);
+};
+```
+
+### replaceRightView
+
+替换右侧面板视图
+
+```typescript
+replaceRightView(newView: React.ReactNode): void
+```
+
+**示例：**
+
+```tsx
+const onReady = (ctx: EnginContext) => {
+  const workbench = ctx.engine.getWorkbench();
+  workbench?.replaceRightView(<CustomPropertyPanel />);
+};
+```
+
+### replaceSubTopBarView
+
+替换子顶部工具栏视图
+
+```typescript
+replaceSubTopBarView(newView: React.ReactNode): void
+```
+
+### addLeftPanel
+
+添加左侧面板
+
+```typescript
+addLeftPanel(panel: PanelItem): void
+```
+
+**PanelItem 类型：**
+
+```typescript
+type PanelItem = {
+  name: string;
+  title: string | React.ReactNode;
+  icon: React.ReactNode;
+  view: React.ReactNode;
+};
+```
+
+**示例：**
+
+```tsx
+const onReady = (ctx: EnginContext) => {
+  const workbench = ctx.engine.getWorkbench();
+  workbench?.addLeftPanel({
+    name: 'MyPanel',
+    title: '我的面板',
+    icon: <Icon />,
+    view: <MyPanelView />,
+  });
+};
+```
+
+### replaceLeftPanel
+
+替换指定的左侧面板
+
+```typescript
+replaceLeftPanel(panelName: string, newPanel: PanelItem): void
+```
+
+### openLeftPanel / closeLeftPanel
+
+打开/关闭左侧面板
+
+```typescript
+openLeftPanel(currentActiveLeftPanel?: string): Promise<void>
+closeLeftPanel(): Promise<void>
+```
+
+### toggleLeftPanel
+
+切换左侧面板显示状态
+
+```typescript
+toggleLeftPanel(): void
+```
+
+### openRightPanel / closeRightPanel
+
+打开/关闭右侧面板
+
+```typescript
+openRightPanel(): void
+closeRightPanel(): void
+```
+
+### toggleRightPanel
+
+切换右侧面板显示状态
+
+```typescript
+toggleRightPanel(): void
+```
+
+### addCustomView
+
+添加自定义视图
+
+```typescript
+addCustomView(view: WorkbenchCustomView): () => void
+```
+
+**返回值：** 返回一个 dispose 函数，调用后移除该视图
+
+**示例：**
+
+```tsx
+const onReady = (ctx: EnginContext) => {
+  const workbench = ctx.engine.getWorkbench();
+  const dispose = workbench?.addCustomView({
+    name: 'MyCustomView',
+    view: <MyCustomView />,
+  });
+
+  // 稍后移除
+  setTimeout(() => {
+    dispose?.();
+  }, 5000);
+};
+```
+
+### getHiddenWidgetConfig
+
+获取当前工作台组件的隐藏配置
+
+```typescript
+getHiddenWidgetConfig(): {
+  hiddenTopBar: boolean;
+  hiddenLeftPanel: boolean;
+  hiddenRightPanel: boolean;
+}
+```
+
+## PluginManager API
+
+通过 `ctx.pluginManager` 可以访问插件管理器，用于管理插件的生命周期。
+
+### get
+
+获取插件实例
+
+```typescript
+get<P extends PluginInstance<any, any>>(pluginName: string): Promise<P | undefined>
+```
+
+**示例：**
+
+```tsx
+const onReady = async (ctx: EnginContext) => {
+  // 获取设计器插件
+  const designerPlugin = await ctx.pluginManager.get('Designer');
+  const designerExport = designerPlugin?.export;
+
+  // 调用插件方法
+  designerExport?.reload();
+};
+```
+
+### add
+
+添加插件
+
+```typescript
+add(plugin: CPlugin): Promise<void>
+```
+
+### remove
+
+移除插件
+
+```typescript
+remove(name: string): Promise<void>
+```
+
+### customPlugin
+
+自定义插件配置。允许在插件初始化之前修改插件的配置。
+
+```typescript
+customPlugin<P extends PluginInstance<any, any>>(
+  pluginName: string,
+  customPluginHook: CustomPluginHook<P>
+): void
+```
+
+**参数：**
+
+- `pluginName`: 插件名称
+- `customPluginHook`: 自定义钩子函数，接收插件实例并返回修改后的插件实例
+
+**示例：**
+
+```tsx
+const beforePluginRun = ({ pluginManager }: { pluginManager: PluginManager }) => {
+  // 自定义设计器插件配置
+  pluginManager.customPlugin('Designer', (pluginInstance) => {
+    // 自定义渲染器
+    pluginInstance.ctx.config.customRender = customRender;
+
+    // 自定义 beforeInitRender
+    pluginInstance.ctx.config.beforeInitRender = async ({ iframe }) => {
+      const subWin = iframe.getWindow();
+      if (!subWin) return;
+
+      // 注入全局变量
+      (subWin as any).React = window.React;
+      (subWin as any).ReactDOM = window.ReactDOM;
+
+      // 注入自定义全局对象
+      (subWin as any).myCustomGlobal = {
+        config: {},
+        utils: {},
+      };
+    };
+
+    return pluginInstance;
+  });
+};
+
+<Engine
+  beforePluginRun={beforePluginRun}
+  // ... 其他 props
+/>;
+```
+
+### onPluginReadyOk
+
+等待插件准备完成
+
+```typescript
+onPluginReadyOk(
+  pluginName: string,
+  cb?: (pluginHandle: PluginInstance) => void
+): Promise<PluginInstance>
+```
+
+## 访问 Engine 实例
+
+Engine 实例会被挂载到全局对象上，可以通过以下方式访问：
+
+```typescript
+// 方式1: 通过 window.__CHAMELEON_ENG__ (构造函数中挂载)
+const engine = (window as any).__CHAMELEON_ENG__;
+
+// 方式2: 通过 window.__C_ENGINE__ (componentDidMount 中挂载)
+const engine = (window as any).__C_ENGINE__;
+
+// 方式3: 通过 onReady 回调（推荐）
+const onReady = (ctx: EnginContext) => {
+  const engine = ctx.engine;
+};
+
+// 方式4: 通过 ref（如果使用函数组件）
+const engineRef = useRef<Engine>(null);
+<Engine ref={engineRef} />;
+```
+
+:::tip
+推荐使用 `onReady` 回调来访问 Engine 实例，这样可以确保所有插件都已加载完成。
+:::
+
+## 类型定义
+
+### CPageDataType
+
+页面协议数据类型，定义了页面的完整结构。
+
+```typescript
+type CPageDataType = {
+  version: string;
+  name: string;
+  css?: CSSType;
+  componentsMeta?: ComponentMetaType[];
+  thirdLibs?: LibMetaType[];
+  componentsTree: CRootNodeDataType;
+  assets?: AssetPackage[];
+};
+```
+
+### CMaterialType
+
+组件物料类型，定义了组件的描述信息。
+
+```typescript
+type CMaterialType = {
+  componentName: string;
+  title: string;
+  icon?: React.ReactNode;
+  props?: CMaterialPropType[];
+  // ... 更多字段
+};
+```
+
+### AssetPackage
+
+资源包类型，定义了组件库的资源信息。
+
+```typescript
+type AssetPackage = {
+  package: string;
+  version: string;
+  urls: string[];
+  library?: string;
+};
+```
+
+更多类型定义请参考 `@chamn/model` 包的文档。
+
+## 完整示例
+
+以下是一个完整的示例，展示了 Engine API 的综合使用：
+
+```tsx
+import { Engine, plugins, EnginContext } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+import { Button, message } from 'antd';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const [pageSchema, setPageSchema] = useState(initialPageSchema);
+
+  const onMount = (ctx: EnginContext) => {
+    console.log('Engine mounted');
+  };
+
+  const onReady = async (ctx: EnginContext) => {
+    console.log('Engine ready!');
+
+    const { engine, pluginManager } = ctx;
+
+    // 1. 获取工作台实例并自定义界面
+    const workbench = engine.getWorkbench();
+    workbench?.replaceTopBarView(
+      <div style={{ padding: '0 20px', display: 'flex', justifyContent: 'space-between' }}>
+        <div>我的编辑器</div>
+        <div>
+          <Button onClick={() => engine.preview()}>预览</Button>
+          <Button onClick={() => engine.existPreview()}>退出预览</Button>
+          <Button onClick={handleSave}>保存</Button>
+        </div>
+      </div>
+    );
+
+    // 2. 监听节点选中变化
+    engine.emitter.on('onSelectNodeChange', ({ node }) => {
+      if (node) {
+        console.log('选中节点:', node);
+        message.info(`选中了 ${node.componentName} 组件`);
+      }
+    });
+
+    // 3. 监听物料更新
+    engine.emitter.on('updateMaterials', () => {
+      message.success('物料已更新');
+    });
+
+    // 4. 获取插件实例
+    const designerPlugin = await pluginManager.get('Designer');
+    const historyPlugin = await pluginManager.get('History');
+
+    // 5. 添加自定义左侧面板
+    workbench?.addLeftPanel({
+      name: 'CustomPanel',
+      title: '自定义面板',
+      icon: <Icon />,
+      view: <CustomPanelView engine={engine} />,
+    });
+  };
+
+  const handleSave = () => {
+    const engine = (window as any).__C_ENGINE__;
+    if (engine) {
+      const pageData = engine.pageModel.export();
+      localStorage.setItem('pageSchema', JSON.stringify(pageData));
+      message.success('保存成功');
+    }
+  };
+
+  const handleUpdateMaterials = async () => {
+    const engine = (window as any).__C_ENGINE__;
+    if (engine) {
+      const [materials, assetPackages] = await fetchMaterials();
+      await engine.updateMaterials(materials, assetPackages);
+    }
+  };
+
+  return (
+    <Engine
+      plugins={DEFAULT_PLUGIN_LIST}
+      schema={pageSchema}
+      material={materials}
+      assetPackagesList={assetPackagesList}
+      onReady={onReady}
+      onMount={onMount}
+      workbenchConfig={{
+        hiddenLeftPanel: false,
+        hiddenRightPanel: false,
+      }}
+    />
+  );
+}
+```
+
+## 常见问题
+
+### Q: 如何确保在访问 Engine 实例时所有插件都已加载完成？
+
+A: 使用 `onReady` 回调，它会在所有插件加载完成后调用：
+
+```tsx
+const onReady = async (ctx: EnginContext) => {
+  // 此时所有插件都已加载完成
+  const designerPlugin = await ctx.pluginManager.get('Designer');
+};
+```
+
+### Q: 如何动态更新页面数据？
+
+A: 使用 `updatePage` 方法：
+
+```tsx
+ctx.engine.updatePage(newPageSchema);
+```
+
+### Q: 如何监听页面节点的变化？
+
+A: 可以通过页面模型的 `emitter` 监听：
+
+```tsx
+ctx.engine.pageModel.emitter.on('onReloadPage', () => {
+  console.log('页面已重新加载');
+});
+```
+
+### Q: 如何自定义渲染器？
+
+A: 在 `beforePluginRun` 中自定义设计器插件的渲染配置：
+
+```tsx
+const beforePluginRun = ({ pluginManager }) => {
+  pluginManager.customPlugin('Designer', (pluginInstance) => {
+    pluginInstance.ctx.config.customRender = customRender;
+    return pluginInstance;
+  });
+};
+```
+
+## beforeInitRender 详解
+
+`beforeInitRender` 是设计器插件配置中的一个重要钩子函数，它在渲染器初始化**之前**被调用，用于准备 iframe 环境。
+
+### 函数签名
+
+```typescript
+type BeforeInitRender = (params: { iframe: IframeContainer }) => Promise<void> | void;
+```
+
+### 执行时机
+
+```
+1. 创建 iframe
+2. 加载 iframe URL/HTML
+3. ⭐ 调用 beforeInitRender（在这里初始化环境）
+4. 注入渲染器 JS
+5. 加载组件库资源
+6. 渲染页面
+```
+
+### 默认实现
+
+Engine 默认的 `beforeInitRender` 实现会将 React 相关库注入到 iframe 窗口中：
+
+```typescript
+const beforeInitRender = async ({ iframe }) => {
+  const subWin = iframe.getWindow();
+  if (!subWin) return;
+
+  // 注入 React 18 相关库
+  (subWin as any).React = window.React;
+  (subWin as any).ReactDOM = window.ReactDOM;
+  (subWin as any).ReactDOMClient = window.ReactDOMClient;
+};
+```
+
+### 使用场景
+
+#### 1. 注入全局变量
+
+向 iframe 中注入自定义的全局变量或对象：
+
+```tsx
+const beforePluginRun = ({ pluginManager }) => {
+  pluginManager.customPlugin('Designer', (pluginInstance) => {
+    pluginInstance.ctx.config.beforeInitRender = async ({ iframe }) => {
+      const subWin = iframe.getWindow();
+      if (!subWin) return;
+
+      // 注入配置对象
+      (subWin as any).APP_CONFIG = {
+        apiUrl: 'https://api.example.com',
+        theme: 'light',
+      };
+
+      // 注入工具函数
+      (subWin as any).utils = {
+        formatDate: (date) => {
+          /* ... */
+        },
+        request: (url) => {
+          /* ... */
+        },
+      };
+    };
+
+    return pluginInstance;
+  });
+};
+```
+
+#### 2. 配置跨窗口通信
+
+设置主窗口和 iframe 之间的通信机制：
+
+```tsx
+const beforePluginRun = ({ pluginManager }) => {
+  pluginManager.customPlugin('Designer', (pluginInstance) => {
+    pluginInstance.ctx.config.beforeInitRender = async ({ iframe }) => {
+      const subWin = iframe.getWindow();
+      if (!subWin) return;
+
+      // 设置消息监听
+      subWin.addEventListener('message', (event) => {
+        if (event.data.type === 'customEvent') {
+          console.log('收到来自组件的消息:', event.data);
+        }
+      });
+
+      // 注入发送消息的方法
+      (subWin as any).sendToParent = (data) => {
+        window.postMessage(data, '*');
+      };
+    };
+
+    return pluginInstance;
+  });
+};
+```
+
+#### 3. 注入第三方库
+
+在渲染前注入必要的第三方库：
+
+```tsx
+const beforePluginRun = ({ pluginManager }) => {
+  pluginManager.customPlugin('Designer', (pluginInstance) => {
+    pluginInstance.ctx.config.beforeInitRender = async ({ iframe }) => {
+      const subWin = iframe.getWindow();
+      if (!subWin) return;
+
+      // 注入 lodash
+      (subWin as any)._ = window._;
+
+      // 注入 moment
+      (subWin as any).moment = window.moment;
+
+      // 注入 axios
+      (subWin as any).axios = window.axios;
+    };
+
+    return pluginInstance;
+  });
+};
+```
+
+#### 4. 初始化样式或主题
+
+预先设置 iframe 的样式或主题：
+
+```tsx
+const beforePluginRun = ({ pluginManager }) => {
+  pluginManager.customPlugin('Designer', (pluginInstance) => {
+    pluginInstance.ctx.config.beforeInitRender = async ({ iframe }) => {
+      const subWin = iframe.getWindow();
+      const subDoc = iframe.getDocument();
+      if (!subWin || !subDoc) return;
+
+      // 注入主题变量
+      (subWin as any).THEME = {
+        primaryColor: '#1890ff',
+        fontSize: '14px',
+      };
+
+      // 添加全局样式
+      const style = subDoc.createElement('style');
+      style.textContent = `
+        * {
+          box-sizing: border-box;
+        }
+        body {
+          margin: 0;
+          padding: 0;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
+        }
+      `;
+      subDoc.head.appendChild(style);
+    };
+
+    return pluginInstance;
+  });
+};
+```
+
+#### 5. 设置调试工具
+
+在开发环境中注入调试工具：
+
+```tsx
+const beforePluginRun = ({ pluginManager }) => {
+  pluginManager.customPlugin('Designer', (pluginInstance) => {
+    pluginInstance.ctx.config.beforeInitRender = async ({ iframe }) => {
+      const subWin = iframe.getWindow();
+      if (!subWin) return;
+
+      if (process.env.NODE_ENV === 'development') {
+        // 注入调试工具
+        (subWin as any).__DEBUG__ = {
+          logProps: (componentName) => {
+            console.log(`组件 ${componentName} 的 props:` /* ... */);
+          },
+          inspect: (node) => {
+            console.log('节点信息:', node);
+          },
+        };
+
+        // 启用详细日志
+        (subWin as any).__ENABLE_VERBOSE_LOGGING__ = true;
+      }
+    };
+
+    return pluginInstance;
+  });
+};
+```
+
+#### 6. 模拟数据或 API
+
+为组件提供模拟数据或 API：
+
+```tsx
+const beforePluginRun = ({ pluginManager }) => {
+  pluginManager.customPlugin('Designer', (pluginInstance) => {
+    pluginInstance.ctx.config.beforeInitRender = async ({ iframe }) => {
+      const subWin = iframe.getWindow();
+      if (!subWin) return;
+
+      // 注入模拟 API
+      (subWin as any).mockAPI = {
+        getUserInfo: async () => ({
+          id: 1,
+          name: 'Test User',
+          email: 'test@example.com',
+        }),
+        getProducts: async () => [
+          { id: 1, name: 'Product 1', price: 100 },
+          { id: 2, name: 'Product 2', price: 200 },
+        ],
+      };
+    };
+
+    return pluginInstance;
+  });
+};
+```
+
+### 完整示例
+
+结合多个场景的完整示例：
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const beforePluginRun = ({ pluginManager }) => {
+    pluginManager.customPlugin('Designer', (pluginInstance) => {
+      pluginInstance.ctx.config.beforeInitRender = async ({ iframe }) => {
+        const subWin = iframe.getWindow();
+        const subDoc = iframe.getDocument();
+        if (!subWin || !subDoc) return;
+
+        // 1. 注入 React（必需）
+        (subWin as any).React = window.React;
+        (subWin as any).ReactDOM = window.ReactDOM;
+        (subWin as any).ReactDOMClient = window.ReactDOMClient;
+
+        // 2. 注入应用配置
+        (subWin as any).APP_CONFIG = {
+          apiUrl: process.env.REACT_APP_API_URL,
+          environment: process.env.NODE_ENV,
+          version: '1.0.0',
+        };
+
+        // 3. 注入第三方库
+        (subWin as any).axios = window.axios;
+        (subWin as any).dayjs = window.dayjs;
+
+        // 4. 设置通信
+        (subWin as any).sendToEditor = (data) => {
+          window.postMessage(
+            {
+              source: 'iframe',
+              ...data,
+            },
+            '*'
+          );
+        };
+
+        // 5. 添加全局样式
+        const style = subDoc.createElement('style');
+        style.textContent = `
+          :root {
+            --primary-color: #1890ff;
+            --text-color: #333;
+          }
+        `;
+        subDoc.head.appendChild(style);
+
+        // 6. 开发环境调试工具
+        if (process.env.NODE_ENV === 'development') {
+          (subWin as any).__DEBUG__ = {
+            log: (...args) => console.log('[iframe]', ...args),
+            error: (...args) => console.error('[iframe]', ...args),
+          };
+        }
+      };
+
+      return pluginInstance;
+    });
+  };
+
+  return (
+    <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} beforePluginRun={beforePluginRun} />
+  );
+}
+```
+
+### 注意事项
+
+1. **必须注入 React**：如果使用默认渲染器，必须确保注入 React、ReactDOM 和 ReactDOMClient
+2. **异步操作**：`beforeInitRender` 支持异步操作，可以使用 `async/await`
+3. **错误处理**：建议添加错误处理，确保 iframe 初始化不会失败
+4. **性能考虑**：避免在 `beforeInitRender` 中执行耗时操作
+5. **安全性**：注意不要注入敏感信息到 iframe 中
+
+### 与 customRender 的区别
+
+| 特性         | beforeInitRender       | customRender       |
+| :----------- | :--------------------- | :----------------- |
+| **执行时机** | 渲染器加载之前         | 渲染页面时         |
+| **主要用途** | 初始化 iframe 环境     | 自定义渲染逻辑     |
+| **是否必须** | 否（有默认实现）       | 否（有默认实现）   |
+| **典型场景** | 注入全局变量、配置环境 | 自定义页面渲染方式 |
+
+### 调试技巧
+
+```tsx
+const beforePluginRun = ({ pluginManager }) => {
+  pluginManager.customPlugin('Designer', (pluginInstance) => {
+    pluginInstance.ctx.config.beforeInitRender = async ({ iframe }) => {
+      const subWin = iframe.getWindow();
+      if (!subWin) {
+        console.error('无法获取 iframe window');
+        return;
+      }
+
+      console.log('beforeInitRender 开始执行');
+
+      // 注入变量
+      (subWin as any).React = window.React;
+
+      // 验证注入是否成功
+      console.log('React 注入成功:', !!(subWin as any).React);
+
+      // 监听 iframe 中的错误
+      subWin.addEventListener('error', (event) => {
+        console.error('iframe 错误:', event.error);
+      });
+
+      console.log('beforeInitRender 执行完成');
+    };
+
+    return pluginInstance;
+  });
+};
+```
+
+### Q: 如何获取当前页面的完整数据？
+
+A: 使用页面模型的 `export` 方法：
+
+```tsx
+const pageData = ctx.engine.pageModel.export();
+// 或导出特定格式
+const designData = ctx.engine.pageModel.export('design');
+```

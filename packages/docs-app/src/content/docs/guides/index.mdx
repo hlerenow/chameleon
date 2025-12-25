@@ -40,33 +40,110 @@ import engImg from '../../../assets/engine-thumbail.png';
 
 <Code code={cssSourceCode} lang="css" title="index.css" />
 
-## 拷贝 render.umd.js
+## 配置 render.umd.js
 
-因为渲染画布是在 iframe 中运行，所以需使用 umd 模式的 js，然后让 iframe 加载，这里只需要将 `render.umd.js` 拷贝到公共资源目录下即可，一般是 `public` 文件
+因为渲染画布是在 iframe 中运行，所以需使用 umd 模式的 js，然后让 iframe 加载。在 vite 构建工具下，有以下三种配置方式：
 
-```bash
-cp -rf ./node_modules/@chamn/render/dist/index.umd.js ./public/render.umd.js
-cp -rf ./node_modules/@chamn/render/dist/index.umd.js.map ./public/render.umd.js.map
+### 方式一：使用 `?url` 后缀导入（推荐）
+
+这是最简单的方式，直接使用 vite 的 `?url` 后缀导入文件 URL，无需额外配置：
+
+```tsx
+import renderAsURL from '@chamn/render/dist/index.umd.js?url';
+
+<Engine
+  plugins={DEFAULT_PLUGIN_LIST}
+  schema={page}
+  material={[...InnerComponentMeta, ...Material]}
+  assetPackagesList={assetPackagesList}
+  onReady={onReady}
+  renderJSUrl={renderAsURL}
+/>;
 ```
 
-如果公共资源文件夹不是 public，也可以自定义 `renderJSUrl`:
+或者从 node_modules 路径导入：
+
+```tsx
+import renderAsURL from '../../node_modules/@chamn/render/dist/index.umd.js?url';
+```
+
+### 方式二：使用 vite-plugin-static-copy 插件
+
+使用 `vite-plugin-static-copy` 插件在构建时自动将文件拷贝到输出目录：
+
+首先安装依赖：
+
+<Tabs>
+  <TabItem label="npm">```shell npm i vite-plugin-static-copy ```</TabItem>
+  <TabItem label="pnpm">```shell pnpm i vite-plugin-static-copy ```</TabItem>
+  <TabItem label="yarn">```shell yarn i vite-plugin-static-copy ```</TabItem>
+</Tabs>
+
+然后在 `vite.config.ts` 中配置：
+
+```ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import monacoEditorPlugin from 'vite-plugin-monaco-editor';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
+
+export default defineConfig({
+  plugins: [
+    react(),
+    monacoEditorPlugin({}),
+    viteStaticCopy({
+      targets: [
+        {
+          src: './node_modules/@chamn/render/dist/index.umd.js',
+          dest: './',
+          rename: 'render.umd.js',
+        },
+      ],
+    }),
+  ],
+});
+```
+
+这样构建时会自动将 `render.umd.js` 拷贝到输出目录的根目录下，然后使用相对路径：
 
 ```tsx
 <Engine
   plugins={DEFAULT_PLUGIN_LIST}
   schema={page}
-  // 传入组件物料, 这里使用内置的基础物料以及 测试物料信
   material={[...InnerComponentMeta, ...Material]}
-  // 传入组件物料对应的 js 运行库，只能使用 umd 模式的 js
   assetPackagesList={assetPackagesList}
   onReady={onReady}
-  renderJSUrl="./xxxx/render.umd.js"
+  renderJSUrl="./render.umd.js"
 />
 ```
 
-:::tip
-CDN 地址也可以使用, 如： https://www.xxx/com/xxx/render.umd.js
-:::
+### 方式三：使用 CDN 或自定义路径
+
+如果使用 CDN 或其他自定义路径，可以直接传入 URL：
+
+```tsx
+<Engine
+  plugins={DEFAULT_PLUGIN_LIST}
+  schema={page}
+  material={[...InnerComponentMeta, ...Material]}
+  assetPackagesList={assetPackagesList}
+  onReady={onReady}
+  renderJSUrl="https://cdn.example.com/render.umd.js"
+/>
+```
+
+或者使用相对路径：
+
+```tsx
+<Engine
+  plugins={DEFAULT_PLUGIN_LIST}
+  schema={page}
+  material={[...InnerComponentMeta, ...Material]}
+  assetPackagesList={assetPackagesList}
+  onReady={onReady}
+  renderJSUrl="./public/render.umd.js"
+/>
+```
 
 ## 配置 monaco-editor 构建
 

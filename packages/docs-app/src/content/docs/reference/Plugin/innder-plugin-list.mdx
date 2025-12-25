@@ -1,19 +1,121 @@
 ---
 sidebar:
   order: 3
-title: 内置插件
+title: 内置插件列表
 ---
 
-| <div style={{width: '300px'}}>插件名</div> | <div style={{width: '300px'}}>描述</div> | <div style={{width: '100px'}}>Code Link</div>                                                               |
-| :----------------------------------------- | :--------------------------------------- | :---------------------------------------------------------------------------------------------------------- |
-| OutlineTree                                | 展示页面层级结构                         | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/OutlineTree)         |
-| ComponentLibrary                           | 组件库面板                               | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/ComponentLibrary)    |
-| Designer                                   | 设计器画布                               | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/Designer)            |
-| GlobalStatePanel                           | 全局数据管理面板                         | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/GlobalStatePanel)    |
-| History                                    | 操作历史记录管理                         | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/History)             |
-| RightPanel                                 | 右侧面板                                 | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/RightPanel)          |
-| VisualPanelPlus                            | 元素样式面板                             | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/VisualPanelPlus)     |
-| PropertyPanel                              | 元素属性面板                             | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/PropertyPanel)       |
-| ComponentStatePanel                        | 组件状态面板                             | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/ComponentStatePanel) |
-| AdvancePanel                               | 组件高级面板                             | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/AdvancePanel)        |
-| DisplaySourceSchema                        | 源码展示插件                             | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/DisplaySourceSchema) |
+# 内置插件列表
+
+Chameleon Engine 提供了一套完整的内置插件系统。以下是所有可用的内置插件：
+
+## 核心插件
+
+### 默认插件列表 (DEFAULT_PLUGIN_LIST)
+
+以下插件包含在 `DEFAULT_PLUGIN_LIST` 中，是编辑器的核心功能：
+
+| 插件名               | 描述                           | 是否必需 | 使用文档                                                                     | 源码链接                                                                                                 |
+| :------------------- | :----------------------------- | :------- | :--------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------- |
+| **Designer**         | 设计器画布，负责页面渲染和编辑 | ✅ 必需  | [查看详情](../built-in-plugins-usage/#designerplugin---设计器画布)           | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/Designer)         |
+| **OutlineTree**      | 展示页面层级结构的树形视图     | 建议     | [查看详情](../built-in-plugins-usage/#outlinetreeplugin---页面结构树)        | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/OutlineTree)      |
+| **ComponentLibrary** | 组件库面板，显示可用组件       | 建议     | [查看详情](../built-in-plugins-usage/#componentlibplugin---组件库)           | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/ComponentLibrary) |
+| **GlobalStatePanel** | 全局数据管理面板               | 可选     | [查看详情](../built-in-plugins-usage/#globalstatepanelplugin---全局状态管理) | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/GlobalStatePanel) |
+| **RightPanel**       | 右侧面板容器                   | 建议     | [查看详情](../built-in-plugins-usage/#rightpanelplugin---右侧面板)           | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/RightPanel)       |
+| **History**          | 操作历史记录管理（撤销/重做）  | 建议     | [查看详情](../built-in-plugins-usage/#historyplugin---历史记录)              | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/History)          |
+| **Hotkeys**          | 快捷键支持                     | 建议     | [查看详情](../built-in-plugins-usage/#hotkeysplugin---快捷键)                | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/Hotkeys)          |
+
+## 右侧面板子插件
+
+以下插件在 RightPanel 中使用，提供具体的编辑功能：
+
+| 插件名                  | 描述             | 使用文档                                      | 源码链接                                                                                                    |
+| :---------------------- | :--------------- | :-------------------------------------------- | :---------------------------------------------------------------------------------------------------------- |
+| **PropertyPanel**       | 元素属性编辑面板 | [查看详情](../built-in-plugins-usage/#子面板) | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/PropertyPanel)       |
+| **VisualPanelPlus**     | 元素样式编辑面板 | [查看详情](../built-in-plugins-usage/#子面板) | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/VisualPanelPlus)     |
+| **ComponentStatePanel** | 组件状态管理面板 | [查看详情](../built-in-plugins-usage/#子面板) | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/ComponentStatePanel) |
+| **AdvancePanel**        | 组件高级设置面板 | [查看详情](../built-in-plugins-usage/#子面板) | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/AdvancePanel)        |
+| **EventPanel**          | 事件绑定面板     | [查看详情](../built-in-plugins-usage/#子面板) | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/EventPanel)          |
+
+## 独立插件
+
+以下插件可以独立使用，不包含在默认列表中：
+
+| 插件名                  | 描述                               | 使用文档                                                              | 源码链接                                                                                                    |
+| :---------------------- | :--------------------------------- | :-------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------- |
+| **DisplaySourceSchema** | 源码展示插件，查看页面 JSON Schema | [查看详情](../built-in-plugins-usage/#displaysourceschema---源码展示) | [Github](https://github.com/hlerenow/chameleon/tree/master/packages/engine/src/plugins/DisplaySourceSchema) |
+
+## 使用方式
+
+### 使用默认插件列表
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  return <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} />;
+}
+```
+
+### 自定义插件列表
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+const { DesignerPlugin, ComponentLibPlugin, OutlineTreePlugin, RightPanelPlugin, HistoryPlugin } = plugins;
+
+function App() {
+  // 只使用必要的插件
+  const customPluginList = [
+    DesignerPlugin, // 必需
+    ComponentLibPlugin, // 组件库
+    OutlineTreePlugin, // 结构树
+    RightPanelPlugin, // 右侧面板
+    HistoryPlugin, // 历史记录
+  ];
+
+  return <Engine plugins={customPluginList} schema={pageSchema} material={materials} />;
+}
+```
+
+### 添加独立插件
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+import { Button } from 'antd';
+import { DisplaySourceSchema } from '@chamn/engine';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const onReady = (ctx) => {
+    const workbench = ctx.engine.getWorkbench();
+
+    // 使用 DisplaySourceSchema 插件
+    workbench?.replaceTopBarView(
+      <DisplaySourceSchema pageModel={ctx.engine.pageModel} engineCtx={ctx}>
+        <Button>查看源码</Button>
+      </DisplaySourceSchema>
+    );
+  };
+
+  return <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} onReady={onReady} />;
+}
+```
+
+## 插件依赖关系
+
+- **DesignerPlugin** 是核心插件，其他插件都依赖它
+- **RightPanelPlugin** 是右侧面板的容器，PropertyPanel、VisualPanelPlus 等子面板依赖它
+- **HistoryPlugin** 依赖于页面模型的事件系统
+- **HotkeysPlugin** 依赖 DesignerPlugin 和 HistoryPlugin
+
+## 下一步
+
+- 查看 [内置插件使用指南](../built-in-plugins-usage/) 了解每个插件的详细用法
+- 查看 [插件开发文档](./plugin-develop/) 学习如何开发自定义插件
+- 查看 [自定义 Setter](./custom-setter/) 了解如何自定义属性设置器

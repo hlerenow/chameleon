@@ -23,6 +23,8 @@
     "@types/react-dom": "^18.3.0",
     "antd": "^5.23.2",
     "astro": "^5.5.3",
+    "astro-mermaid": "^1.2.0",
+    "mermaid": "^11.12.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "typescript": "~5.7.2"

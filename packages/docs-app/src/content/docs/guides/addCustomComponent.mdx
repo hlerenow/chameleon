@@ -8,89 +8,181 @@ import { Code } from '@astrojs/starlight/components';
 
 引擎内置只提供了基础的 HTML Tag 组件以及对应的物料, 如: div、p、video...等等，如果需要扩展使用自定义的物料，参考如下方式
 
-### 编辑器配置
+## 编辑器配置
 
-#### 导入组件物料以及组件库的
+### 导入组件物料
+
+首先需要导入自定义组件的物料描述。物料通常以 npm 包的形式提供，包含组件的元数据信息：
 
 ```tsx
-import CustomCompMaterial from 'chamn-material-demo/dist/meta.js';
+import { Engine, InnerComponentMeta, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
 
-import {
-  Engine,
-  EnginContext,
-  InnerComponentMeta,
-  collectVariable,
-  flatObject,
-  LayoutPropsType,
-  plugins,
-} from '@chamn/engine';
+// 导入自定义物料（假设物料包为 @custom/material）
+import customMaterial from '@custom/material/dist/meta';
 
+// 或者从本地文件导入
+// import customMaterial from './material/meta';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+```
+
+### 配置资源包列表
+
+编辑器模式下需要提供组件的 UMD 格式资源（JS 和 CSS），这些资源会在编辑器的 iframe 中加载：
+
+```tsx
+// 方式一：使用 CDN 资源
 const assetPackagesList = [
   {
-    package: '@custom/xxxx',
-    globalName: 'CustomComponent',
-    resources: [
-      // 这里使用 antd 做示例， 需要提供 antd 相关资源的 umd 地址，包括 js 和 css, 只是给编辑器模式下使用
-      {
-        src: 'https://cdn.jsdelivr.net/npm/antd@5.20.1/dist/antd.min.js',
-      },
-      {
-        src: 'https://cdn.jsdelivr.net/npm/antd@5.20.1/dist/reset.min.css',
-      },
-      {
-        src: 'https://cdn.jsdelivr.net/npm/dayjs@1.11.12/dayjs.min.js',
-      },
-    ],
-  },
-  {
-    package: 'customComponent',
-    globalName: 'ChameleonMaterialDemo',
+    package: '@custom/material',
+    globalName: 'CustomMaterial',
     resources: [
       {
-        src: './customComp/index.umd.js',
+        src: 'https://cdn.example.com/custom-material.umd.js',
+      },
+      {
+        src: 'https://cdn.example.com/custom-material.css',
       },
     ],
   },
 ];
 
-// ...
+// 方式二：使用本地资源（推荐使用 ?url 后缀导入， vite 构建工具会自动处理，其他工具需要自行处理）
+import customMaterialJS from '@custom/material/dist/index.umd.js?url';
+import customMaterialCSS from '@custom/material/dist/style.css?url';
 
-<Engine
-  plugins={DEFAULT_PLUGIN_LIST}
-  schema={page as any}
-  material={[...InnerComponentMeta, ...CustomCompMaterial.meta]}
-  component
-  onReady={onReady}
-/>;
-
-//...
+const assetPackagesList = [
+  {
+    package: '@custom/material',
+    globalName: 'CustomMaterial',
+    resources: [
+      {
+        src: customMaterialJS,
+      },
+      {
+        src: customMaterialCSS,
+      },
+    ],
+  },
+];
 ```
 
-#### 拷贝物料组件 UI 库
+### 完整示例
 
-```bash
-cp -rf ./node_modules/@chamn/render/dist/index.umd.js ./public/customComp/index.umd.js
+```tsx
+import { useState, useEffect } from 'react';
+import { Engine, InnerComponentMeta, plugins, EnginContext } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
 
+// 导入自定义物料
+import customMaterial from '@custom/material/dist/meta';
+
+// 导入资源文件
+import customMaterialJS from '@custom/material/dist/index.umd.js?url';
+import customMaterialCSS from '@custom/material/dist/style.css?url';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+const assetPackagesList = [
+  {
+    package: customMaterial.package || '@custom/material',
+    globalName: customMaterial.globalName || 'CustomMaterial',
+    resources: [
+      {
+        src: customMaterialJS,
+      },
+      {
+        src: customMaterialCSS,
+      },
+    ],
+  },
+];
+
+function Editor() {
+  const [page, setPage] = useState(null);
+
+  useEffect(() => {
+    // 从本地存储加载页面数据
+    const localPage = localStorage.getItem('pageSchema');
+    if (localPage) {
+      setPage(JSON.parse(localPage));
+    }
+  }, []);
+
+  const onReady = (ctx: EnginContext) => {
+    console.log('Engine ready!', ctx);
+  };
+
+  return (
+    <Engine
+      plugins={DEFAULT_PLUGIN_LIST}
+      schema={page}
+      // 传入组件物料，合并内置物料和自定义物料
+      material={[...InnerComponentMeta, ...customMaterial.meta]}
+      // 传入组件物料对应的 UMD 资源
+      assetPackagesList={assetPackagesList}
+      onReady={onReady}
+    />
+  );
+}
 ```
 
-### 渲染页面配置
+### 动态更新物料
 
-渲染页面可以直接 import npm 包不用提供 umd 模式的 js 资源
+如果需要在运行时动态添加物料，可以使用 `engine.updateMaterials` API：
+
+```tsx
+const onReady = async (ctx: EnginContext) => {
+  // 动态添加新的物料和资源
+  await ctx.engine.updateMaterials(
+    [
+      // 新的物料数组
+      {
+        componentName: 'NewComponent',
+        title: '新组件',
+        // ... 其他物料配置
+      },
+    ],
+    [
+      // 新的资源包列表
+      {
+        package: 'new-package',
+        globalName: 'NewPackage',
+        resources: [
+          {
+            src: 'https://cdn.example.com/new-package.umd.js',
+          },
+        ],
+      },
+    ]
+  );
+};
+```
+
+## 渲染页面配置
+
+渲染页面（预览/生产环境）可以直接 import npm 包，不需要提供 UMD 格式的资源：
 
 ```tsx
 import { useEffect, useState } from 'react';
 import { ReactAdapter, Render, useRender } from '@chamn/render';
+import { CPageDataType } from '@chamn/model';
+
+// 直接导入组件库
 import * as antd from 'antd';
-import CustomComps from '@custom/xxxx';
+import CustomComps from '@custom/material';
 
 const components = {
   ...antd,
   ...CustomComps,
 };
+
 export const Preview = () => {
-  const [page, setPage] = useState();
+  const [page, setPage] = useState<CPageDataType>();
   const renderHandle = useRender();
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const localPage = localStorage.getItem('pageSchema');
     if (localPage) {
@@ -98,9 +190,11 @@ export const Preview = () => {
       setLoading(false);
     }
   }, []);
+
   if (loading) {
-    return <>Not find page info on local, please ensure you save it on editor</>;
+    return <>未找到页面信息，请确保已在编辑器中保存</>;
   }
+
   return (
     <div className="App" style={{ overflow: 'auto', height: '100%' }}>
       <Render page={page} components={components} render={renderHandle} adapter={ReactAdapter} />
@@ -109,8 +203,16 @@ export const Preview = () => {
 };
 ```
 
-这样自定义的组件及可以被接入编辑器使用，可以被正确的渲染
+## 注意事项
+
+1. **物料格式**：物料对象需要包含 `meta` 属性，它是一个物料数组
+2. **资源格式**：编辑器模式下必须使用 UMD 格式的资源，资源会在 iframe 中动态加载
+3. **全局变量名**：`globalName` 需要与组件库导出的全局变量名一致
+4. **包名匹配**：`assetPackagesList` 中的 `package` 需要与物料中的 `npm.package` 字段匹配
+5. **渲染页面**：生产环境可以直接使用 npm 包，无需 UMD 资源
 
 :::tip
 如何开发自定义组件物料？
+
+查看 [物料开发指南](../reference/Material/developMaterial/) 了解如何开发自定义组件物料。
 :::
