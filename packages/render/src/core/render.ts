@@ -61,7 +61,7 @@ export class Render extends React.Component<
 
   render() {
     const { props } = this;
-    const { adapter, onGetComponent, onComponentDestroy, onComponentMount, doc } = props;
+    const { adapter, onGetComponent, onComponentDestroy, onComponentMount } = props;
     const { pageModel } = this.state;
     // todo: 加载 page 资源
     // todo: 收集所有的 第三方库
@@ -75,6 +75,10 @@ export class Render extends React.Component<
     };
 
     const $$context: any = this.props.$$context || {};
+    let newDoc = this.props.doc;
+    if (typeof window !== 'undefined') {
+      newDoc = this.props.doc || window.document;
+    }
     const PageRoot = adapter.pageRender(pageModel, {
       libs: {},
       components: finalComponents,
@@ -90,7 +94,7 @@ export class Render extends React.Component<
       renderMode: props.renderMode || 'normal',
       requestAPI: props.requestAPI ?? adapter.requestAPI,
       processNodeConfigHook: props.processNodeConfigHook,
-      doc: doc || document,
+      doc: newDoc!,
     });
 
     return PageRoot;
