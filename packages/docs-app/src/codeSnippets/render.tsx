@@ -1,18 +1,26 @@
-import React from 'react';
 import { useEffect, useState } from 'react';
-import { ReactAdapter, Render, useRender, AssetLoader, collectVariable, flatObject } from '@chamn/render';
+import {
+  ReactAdapter,
+  Render,
+  useRender,
+  AssetLoader,
+  collectVariable,
+  flatObject,
+  getComponentsLibs,
+  getThirdLibs,
+} from '@chamn/render';
 import { AssetPackage, CPageDataType } from '@chamn/model';
 
+// 加载资源并收集组件
 const loadAssets = async (assets: AssetPackage[]) => {
-  // 注入组件物料资源
   const assetLoader = new AssetLoader(assets);
   try {
     await assetLoader.load();
-    // 从子窗口获取物料对象
+    // 从 window 对象收集组件变量
     const componentCollection = collectVariable(assets, window);
-    const components = flatObject(componentCollection);
-    return components;
+    return componentCollection;
   } catch (e) {
+    console.error('Failed to load assets:', e);
     return null;
   }
 };
@@ -22,34 +30,45 @@ export const Preview = () => {
   const renderHandle = useRender();
   const [loading, setLoading] = useState(true);
   const [pageComponents, setPageComponents] = useState({});
-  const loadPageAssets = async (assets: AssetPackage[]) => {
-    const components = await loadAssets(assets);
-    if (components) {
-      setPageComponents(components);
+  const [renderContext, setRenderContext] = useState({});
+
+  // 加载页面资源并区分组件库和第三方库
+  const loadPageAssets = async (pageInfo: CPageDataType) => {
+    const assets = pageInfo.assets || [];
+    const allLibs = (await loadAssets(assets)) || {};
+
+    // 区分 UI 组件库和第三方库
+    const componentsLibs = getComponentsLibs(flatObject(allLibs), pageInfo.componentsMeta || []);
+    const thirdLibs = getThirdLibs(allLibs, pageInfo.thirdLibs || []);
+
+    if (componentsLibs) {
+      setPageComponents(componentsLibs);
+      setRenderContext({ thirdLibs });
       setLoading(false);
     }
   };
+
   useEffect(() => {
     const localPage = localStorage.getItem('pageSchema');
     if (localPage) {
       const page: CPageDataType = JSON.parse(localPage);
       setPage(page);
-      loadPageAssets(page.assets || []);
+      loadPageAssets(page);
     }
   }, []);
 
   if (loading) {
-    return <>Not find page info on local, please ensure you save it on editor</>;
+    return <>加载中...</>;
   }
+
   return (
     <div className="App" style={{ overflow: 'auto', height: '100%' }}>
       <Render
         page={page}
-        components={{
-          ...pageComponents,
-        }}
+        components={pageComponents}
         render={renderHandle}
         adapter={ReactAdapter}
+        $$context={renderContext}
       />
     </div>
   );

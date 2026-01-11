@@ -1,7 +1,9 @@
+/* eslint-disable no-undef */
 import { defineConfig, passthroughImageService } from 'astro/config';
 import starlight from '@astrojs/starlight';
-
 import react from '@astrojs/react';
+import astroMermaid from 'astro-mermaid';
+
 const isProd = process.env.NODE_ENV === 'production';
 console.log('🚀 ~ isProd:', isProd);
 
@@ -30,6 +32,9 @@ export default defineConfig({
       ],
     }),
     react(),
+    astroMermaid({
+      theme: 'default',
+    }),
   ],
   image: {
     service: passthroughImageService(),

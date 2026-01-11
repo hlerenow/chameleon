@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.0](https://github.com/hlerenow/chameleon/compare/v0.9.3...v0.10.0) (2025-12-25)
+
+### ✨ Features | 新功能
+
+* **engine:** 🎸 optimize emptyValueSetter auto trigger value update ([a2b0409](https://github.com/hlerenow/chameleon/commit/a2b04094035d421638d4657d31fd2b417906e9c6))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* 优化构建配置，修复 ES 模块外部化问题 ([866f0ae](https://github.com/hlerenow/chameleon/commit/866f0ae39472625137d73d143625d88d873f6c00))
+
+### 📝 Documentation | 文档
+
+* 添加 GridLayout 代码示例和插件开发文档 ([cade905](https://github.com/hlerenow/chameleon/commit/cade90591efff604a8ab3395c905c4f713ba2b93))
+* **build-script:** 添加完整的 README 使用文档 ([fcd6172](https://github.com/hlerenow/chameleon/commit/fcd6172e381364f010986864593264b160380342))
+
 ## [0.9.3](https://github.com/ByteCrazy/chameleon/compare/v0.9.2...v0.9.3) (2025-07-20)
 
 ### ✨ Features | 新功能

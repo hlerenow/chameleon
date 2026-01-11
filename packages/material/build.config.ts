@@ -31,28 +31,15 @@ if (LIB_NAME) {
   const libConfig = {
     entry: './src/index.tsx',
     libName: GLOBAL_LIB_NAME,
-    formats: process.env.DEV ? ['umd'] : ['es', 'cjs', 'umd'],
-    fileName: 'index',
-    external: ['react'],
+    // formats 会根据构建模式自动设置：生产模式包含 umd，开发模式只有 cjs 和 es
     global: {
       react: 'React',
+      'react-dom/client': 'ReactDOM',
+      'react-dom': 'ReactDOM',
     },
     // 额外的 vite 配置
     vite: {
       define: envDefine,
-      build: {
-        lib: {
-          fileName: (format, entryName) => {
-            if (format === 'umd') {
-              return `${entryName}.${format}.js`;
-            }
-            if (format === 'cjs') {
-              return `${entryName}.${format}`;
-            }
-            return `${entryName}.js`;
-          },
-        },
-      },
     },
   };
 
@@ -73,15 +60,6 @@ if (LIB_NAME) {
           if (assetInfo.name === 'style.css' && LIB_NAME !== 'index')
             return `${LIB_NAME}.css`;
           return assetInfo.name;
-        },
-        lib: {
-          fileName: (format) => {
-            if (format === 'es') {
-              return 'meta.js';
-            } else {
-              return `meta.${format}.js`;
-            }
-          },
         },
       },
       define: envDefine,

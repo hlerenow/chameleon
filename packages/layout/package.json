@@ -1,6 +1,6 @@
 {
   "name": "@chamn/layout",
-  "version": "0.9.3",
+  "version": "0.10.0",
   "publishConfig": {
     "access": "public"
   },
@@ -8,9 +8,18 @@
     "dist"
   ],
   "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "module-sync": "./dist/index.es.js",
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.cjs.js"
+    },
+    "./dist/*": "./dist/*"
+  },
   "scripts": {
     "start": "build-script",
     "build": "build-script --build",

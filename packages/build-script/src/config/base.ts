@@ -22,12 +22,29 @@ if (!fs.pathExistsSync(customConfigPath)) {
   customConfigPath = `${PROJECT_ROOT}/build.config.ts`;
 }
 
+export type ExternalOption = (string | RegExp)[] | ((id: string, importer?: string, isResolved?: boolean) => boolean);
+
 export type BuildScriptConfig = {
   libMode?: boolean;
   entry: string;
   libName?: string;
   fileName?: string;
-  external?: string[];
+  /* 样式文件名 */
+  cssFileName?: string;
+  /* 通用的 external 配置，对所有格式生效 */
+  external?: ExternalOption;
+  /* 按格式配置不同的 external 规则，优先级高于 external */
+  externalByFormat?: {
+    es?: ExternalOption;
+    cjs?: ExternalOption;
+    umd?: ExternalOption;
+    iife?: ExternalOption;
+  };
+  /* 自定义需要排除的别名前缀列表，这些路径不会被外部化
+   * 默认值：['@/', '~/', '#/']
+   * 示例：['@/', '~/', '$lib/', '@src/']
+   */
+  externalAlias?: string[];
   global?: Record<string, string>;
   formats?: LibraryOptions['formats'];
   vite?: UserConfig;

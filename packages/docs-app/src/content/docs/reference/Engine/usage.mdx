@@ -1,0 +1,866 @@
+---
+title: Engine 使用示例
+sidebar:
+  order: 3
+---
+
+# Engine 使用示例
+
+## 基础使用
+
+最简单的使用方式，使用默认插件列表：
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  return (
+    <Engine
+      plugins={DEFAULT_PLUGIN_LIST}
+      schema={pageSchema}
+      material={materials}
+      assetPackagesList={assetPackagesList}
+    />
+  );
+}
+```
+
+## 自定义插件列表
+
+只使用部分插件：
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+const { DesignerPlugin, ComponentLibPlugin, RightPanelPlugin } = plugins;
+
+function App() {
+  return (
+    <Engine plugins={[DesignerPlugin, ComponentLibPlugin, RightPanelPlugin]} schema={pageSchema} material={materials} />
+  );
+}
+```
+
+## 生命周期回调
+
+使用 `onReady` 和 `onMount` 回调：
+
+```tsx
+import { Engine, plugins, EnginContext } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const onMount = (ctx: EnginContext) => {
+    console.log('Engine 已挂载');
+  };
+
+  const onReady = async (ctx: EnginContext) => {
+    console.log('所有插件已加载完成');
+
+    // 可以在这里访问 pluginManager 和 engine
+    const pluginManager = ctx.pluginManager;
+    const engine = ctx.engine;
+
+    // 获取设计器插件
+    const designerPlugin = await pluginManager.get('Designer');
+
+    // 获取历史记录插件
+    const historyPlugin = await pluginManager.get('History');
+  };
+
+  return (
+    <Engine
+      plugins={DEFAULT_PLUGIN_LIST}
+      schema={pageSchema}
+      material={materials}
+      onMount={onMount}
+      onReady={onReady}
+    />
+  );
+}
+```
+
+## 自定义工作台
+
+通过 `workbenchConfig` 配置工作台：
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  return (
+    <Engine
+      plugins={DEFAULT_PLUGIN_LIST}
+      schema={pageSchema}
+      material={materials}
+      workbenchConfig={{
+        // 初始隐藏左侧面板
+        hiddenLeftPanel: true,
+        // 初始隐藏右侧面板
+        hiddenRightPanel: true,
+      }}
+    />
+  );
+}
+```
+
+## 动态控制工作台
+
+通过 `onReady` 回调动态控制工作台：
+
+```tsx
+import { Engine, plugins, EnginContext } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+import { Button } from 'antd';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const onReady = (ctx: EnginContext) => {
+    const workbench = ctx.engine.getWorkbench();
+
+    // 自定义顶部栏
+    workbench?.replaceTopBarView(
+      <div style={{ padding: '0 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>我的编辑器</div>
+        <div>
+          <Button onClick={() => ctx.engine.preview()}>预览</Button>
+          <Button onClick={() => ctx.engine.existPreview()}>退出预览</Button>
+        </div>
+      </div>
+    );
+  };
+
+  return <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} onReady={onReady} />;
+}
+```
+
+## 保存和加载页面数据
+
+```tsx
+import { Engine, plugins, EnginContext } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+import { Button, message } from 'antd';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const [pageSchema, setPageSchema] = useState(() => {
+    // 从本地存储加载
+    const saved = localStorage.getItem('pageSchema');
+    return saved ? JSON.parse(saved) : defaultPageSchema;
+  });
+
+  const onReady = (ctx: EnginContext) => {
+    const workbench = ctx.engine.getWorkbench();
+
+    workbench?.replaceTopBarView(
+      <div style={{ padding: '0 20px', display: 'flex', justifyContent: 'flex-end' }}>
+        <Button
+          type="primary"
+          onClick={() => {
+            // 导出页面数据
+            const pageData = ctx.engine.pageModel.export();
+            localStorage.setItem('pageSchema', JSON.stringify(pageData));
+            message.success('保存成功');
+          }}
+        >
+          保存
+        </Button>
+      </div>
+    );
+  };
+
+  return <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} onReady={onReady} />;
+}
+```
+
+## 动态更新页面
+
+```tsx
+import { Engine, plugins, EnginContext } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+import { Button } from 'antd';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const onReady = (ctx: EnginContext) => {
+    const workbench = ctx.engine.getWorkbench();
+
+    workbench?.replaceTopBarView(
+      <Button
+        onClick={() => {
+          // 从服务器获取新页面数据
+          fetch('/api/page')
+            .then((res) => res.json())
+            .then((newPageSchema) => {
+              // 更新页面
+              ctx.engine.updatePage(newPageSchema);
+            });
+        }}
+      >
+        刷新页面
+      </Button>
+    );
+  };
+
+  return <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} onReady={onReady} />;
+}
+```
+
+## 动态更新物料
+
+```tsx
+import { Engine, plugins, EnginContext } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+import { Button } from 'antd';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const onReady = async (ctx: EnginContext) => {
+    const workbench = ctx.engine.getWorkbench();
+
+    workbench?.replaceTopBarView(
+      <Button
+        onClick={async () => {
+          // 从服务器获取新物料
+          const [newMaterials, newAssetPackages] = await Promise.all([
+            fetch('/api/materials').then((res) => res.json()),
+            fetch('/api/asset-packages').then((res) => res.json()),
+          ]);
+
+          // 更新物料
+          await ctx.engine.updateMaterials(newMaterials, newAssetPackages, {
+            formatComponents: (components) => {
+              // 自定义组件格式化逻辑
+              return components;
+            },
+          });
+        }}
+      >
+        更新物料
+      </Button>
+    );
+  };
+
+  return (
+    <Engine
+      plugins={DEFAULT_PLUGIN_LIST}
+      schema={pageSchema}
+      material={materials}
+      assetPackagesList={assetPackagesList}
+      onReady={onReady}
+    />
+  );
+}
+```
+
+## 监听节点选中
+
+```tsx
+import { Engine, plugins, EnginContext } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const onReady = (ctx: EnginContext) => {
+    // 监听节点选中变化
+    ctx.engine.emitter.on('onSelectNodeChange', ({ node }) => {
+      if (node) {
+        console.log('选中节点:', node);
+        console.log('节点ID:', node.id);
+        console.log('组件名:', node.componentName);
+      } else {
+        console.log('取消选中');
+      }
+    });
+  };
+
+  return <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} onReady={onReady} />;
+}
+```
+
+## 自定义渲染器 JS 地址
+
+如果渲染器 JS 不在默认位置，可以自定义：
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  return (
+    <Engine
+      plugins={DEFAULT_PLUGIN_LIST}
+      schema={pageSchema}
+      material={materials}
+      // 使用 CDN 地址
+      renderJSUrl="https://cdn.example.com/render.umd.js"
+      // 或使用相对路径
+      // renderJSUrl="/assets/render.umd.js"
+    />
+  );
+}
+```
+
+## 配置 Monaco Editor CDN
+
+如果使用 CDN 加载 Monaco Editor：
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  return (
+    <Engine
+      plugins={DEFAULT_PLUGIN_LIST}
+      schema={pageSchema}
+      material={materials}
+      monacoEditor={{
+        cndUrl: 'https://cdn.jsdelivr.net/npm/monaco-editor@latest/min/vs',
+      }}
+    />
+  );
+}
+```
+
+## 自定义样式
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+import './custom.css';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  return (
+    <Engine
+      plugins={DEFAULT_PLUGIN_LIST}
+      schema={pageSchema}
+      material={materials}
+      className="my-custom-engine"
+      style={{
+        width: '100%',
+        height: '100vh',
+      }}
+    />
+  );
+}
+```
+
+## 使用 beforeInitRender
+
+`beforeInitRender` 用于在渲染器初始化之前配置 iframe 环境。
+
+### 场景 1: 注入全局变量和配置
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const beforePluginRun = ({ pluginManager }) => {
+    pluginManager.customPlugin('Designer', (pluginInstance) => {
+      pluginInstance.ctx.config.beforeInitRender = async ({ iframe }) => {
+        const subWin = iframe.getWindow();
+        if (!subWin) return;
+
+        // 必须：注入 React
+        (subWin as any).React = window.React;
+        (subWin as any).ReactDOM = window.ReactDOM;
+        (subWin as any).ReactDOMClient = window.ReactDOMClient;
+
+        // 注入应用配置
+        (subWin as any).APP_CONFIG = {
+          apiUrl: process.env.REACT_APP_API_URL,
+          theme: 'light',
+          language: 'zh-CN',
+        };
+
+        // 注入工具函数
+        (subWin as any).utils = {
+          formatDate: (date) => new Date(date).toLocaleDateString(),
+          formatCurrency: (amount) => `¥${amount.toFixed(2)}`,
+        };
+      };
+
+      return pluginInstance;
+    });
+  };
+
+  return (
+    <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} beforePluginRun={beforePluginRun} />
+  );
+}
+```
+
+### 场景 2: 注入第三方库
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+import axios from 'axios';
+import dayjs from 'dayjs';
+import _ from 'lodash';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const beforePluginRun = ({ pluginManager }) => {
+    pluginManager.customPlugin('Designer', (pluginInstance) => {
+      pluginInstance.ctx.config.beforeInitRender = async ({ iframe }) => {
+        const subWin = iframe.getWindow();
+        if (!subWin) return;
+
+        // 注入 React（必需）
+        (subWin as any).React = window.React;
+        (subWin as any).ReactDOM = window.ReactDOM;
+        (subWin as any).ReactDOMClient = window.ReactDOMClient;
+
+        // 注入第三方库
+        (subWin as any).axios = axios;
+        (subWin as any).dayjs = dayjs;
+        (subWin as any)._ = _;
+
+        console.log('第三方库注入成功');
+      };
+
+      return pluginInstance;
+    });
+  };
+
+  return (
+    <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} beforePluginRun={beforePluginRun} />
+  );
+}
+```
+
+### 场景 3: 设置跨窗口通信
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+import { message } from 'antd';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const beforePluginRun = ({ pluginManager }) => {
+    pluginManager.customPlugin('Designer', (pluginInstance) => {
+      pluginInstance.ctx.config.beforeInitRender = async ({ iframe }) => {
+        const subWin = iframe.getWindow();
+        if (!subWin) return;
+
+        // 注入 React
+        (subWin as any).React = window.React;
+        (subWin as any).ReactDOM = window.ReactDOM;
+        (subWin as any).ReactDOMClient = window.ReactDOMClient;
+
+        // 监听来自 iframe 的消息
+        subWin.addEventListener('message', (event) => {
+          if (event.data.source === 'component') {
+            console.log('收到组件消息:', event.data);
+
+            // 处理不同类型的消息
+            switch (event.data.type) {
+              case 'notification':
+                message.info(event.data.message);
+                break;
+              case 'error':
+                message.error(event.data.message);
+                break;
+            }
+          }
+        });
+
+        // 注入发送消息到父窗口的方法
+        (subWin as any).sendToEditor = (data) => {
+          window.postMessage(
+            {
+              source: 'iframe',
+              timestamp: Date.now(),
+              ...data,
+            },
+            '*'
+          );
+        };
+      };
+
+      return pluginInstance;
+    });
+  };
+
+  return (
+    <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} beforePluginRun={beforePluginRun} />
+  );
+}
+```
+
+### 场景 4: 初始化主题和样式
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const beforePluginRun = ({ pluginManager }) => {
+    pluginManager.customPlugin('Designer', (pluginInstance) => {
+      pluginInstance.ctx.config.beforeInitRender = async ({ iframe }) => {
+        const subWin = iframe.getWindow();
+        const subDoc = iframe.getDocument();
+        if (!subWin || !subDoc) return;
+
+        // 注入 React
+        (subWin as any).React = window.React;
+        (subWin as any).ReactDOM = window.ReactDOM;
+        (subWin as any).ReactDOMClient = window.ReactDOMClient;
+
+        // 注入主题配置
+        (subWin as any).THEME = {
+          primaryColor: '#1890ff',
+          successColor: '#52c41a',
+          warningColor: '#faad14',
+          errorColor: '#ff4d4f',
+          fontSize: '14px',
+          borderRadius: '4px',
+        };
+
+        // 添加全局样式
+        const style = subDoc.createElement('style');
+        style.textContent = `
+          :root {
+            --primary-color: #1890ff;
+            --text-color: #333;
+            --border-color: #d9d9d9;
+          }
+
+          * {
+            box-sizing: border-box;
+          }
+
+          body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+              'Helvetica Neue', Arial, sans-serif;
+            color: var(--text-color);
+          }
+        `;
+        subDoc.head.appendChild(style);
+      };
+
+      return pluginInstance;
+    });
+  };
+
+  return (
+    <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} beforePluginRun={beforePluginRun} />
+  );
+}
+```
+
+### 场景 5: 注入模拟数据和 API
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const beforePluginRun = ({ pluginManager }) => {
+    pluginManager.customPlugin('Designer', (pluginInstance) => {
+      pluginInstance.ctx.config.beforeInitRender = async ({ iframe }) => {
+        const subWin = iframe.getWindow();
+        if (!subWin) return;
+
+        // 注入 React
+        (subWin as any).React = window.React;
+        (subWin as any).ReactDOM = window.ReactDOM;
+        (subWin as any).ReactDOMClient = window.ReactDOMClient;
+
+        // 注入模拟 API
+        (subWin as any).mockAPI = {
+          // 获取用户信息
+          getUserInfo: async () => {
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            return {
+              id: 1,
+              name: '张三',
+              email: 'zhangsan@example.com',
+              avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
+            };
+          },
+
+          // 获取产品列表
+          getProducts: async () => {
+            await new Promise((resolve) => setTimeout(resolve, 300));
+            return [
+              { id: 1, name: '产品 A', price: 299, stock: 100 },
+              { id: 2, name: '产品 B', price: 399, stock: 50 },
+              { id: 3, name: '产品 C', price: 199, stock: 200 },
+            ];
+          },
+
+          // 提交订单
+          submitOrder: async (orderData) => {
+            await new Promise((resolve) => setTimeout(resolve, 800));
+            console.log('提交订单:', orderData);
+            return {
+              success: true,
+              orderId: `ORDER-${Date.now()}`,
+            };
+          },
+        };
+
+        // 注入模拟数据
+        (subWin as any).mockData = {
+          users: [
+            { id: 1, name: '张三', role: 'admin' },
+            { id: 2, name: '李四', role: 'user' },
+          ],
+          categories: ['电子产品', '图书', '服装', '食品'],
+        };
+      };
+
+      return pluginInstance;
+    });
+  };
+
+  return (
+    <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} beforePluginRun={beforePluginRun} />
+  );
+}
+```
+
+### 场景 6: 开发环境调试工具
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const beforePluginRun = ({ pluginManager }) => {
+    pluginManager.customPlugin('Designer', (pluginInstance) => {
+      pluginInstance.ctx.config.beforeInitRender = async ({ iframe }) => {
+        const subWin = iframe.getWindow();
+        if (!subWin) return;
+
+        // 注入 React
+        (subWin as any).React = window.React;
+        (subWin as any).ReactDOM = window.ReactDOM;
+        (subWin as any).ReactDOMClient = window.ReactDOMClient;
+
+        // 只在开发环境注入调试工具
+        if (process.env.NODE_ENV === 'development') {
+          // 调试工具对象
+          (subWin as any).__DEBUG__ = {
+            // 日志工具
+            log: (...args) => {
+              console.log('[iframe]', ...args);
+            },
+            error: (...args) => {
+              console.error('[iframe]', ...args);
+            },
+            warn: (...args) => {
+              console.warn('[iframe]', ...args);
+            },
+
+            // 组件调试
+            inspectComponent: (componentName) => {
+              console.log(`检查组件: ${componentName}`);
+              // 可以添加更多检查逻辑
+            },
+
+            // 性能监控
+            performance: {
+              start: (label) => {
+                console.time(`[iframe] ${label}`);
+              },
+              end: (label) => {
+                console.timeEnd(`[iframe] ${label}`);
+              },
+            },
+          };
+
+          // 启用详细日志
+          (subWin as any).__VERBOSE_LOGGING__ = true;
+
+          // 监听错误
+          subWin.addEventListener('error', (event) => {
+            console.error('[iframe error]', {
+              message: event.error?.message,
+              stack: event.error?.stack,
+              filename: event.filename,
+              lineno: event.lineno,
+            });
+          });
+
+          // 监听未捕获的 Promise 错误
+          subWin.addEventListener('unhandledrejection', (event) => {
+            console.error('[iframe unhandled promise]', event.reason);
+          });
+        }
+      };
+
+      return pluginInstance;
+    });
+  };
+
+  return (
+    <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} beforePluginRun={beforePluginRun} />
+  );
+}
+```
+
+### 综合示例：完整的 beforeInitRender 配置
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+import axios from 'axios';
+import dayjs from 'dayjs';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const beforePluginRun = ({ pluginManager }) => {
+    pluginManager.customPlugin('Designer', (pluginInstance) => {
+      pluginInstance.ctx.config.beforeInitRender = async ({ iframe }) => {
+        const subWin = iframe.getWindow();
+        const subDoc = iframe.getDocument();
+
+        if (!subWin || !subDoc) {
+          console.error('无法获取 iframe window 或 document');
+          return;
+        }
+
+        console.log('开始初始化 iframe 环境...');
+
+        try {
+          // 1. 注入 React（必需）
+          (subWin as any).React = window.React;
+          (subWin as any).ReactDOM = window.ReactDOM;
+          (subWin as any).ReactDOMClient = window.ReactDOMClient;
+          console.log('✓ React 注入成功');
+
+          // 2. 注入应用配置
+          (subWin as any).APP_CONFIG = {
+            apiUrl: process.env.REACT_APP_API_URL || 'https://api.example.com',
+            environment: process.env.NODE_ENV,
+            version: '1.0.0',
+            features: {
+              enableAnalytics: true,
+              enableDebug: process.env.NODE_ENV === 'development',
+            },
+          };
+          console.log('✓ 应用配置注入成功');
+
+          // 3. 注入第三方库
+          (subWin as any).axios = axios;
+          (subWin as any).dayjs = dayjs;
+          console.log('✓ 第三方库注入成功');
+
+          // 4. 设置跨窗口通信
+          (subWin as any).sendToEditor = (data) => {
+            window.postMessage(
+              {
+                source: 'iframe',
+                timestamp: Date.now(),
+                ...data,
+              },
+              '*'
+            );
+          };
+
+          subWin.addEventListener('message', (event) => {
+            if (event.data.source === 'component') {
+              console.log('收到组件消息:', event.data);
+            }
+          });
+          console.log('✓ 跨窗口通信设置成功');
+
+          // 5. 初始化样式和主题
+          (subWin as any).THEME = {
+            primaryColor: '#1890ff',
+            fontSize: '14px',
+          };
+
+          const style = subDoc.createElement('style');
+          style.textContent = `
+            :root {
+              --primary-color: #1890ff;
+              --text-color: #333;
+            }
+            * { box-sizing: border-box; }
+            body {
+              margin: 0;
+              padding: 0;
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto;
+            }
+          `;
+          subDoc.head.appendChild(style);
+          console.log('✓ 主题和样式初始化成功');
+
+          // 6. 开发环境配置
+          if (process.env.NODE_ENV === 'development') {
+            (subWin as any).__DEBUG__ = {
+              log: (...args) => console.log('[iframe]', ...args),
+              error: (...args) => console.error('[iframe]', ...args),
+            };
+
+            subWin.addEventListener('error', (event) => {
+              console.error('[iframe error]', event.error);
+            });
+
+            console.log('✓ 调试工具初始化成功');
+          }
+
+          console.log('iframe 环境初始化完成！');
+        } catch (error) {
+          console.error('iframe 环境初始化失败:', error);
+        }
+      };
+
+      return pluginInstance;
+    });
+  };
+
+  return (
+    <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} beforePluginRun={beforePluginRun} />
+  );
+}
+```
+
+:::tip
+**注意事项：**
+
+1. 必须注入 React、ReactDOM 和 ReactDOMClient，否则渲染器无法正常工作
+2. `beforeInitRender` 会在每次重新加载 iframe 时执行
+3. 建议添加错误处理，确保初始化过程的健壮性
+4. 可以通过 `console.log` 验证注入是否成功
+   :::

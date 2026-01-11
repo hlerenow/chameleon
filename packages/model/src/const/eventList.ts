@@ -1,4 +1,4 @@
-import { CMaterialEventType } from '@/types/material';
+import { CMaterialEventType } from '../types/material';
 
 export const DEFAULT_EVENT_LIST: CMaterialEventType[] = [
   {

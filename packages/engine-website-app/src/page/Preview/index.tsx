@@ -63,7 +63,7 @@ export const Preview = () => {
         }}
         render={renderHandle}
         adapter={ReactAdapter}
-        $$context={renderContext}
+        $$context={renderContext as any}
       />
     </div>
   );

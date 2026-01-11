@@ -1,4 +1,6 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-undef */
+/* eslint-disable @typescript-eslint/no-require-imports */
+
 const _ = require('lodash');
 const esbuild = require('esbuild');
 const concurrently = require('concurrently');

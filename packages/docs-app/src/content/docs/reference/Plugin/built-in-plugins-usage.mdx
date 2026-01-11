@@ -1,0 +1,616 @@
+---
+title: 内置插件使用指南
+sidebar:
+  order: 4
+---
+
+# 内置插件使用指南
+
+Chameleon Engine 提供了一套完整的内置插件，覆盖了低代码编辑器的核心功能。本文档详细介绍每个插件的功能、配置和使用方法。
+
+## DesignerPlugin - 设计器画布
+
+设计器画布是编辑器的核心插件，负责渲染和编辑页面内容。
+
+### 功能特性
+
+- 📐 可视化画布渲染
+- 🖱️ 拖拽添加组件
+- ✏️ 组件选中和编辑
+- 📱 响应式预览
+- 🎨 实时更新
+
+### 配置选项
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import { DesignerPluginInstance } from '@chamn/engine';
+
+const beforePluginRun = ({ pluginManager }) => {
+  pluginManager.customPlugin<DesignerPluginInstance>('Designer', (pluginInstance) => {
+    // 自定义渲染器
+    pluginInstance.ctx.config.customRender = async ({ iframe, assets, page, pageModel, ready, renderJSUrl }) => {
+      // 自定义渲染逻辑
+    };
+
+    // 初始化前钩子
+    pluginInstance.ctx.config.beforeInitRender = async ({ iframe }) => {
+      // 初始化 iframe 环境
+    };
+
+    // 自定义组件
+    pluginInstance.ctx.config.components = {
+      Button: MyButton,
+      Input: MyInput,
+    };
+
+    return pluginInstance;
+  });
+};
+```
+
+### 导出方法
+
+```tsx
+const onReady = async (ctx: EnginContext) => {
+  const designerPlugin = await ctx.pluginManager.get('Designer');
+  const designer = designerPlugin?.export;
+
+  // 设置预览模式
+  designer?.setPreviewMode();
+
+  // 设置编辑模式
+  designer?.setEditMode();
+
+  // 设置画布宽度
+  designer?.setCanvasWidth(1200);
+  designer?.setCanvasWidth('100%');
+
+  // 获取 iframe DOM
+  const iframeDom = designer?.getIframeDom();
+
+  // 获取设计器窗口
+  const designerWindow = designer?.getDesignerWindow();
+
+  // 重新加载
+  designer?.reload();
+};
+```
+
+### 使用示例
+
+```tsx
+import { Engine, plugins, EnginContext } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+import { Button } from 'antd';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const onReady = async (ctx: EnginContext) => {
+    const workbench = ctx.engine.getWorkbench();
+    const designerPlugin = await ctx.pluginManager.get('Designer');
+
+    // 自定义工具栏
+    workbench?.replaceTopBarView(
+      <div style={{ padding: '0 20px', display: 'flex', gap: '10px' }}>
+        <Button onClick={() => designerPlugin?.export.setPreviewMode()}>预览</Button>
+        <Button onClick={() => designerPlugin?.export.setEditMode()}>编辑</Button>
+        <Button onClick={() => designerPlugin?.export.setCanvasWidth(375)}>移动端</Button>
+        <Button onClick={() => designerPlugin?.export.setCanvasWidth('100%')}>全屏</Button>
+      </div>
+    );
+  };
+
+  return <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} onReady={onReady} />;
+}
+```
+
+## HistoryPlugin - 历史记录
+
+历史记录插件提供撤销/重做功能。
+
+### 功能特性
+
+- ⏮️ 撤销操作
+- ⏭️ 重做操作
+- 🔄 重置到初始状态
+- 📝 自动记录节点变化
+
+### 导出方法
+
+```tsx
+const onReady = async (ctx: EnginContext) => {
+  const historyPlugin = await ctx.pluginManager.get('History');
+  const history = historyPlugin?.export;
+
+  // 撤销（上一步）
+  history?.preStep();
+
+  // 重做（下一步）
+  history?.nextStep();
+
+  // 重置到初始状态
+  history?.reset();
+
+  // 判断是否可以撤销
+  const canUndo = history?.canGoPreStep();
+
+  // 判断是否可以重做
+  const canRedo = history?.canGoNextStep();
+
+  // 手动添加历史记录
+  history?.addStep();
+};
+```
+
+### 使用示例
+
+```tsx
+import { Engine, plugins, EnginContext } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+import { Button } from 'antd';
+import { RollbackOutlined } from '@ant-design/icons';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const onReady = async (ctx: EnginContext) => {
+    const workbench = ctx.engine.getWorkbench();
+    const historyPlugin = await ctx.pluginManager.get('History');
+    const history = historyPlugin?.export;
+
+    workbench?.replaceTopBarView(
+      <div style={{ padding: '0 20px', display: 'flex', gap: '10px' }}>
+        <Button icon={<RollbackOutlined />} disabled={!history?.canGoPreStep()} onClick={() => history?.preStep()}>
+          撤销
+        </Button>
+        <Button
+          icon={<RollbackOutlined style={{ transform: 'rotateY(180deg)' }} />}
+          disabled={!history?.canGoNextStep()}
+          onClick={() => history?.nextStep()}
+        >
+          重做
+        </Button>
+        <Button onClick={() => history?.reset()}>重置</Button>
+      </div>
+    );
+  };
+
+  return <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} onReady={onReady} />;
+}
+```
+
+## HotkeysPlugin - 快捷键
+
+快捷键插件为编辑器提供键盘快捷操作。
+
+### 内置快捷键
+
+| 快捷键             | 功能               | 说明                       |
+| :----------------- | :----------------- | :------------------------- |
+| `Ctrl + C`         | 复制节点           | 复制当前选中的节点         |
+| `Ctrl + V`         | 粘贴节点           | 粘贴已复制的节点           |
+| `Ctrl + Z`         | 撤销               | 撤销上一步操作             |
+| `Ctrl + Shift + Z` | 重做               | 重做下一步操作             |
+| `Delete`           | 删除节点           | 删除当前选中的节点         |
+| `↑` / `W`          | 向上移动           | 将节点向上移动             |
+| `↓` / `S`          | 向下移动           | 将节点向下移动             |
+| `←` / `A`          | 向左移动           | 将节点向左移动             |
+| `→` / `D`          | 向右移动           | 将节点向右移动             |
+| `Shift + W`        | 向上移动到兄弟节点 | 将节点移动到上一个兄弟位置 |
+| `Shift + S`        | 向下移动到兄弟节点 | 将节点移动到下一个兄弟位置 |
+
+### 功能特性
+
+- ⌨️ 键盘快捷操作
+- 🎯 支持组合键
+- 🔧 可扩展自定义快捷键
+- 🖥️ 支持主窗口和 iframe
+
+### 使用说明
+
+快捷键插件无需额外配置，加入插件列表即可使用：
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  return <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} />;
+}
+```
+
+## ComponentLibPlugin - 组件库
+
+组件库插件显示可用的组件列表，支持拖拽添加到画布。
+
+### 功能特性
+
+- 📦 组件分类展示
+- 🔍 组件搜索
+- 🖱️ 拖拽添加组件
+- 🎨 自定义组件图标
+
+### 配置选项
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import { PluginInstance } from '@chamn/engine';
+import { ComponentLibPluginConfig } from '@chamn/engine';
+
+const beforePluginRun = ({ pluginManager }) => {
+  pluginManager.customPlugin<PluginInstance<ComponentLibPluginConfig>>('ComponentLib', (pluginInstance) => {
+    // 自定义搜索栏
+    pluginInstance.ctx.config.customSearchBar = ({ defaultInputView, updateState }) => {
+      return (
+        <div>
+          {defaultInputView}
+          {/* 添加自定义元素 */}
+        </div>
+      );
+    };
+
+    return pluginInstance;
+  });
+};
+```
+
+### 使用示例
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+// 定义组件物料
+const materials = [
+  {
+    componentName: 'Button',
+    title: '按钮',
+    icon: <ButtonIcon />,
+    category: '基础组件',
+    snippets: [
+      {
+        title: '主要按钮',
+        snapshot: 'https://example.com/button-primary.png',
+        schema: {
+          componentName: 'Button',
+          props: {
+            type: 'primary',
+            children: '主要按钮',
+          },
+        },
+      },
+      {
+        title: '次要按钮',
+        snapshot: 'https://example.com/button-default.png',
+        schema: {
+          componentName: 'Button',
+          props: {
+            type: 'default',
+            children: '次要按钮',
+          },
+        },
+      },
+    ],
+  },
+];
+
+function App() {
+  return <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} />;
+}
+```
+
+## OutlineTreePlugin - 页面结构树
+
+页面结构树插件以树形结构展示页面的组件层级。
+
+### 功能特性
+
+- 🌳 树形结构展示
+- 👁️ 显示/隐藏节点
+- 🔒 锁定/解锁节点
+- ✏️ 重命名节点
+- 🗑️ 删除节点
+- 📋 复制节点
+
+### 使用示例
+
+```tsx
+import { Engine, plugins, EnginContext } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const onReady = (ctx: EnginContext) => {
+    // 监听节点选中
+    ctx.engine.emitter.on('onSelectNodeChange', ({ node }) => {
+      if (node) {
+        console.log('选中节点:', node.title, node.id);
+      }
+    });
+  };
+
+  return <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} onReady={onReady} />;
+}
+```
+
+## RightPanelPlugin - 右侧面板
+
+右侧面板插件提供属性编辑、样式编辑等功能面板的容器。
+
+### 功能特性
+
+- 📝 属性编辑面板
+- 🎨 样式编辑面板
+- 🔧 高级设置面板
+- 📊 组件状态面板
+
+### 子面板
+
+右侧面板包含多个子面板：
+
+- **PropertyPanel**: 属性面板
+- **VisualPanelPlus**: 样式面板
+- **AdvancePanel**: 高级面板
+- **ComponentStatePanel**: 组件状态面板
+- **EventPanel**: 事件面板
+
+### 配置选项
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import { PluginInstance } from '@chamn/engine';
+
+const beforePluginRun = ({ pluginManager }) => {
+  pluginManager.customPlugin('RightPanel', (pluginInstance) => {
+    // 自定义属性设置器
+    pluginInstance.ctx.config.customPropertySetterMap = {
+      MyCustomSetter: (props) => {
+        return <div>自定义设置器</div>;
+      },
+    };
+
+    return pluginInstance;
+  });
+};
+```
+
+### 使用示例
+
+```tsx
+import { Engine, plugins, EnginContext } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const onReady = (ctx: EnginContext) => {
+    const workbench = ctx.engine.getWorkbench();
+
+    // 可以控制右侧面板的显示/隐藏
+    workbench?.toggleRightPanel();
+  };
+
+  return <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} onReady={onReady} />;
+}
+```
+
+## GlobalStatePanelPlugin - 全局状态管理
+
+全局状态管理插件用于管理页面的全局数据和变量。
+
+### 功能特性
+
+- 📊 管理全局变量
+- 🔄 数据绑定
+- 📝 JSON 编辑器
+- 💾 数据持久化
+
+### 使用示例
+
+```tsx
+import { Engine, plugins, EnginContext } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const onReady = (ctx: EnginContext) => {
+    // 访问页面模型的全局状态
+    const globalState = ctx.engine.pageModel.state;
+
+    console.log('全局状态:', globalState);
+
+    // 监听状态变化
+    ctx.engine.pageModel.emitter.on('onStateChange', () => {
+      console.log('状态已更新');
+    });
+  };
+
+  return <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} onReady={onReady} />;
+}
+```
+
+## DisplaySourceSchema - 源码展示
+
+源码展示插件用于查看和复制页面的 JSON Schema。
+
+### 功能特性
+
+- 👀 查看页面 Schema
+- 📋 复制 Schema
+- 🎨 语法高亮
+- 💾 导出 JSON
+
+### 使用示例
+
+```tsx
+import { Engine, plugins, EnginContext } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+import { Button, Modal } from 'antd';
+import { DisplaySourceSchema } from '@chamn/engine';
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+function App() {
+  const onReady = (ctx: EnginContext) => {
+    const workbench = ctx.engine.getWorkbench();
+
+    workbench?.replaceTopBarView(
+      <div style={{ padding: '0 20px' }}>
+        <DisplaySourceSchema pageModel={ctx.engine.pageModel} engineCtx={ctx}>
+          <Button>查看源码</Button>
+        </DisplaySourceSchema>
+      </div>
+    );
+  };
+
+  return <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} onReady={onReady} />;
+}
+```
+
+## 自定义插件列表
+
+你可以根据需要选择性地使用插件：
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+const { DesignerPlugin, ComponentLibPlugin, OutlineTreePlugin, RightPanelPlugin, HistoryPlugin, HotkeysPlugin } =
+  plugins;
+
+function App() {
+  // 只使用必要的插件
+  const customPluginList = [
+    DesignerPlugin, // 必需：设计器画布
+    ComponentLibPlugin, // 组件库
+    RightPanelPlugin, // 右侧面板
+    HistoryPlugin, // 历史记录
+  ];
+
+  return <Engine plugins={customPluginList} schema={pageSchema} material={materials} />;
+}
+```
+
+## 插件开发
+
+如果内置插件不能满足需求，可以开发自定义插件。详见 [插件开发文档](./plugin-develop/)。
+
+### 插件结构
+
+```tsx
+import { CPlugin } from '@chamn/engine';
+
+const MyPlugin: CPlugin = (ctx) => {
+  return {
+    name: 'MyPlugin',
+    async init(ctx) {
+      // 初始化逻辑
+      const workbench = ctx.getWorkbench();
+      workbench?.addLeftPanel({
+        name: 'MyPanel',
+        title: '我的面板',
+        icon: <Icon />,
+        view: <MyPanelView />,
+      });
+
+      ctx.pluginReadyOk();
+    },
+    async destroy(ctx) {
+      // 清理逻辑
+    },
+    export: (ctx) => {
+      // 导出 API
+      return {
+        doSomething() {
+          // ...
+        },
+      };
+    },
+    meta: {
+      engine: {
+        version: '1.0.0',
+      },
+    },
+  };
+};
+```
+
+## 常见问题
+
+### Q: 如何禁用某个插件？
+
+A: 从 `DEFAULT_PLUGIN_LIST` 中过滤掉不需要的插件，然后将定制后的插件列表传递给引擎。
+
+**禁用单个插件：**
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+
+const { DEFAULT_PLUGIN_LIST, HotkeysPlugin } = plugins;
+
+function App() {
+  // 过滤掉快捷键插件
+  const customPlugins = DEFAULT_PLUGIN_LIST.filter((plugin) => plugin !== HotkeysPlugin);
+
+  return <Engine plugins={customPlugins} schema={pageSchema} material={materials} />;
+}
+```
+
+**禁用多个插件：**
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+
+const { DEFAULT_PLUGIN_LIST, HotkeysPlugin, GlobalStatePanelPlugin } = plugins;
+
+function App() {
+  // 要禁用的插件列表
+  const pluginsToDisable = [HotkeysPlugin, GlobalStatePanelPlugin];
+
+  // 过滤掉要禁用的插件
+  const customPlugins = DEFAULT_PLUGIN_LIST.filter((plugin) => !pluginsToDisable.includes(plugin));
+
+  return <Engine plugins={customPlugins} schema={pageSchema} material={materials} />;
+}
+```
+
+### Q: 插件加载顺序重要吗？
+
+A: 是的。建议按以下顺序加载：
+
+1. DesignerPlugin（必须最先）
+2. 其他功能插件
+3. UI 面板插件
+
+### Q: 如何获取插件实例？
+
+A: 使用 `pluginManager.get()` 方法：
+
+```tsx
+const onReady = async (ctx: EnginContext) => {
+  const designerPlugin = await ctx.pluginManager.get('Designer');
+  const historyPlugin = await ctx.pluginManager.get('History');
+};
+```
+
+### Q: 插件配置何时生效？
+
+A: 插件配置必须在 `beforePluginRun` 中设置：
+
+```tsx
+const beforePluginRun = ({ pluginManager }) => {
+  pluginManager.customPlugin('Designer', (pluginInstance) => {
+    // 配置插件
+    return pluginInstance;
+  });
+};
+
+<Engine beforePluginRun={beforePluginRun} />;
+```
