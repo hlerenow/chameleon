@@ -72,6 +72,8 @@ export const convertModelToComponent = (
       methods: Record<any, (...args: any) => any>;
     };
     nodeName: any;
+    // 是否已挂载
+    isMounted = false;
 
     constructor(props: PropsType) {
       super(props);
@@ -120,6 +122,10 @@ export const convertModelToComponent = (
     }
 
     updateState = (newState: any) => {
+      if (!this.isMounted) {
+        // console.warn('component not mounted, updateState failed');
+        return;
+      }
       // 根节点的 node name 强制为 globalState
       if (nodeModel.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER) {
         this.setState(newState);
@@ -130,6 +136,10 @@ export const convertModelToComponent = (
 
     /** 如果值和当前 state 一样了就不触发更新 */
     setStateIfChanged(updater: any) {
+      if (!this.isMounted) {
+        // console.warn('component not mounted, setStateIfChanged failed');
+        return;
+      }
       // 如果是根节点就不更新 根节点的state, 避免触发全局更新
       if (nodeModel.value.componentName === InnerComponentNameEnum.ROOT_CONTAINER) {
         return;
@@ -279,6 +289,7 @@ export const convertModelToComponent = (
     };
 
     componentDidMount(): void {
+      this.isMounted = true;
       this.addMediaCSS();
       onGetRef?.(this.targetComponentRef, nodeModel, this as any);
       onComponentMount?.(this, nodeModel);
@@ -297,6 +308,10 @@ export const convertModelToComponent = (
 
       // 需要 debounce
       const customForceUpdate = () => {
+        if (!this.isMounted) {
+          // console.warn('component not mounted, forceUpdate failed');
+          return;
+        }
         // nodeName maybe changed
         storeManager.setStore(nodeModel.value.nodeName || nodeModel.id, this.storeState);
         this.storeState.setState({
