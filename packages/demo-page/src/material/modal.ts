@@ -20,7 +20,6 @@ export const ModalMeta: CMaterialType = {
   ],
   fixedProps: {
     open: true,
-    getContainer: false,
   },
   rootSelector: '.ant-modal-content',
   snippets: [

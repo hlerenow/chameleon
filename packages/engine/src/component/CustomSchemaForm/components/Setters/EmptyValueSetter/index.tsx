@@ -13,15 +13,24 @@ export const EmptyValueSetter: CSetter<{ emptyValue?: any }> = ({
   setterContext,
   initialValue,
   emptyValue,
+  hiddenDefaultOption,
   ...props
-}: CSetterProps<{ emptyValue?: string }>) => {
-  const options: CheckboxGroupProps<string>['options'] = [
-    { label: 'Undefined', value: '_undefined_' },
-    { label: 'Null', value: '_null_' },
-  ];
-  if (emptyValue) {
-    options.push({ label: emptyValue, value: emptyValue });
-  }
+}: CSetterProps<{ emptyValue?: string; hiddenDefaultOption?: boolean }>) => {
+  const options = useMemo<CheckboxGroupProps<string>['options']>(() => {
+    const tempValue = [
+      { label: 'Undefined', value: '_undefined_' },
+      { label: 'Null', value: '_null_' },
+    ];
+    if (emptyValue) {
+      if (hiddenDefaultOption) {
+        return [{ label: emptyValue, value: emptyValue }];
+      } else {
+        tempValue.push({ label: emptyValue, value: emptyValue });
+      }
+    }
+
+    return tempValue;
+  }, [emptyValue, hiddenDefaultOption]);
 
   const innerValue = useMemo(() => {
     const tempValue = initialValue || props.value;
@@ -38,7 +47,7 @@ export const EmptyValueSetter: CSetter<{ emptyValue?: any }> = ({
 
   // 切换初始化时，直接强制重置为 undefined
   useEffect(() => {
-    onValueChange?.(undefined);
+    onValueChange?.(emptyValue ?? undefined);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

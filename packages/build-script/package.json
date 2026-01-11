@@ -17,6 +17,7 @@
       "require": "./lib/index.cjs"
     },
     "./lib/index.d.ts": "./lib/index.d.ts",
+    "./client.d.ts": "./client.d.ts",
     "./package.json": "./package.json"
   },
   "scripts": {

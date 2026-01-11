@@ -170,6 +170,11 @@ export class DesignRender extends React.Component<DesignRenderProp> {
           // // 返回第一个孩子节点, 模拟 ReactDOM.findDOMNode 行为
           // return this._dom?.children?.[0];
           const dom = findDOMNode(this);
+          const rootSelector = node.material?.value.rootSelector;
+          // 如果指定了 rootSelector (Modal 浮窗场景)
+          if (rootSelector) {
+            return (dom as any)?.querySelector?.(rootSelector) || dom;
+          }
           return dom;
         } else {
           return this._dom;
