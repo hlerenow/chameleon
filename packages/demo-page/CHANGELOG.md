@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.1](https://github.com/ByteCrazy/chameleon/compare/v0.10.0...v0.10.1) (2026-01-11)
+
+### ✨ Features | 新功能
+
+* **build-script, demo-page, engine, render:** 🎸 update build script dts & optimize modal root selector ([024d5ab](https://github.com/ByteCrazy/chameleon/commit/024d5ab26d19fc5f50172c328638a551fb99c129))
+
 ## [0.10.0](https://github.com/hlerenow/chameleon/compare/v0.9.3...v0.10.0) (2025-12-25)
 
 ### 🐛 Bug Fixes | Bug 修复
