@@ -1,6 +1,6 @@
 {
   "name": "@chamn/engine",
-  "version": "0.10.3",
+  "version": "0.10.4",
   "type": "module",
   "files": [
     "dist"
@@ -95,13 +95,13 @@
     "babel-loader": "^8.3.0",
     "cross-env": "^7.0.3",
     "prop-types": "^15.8.1",
+    "re-resizable": "^6.9.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.7.0",
     "sass": "^1.54.0",
     "storybook": "^8.4.7",
-    "vite-plugin-static-copy": "^0.17.0",
-    "re-resizable": "^6.9.9"
+    "vite-plugin-static-copy": "^0.17.0"
   },
   "config": {},
   "gitHead": "dc3e55fdeb903a8012f6ebd3ebc018ed61ad89db"

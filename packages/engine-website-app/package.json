@@ -1,7 +1,7 @@
 {
   "name": "@chamn/engine-website-app",
   "private": true,
-  "version": "0.10.3",
+  "version": "0.10.4",
   "homepage": "https://github.com/hlerenow/chameleon",
   "main": "./src/index.tsx",
   "keywords": [
@@ -40,9 +40,9 @@
     "loadjs": "^4.3.0",
     "lodash-es": "^4.17.21",
     "mitt": "^3.0.0",
+    "re-resizable": "^6.9.9",
     "react-color": "^2.19.3",
-    "vite-plugin-static-copy": "^0.17.0",
-    "re-resizable": "^6.9.9"
+    "vite-plugin-static-copy": "^0.17.0"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",

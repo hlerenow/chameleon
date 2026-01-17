@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.4](https://github.com/ByteCrazy/chameleon/compare/v0.10.3...v0.10.4) (2026-01-17)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine, engine-website-app:** 🐛 fixed pkg deps ([22b0000](https://github.com/ByteCrazy/chameleon/commit/22b0000a921ed3bd63cdf3366687184d51ee9dc5))
+
 ## [0.10.3](https://github.com/ByteCrazy/chameleon/compare/v0.10.2...v0.10.3) (2026-01-17)
 
 ### 🐛 Bug Fixes | Bug 修复
