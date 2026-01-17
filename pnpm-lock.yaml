@@ -314,9 +314,12 @@ importers:
       react-color:
         specifier: ^2.19.3
         version: 2.19.3(react@18.2.0)
-      vite-plugin-static-copy:
-        specifier: ^0.17.0
-        version: 0.17.1(vite@6.4.1(@types/node@22.10.10)(sass@1.97.2)(terser@5.44.1)(yaml@2.8.2))
+      react-contenteditable:
+        specifier: ^3.3.7
+        version: 3.3.7(react@18.2.0)
+      react-i18next:
+        specifier: ^12.1.1
+        version: 12.3.1(i18next@22.5.1)(react-dom@18.3.1(react@18.2.0))(react@18.2.0)
     devDependencies:
       '@babel/core':
         specifier: ^7.21.0
@@ -384,24 +387,12 @@ importers:
       prop-types:
         specifier: ^15.8.1
         version: 15.8.1
-      rc-select:
-        specifier: ^14.4.0
-        version: 14.16.8(react-dom@18.3.1(react@18.2.0))(react@18.2.0)
-      re-resizable:
-        specifier: ^6.9.9
-        version: 6.11.2(react-dom@18.3.1(react@18.2.0))(react@18.2.0)
       react:
         specifier: 18.2.0
         version: 18.2.0
-      react-contenteditable:
-        specifier: ^3.3.7
-        version: 3.3.7(react@18.2.0)
       react-dom:
         specifier: ^18.2.0
         version: 18.3.1(react@18.2.0)
-      react-i18next:
-        specifier: ^12.1.1
-        version: 12.3.1(i18next@22.5.1)(react-dom@18.3.1(react@18.2.0))(react@18.2.0)
       react-router-dom:
         specifier: ^6.7.0
         version: 6.30.3(react-dom@18.3.1(react@18.2.0))(react@18.2.0)
@@ -411,6 +402,9 @@ importers:
       storybook:
         specifier: ^8.4.7
         version: 8.6.15(prettier@2.8.8)
+      vite-plugin-static-copy:
+        specifier: ^0.17.0
+        version: 0.17.1(vite@6.4.1(@types/node@22.10.10)(sass@1.97.2)(terser@5.44.1)(yaml@2.8.2))
 
   packages/engine-website-app:
     dependencies:
