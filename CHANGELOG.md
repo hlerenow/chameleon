@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.2](https://github.com/ByteCrazy/chameleon/compare/v0.10.1...v0.10.2) (2026-01-17)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine:** 🐛 fixed string and text can not input chinese text ([3821d00](https://github.com/ByteCrazy/chameleon/commit/3821d00d5dffd7d70e995690df5358f5a596ae93))
+
 ## [0.10.1](https://github.com/ByteCrazy/chameleon/compare/v0.10.0...v0.10.1) (2026-01-11)
 
 ### ✨ Features | 新功能
