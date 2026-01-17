@@ -69,5 +69,5 @@
     "compareUrlFormat": "{{host}}/{{owner}}/{{repository}}/compare/{{previousTag}}...{{currentTag}}",
     "userUrlFormat": "{{host}}/{{user}}"
   },
-  "version": "0.10.2"
+  "version": "0.10.3"
 }
