@@ -544,7 +544,7 @@ export type AdvanceCustom = {
       show?: (options: { node: CNode | CRootNode | null; pluginCtx: any }) => boolean;
     }[];
   };
-  /** 是否自动获取 元素 dom, 配置 getDom  使用, 默认 为 true */
+  /** 是否自动获取 元素 dom, 配和 getDom  使用, 默认 为 true, 兼容 react 19 废弃 findDomByNode */
   autoGetDom?: boolean;
 };
 

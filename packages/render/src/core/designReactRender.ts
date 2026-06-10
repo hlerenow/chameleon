@@ -10,9 +10,9 @@ import {
 import { isArray, isPlainObject, merge } from 'lodash-es';
 import React, { useMemo, useRef } from 'react';
 import { RenderPropsType, Render, UseRenderReturnType } from './render';
+import { findDOMNode } from 'react-dom';
 import ErrorBoundary from './ReactErrorBoundary';
 import { RenderInstance } from './type';
-import { findDOMNode } from '../util/reactHelp';
 
 export class ComponentInstanceManager {
   private instanceMap = new Map<string, RenderInstance[]>();
@@ -167,15 +167,11 @@ export class DesignRender extends React.Component<DesignRenderProp> {
       getDom() {
         const autoGetDom = node.material?.value.advanceCustom?.autoGetDom ?? true;
         if (autoGetDom) {
-          // // 返回第一个孩子节点, 模拟 ReactDOM.findDOMNode 行为
-          // return this._dom?.children?.[0];
-          const dom = findDOMNode(this);
-          const rootSelector = node.material?.value.rootSelector;
-          // 如果指定了 rootSelector (Modal 浮窗场景)
-          if (rootSelector) {
-            return (dom as any)?.querySelector?.(rootSelector) || dom;
+          if (findDOMNode) {
+            return findDOMNode(this);
           }
-          return dom;
+          // 返回第一个孩子节点, 模拟 ReactDOM.findDOMNode 行为
+          return this._dom?.children?.[0];
         } else {
           return this._dom;
         }
@@ -212,9 +208,23 @@ export class DesignRender extends React.Component<DesignRenderProp> {
         const autoGetDom = node.material?.value.advanceCustom?.autoGetDom ?? true;
 
         if (autoGetDom) {
-          const coreEl = React.createElement(innerComp, finalRestProps, ...newChildren);
-
-          return coreEl;
+          const coreEl = React.createElement(innerComp, restProps, ...newChildren);
+          if (!findDOMNode) {
+            return React.createElement(
+              'div',
+              {
+                style: {
+                  display: 'contents',
+                },
+                ref: (ref) => {
+                  this._dom = ref;
+                },
+              },
+              coreEl
+            );
+          } else {
+            return coreEl;
+          }
         } else {
           const coreEl = React.createElement(
             innerComp,
