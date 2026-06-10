@@ -148,7 +148,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
       _UNIQUE_ID = `${node.id}_${getRandomStr()}`;
       _STATUS?: 'DESTROY';
       _design_target_component = React.createRef<any>();
-
+      // another way to get dom: https://github.com/react/react/issues/28926#issuecomment-2684332400
       _dom?: HTMLElement | null;
 
       componentDidMount(): void {
@@ -216,7 +216,7 @@ export class DesignRender extends React.Component<DesignRenderProp> {
                 style: {
                   display: 'contents',
                 },
-                ref: (ref) => {
+                ref: (ref: any) => {
                   this._dom = ref;
                 },
               },
