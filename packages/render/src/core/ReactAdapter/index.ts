@@ -23,6 +23,21 @@ export class DefineReactAdapter {
   refManager: RefManager = new RefManager();
 
   onComponentDestroy: AdapterOptionType['onComponentDestroy'];
+  private pageRenderCache?: {
+    pageModel: CPage;
+    components: AdapterOptionType['components'];
+    rootNode: CRootNode;
+    component: any;
+    baseProps: Record<string, any>;
+    onGetRef?: AdapterOptionType['onGetRef'];
+    onGetComponent?: AdapterOptionType['onGetComponent'];
+    onComponentMount?: AdapterOptionType['onComponentMount'];
+    onComponentDestroy?: AdapterOptionType['onComponentDestroy'];
+    processNodeConfigHook?: AdapterOptionType['processNodeConfigHook'];
+    requestAPI?: AdapterOptionType['requestAPI'];
+    renderMode: AdapterOptionType['renderMode'];
+    doc: Document;
+  };
   /**
    * 处理 props 钩子, 可以统一拦截 node 的处理，并修改其值
    */
@@ -85,10 +100,30 @@ export class DefineReactAdapter {
     setDebugOption(debugOption);
     //做一些全局 store 操作
     const rootNode = pageModel.value.componentsTree;
-    const component = this.getComponent(rootNode);
-    const rootNodeId = rootNode.value.id;
-    let newComp = this.runtimeComponentCache.get(rootNodeId)?.component;
-    if (!newComp) {
+    const cache = this.pageRenderCache;
+    const canReuseRoot =
+      renderMode !== 'design' &&
+      cache?.pageModel === pageModel &&
+      cache.components === components &&
+      cache.rootNode === rootNode &&
+      cache.onGetRef === onGetRef &&
+      cache.onGetComponent === onGetComponent &&
+      cache.onComponentMount === onComponentMount &&
+      cache.onComponentDestroy === onComponentDestroy &&
+      cache.processNodeConfigHook === processNodeConfigHook &&
+      cache.requestAPI === requestAPI &&
+      cache.renderMode === renderMode &&
+      cache.doc === doc;
+
+    let newComp: any;
+    let baseProps: Record<string, any>;
+    if (canReuseRoot) {
+      newComp = cache!.component;
+      baseProps = cache!.baseProps;
+    } else {
+      const rootNodeId = rootNode.value.id;
+      this.runtimeComponentCache.delete(rootNodeId);
+      const component = this.getComponent(rootNode);
       newComp = convertModelToComponent(component, pageModel.value.componentsTree, {
         storeManager: this.storeManager,
         variableManager: this.variableManager,
@@ -107,14 +142,34 @@ export class DefineReactAdapter {
       if (renderMode !== 'design') {
         this.runtimeComponentCache.set(rootNodeId, { component: newComp });
       }
+
+      baseProps = {};
+      const propsModel = rootNode.props;
+      Object.keys(propsModel).forEach((key) => {
+        baseProps[key] = propsModel[key].value;
+      });
+      Object.assign(baseProps, pageModel.value.props);
+      this.pageRenderCache = {
+        pageModel,
+        components,
+        rootNode,
+        component: newComp,
+        baseProps,
+        onGetRef,
+        onGetComponent,
+        onComponentMount,
+        onComponentDestroy,
+        processNodeConfigHook,
+        requestAPI,
+        renderMode,
+        doc,
+      };
     }
 
-    const props: Record<string, any> = {};
-    const propsModel = rootNode.props;
-    Object.keys(propsModel).forEach((key) => {
-      props[key] = propsModel[key].value;
-    });
-    Object.assign(props, pageModel.value.props, pageProps);
+    const props: Record<string, any> = {
+      ...baseProps,
+      ...pageProps,
+    };
     props.$$context = {
       ...$$context,
       pageProps: pageProps || {},
@@ -144,6 +199,7 @@ export class DefineReactAdapter {
 
   clear(options?: { preserveState?: boolean }) {
     this.runtimeComponentCache.clear();
+    this.pageRenderCache = undefined;
     clearCodeExecutorCache();
     debugLog(RENDER_DEBUG_CODE.RENDER_ADAPTER_CLEARED, options);
     if (!options?.preserveState) {

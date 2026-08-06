@@ -2,7 +2,7 @@ import { checkPage, CPage, CPageDataType } from '@chamn/model';
 import { isPlainObject } from 'lodash-es';
 import React, { useMemo, useRef } from 'react';
 import { InnerComponent } from '../commonComponent';
-import { AdapterOptionType, AdapterType } from './adapter';
+import { AdapterOptionType, AdapterType, ComponentsType } from './adapter';
 import { RefManager } from './refManager';
 import { RenderInstance } from './type';
 import { debugLog, RENDER_DEBUG_CODE } from '../debug/debugLogger';
@@ -30,6 +30,14 @@ export class Render extends React.Component<
   refManager: RefManager;
   // save component instance
   dynamicComponentInstanceMap = new Map<string, RenderInstance>();
+  private componentsSource?: ComponentsType;
+  private finalComponents?: ComponentsType;
+  private contextSource?: AdapterOptionType['$$context'];
+  private contextWithRefs?: AdapterOptionType['$$context'];
+  private readonly defaultContext: AdapterOptionType['$$context'] = {
+    getProps: () => undefined,
+    callEventMethod: () => undefined,
+  };
   constructor(props: RenderPropsType) {
     super(props);
     const runtimeAdapter = props.adapter.createInstance?.();
@@ -81,19 +89,30 @@ export class Render extends React.Component<
       console.warn('pageModel is null');
       return null;
     }
-    const finalComponents = {
-      ...InnerComponent,
-      ...props.components,
-    };
+    const isDesignMode = props.renderMode === 'design';
+    if (isDesignMode || !this.finalComponents || this.componentsSource !== props.components) {
+      this.componentsSource = props.components;
+      this.finalComponents = {
+        ...InnerComponent,
+        ...props.components,
+      };
+    }
 
-    const $$context: any = this.props.$$context || {};
+    const contextSource = this.props.$$context || this.defaultContext;
+    if (this.contextSource !== contextSource) {
+      this.contextSource = contextSource;
+      this.contextWithRefs = {
+        ...contextSource,
+        nodeRefs: this.refManager,
+      };
+    }
     let newDoc = this.props.doc;
     if (typeof window !== 'undefined') {
       newDoc = this.props.doc || window.document;
     }
     const PageRoot = adapter.pageRender(pageModel, {
       libs: {},
-      components: finalComponents,
+      components: this.finalComponents!,
       debugOption: props.debugOption,
       pageProps: props.pageProps,
       refManager: this.refManager,
@@ -101,10 +120,7 @@ export class Render extends React.Component<
       onGetComponent,
       onComponentMount,
       onComponentDestroy,
-      $$context: {
-        ...$$context,
-        nodeRefs: this.refManager,
-      },
+      $$context: this.contextWithRefs!,
       renderMode: props.renderMode || 'normal',
       requestAPI: props.requestAPI ?? adapter.requestAPI,
       processNodeConfigHook: props.processNodeConfigHook,
@@ -148,7 +164,7 @@ export class Render extends React.Component<
 export type UseRenderReturnType = {
   ref: React.MutableRefObject<Render | null>;
   /** options.force 为 true 时清空运行时状态并完整重建页面。 */
-  rerender: (newPage: CPageDataType, options?: { force?: boolean }) => void;
+  rerender: (newPage?: CPageDataType | CPage, options?: { force?: boolean }) => void;
   getPageStorage: () => Record<any, any>;
   updatePageStorage: (newState: Record<any, any>) => void;
 };
