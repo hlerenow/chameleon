@@ -121,6 +121,7 @@ export const convertCodeStringToFunction = (params: {
     var $CTX =  __extraParams.$$context;
     var $$context = $CTX;
     var $PARAMS = $$context.params || {};
+    var $PAGE_PROPS = $$context.pageProps || {};
     var $EVENT_PARAMS = $$$__args__$$$[0];
     var $Event = $$$__args__$$$[0];
     var $EVENT = $$$__args__$$$[0];

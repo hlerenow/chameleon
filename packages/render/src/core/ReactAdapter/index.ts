@@ -104,7 +104,10 @@ export class DefineReactAdapter {
       props[key] = propsModel[key].value;
     });
     Object.assign(props, pageModel.value.props, pageProps);
-    props.$$context = $$context;
+    props.$$context = {
+      ...$$context,
+      pageProps: pageProps || {},
+    };
     return renderComponent(newComp, props);
   }
 

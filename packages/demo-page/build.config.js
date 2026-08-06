@@ -5,7 +5,6 @@ export default {
   entry: './src/index.ts',
   libName: 'DemoPage',
   fileName: 'index',
-  external: ['react', 'react-dom'],
   global: {
     react: 'React',
     'react-dom': 'ReactDOM',

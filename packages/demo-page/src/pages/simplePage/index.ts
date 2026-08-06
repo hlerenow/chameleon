@@ -18,6 +18,17 @@ export const SamplePage: CPageDataType = {
     },
     children: [
       {
+        id: 'externalTitleText',
+        componentName: 'div',
+        props: {
+          children: {
+            type: 'EXPRESSION',
+            value:
+              '"Page 外部 props：" + ($$context.pageProps.externalTitle || "")',
+          },
+        },
+      },
+      {
         id: 'globalStateText',
         componentName: 'div',
         injectEnvList: ['COMPONENTS'],

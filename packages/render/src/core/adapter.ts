@@ -7,6 +7,8 @@ import { StoreManager } from './storeManager';
 export type ContextType = {
   /** 渲染函数的入口参数 */
   params?: Record<any, any>;
+  /** Page 运行时从外部传入的 props */
+  pageProps?: Record<any, any>;
   /** 全局状态 */
   globalState?: Record<any, any>;
   getGlobalState?: () => Record<any, any>;

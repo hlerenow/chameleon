@@ -131,4 +131,7 @@ declare global {
 
   /** action flow 中的局部变量 */
   const $ACTION_VAR_SPACE: any;
+
+  /** 页面运行时的 props */
+  const $PAGE_PROPS: Record<string, any>;
 }
