@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { DemoCase, Material, SamplePage } from '@chamn/demo-page';
-import { CPage } from '@chamn/model';
 import { ReactAdapter, Render, useRender } from '../../index';
 import { components } from '../components';
+import { useEditablePageSchema } from './useEditablePageSchema';
 
 export function PagePropsDemo() {
   const [externalTitle, setExternalTitle] = useState('来自页面 Props 测试用例');
-  const [page] = useState(() => new CPage(SamplePage, { materials: Material }));
+  const { page, schema, setSchema } = useEditablePageSchema(SamplePage, Material);
   const renderHandle = useRender();
 
   return (
-    <DemoCase schema={SamplePage}>
+    <DemoCase schema={schema} onSchemaChange={setSchema}>
       <section className="demo-page">
         <header className="demo-page-header">
           <div>

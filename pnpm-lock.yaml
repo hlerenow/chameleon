@@ -163,6 +163,13 @@ importers:
         version: 3.1.14
 
   packages/demo-page:
+    dependencies:
+      '@monaco-editor/react':
+        specifier: ^4.7.0
+        version: 4.7.0(monaco-editor@0.41.0)(react-dom@18.3.1(react@18.2.0))(react@18.2.0)
+      monaco-editor:
+        specifier: ^0.41.0
+        version: 0.41.0
     devDependencies:
       '@chamn/build-script':
         specifier: workspace:*
@@ -347,10 +354,10 @@ importers:
         version: 8.6.14(react-dom@18.3.1(react@18.2.0))(react@18.2.0)(storybook@8.6.18(prettier@3.9.6))
       '@storybook/react':
         specifier: ^8.4.7
-        version: 8.6.18(@storybook/test@8.6.15(storybook@8.6.18(prettier@3.9.6)))(react-dom@18.3.1(react@18.2.0))(react@18.2.0)(storybook@8.6.18(prettier@3.9.6))(typescript@5.7.3)
+        version: 8.6.18(@storybook/test@8.6.15(storybook@8.6.18(prettier@3.9.6)))(react-dom@18.3.1(react@18.2.0))(react@18.2.0)(storybook@8.6.18(prettier@3.9.6))(typescript@5.9.3)
       '@storybook/react-vite':
         specifier: ^8.4.7
-        version: 8.6.18(@storybook/test@8.6.15(storybook@8.6.18(prettier@3.9.6)))(react-dom@18.3.1(react@18.2.0))(react@18.2.0)(rollup@4.62.4)(storybook@8.6.18(prettier@3.9.6))(typescript@5.7.3)(vite@6.4.3(@types/node@24.13.3)(sass@1.102.0)(terser@5.49.2)(yaml@2.9.0))
+        version: 8.6.18(@storybook/test@8.6.15(storybook@8.6.18(prettier@3.9.6)))(react-dom@18.3.1(react@18.2.0))(react@18.2.0)(rollup@4.62.4)(storybook@8.6.18(prettier@3.9.6))(typescript@5.9.3)(vite@6.4.3(@types/node@24.13.3)(sass@1.102.0)(terser@5.49.2)(yaml@2.9.0))
       '@storybook/test':
         specifier: ^8.4.7
         version: 8.6.15(storybook@8.6.18(prettier@3.9.6))
@@ -748,7 +755,7 @@ importers:
         version: 1.102.0
       vite-plugin-dts:
         specifier: ^4.3.0
-        version: 4.5.4(@types/node@18.15.13)(rollup@4.62.4)(typescript@5.7.3)(vite@6.4.3(@types/node@18.15.13)(sass@1.102.0)(terser@5.49.2)(yaml@2.9.0))
+        version: 4.5.4(@types/node@18.15.13)(rollup@4.62.4)(typescript@5.9.3)(vite@6.4.3(@types/node@18.15.13)(sass@1.102.0)(terser@5.49.2)(yaml@2.9.0))
 
 packages:
 
@@ -11914,14 +11921,14 @@ snapshots:
       '@types/yargs': 17.0.35
       chalk: 4.1.2
 
-  '@joshwooding/vite-plugin-react-docgen-typescript@0.5.0(typescript@5.7.3)(vite@6.4.3(@types/node@24.13.3)(sass@1.102.0)(terser@5.49.2)(yaml@2.9.0))':
+  '@joshwooding/vite-plugin-react-docgen-typescript@0.5.0(typescript@5.9.3)(vite@6.4.3(@types/node@24.13.3)(sass@1.102.0)(terser@5.49.2)(yaml@2.9.0))':
     dependencies:
       glob: 10.5.0
       magic-string: 0.27.0
-      react-docgen-typescript: 2.4.0(typescript@5.7.3)
+      react-docgen-typescript: 2.4.0(typescript@5.9.3)
       vite: 6.4.3(@types/node@24.13.3)(sass@1.102.0)(terser@5.49.2)(yaml@2.9.0)
     optionalDependencies:
-      typescript: 5.7.3
+      typescript: 5.9.3
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
@@ -13365,12 +13372,12 @@ snapshots:
       react-dom: 18.3.1(react@18.2.0)
       storybook: 8.6.18(prettier@3.9.6)
 
-  '@storybook/react-vite@8.6.18(@storybook/test@8.6.15(storybook@8.6.18(prettier@3.9.6)))(react-dom@18.3.1(react@18.2.0))(react@18.2.0)(rollup@4.62.4)(storybook@8.6.18(prettier@3.9.6))(typescript@5.7.3)(vite@6.4.3(@types/node@24.13.3)(sass@1.102.0)(terser@5.49.2)(yaml@2.9.0))':
+  '@storybook/react-vite@8.6.18(@storybook/test@8.6.15(storybook@8.6.18(prettier@3.9.6)))(react-dom@18.3.1(react@18.2.0))(react@18.2.0)(rollup@4.62.4)(storybook@8.6.18(prettier@3.9.6))(typescript@5.9.3)(vite@6.4.3(@types/node@24.13.3)(sass@1.102.0)(terser@5.49.2)(yaml@2.9.0))':
     dependencies:
-      '@joshwooding/vite-plugin-react-docgen-typescript': 0.5.0(typescript@5.7.3)(vite@6.4.3(@types/node@24.13.3)(sass@1.102.0)(terser@5.49.2)(yaml@2.9.0))
+      '@joshwooding/vite-plugin-react-docgen-typescript': 0.5.0(typescript@5.9.3)(vite@6.4.3(@types/node@24.13.3)(sass@1.102.0)(terser@5.49.2)(yaml@2.9.0))
       '@rollup/pluginutils': 5.4.0(rollup@4.62.4)
       '@storybook/builder-vite': 8.6.18(storybook@8.6.18(prettier@3.9.6))(vite@6.4.3(@types/node@24.13.3)(sass@1.102.0)(terser@5.49.2)(yaml@2.9.0))
-      '@storybook/react': 8.6.18(@storybook/test@8.6.15(storybook@8.6.18(prettier@3.9.6)))(react-dom@18.3.1(react@18.2.0))(react@18.2.0)(storybook@8.6.18(prettier@3.9.6))(typescript@5.7.3)
+      '@storybook/react': 8.6.18(@storybook/test@8.6.15(storybook@8.6.18(prettier@3.9.6)))(react-dom@18.3.1(react@18.2.0))(react@18.2.0)(storybook@8.6.18(prettier@3.9.6))(typescript@5.9.3)
       find-up: 5.0.0
       magic-string: 0.30.21
       react: 18.2.0
@@ -13387,7 +13394,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@storybook/react@8.6.18(@storybook/test@8.6.15(storybook@8.6.18(prettier@3.9.6)))(react-dom@18.3.1(react@18.2.0))(react@18.2.0)(storybook@8.6.18(prettier@3.9.6))(typescript@5.7.3)':
+  '@storybook/react@8.6.18(@storybook/test@8.6.15(storybook@8.6.18(prettier@3.9.6)))(react-dom@18.3.1(react@18.2.0))(react@18.2.0)(storybook@8.6.18(prettier@3.9.6))(typescript@5.9.3)':
     dependencies:
       '@storybook/components': 8.6.18(storybook@8.6.18(prettier@3.9.6))
       '@storybook/global': 5.0.0
@@ -13400,7 +13407,7 @@ snapshots:
       storybook: 8.6.18(prettier@3.9.6)
     optionalDependencies:
       '@storybook/test': 8.6.15(storybook@8.6.18(prettier@3.9.6))
-      typescript: 5.7.3
+      typescript: 5.9.3
 
   '@storybook/telemetry@7.6.24(encoding@0.1.13)':
     dependencies:
@@ -14108,6 +14115,19 @@ snapshots:
       path-browserify: 1.0.1
     optionalDependencies:
       typescript: 5.7.3
+
+  '@vue/language-core@2.2.0(typescript@5.9.3)':
+    dependencies:
+      '@volar/language-core': 2.4.28
+      '@vue/compiler-dom': 3.5.41
+      '@vue/compiler-vue2': 2.7.16
+      '@vue/shared': 3.5.41
+      alien-signals: 0.4.14
+      minimatch: 9.0.9
+      muggle-string: 0.4.1
+      path-browserify: 1.0.1
+    optionalDependencies:
+      typescript: 5.9.3
 
   '@vue/shared@3.5.41': {}
 
@@ -19476,9 +19496,9 @@ snapshots:
       prop-types: 15.8.1
       react: 18.2.0
 
-  react-docgen-typescript@2.4.0(typescript@5.7.3):
+  react-docgen-typescript@2.4.0(typescript@5.9.3):
     dependencies:
-      typescript: 5.7.3
+      typescript: 5.9.3
 
   react-docgen@7.1.1:
     dependencies:
@@ -20896,18 +20916,18 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite-plugin-dts@4.5.4(@types/node@18.15.13)(rollup@4.62.4)(typescript@5.7.3)(vite@6.4.3(@types/node@18.15.13)(sass@1.102.0)(terser@5.49.2)(yaml@2.9.0)):
+  vite-plugin-dts@4.5.4(@types/node@18.15.13)(rollup@4.62.4)(typescript@5.9.3)(vite@6.4.3(@types/node@18.15.13)(sass@1.102.0)(terser@5.49.2)(yaml@2.9.0)):
     dependencies:
       '@microsoft/api-extractor': 7.58.12(@types/node@18.15.13)
       '@rollup/pluginutils': 5.4.0(rollup@4.62.4)
       '@volar/typescript': 2.4.28
-      '@vue/language-core': 2.2.0(typescript@5.7.3)
+      '@vue/language-core': 2.2.0(typescript@5.9.3)
       compare-versions: 6.1.1
       debug: 4.4.3(supports-color@5.5.0)
       kolorist: 1.8.0
       local-pkg: 1.2.1
       magic-string: 0.30.21
-      typescript: 5.7.3
+      typescript: 5.9.3
     optionalDependencies:
       vite: 6.4.3(@types/node@18.15.13)(sass@1.102.0)(terser@5.49.2)(yaml@2.9.0)
     transitivePeerDependencies:

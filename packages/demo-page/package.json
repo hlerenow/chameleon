@@ -47,5 +47,9 @@
     "sass": "^1.54.0"
   },
   "config": {},
-  "gitHead": "dc3e55fdeb903a8012f6ebd3ebc018ed61ad89db"
+  "gitHead": "dc3e55fdeb903a8012f6ebd3ebc018ed61ad89db",
+  "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
+    "monaco-editor": "^0.41.0"
+  }
 }
