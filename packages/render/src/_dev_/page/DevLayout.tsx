@@ -5,6 +5,7 @@ const demoTabs = [
   { to: '/', label: '页面 Props' },
   { to: '/page-storage', label: '页面 Storage' },
   { to: '/request-api', label: '请求 API' },
+  { to: '/debug', label: 'Render Debug' },
   { to: '/button-showcase', label: '按钮样式' },
   { to: '/interactive-button', label: '按钮 State' },
   { to: '/loop-button', label: '循环按钮' },

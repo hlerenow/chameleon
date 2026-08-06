@@ -5,6 +5,7 @@ import { StoreManager } from '../core/storeManager';
 import { AssetPackage, CNode, CNodeModelDataType, CRootNode, ComponentMetaType, LibMetaType } from '@chamn/model';
 import { generateObjVarProxy } from './codeRuntimeHelper';
 import { getCodeExecutorDigest } from './codeDigest';
+import { debugLog, RENDER_DEBUG_CODE } from '../debug/debugLogger';
 
 const CODE_EXECUTOR_CACHE_LIMIT = 500;
 const codeExecutorCache = new Map<string, (...args: any[]) => any>();
@@ -187,11 +188,26 @@ ${generateObjVarProxy('$U_STATE', {
   }
   return $$_run_$$();
         `;
+          debugLog(RENDER_DEBUG_CODE.CODE_EXECUTOR_COMPILE_BEFORE, {
+            cacheKey,
+            nodeId: nodeModel.id,
+            funcBody: normalizedFuncBody,
+          });
           f = new Function(codeBody) as (...args: any[]) => any;
+          debugLog(RENDER_DEBUG_CODE.CODE_EXECUTOR_COMPILE_AFTER, {
+            cacheKey,
+            nodeId: nodeModel.id,
+            codeBody,
+          });
           if (codeExecutorCache.size >= CODE_EXECUTOR_CACHE_LIMIT) {
             codeExecutorCache.delete(codeExecutorCache.keys().next().value!);
           }
           codeExecutorCache.set(cacheKey, f);
+        } else {
+          debugLog(RENDER_DEBUG_CODE.CODE_EXECUTOR_CACHE_HIT, {
+            cacheKey,
+            nodeId: nodeModel.id,
+          });
         }
         return f(...args, { $$context, storeManager, $$response, actionVariableSpace, nodeModel });
       } catch (e) {

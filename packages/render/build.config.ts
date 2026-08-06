@@ -4,7 +4,7 @@ import path from 'path';
 // entry 作为打包库入口
 
 const env = process.env.BUILD_TYPE === 'PKG' ? 'production' : '';
-export default {
+const mainConfig = {
   entry: './src/index.ts',
   // formats 会根据构建模式自动设置：生产模式包含 umd，开发模式只有 cjs 和 es
   libName: 'CRender',
@@ -28,3 +28,22 @@ export default {
     ],
   },
 };
+
+const codeMapMsgConfig = {
+  entry: './src/debug/codeMapMsg.ts',
+  libName: 'ChameleonCodeMapMsg',
+  fileName: 'code-map-msg',
+  formats: ['es'],
+  vite: {
+    plugins: [
+      dts({
+        entryRoot: path.resolve('./src'),
+        compilerOptions: {
+          skipDefaultLibCheck: false,
+        },
+      }),
+    ],
+  },
+};
+
+export default process.env.BUILD_ENTRY === 'CODE_MAP_MSG' ? codeMapMsgConfig : mainConfig;

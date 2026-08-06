@@ -7,6 +7,7 @@ import { ModelPageDemo } from './page/ModelPageDemo';
 import { PagePropsDemo } from './page/PagePropsDemo';
 import { PageStorageDemo } from './page/PageStorageDemo';
 import { RequestApiDemo } from './page/RequestApiDemo';
+import { DebugRenderDemo } from './page/DebugRenderDemo';
 
 export const router: ReturnType<typeof createBrowserRouter> = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ export const router: ReturnType<typeof createBrowserRouter> = createBrowserRoute
       {
         path: 'request-api',
         element: <RequestApiDemo />,
+      },
+      {
+        path: 'debug',
+        element: <DebugRenderDemo />,
       },
       {
         path: 'button-showcase',

@@ -5,6 +5,7 @@ import { InnerComponent } from '../commonComponent';
 import { AdapterOptionType, AdapterType } from './adapter';
 import { RefManager } from './refManager';
 import { RenderInstance } from './type';
+import { debugLog, RENDER_DEBUG_CODE } from '../debug/debugLogger';
 
 export type RenderPropsType = {
   page?: CPageDataType;
@@ -93,6 +94,7 @@ export class Render extends React.Component<
     const PageRoot = adapter.pageRender(pageModel, {
       libs: {},
       components: finalComponents,
+      debugOption: props.debugOption,
       pageProps: props.pageProps,
       refManager: this.refManager,
       onGetRef: this.onGetRef,
@@ -108,6 +110,9 @@ export class Render extends React.Component<
       processNodeConfigHook: props.processNodeConfigHook,
       doc: newDoc!,
     });
+    debugLog(RENDER_DEBUG_CODE.RENDER_PAGE_RENDERED, {
+      renderMode: props.renderMode || 'normal',
+    });
 
     return PageRoot;
   }
@@ -122,6 +127,7 @@ export class Render extends React.Component<
 
   rerender = (newPage?: CPageDataType | CPage, options?: { force?: boolean }) => {
     const force = options?.force ?? false;
+    debugLog(RENDER_DEBUG_CODE.RENDER_PAGE_RERENDER, { force });
     if ((newPage as CPage)?.nodeType === 'PAGE' && newPage) {
       this.adapter.clear({ preserveState: !force });
       this.setState({

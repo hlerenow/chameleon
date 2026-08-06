@@ -8,3 +8,5 @@ export * from './util';
 
 export * from './core/ReactAdapter/type';
 export * from './const/index';
+export * from './debug/codeMapMsg';
+export * from './debug/debugLogger';

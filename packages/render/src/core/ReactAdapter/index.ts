@@ -7,6 +7,7 @@ import { RefManager } from '../refManager';
 import { convertModelToComponent } from './convertModelToComponent';
 import { renderComponent } from './help';
 import { clearCodeExecutorCache } from '../../util';
+import { debugLog, RENDER_DEBUG_CODE, setDebugOption } from '../../debug/debugLogger';
 
 export class DefineReactAdapter {
   renderMode: AdapterOptionType['renderMode'] = 'normal';
@@ -66,6 +67,7 @@ export class DefineReactAdapter {
       onComponentMount,
       onComponentDestroy,
       renderMode,
+      debugOption,
       processNodeConfigHook,
       requestAPI,
       doc,
@@ -80,6 +82,7 @@ export class DefineReactAdapter {
     this.processNodeConfigHook = processNodeConfigHook;
     this.refManager = refManager;
     this.requestAPI = requestAPI;
+    setDebugOption(debugOption);
     //做一些全局 store 操作
     const rootNode = pageModel.value.componentsTree;
     const component = this.getComponent(rootNode);
@@ -142,6 +145,7 @@ export class DefineReactAdapter {
   clear(options?: { preserveState?: boolean }) {
     this.runtimeComponentCache.clear();
     clearCodeExecutorCache();
+    debugLog(RENDER_DEBUG_CODE.RENDER_ADAPTER_CLEARED, options);
     if (!options?.preserveState) {
       this.storeManager.destroy();
       this.variableManager.destroy();

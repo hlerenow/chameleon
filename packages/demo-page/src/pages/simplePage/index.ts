@@ -23,8 +23,7 @@ export const SamplePage: CPageDataType = {
         props: {
           children: {
             type: 'EXPRESSION',
-            value:
-              '"Page 外部 props：" + ($$context.pageProps.externalTitle || "")',
+            value: '"Page 外部 props：" + ($PAGE_PROPS.externalTitle || "")',
           },
         },
       },

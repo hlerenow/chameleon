@@ -3,6 +3,7 @@ import { ReactInstance } from 'react';
 import { RefManager } from './refManager';
 import { RenderInstance } from './type';
 import { StoreManager } from './storeManager';
+import { DebugOption } from '../debug/codeMapMsg';
 
 export type ContextType = {
   /** 渲染函数的入口参数 */
@@ -69,6 +70,8 @@ export type AdapterOptionType = {
   libs: Record<string, any>;
   components: ComponentsType;
   $$context: ContextType;
+  /** Render 调试配置 */
+  debugOption?: DebugOption;
   /** Page 运行时从外部传入的 props */
   pageProps?: Record<string, any>;
   refManager: RefManager;
