@@ -9,16 +9,23 @@ concurrency:
   group: 'pages'
   cancel-in-progress: true
 
+env:
+  NODE_VERSION: 22.21.1
+  NPM_VERSION: 10.9.4
+
 jobs:
   build:
     permissions: write-all
     runs-on: ubuntu-latest
 
     steps:
-      - name: Use Node.js 18.x
+      - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
         with:
-          node-version: 18.20.8
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Use npm ${{ env.NPM_VERSION }}
+        run: npm install --global npm@${{ env.NPM_VERSION }}
 
       - name: Checkout code
         uses: actions/checkout@v3
@@ -77,11 +84,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Use Node.js 18.x
+      - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
         with:
-          node-version: 18.20.8
+          node-version: ${{ env.NODE_VERSION }}
           registry-url: 'https://registry.npmjs.org'
+
+      - name: Use npm ${{ env.NPM_VERSION }}
+        run: npm install --global npm@${{ env.NPM_VERSION }}
 
       - uses: pnpm/action-setup@v2
         with:

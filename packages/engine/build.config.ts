@@ -1,6 +1,6 @@
 import { viteStaticCopy } from 'vite-plugin-static-copy';
-import pkg from './package.json';
-import commonConfig from './build.common.config';
+import pkg from './package.json' with { type: 'json' };
+import commonConfig from './build.common.config.ts';
 import { BuildScriptConfig } from '@chamn/build-script';
 
 // 开发模式默认读取 index.html 作为开发模式入口

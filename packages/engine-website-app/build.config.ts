@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { viteStaticCopy } from 'vite-plugin-static-copy';
-import pkg from './package.json';
-import commonConfig from './build.common.config';
+import pkg from './package.json' with { type: 'json' };
+import commonConfig from './build.common.config.ts';
 // 开发模式默认读取 index.html 作为开发模式入口
 // entry 作为打包库入口
 const plugins = [];

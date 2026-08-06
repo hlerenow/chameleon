@@ -1,4 +1,4 @@
-import pgk from './package.json';
+import pgk from './package.json' with { type: 'json' };
 import pluginExternal from 'vite-plugin-external';
 
 const GLOBAL_LIB_NAME = 'ChamnCommonComponents';

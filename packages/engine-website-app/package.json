@@ -2,6 +2,7 @@
   "name": "@chamn/engine-website-app",
   "private": true,
   "version": "0.10.5",
+  "type": "module",
   "engines": {
     "node": ">=22",
     "pnpm": ">=9"
