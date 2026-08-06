@@ -31,3 +31,4 @@ export const sageJSONParse = function (jsonStr: string, errorValue: any) {
 export * from './css';
 export * from './defaultEngineConfig';
 export * from './logger';
+export * from './pageSchema';
