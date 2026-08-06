@@ -67,6 +67,8 @@ export type AdapterOptionType = {
   libs: Record<string, any>;
   components: ComponentsType;
   $$context: ContextType;
+  /** Page 运行时从外部传入的 props */
+  pageProps?: Record<string, any>;
   refManager: RefManager;
   onGetRef?: (ref: React.RefObject<React.ReactInstance>, nodeMode: CNode | CRootNode, instance: RenderInstance) => void;
   onGetComponent?: (component: (...args: any) => any, currentNode: CNode | CRootNode) => void;
@@ -101,6 +103,10 @@ export interface AdapterType {
   customPageRootRender?: (pageModel: CPage, options: AdapterOptionType) => any;
   // 页面渲染
   pageRender: (pageModel: CPage, options: AdapterOptionType) => any;
+  /** 获取 Page 根节点的运行时 storage */
+  getPageStorage?: () => Record<any, any>;
+  /** 更新 Page 根节点的运行时 storage */
+  updatePageStorage?: (newState: Record<any, any>) => void;
   // 将一个 组件 model 节点 转换为一个可被运行的渲染函数
   convertModelToComponent: (
     originalComponent: any,
@@ -137,6 +143,8 @@ const CustomAdvanceAdapter = ['customPageRootRender'] as const;
 const AdapterMethodList = [
   // 页面渲染
   'pageRender',
+  'getPageStorage',
+  'updatePageStorage',
   // 渲染一个组件
   'render',
   // 将一个 组件 model 节点 转换为一个可被运行的渲染函数

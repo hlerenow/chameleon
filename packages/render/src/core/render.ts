@@ -9,6 +9,8 @@ import { RenderInstance } from './type';
 export type RenderPropsType = {
   page?: CPageDataType;
   pageModel?: CPage;
+  /** Page 运行时从外部传入的 props，外部值覆盖页面 schema 中同名 props */
+  pageProps?: Record<string, any>;
   adapter: AdapterType;
   render?: UseRenderReturnType;
   ref?: React.MutableRefObject<Render | null>;
@@ -82,6 +84,7 @@ export class Render extends React.Component<
     const PageRoot = adapter.pageRender(pageModel, {
       libs: {},
       components: finalComponents,
+      pageProps: props.pageProps,
       refManager: this.refManager,
       onGetRef: this.onGetRef,
       onGetComponent,
@@ -99,6 +102,14 @@ export class Render extends React.Component<
 
     return PageRoot;
   }
+
+  getPageStorage = () => {
+    return this.props.adapter.getPageStorage?.() || {};
+  };
+
+  updatePageStorage = (newState: Record<any, any>) => {
+    this.props.adapter.updatePageStorage?.(newState);
+  };
 
   rerender = (newPage?: CPageDataType | CPage) => {
     this.props.adapter.clear();
@@ -120,6 +131,8 @@ export class Render extends React.Component<
 export type UseRenderReturnType = {
   ref: React.MutableRefObject<Render | null>;
   rerender: (newPage: CPageDataType) => void;
+  getPageStorage: () => Record<any, any>;
+  updatePageStorage: (newState: Record<any, any>) => void;
 };
 
 export const useRender = (): UseRenderReturnType => {
@@ -132,6 +145,12 @@ export const useRender = (): UseRenderReturnType => {
         if (ref.current) {
           ref.current.rerender(...args);
         }
+      },
+      getPageStorage: function () {
+        return ref.current?.getPageStorage() || {};
+      },
+      updatePageStorage: function (newState) {
+        ref.current?.updatePageStorage(newState);
       },
     };
   }, []);

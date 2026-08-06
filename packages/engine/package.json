@@ -1,6 +1,10 @@
 {
   "name": "@chamn/engine",
   "version": "0.10.5",
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=9"
+  },
   "type": "module",
   "files": [
     "dist"

@@ -3,8 +3,13 @@ import * as antD from 'antd';
 
 export const components: any = {
   ...antD,
-  Page: ({ children }: any) => {
-    return <div style={{ padding: '10px' }}>{children}</div>;
+  Page: ({ children, externalTitle }: any) => {
+    return (
+      <div style={{ padding: '10px' }}>
+        <div style={{ marginBottom: 8, color: '#666' }}>Page 外部 props：{externalTitle}</div>
+        {children}
+      </div>
+    );
   },
   div: ({ children, COMPONENTS, ...props }: any) => {
     return <div {...props}>{children}</div>;

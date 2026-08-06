@@ -54,6 +54,7 @@ export class DefineReactAdapter {
       components,
       onGetRef,
       refManager,
+      pageProps,
       $$context = {
         nodeRefs: refManager,
         // 使用空函数，避免获取到父节点的方法或者函数
@@ -102,8 +103,23 @@ export class DefineReactAdapter {
     Object.keys(propsModel).forEach((key) => {
       props[key] = propsModel[key].value;
     });
+    Object.assign(props, pageModel.value.props, pageProps);
     props.$$context = $$context;
     return renderComponent(newComp, props);
+  }
+
+  getPageStorage() {
+    return this.storeManager.getState('globalState') || {};
+  }
+
+  updatePageStorage(newState: Record<any, any>) {
+    const store = this.storeManager.getStore('globalState');
+    if (store) {
+      store.setState(newState);
+      return;
+    }
+
+    this.storeManager.addStore('globalState', () => ({ ...newState }));
   }
 
   /** 请求 API */

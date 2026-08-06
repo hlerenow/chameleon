@@ -3,6 +3,10 @@
   "type": "module",
   "private": true,
   "version": "0.10.5",
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=9"
+  },
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",

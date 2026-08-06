@@ -12,6 +12,8 @@ export type AppProp = {
 export function RenderDemo() {
   // SamplePage;
   // BasePage;
+  const [externalTitle, setExternalTitle] = useState('来自 RenderDemo 的 props');
+  const [pageStorage, setPageStorage] = useState<Record<string, any>>({});
   const [page] = useState(
     new CPage(SamplePage, {
       materials: Material,
@@ -69,10 +71,36 @@ export function RenderDemo() {
     console.log('11111', Date.now());
   }, []);
 
+  const refreshPageStorage = () => {
+    setPageStorage(renderHandle.getPageStorage());
+  };
+
+  const updatePageStorage = () => {
+    const currentStorage = renderHandle.getPageStorage();
+    renderHandle.updatePageStorage({
+      ...currentStorage,
+      count: (currentStorage.count || 0) + 1,
+    });
+    refreshPageStorage();
+  };
+
   return (
     <div className="App">
+      <div style={{ padding: 12, borderBottom: '1px solid #ddd' }}>
+        <button type="button" onClick={() => setExternalTitle(`props 更新于 ${Date.now()}`)}>
+          更新 Page props
+        </button>
+        <button type="button" onClick={refreshPageStorage} style={{ marginLeft: 8 }}>
+          读取 Page storage
+        </button>
+        <button type="button" onClick={updatePageStorage} style={{ marginLeft: 8 }}>
+          修改 Page storage
+        </button>
+        <pre style={{ margin: '8px 0 0' }}>{JSON.stringify(pageStorage, null, 2)}</pre>
+      </div>
       <Render
         pageModel={page}
+        pageProps={{ externalTitle }}
         components={components}
         render={renderHandle as any}
         adapter={ReactAdapter}
