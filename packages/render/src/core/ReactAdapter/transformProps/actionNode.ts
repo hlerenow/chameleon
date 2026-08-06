@@ -13,6 +13,7 @@ import {
 } from '@chamn/model';
 import { ContextType } from '../../adapter';
 import { StoreManager } from '../../storeManager';
+import { CODE_CACHE_KEY } from '../../../const';
 import { convertCodeStringToFunction, runExpression } from '../../../util';
 
 type CommonOption = {
@@ -40,6 +41,7 @@ export const transformActionNode = (propVal: TActionLogicItem, options: CommonOp
       if (item.type === 'RUN_CODE') {
         const codeFunc = convertCodeStringToFunction({
           funcName: '',
+          cacheKey: `${CODE_CACHE_KEY.ACTION}:${item.id}:${CODE_CACHE_KEY.RUN_CODE}`,
           funcBody: `function() {\n${item.value}\n}`,
           nodeContext: context,
           storeManager: storeManager,
@@ -142,11 +144,15 @@ export const transformActionNode = (propVal: TActionLogicItem, options: CommonOp
 };
 
 function buildJumpLink(item: TLogicJumpLinkItem, option: CommonOption) {
-  const linkFunc = buildDynamicValue(item.link, option);
+  const linkFunc = buildDynamicValue(
+    item.link,
+    option,
+    `${CODE_CACHE_KEY.ACTION}:${item.id}:${CODE_CACHE_KEY.JUMP_LINK}`
+  );
   return linkFunc;
 }
 
-const buildDynamicValue = (dynamicValue: TDynamicValue, option: CommonOption) => {
+const buildDynamicValue = (dynamicValue: TDynamicValue, option: CommonOption, cacheKey?: string) => {
   return function (...args: any[]): any {
     if (isExpression(dynamicValue)) {
       const res = runExpression(dynamicValue.value, {
@@ -155,6 +161,7 @@ const buildDynamicValue = (dynamicValue: TDynamicValue, option: CommonOption) =>
         storeManager: option.storeManager,
         $$response: option.$$response,
         actionVariableSpace: option.actionVariableSpace,
+        cacheKey,
         nodeModel: option.nodeModel,
       });
       return res;
@@ -162,6 +169,7 @@ const buildDynamicValue = (dynamicValue: TDynamicValue, option: CommonOption) =>
     if (isFunction(dynamicValue)) {
       const func = convertCodeStringToFunction({
         funcName: dynamicValue.name || '',
+        cacheKey,
         funcBody: dynamicValue.value,
         nodeContext: option.context,
         storeManager: option.storeManager,
@@ -266,6 +274,7 @@ const buildCallNodeMethod = (item: TLogicCallNodeMethodItem, option: CommonOptio
   return (...args: any[]): any => {
     const codeFunc = convertCodeStringToFunction({
       funcName: '',
+      cacheKey: `${CODE_CACHE_KEY.ACTION}:${item.id}:${CODE_CACHE_KEY.CALL_NODE_METHOD}`,
       funcBody: `
       function () {
         var args  = arguments;

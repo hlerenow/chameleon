@@ -11,7 +11,7 @@ import {
 } from '@chamn/model';
 import { isPlainObject } from 'lodash-es';
 import React from 'react';
-import { DYNAMIC_COMPONENT_TYPE } from '../../../const';
+import { CODE_CACHE_KEY, DYNAMIC_COMPONENT_TYPE } from '../../../const';
 import { getObjFromArrayMap, shouldConstruct, runExpression, convertCodeStringToFunction } from '../../../util';
 import { ContextType } from '../../adapter';
 import { getContext, renderComponent } from '../help';
@@ -28,11 +28,11 @@ export const transformProps = (
 ) => {
   const { $$context: parentContext, getComponent, storeManager } = option;
   const propsModel = originalProps;
-  const handlePropVal: (propVal: CPropDataType) => Record<string, any> = (propVal: CPropDataType) => {
+  const handlePropVal = (propVal: CPropDataType, propPath: string[] = []): any => {
     if (Array.isArray(propVal)) {
-      return propVal.map((it) => handlePropVal(it));
+      return propVal.map((it, index) => handlePropVal(it, [...propPath, String(index)]));
     } else if (isPropModel(propVal)) {
-      return handlePropVal(propVal.value);
+      return handlePropVal(propVal.value, propPath);
     } else if (isSlotModel(propVal)) {
       const slotProp = propVal.value;
       const tempVal = slotProp.value;
@@ -100,6 +100,7 @@ export const transformProps = (
       const newVal = runExpression(expProp.value, {
         nodeContext: parentContext,
         storeManager: option.storeManager,
+        cacheKey: `${CODE_CACHE_KEY.PROP}:${propPath.join('.')}`,
         nodeModel: option.nodeModel,
       });
       return newVal;
@@ -108,6 +109,7 @@ export const transformProps = (
       return convertCodeStringToFunction({
         funcBody: funcProp.value,
         funcName: funcProp.name || '',
+        cacheKey: `${CODE_CACHE_KEY.PROP}:${propPath.join('.')}`,
         nodeContext: parentContext,
         storeManager: storeManager,
         nodeModel: option.nodeModel,
@@ -129,7 +131,7 @@ export const transformProps = (
       const objPropVal = specialPropVal as Record<string, any>;
       const newVal: Record<string, any> = {};
       Object.keys(specialPropVal).forEach((k) => {
-        newVal[k] = handlePropVal(objPropVal[k]);
+        newVal[k] = handlePropVal(objPropVal[k], [...propPath, k]);
       });
       return newVal;
     } else {
@@ -139,7 +141,7 @@ export const transformProps = (
   const newProps: Record<string, any> = {};
   Object.keys(propsModel).forEach((propKey) => {
     const propVal = propsModel[propKey];
-    newProps[propKey] = handlePropVal(propVal);
+    newProps[propKey] = handlePropVal(propVal, [propKey]);
   });
 
   return newProps;

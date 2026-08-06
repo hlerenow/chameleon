@@ -9,11 +9,12 @@ import {
 } from '@chamn/model';
 import { ContextType } from '../adapter';
 import React from 'react';
-import { DYNAMIC_COMPONENT_TYPE, INNER_EVENT_LIST, ON_DID_RENDER, ON_WILL_DESTROY } from '../../const';
+import { CODE_CACHE_KEY, DYNAMIC_COMPONENT_TYPE, INNER_EVENT_LIST, ON_DID_RENDER, ON_WILL_DESTROY } from '../../const';
 import { StoreApi } from 'zustand';
 
 import {
   formatSourceStylePropertyName,
+  clearCodeExecutorCache,
   getInheritObj,
   getMatchVal,
   getNodeCssClassName,
@@ -319,6 +320,7 @@ export const convertModelToComponent = (
           // console.warn('component not mounted, forceUpdate failed');
           return;
         }
+        clearCodeExecutorCache(nodeModel.id);
         // nodeName maybe changed
         storeManager.setStore(nodeModel.value.nodeName || nodeModel.id, this.storeState);
         this.storeState.setState({
@@ -391,13 +393,14 @@ export const convertModelToComponent = (
     processNodeClassName(className: string, context: ContextType) {
       // 处理 className
       const classNames =
-        nodeModel.value.classNames?.map((it) => {
+        nodeModel.value.classNames?.map((it, index) => {
           const name = it.name;
           const status = isExpression(it.status)
             ? runExpression(it.status?.value || '', {
                 nodeContext: context,
                 nodeModel: nodeModel as any,
                 storeManager: storeManager,
+                cacheKey: `${CODE_CACHE_KEY.CLASS_NAME}:${index}`,
               })
             : false;
           if (status) {
@@ -462,6 +465,7 @@ export const convertModelToComponent = (
           nodeContext: newContext || {},
           nodeModel: nodeModel as any,
           storeManager: storeManager,
+          cacheKey: CODE_CACHE_KEY.CONDITION,
         }) as boolean;
       }
       let finalNodeConfig = {
@@ -658,6 +662,7 @@ export const convertModelToComponent = (
               nodeContext: newContext || {},
               storeManager: storeManager,
               nodeModel: nodeModel as any,
+              cacheKey: CODE_CACHE_KEY.LOOP_DATA,
             }) || [];
         }
         loopRes = loopList.map((...args) => {
@@ -715,6 +720,7 @@ export const convertModelToComponent = (
               nodeContext: loopContext || {},
               storeManager: storeManager,
               nodeModel: nodeModel as any,
+              cacheKey: CODE_CACHE_KEY.LOOP_KEY,
             });
             newProps.key += `-${specialKey}`;
           }

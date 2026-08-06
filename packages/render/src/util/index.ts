@@ -4,6 +4,22 @@ import { ContextType } from '../core/adapter';
 import { StoreManager } from '../core/storeManager';
 import { AssetPackage, CNode, CNodeModelDataType, CRootNode, ComponentMetaType, LibMetaType } from '@chamn/model';
 import { generateObjVarProxy } from './codeRuntimeHelper';
+import { getCodeExecutorDigest } from './codeDigest';
+
+const CODE_EXECUTOR_CACHE_LIMIT = 500;
+const codeExecutorCache = new Map<string, (...args: any[]) => any>();
+
+export const clearCodeExecutorCache = (nodeId?: string) => {
+  if (!nodeId) {
+    codeExecutorCache.clear();
+    return;
+  }
+
+  const nodeCachePrefix = `${nodeId}:`;
+  Array.from(codeExecutorCache.keys())
+    .filter((key) => key.startsWith(nodeCachePrefix))
+    .forEach((key) => codeExecutorCache.delete(key));
+};
 
 export const isClass = function (val: any) {
   if (!val) {
@@ -54,6 +70,7 @@ export const runExpression = (
     /** 最近一个 API 的返回响应 */
     $$response?: any;
     actionVariableSpace?: Record<any, any>;
+    cacheKey?: string;
     nodeModel: CNode;
   }
 ) => {
@@ -66,6 +83,7 @@ export const runExpression = (
     return convertCodeStringToFunction({
       funcBody: funcBody,
       funcName: 'run',
+      cacheKey: options.cacheKey,
       nodeContext: options.nodeContext,
       storeManager: options.storeManager,
       nodeModel: options.nodeModel,
@@ -85,6 +103,7 @@ export const runExpression = (
 export const convertCodeStringToFunction = (params: {
   funcBody: string;
   funcName: string;
+  cacheKey?: string;
   nodeContext: ContextType;
   storeManager: StoreManager;
   /** 最近一个 API 的返回响应 */
@@ -105,13 +124,20 @@ export const convertCodeStringToFunction = (params: {
 
   const tempObj = {
     [funcName]: function (...args: any[]) {
-      let codeBody;
-      const actionVariableSpaceKeyList = Object.keys(actionVariableSpace || {});
-      const varListCode = actionVariableSpaceKeyList.map((key) => {
-        return `var ${key} = $ACTION_VAR_SPACE[${JSON.stringify(key)}];`;
-      });
       try {
-        codeBody = `
+        const actionVariableSpaceKeyList = Object.keys(actionVariableSpace || {}).sort();
+        const normalizedFuncBody = funcBody.trim() || 'function () {}';
+        const actionVariableSpaceKeyInput = actionVariableSpaceKeyList.join('\u0000');
+        const functionCacheKey = params.cacheKey
+          ? `${nodeModel.id}:${params.cacheKey}`
+          : `${nodeModel.id}:${getCodeExecutorDigest(normalizedFuncBody)}`;
+        const cacheKey = `${functionCacheKey}:${getCodeExecutorDigest(actionVariableSpaceKeyInput)}`;
+        let f = codeExecutorCache.get(cacheKey);
+        if (!f) {
+          const varListCode = actionVariableSpaceKeyList.map((key) => {
+            return `var ${key} = $ACTION_VAR_SPACE[${JSON.stringify(key)}];`;
+          });
+          const codeBody = `
   var $$$__args__$$$ = Array.from(arguments);
   function $$_run_$$() {
     var __extraParams = $$$__args__$$$.pop();
@@ -155,13 +181,18 @@ ${generateObjVarProxy('$U_STATE', {
     // action flowACTION_VAR_SPACE 中定义的变量
     ${varListCode.join(';\n')}
 
-    var $$_f_$$ = ${funcBody.trim() || 'function () {}'};
+    var $$_f_$$ = ${normalizedFuncBody};
 
     return $$_f_$$.apply($$_f_$$, $$$__args__$$$);
   }
   return $$_run_$$();
         `;
-        const f = new Function(codeBody);
+          f = new Function(codeBody) as (...args: any[]) => any;
+          if (codeExecutorCache.size >= CODE_EXECUTOR_CACHE_LIMIT) {
+            codeExecutorCache.delete(codeExecutorCache.keys().next().value!);
+          }
+          codeExecutorCache.set(cacheKey, f);
+        }
         return f(...args, { $$context, storeManager, $$response, actionVariableSpace, nodeModel });
       } catch (e) {
         console.warn(e);

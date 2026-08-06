@@ -6,6 +6,7 @@ import { VariableManager } from '../variableManager';
 import { RefManager } from '../refManager';
 import { convertModelToComponent } from './convertModelToComponent';
 import { renderComponent } from './help';
+import { clearCodeExecutorCache } from '../../util';
 
 export class DefineReactAdapter {
   renderMode: AdapterOptionType['renderMode'] = 'normal';
@@ -140,6 +141,7 @@ export class DefineReactAdapter {
 
   clear(options?: { preserveState?: boolean }) {
     this.runtimeComponentCache.clear();
+    clearCodeExecutorCache();
     if (!options?.preserveState) {
       this.storeManager.destroy();
       this.variableManager.destroy();
