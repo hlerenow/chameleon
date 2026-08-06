@@ -33,6 +33,39 @@ type PropsType = {
   $$nodeModel: CNode | CRootNode;
 };
 
+const RUNTIME_CONTEXT_KEY_SET = new Set([
+  'state',
+  'globalState',
+  'staticVar',
+  'methods',
+  'updateState',
+  'updateGlobalState',
+  'getState',
+  'getStateById',
+  'getStateObj',
+  'getStateObjById',
+  'getGlobalState',
+  'getStaticVar',
+  'getStaticVarById',
+  'getMethods',
+  'getMethodsById',
+  'getProps',
+  'callEventMethod',
+  'stateManager',
+  'storeManager',
+  'nodeRefs',
+]);
+
+const getChildContextSignature = (context: ContextType) => {
+  const signature: Record<string, unknown> = {};
+  for (const key in context) {
+    if (!RUNTIME_CONTEXT_KEY_SET.has(key)) {
+      signature[key] = (context as Record<string, unknown>)[key];
+    }
+  }
+  return signature;
+};
+
 export const convertModelToComponent = (
   originalComponent: any,
   nodeModel: CNode | CRootNode,
@@ -68,6 +101,10 @@ export const convertModelToComponent = (
     /** save dom and media css */
     domHeader: HTMLHeadElement | undefined;
     mediaStyleDomMap: Record<string, HTMLStyleElement> = {};
+    childElementCache?: {
+      contextSignature: Record<string, unknown>;
+      children: React.ReactNode[];
+    };
     /** 存储当前节点的一些变量和方法，不具有响应性 */
     variableSpace!: {
       staticVar: Record<any, any>;
@@ -194,10 +231,13 @@ export const convertModelToComponent = (
             /\$ALL_STATE(?:\.|(?:\[\s*["']))(\w+)(?=(?:["']\s*\])?)/gim,
             // 匹配 getStateObj("xxx")
             /getStateObj\(["']([^"']+)["']\)/gim,
+            // 匹配 getStateObjById("xxx")
+            /getStateObjById\(["']([^"']+)["']\)/gim,
           ];
           const tempList = getMatchVal(targetVal.value, regArr);
           storeNameList = [...storeNameList, ...tempList];
-          const regex = /\$CTX\.globalState|\$G_STATE/;
+          const regex =
+            /\$CTX\.globalState|\$\$context\.globalState|\$G_STATE|(?:\$CTX|\$\$context)\.getGlobalState\s*\(/;
           if (regex.test(targetVal.value)) {
             storeNameList.push('globalState');
           }
@@ -291,6 +331,7 @@ export const convertModelToComponent = (
       });
       this.storeListenDisposeList.push(subscriber);
       this.removeMediaCSS();
+      this.childElementCache = undefined;
       this.connectStore();
       this.addMediaCSS();
       this.forceUpdate();
@@ -441,7 +482,12 @@ export const convertModelToComponent = (
         // 优先使用 props 中的 children
         newChildren = Array.isArray(children) ? children : [children];
       } else {
-        const children: React.ReactNode[] = [];
+        const contextSignature = getChildContextSignature(newContext);
+        if (this.childElementCache && isEqual(this.childElementCache.contextSignature, contextSignature)) {
+          return this.childElementCache.children;
+        }
+
+        const nodeChildren: React.ReactNode[] = [];
         const childModel = nodeModel.value.children;
         childModel.forEach((node, index) => {
           const child = buildComponent(node, {
@@ -449,9 +495,13 @@ export const convertModelToComponent = (
             idx: index,
             ...commonRenderOptions,
           });
-          children.push(child);
+          nodeChildren.push(child);
         });
-        newChildren = children;
+        this.childElementCache = {
+          contextSignature,
+          children: nodeChildren,
+        };
+        newChildren = nodeChildren;
       }
 
       return newChildren;
