@@ -5,6 +5,8 @@ export type DebugOption = {
   codeMapMsg?: CodeMapMsgSource;
 };
 
+export const CODE_MAP_MSG_GLOBAL_NAME = 'ChameleonCodeMapMsg' as const;
+
 export const CODE_MAP_MSG: CodeMapMsg = {
   STORE_CHANGED: 'store changed: {storeName}',
   STORE_ADDED: 'store added: {storeName}',

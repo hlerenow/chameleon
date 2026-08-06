@@ -46,8 +46,8 @@ export const buildConfig = async function (specifiedFormats?: LibraryFormats[], 
   });
 
   // 合并自定义 vite 配置
-  // 注意：如果自定义配置中设置了 build.rollupOptions，它会覆盖基础配置
-  // 因此建议在自定义配置中明确设置完整的 rollupOptions
+  // 注意：如果自定义配置中设置了 build.rolldownOptions，它会覆盖基础配置
+  // 因此建议在自定义配置中明确设置完整的 rolldownOptions
   const finalConfig = mergeConfig(config, CUSTOM_CONFIG?.vite || {});
   return finalConfig;
 };

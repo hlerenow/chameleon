@@ -33,8 +33,16 @@ const codeMapMsgConfig = {
   entry: './src/debug/codeMapMsg.ts',
   libName: 'ChameleonCodeMapMsg',
   fileName: 'code-map-msg',
-  formats: ['es'],
+  formats: ['umd'],
   vite: {
+    build: {
+      emptyOutDir: false,
+      rolldownOptions: {
+        output: {
+          exports: 'named',
+        },
+      },
+    },
     plugins: [
       dts({
         entryRoot: path.resolve('./src'),

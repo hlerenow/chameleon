@@ -27,7 +27,9 @@
   },
   "scripts": {
     "start": "build-script",
-    "build": "cross-env BUILD_TYPE=PKG VITE_CJS_TRACE=true build-script --build ",
+    "build": "pnpm run build:main && pnpm run build:code-map-msg",
+    "build:main": "cross-env BUILD_TYPE=PKG VITE_CJS_TRACE=true build-script --build ",
+    "build:code-map-msg": "cross-env BUILD_TYPE=PKG BUILD_ENTRY=CODE_MAP_MSG build-script --build ",
     "build:analyze": "build-script --build --analyze",
     "build:w": "build-script --build --watch",
     "lint": "eslint --ext .tsx,.ts src/",

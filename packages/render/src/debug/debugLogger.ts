@@ -1,8 +1,20 @@
-import { CODE_MAP_MSG, CodeMapMsg, DebugOption, RENDER_DEBUG_CODE, RENDER_DEBUG_PREFIX } from './codeMapMsg';
+import {
+  CODE_MAP_MSG,
+  CODE_MAP_MSG_GLOBAL_NAME,
+  CodeMapMsg,
+  DebugOption,
+  RENDER_DEBUG_CODE,
+  RENDER_DEBUG_PREFIX,
+} from './codeMapMsg';
 
 let debugEnabled = false;
 let codeMapMsg: CodeMapMsg = CODE_MAP_MSG;
 let codeMapMsgSource: DebugOption['codeMapMsg'];
+
+type CodeMapMsgGlobal = {
+  CODE_MAP_MSG?: CodeMapMsg;
+  default?: CodeMapMsg;
+};
 
 const formatDebugMessage = (message: string, variables?: Record<string, unknown>) => {
   if (!variables) {
@@ -30,22 +42,43 @@ export const setDebugOption = (debugOption?: DebugOption) => {
     return;
   }
 
-  import(/* @vite-ignore */ source)
-    .then((module) => {
-      const nextCodeMapMsg = module.default || module.CODE_MAP_MSG;
+  if (typeof document === 'undefined') {
+    console.warn(`${RENDER_DEBUG_PREFIX} cannot load code map message without a document`, {
+      source,
+    });
+    return;
+  }
+
+  const script = document.createElement('script');
+  script.src = source;
+  script.async = true;
+  script.onload = () => {
+    const globalCodeMapMsg = (globalThis as typeof globalThis & Record<string, CodeMapMsgGlobal | undefined>)[
+      CODE_MAP_MSG_GLOBAL_NAME
+    ];
+    const nextCodeMapMsg = globalCodeMapMsg?.default || globalCodeMapMsg?.CODE_MAP_MSG;
+    if (nextCodeMapMsg) {
       if (nextCodeMapMsg && codeMapMsgSource === source) {
         codeMapMsg = {
           ...CODE_MAP_MSG,
           ...nextCodeMapMsg,
         };
       }
-    })
-    .catch((error) => {
-      console.warn(`${RENDER_DEBUG_PREFIX} failed to load code map message`, {
-        source,
-        error,
-      });
+      return;
+    }
+
+    console.warn(`${RENDER_DEBUG_PREFIX} code map message global not found`, {
+      source,
+      globalName: CODE_MAP_MSG_GLOBAL_NAME,
     });
+  };
+  script.onerror = (error) => {
+    console.warn(`${RENDER_DEBUG_PREFIX} failed to load code map message`, {
+      source,
+      error,
+    });
+  };
+  document.head.appendChild(script);
 };
 
 export const debugLog = (code: string, variables?: Record<string, unknown>) => {
