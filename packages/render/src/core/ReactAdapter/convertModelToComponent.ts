@@ -63,6 +63,7 @@ export const convertModelToComponent = (
     storeState: StoreApi<any>;
     /** 存储清理 store 的监听函数 */
     storeListenDisposeList: (() => void)[] = [];
+    nodeModelDispose?: () => void;
     /** save dom and media css */
     domHeader: HTMLHeadElement | undefined;
     mediaStyleDomMap: Record<string, HTMLStyleElement> = {};
@@ -203,7 +204,6 @@ export const convertModelToComponent = (
         .filter(Boolean);
       const uniqueList = Array.from(new Set(storeNameList));
 
-      const disposeList: (() => void)[] = [];
       if (uniqueList.length) {
         uniqueList.forEach((storeName) => {
           if (!storeName) {
@@ -219,10 +219,9 @@ export const convertModelToComponent = (
           const handle = storeManager.connect(storeName, (newState) => {
             this.setStateIfChanged(newState);
           });
-          disposeList.push(handle);
+          this.storeListenDisposeList.push(handle);
         });
       }
-      this.storeListenDisposeList = disposeList;
     }
 
     getStyleDomById = (id: string) => {
@@ -285,6 +284,11 @@ export const convertModelToComponent = (
 
     rebuildNode = () => {
       this.storeListenDisposeList.forEach((el) => el());
+      this.storeListenDisposeList = [];
+      const subscriber = this.storeState.subscribe((newState) => {
+        this.setStateIfChanged(newState);
+      });
+      this.storeListenDisposeList.push(subscriber);
       this.removeMediaCSS();
       this.connectStore();
       this.addMediaCSS();
@@ -324,11 +328,14 @@ export const convertModelToComponent = (
         this.rebuildNode();
       };
       // 设计模式使用, 监听节点属性变化，重新构建该节点下的所有组件
-      nodeModel.onChange(customForceUpdate);
+      this.nodeModelDispose = nodeModel.onChange(customForceUpdate);
     }
 
     componentWillUnmount(): void {
       this.storeListenDisposeList.forEach((el) => el());
+      this.storeListenDisposeList = [];
+      this.nodeModelDispose?.();
+      this.nodeModelDispose = undefined;
       this.removeMediaCSS();
 
       onComponentDestroy?.(this, nodeModel);
