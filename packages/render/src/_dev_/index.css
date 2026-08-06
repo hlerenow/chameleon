@@ -6,8 +6,107 @@
 
 html,
 body,
-#app {
+#app,
+#root {
   width: 100%;
   height: 100%;
   overflow: auto;
+}
+
+body {
+  color: #1f1f1f;
+  font-family: Arial, sans-serif;
+}
+
+button {
+  padding: 6px 12px;
+  border: 1px solid #1677ff;
+  border-radius: 4px;
+  color: #fff;
+  background: #1677ff;
+  cursor: pointer;
+}
+
+.dev-layout {
+  display: flex;
+  min-height: 100%;
+  background: #f5f5f5;
+}
+
+.dev-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  padding: 20px 12px;
+  border-right: 1px solid #e8e8e8;
+  background: #fff;
+}
+
+.dev-sidebar-title {
+  margin: 0 8px 16px;
+  font-size: 18px;
+}
+
+.dev-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dev-tab {
+  padding: 9px 12px;
+  border-radius: 4px;
+  color: #555;
+  text-decoration: none;
+}
+
+.dev-tab:hover,
+.dev-tab-active {
+  color: #1677ff;
+  background: #e6f4ff;
+}
+
+.dev-content {
+  flex: 1;
+  min-width: 0;
+  padding: 24px;
+}
+
+.demo-page {
+  min-height: 100%;
+  padding: 20px;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.demo-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.demo-page-header h2 {
+  margin: 0 0 6px;
+  font-size: 18px;
+}
+
+.demo-page-header p {
+  color: #666;
+}
+
+.demo-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.demo-output {
+  min-height: 44px;
+  margin: 0 0 16px;
+  padding: 12px;
+  border-radius: 4px;
+  background: #fafafa;
+  color: #333;
 }

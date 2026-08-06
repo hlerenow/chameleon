@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BasePage, Material } from '@chamn/demo-page';
+import { BasePage, DemoCase, Material } from '@chamn/demo-page';
 import { ReactAdapter } from '../../index';
 import '../index.css';
 import { DesignRender, useDesignRender } from '../../core/designReactRender';
@@ -59,14 +59,16 @@ export function DesignerRenderDemo() {
   }, []);
 
   return (
-    <div className="App">
-      <DesignRender
-        renderMode="design"
-        pageModel={page}
-        components={components}
-        render={renderHandle}
-        adapter={ReactAdapter}
-      />
-    </div>
+    <DemoCase schema={BasePage}>
+      <div className="App">
+        <DesignRender
+          renderMode="design"
+          pageModel={page}
+          components={components}
+          render={renderHandle}
+          adapter={ReactAdapter}
+        />
+      </div>
+    </DemoCase>
   );
 }

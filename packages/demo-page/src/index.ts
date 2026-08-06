@@ -3,4 +3,8 @@ export { BasePageBClient } from './pages/basePage-b-client';
 export { SamplePage } from './pages/simplePage';
 export { EmptyPage } from './pages/emptyPage';
 export { LayoutPage } from './pages/layout';
+export { ButtonShowcasePage } from './pages/buttonShowcasePage';
+export { InteractiveButtonPage } from './pages/interactiveButtonPage';
+export { LoopButtonPage } from './pages/loopButtonPage';
+export { DemoCase } from './components/DemoCase';
 export { Material } from './material/index';
