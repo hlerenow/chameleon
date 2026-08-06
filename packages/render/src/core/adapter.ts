@@ -102,6 +102,8 @@ export type AdapterOptionType = {
 // TODO: 后续考虑去掉
 export interface AdapterType {
   renderMode?: AdapterOptionType['renderMode'];
+  /** 为每个 Render 创建独立 Adapter runtime 的工厂方法。 */
+  createInstance?: () => AdapterType;
   customPageRootRender?: (pageModel: CPage, options: AdapterOptionType) => any;
   // 页面渲染
   pageRender: (pageModel: CPage, options: AdapterOptionType) => any;
@@ -129,8 +131,8 @@ export interface AdapterType {
   getUtils: () => void;
   transformProps: (originalProps: Record<any, any>, options: { $$context: Record<any, any> }) => Record<any, any>;
   errorCatch: () => void;
-  // clear memory
-  clear: () => void;
+  // clear runtime cache; preserveState 时保留页面运行时状态
+  clear: (options?: { preserveState?: boolean }) => void;
 }
 
 const notImplements = (msg: string) => {

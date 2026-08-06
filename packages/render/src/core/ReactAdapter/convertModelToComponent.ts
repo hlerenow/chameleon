@@ -96,9 +96,12 @@ export const convertModelToComponent = (
         });
       } else {
         this.storeState = nodeStore;
-        nodeStore.setState({
+        const nextState = {
           ...(nodeModel.value.state || {}),
-        });
+          ...nodeStore.getState(),
+        };
+        nodeStore.setState(nextState);
+        this.state = nextState;
       }
 
       // sync storeState to component state;

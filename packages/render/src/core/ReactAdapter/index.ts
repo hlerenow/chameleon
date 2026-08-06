@@ -82,21 +82,28 @@ export class DefineReactAdapter {
     //做一些全局 store 操作
     const rootNode = pageModel.value.componentsTree;
     const component = this.getComponent(rootNode);
-    const newComp = convertModelToComponent(component, pageModel.value.componentsTree, {
-      storeManager: this.storeManager,
-      variableManager: this.variableManager,
-      runtimeComponentCache: this.runtimeComponentCache,
-      getComponent: this.getComponent.bind(this),
-      refManager: this.refManager,
-      onGetRef: this.onGetRef!,
-      processNodeConfigHook: processNodeConfigHook!,
-      onComponentMount: onComponentMount!,
-      onComponentDestroy: onComponentDestroy!,
-      renderMode: renderMode!,
-      requestAPI: requestAPI,
-      components: this.components,
-      doc: doc,
-    });
+    const rootNodeId = rootNode.value.id;
+    let newComp = this.runtimeComponentCache.get(rootNodeId)?.component;
+    if (!newComp) {
+      newComp = convertModelToComponent(component, pageModel.value.componentsTree, {
+        storeManager: this.storeManager,
+        variableManager: this.variableManager,
+        runtimeComponentCache: this.runtimeComponentCache,
+        getComponent: this.getComponent.bind(this),
+        refManager: this.refManager,
+        onGetRef: this.onGetRef!,
+        processNodeConfigHook: processNodeConfigHook!,
+        onComponentMount: onComponentMount!,
+        onComponentDestroy: onComponentDestroy!,
+        renderMode: renderMode!,
+        requestAPI: requestAPI,
+        components: this.components,
+        doc: doc,
+      });
+      if (renderMode !== 'design') {
+        this.runtimeComponentCache.set(rootNodeId, { component: newComp });
+      }
+    }
 
     const props: Record<string, any> = {};
     const propsModel = rootNode.props;
@@ -131,10 +138,16 @@ export class DefineReactAdapter {
     throw new Error('Need to implement requestAPI for Render');
   };
 
-  clear() {
+  clear(options?: { preserveState?: boolean }) {
     this.runtimeComponentCache.clear();
-    this.storeManager.destroy();
+    if (!options?.preserveState) {
+      this.storeManager.destroy();
+      this.variableManager.destroy();
+    }
   }
 }
 
-export const ReactAdapter = getAdapter(new DefineReactAdapter());
+export const createReactAdapter = () => getAdapter(new DefineReactAdapter());
+
+export const ReactAdapter = createReactAdapter();
+ReactAdapter.createInstance = createReactAdapter;

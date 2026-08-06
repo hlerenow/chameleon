@@ -256,8 +256,8 @@ export class DesignRender extends React.Component<DesignRenderProp> {
     });
   };
 
-  rerender(newPage?: CPageDataType | CPage) {
-    return this.renderRef.current?.rerender(newPage);
+  rerender(newPage?: CPageDataType | CPage, options?: { force?: boolean }) {
+    return this.renderRef.current?.rerender(newPage, options);
   }
 
   getInstancesById(id: string, uniqueId?: string): RenderInstance[] {

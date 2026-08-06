@@ -24,11 +24,16 @@ export class Render extends React.Component<
     pageModel: CPage;
   }
 > {
+  adapter: AdapterType;
+  ownsAdapter: boolean;
   refManager: RefManager;
   // save component instance
   dynamicComponentInstanceMap = new Map<string, RenderInstance>();
   constructor(props: RenderPropsType) {
     super(props);
+    const runtimeAdapter = props.adapter.createInstance?.();
+    this.adapter = runtimeAdapter || props.adapter;
+    this.ownsAdapter = Boolean(runtimeAdapter);
     this.state = {
       pageModel: props.pageModel || new CPage(props.page!),
     };
@@ -53,6 +58,9 @@ export class Render extends React.Component<
 
   componentWillUnmount(): void {
     this.refManager.destroy();
+    if (this.ownsAdapter) {
+      this.adapter.clear();
+    }
   }
 
   onGetRef: AdapterOptionType['onGetRef'] = (ref, nodeModel, instance) => {
@@ -63,7 +71,8 @@ export class Render extends React.Component<
 
   render() {
     const { props } = this;
-    const { adapter, onGetComponent, onComponentDestroy, onComponentMount } = props;
+    const { onGetComponent, onComponentDestroy, onComponentMount } = props;
+    const { adapter } = this;
     const { pageModel } = this.state;
     // todo: 加载 page 资源
     // todo: 收集所有的 第三方库
@@ -104,21 +113,23 @@ export class Render extends React.Component<
   }
 
   getPageStorage = () => {
-    return this.props.adapter.getPageStorage?.() || {};
+    return this.adapter.getPageStorage?.() || {};
   };
 
   updatePageStorage = (newState: Record<any, any>) => {
-    this.props.adapter.updatePageStorage?.(newState);
+    this.adapter.updatePageStorage?.(newState);
   };
 
-  rerender = (newPage?: CPageDataType | CPage) => {
-    this.props.adapter.clear();
+  rerender = (newPage?: CPageDataType | CPage, options?: { force?: boolean }) => {
+    const force = options?.force ?? false;
     if ((newPage as CPage)?.nodeType === 'PAGE' && newPage) {
+      this.adapter.clear({ preserveState: !force });
       this.setState({
         pageModel: newPage as CPage,
       });
     } else if (isPlainObject(newPage) && checkPage(newPage)) {
       const newP = newPage as CPageDataType;
+      this.adapter.clear({ preserveState: !force });
       this.setState({
         pageModel: new CPage(newP, {
           materials: this.state.pageModel.materialsModel.rawValue,
@@ -130,7 +141,8 @@ export class Render extends React.Component<
 
 export type UseRenderReturnType = {
   ref: React.MutableRefObject<Render | null>;
-  rerender: (newPage: CPageDataType) => void;
+  /** options.force 为 true 时清空运行时状态并完整重建页面。 */
+  rerender: (newPage: CPageDataType, options?: { force?: boolean }) => void;
   getPageStorage: () => Record<any, any>;
   updatePageStorage: (newState: Record<any, any>) => void;
 };
