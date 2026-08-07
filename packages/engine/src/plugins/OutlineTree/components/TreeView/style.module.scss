@@ -1,41 +1,56 @@
 .contentBox {
-  background-color: white;
+  background-color: #fff;
   height: 100%;
   border-top: 1px solid $borderColor;
   overflow: auto;
   position: relative;
-  * {
-    transition: all 0.1s;
-  }
+  padding: 8px 6px 16px 0;
+  color: #595959;
+  font-size: 13px;
 }
+
 .nodeBox {
   user-select: none;
   cursor: pointer;
-  .toolbarBox {
-    display: none;
-    padding-right: 10px;
-  }
-  .iconItem {
-    margin-right: 8px;
-  }
+  position: relative;
 }
 
-.nodeContent:hover {
+.nodeContent:hover,
+.nodeContent.selected {
   .toolbarBox {
-    display: flex;
+    opacity: 1;
+    pointer-events: auto;
   }
 }
 
 .nodeContent {
-  font-size: 14px;
+  min-height: 30px;
+  margin: 1px 4px 1px 0;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  border-radius: 5px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  &.selected {
-    background-color: rgba(221, 221, 221, 0.232);
+  color: #595959;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background-color: #f5f7fa;
+    color: #262626;
   }
+
+  &.selected {
+    background-color: #eaf3ff;
+    color: #1677ff;
+    box-shadow: inset 2px 0 0 #1677ff;
+    border-radius: 0 5px 5px 0;
+  }
+
   .nodeArrow {
-    font-size: 12px;
+    color: #8c8c8c;
+    font-size: 11px;
+    transition: transform 0.15s ease, color 0.15s ease;
 
     &.expanded {
       transform-origin: center;
@@ -46,13 +61,86 @@
   .nodeRenderView {
     display: flex;
     align-items: center;
-    height: 26px;
+    min-width: 0;
+    min-height: 28px;
     flex: 1;
-    flex-wrap: nowrap;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .nodeTitle {
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+}
+
+.toolbarBox {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 2px;
+  padding-right: 6px;
+  opacity: 0;
+  pointer-events: none;
+  color: #8c8c8c;
+  transition: opacity 0.15s ease;
+}
+
+.iconItem {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background-color: #e6f4ff;
+    color: #1677ff;
+  }
+}
+
+.featureTags {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+}
+
+.featureTag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 16px;
+}
+
+.featureTag-state {
+  background-color: #e6f4ff;
+  border-color: #91caff;
+  color: #1677ff;
+}
+
+.featureTag-event {
+  background-color: #fff7e6;
+  border-color: #ffd591;
+  color: #d46b08;
+}
+
+.featureTag-function {
+  background-color: #f6ffed;
+  border-color: #b7eb8f;
+  color: #389e0d;
 }
 
 .nodeChildren {
@@ -61,23 +149,25 @@
   &::before {
     display: block;
     position: absolute;
-    left: 13px;
+    left: 14px;
     top: 0;
     content: '';
     height: 100%;
     width: 1px;
-    background-color: $borderColor;
+    background-color: #f0f0f0;
   }
 
   &.selected::before {
-    background-color: rgba(0, 0, 255, 0.359);
+    background-color: #a2a2ff;
   }
 }
 
 .dropAnchorLine {
-  width: 100px;
+  width: 120px;
   height: 2px;
-  background-color: #1890ff;
+  border-radius: 2px;
+  background-color: #1677ff;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.12);
   position: fixed;
   z-index: 99;
   pointer-events: none;
@@ -86,14 +176,27 @@
 .arrowSpan {
   position: relative;
   display: flex;
+  flex: 0 0 24px;
+  width: 24px;
+  height: 28px;
   align-items: center;
   justify-content: center;
+  border-radius: 4px;
+
+  &:hover {
+    background-color: #f0f5ff;
+
+    .nodeArrow {
+      color: #1677ff;
+    }
+  }
+
   &::after {
     content: '';
     position: absolute;
     top: 0px;
     right: 0;
     bottom: -0;
-    left: -8px;
+    left: -4px;
   }
 }
