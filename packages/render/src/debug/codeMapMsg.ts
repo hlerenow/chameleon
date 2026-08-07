@@ -9,11 +9,14 @@ export const CODE_MAP_MSG_GLOBAL_NAME = 'ChameleonCodeMapMsg' as const;
 
 export const CODE_MAP_MSG: CodeMapMsg = {
   STORE_CHANGED: 'store changed: {storeName}',
+  STATE_KEYS_UPDATED: 'state keys updated: {storeName} [{changedKeys}]',
   STORE_ADDED: 'store added: {storeName}',
   STORE_REMOVED: 'store removed: {storeName}',
   STORE_MANAGER_DESTROYED: 'store manager destroyed',
   STATE_SNAPSHOT_CACHE_HIT: 'state snapshot cache hit',
   STATE_SNAPSHOT_CACHE_MISS: 'state snapshot cache miss',
+  CHILD_ELEMENT_CACHE_HIT: 'child element cache hit: {nodeId}',
+  CHILD_ELEMENT_CACHE_MISS: 'child element cache miss: {nodeId}',
   RENDER_PAGE_RENDERED: 'page rendered',
   RENDER_PAGE_RERENDER: 'page rerender',
   RENDER_ADAPTER_CLEARED: 'adapter cleared',
@@ -25,11 +28,14 @@ export const CODE_MAP_MSG: CodeMapMsg = {
 export const RENDER_DEBUG_PREFIX = '[chameleon/render]';
 export const RENDER_DEBUG_CODE = {
   STORE_CHANGED: 'STORE_CHANGED',
+  STATE_KEYS_UPDATED: 'STATE_KEYS_UPDATED',
   STORE_ADDED: 'STORE_ADDED',
   STORE_REMOVED: 'STORE_REMOVED',
   STORE_MANAGER_DESTROYED: 'STORE_MANAGER_DESTROYED',
   STATE_SNAPSHOT_CACHE_HIT: 'STATE_SNAPSHOT_CACHE_HIT',
   STATE_SNAPSHOT_CACHE_MISS: 'STATE_SNAPSHOT_CACHE_MISS',
+  CHILD_ELEMENT_CACHE_HIT: 'CHILD_ELEMENT_CACHE_HIT',
+  CHILD_ELEMENT_CACHE_MISS: 'CHILD_ELEMENT_CACHE_MISS',
   RENDER_PAGE_RENDERED: 'RENDER_PAGE_RENDERED',
   RENDER_PAGE_RERENDER: 'RENDER_PAGE_RERENDER',
   RENDER_ADAPTER_CLEARED: 'RENDER_ADAPTER_CLEARED',
