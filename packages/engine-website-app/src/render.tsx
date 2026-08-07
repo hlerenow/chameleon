@@ -1,4 +1,4 @@
-import renderAsURL from '@chamn/render/dist/index.umd.js?url';
+import renderAsURL from '@chamn/render/dist/index.iife.js?url';
 import loadjs from 'loadjs';
 
 loadjs([renderAsURL], () => {

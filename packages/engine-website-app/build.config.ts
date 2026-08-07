@@ -10,7 +10,7 @@ plugins.push(
   viteStaticCopy({
     targets: [
       {
-        src: './node_modules/@chamn/render/dist/index.umd.js',
+        src: './node_modules/@chamn/render/dist/index.iife.js',
         dest: './',
         rename: 'render.umd.js',
       },

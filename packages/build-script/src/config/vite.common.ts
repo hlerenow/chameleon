@@ -141,7 +141,7 @@ export const getCommonConfig = async (specifiedFormats?: LibraryFormats[]) => {
         plugins: useEsmExternalRequirePlugin ? [reactExternalRequirePlugin] : [],
       },
     },
-    plugins: [react(), eslint()],
+    plugins: [react({ jsxRuntime: isAllBrowserFormats ? 'classic' : 'automatic' }), eslint()],
   });
 
   if (CUSTOM_CONFIG.libMode === false) {

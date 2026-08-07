@@ -31,7 +31,8 @@ if (LIB_NAME) {
   const libConfig = {
     entry: './src/index.tsx',
     libName: GLOBAL_LIB_NAME,
-    // formats 会根据构建模式自动设置：生产模式包含 umd，开发模式只有 cjs 和 es
+    // IIFE is used by browser-only consumers that cannot provide CommonJS globals.
+    formats: ['cjs', 'es', 'umd', 'iife'],
     global: {
       react: 'React',
       'react-dom/client': 'ReactDOM',
