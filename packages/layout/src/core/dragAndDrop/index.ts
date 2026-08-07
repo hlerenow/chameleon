@@ -42,6 +42,8 @@ export class DragAndDrop<E = Record<string, any>> {
   recoverEventList: { name: string; event: Event }[] = [];
   /** 鼠标按压状态 */
   mousePressStatus: 'DOWN' | 'UP' = 'UP';
+  /** 当前 pointer sequence 是否由被标记的 DOM 接管 */
+  ignoredPointerSequence = false;
   /** 主窗口的 window 对象，有且只能有一个主窗口 */
   win: Window;
   globalSenor: Sensor<any>;
@@ -71,12 +73,19 @@ export class DragAndDrop<E = Record<string, any>> {
     });
 
     sensor.emitter.on('mouseDown', async (mouseMoveEventObj) => {
+      if (this.isDndIgnoredEvent(mouseMoveEventObj.event)) {
+        this.ignoredPointerSequence = true;
+        return;
+      }
       this.emitter.emit('mouseDown', mouseMoveEventObj);
       this.mousePressStatus = 'DOWN';
       return;
     });
 
     sensor.emitter.on('mouseMove', async (mouseMoveEventObj) => {
+      if (this.ignoredPointerSequence) {
+        return;
+      }
       this.emitter.emit('mouseMove', mouseMoveEventObj);
       if (!(this.currentState === 'DRAGGING' && this.currentSensor === null)) {
         return;
@@ -114,6 +123,14 @@ export class DragAndDrop<E = Record<string, any>> {
     });
 
     sensor.emitter.on('mouseUp', (eventObj) => {
+      if (this.ignoredPointerSequence) {
+        this.ignoredPointerSequence = false;
+        this.mousePressStatus = 'UP';
+        this.currentState = 'NORMAL';
+        this.dragStartObj = null;
+        this.recoverEventList = [];
+        return;
+      }
       // 如不是在 业务注册的感应区mouseUp， 需要在全局补偿触发 dragEnd
       const tempSensor = this.senors.find((s) => {
         const sensorBox = s.container;
@@ -130,6 +147,11 @@ export class DragAndDrop<E = Record<string, any>> {
     });
 
     this.globalSenor = sensor;
+  }
+
+  private isDndIgnoredEvent(event: Event) {
+    const target = event.target as Element | null;
+    return Boolean(target?.closest?.('[data-chameleon-dnd-ignore="true"]'));
   }
 
   preventDefaultEvent() {
@@ -375,7 +397,15 @@ export class DragAndDrop<E = Record<string, any>> {
   clearSensors() {
     const oldSensors = this.senors;
     this.senors = [];
+    const eventHandler = this.eventHandler;
+    this.eventHandler = [];
+    eventHandler.forEach((dispose) => dispose());
     oldSensors.forEach((el) => el.destroy());
+    this.currentSensor = null;
+    this.currentState = 'NORMAL';
+    this.dragStartObj = null;
+    this.mousePressStatus = 'UP';
+    this.recoverEventList = [];
   }
 
   /** 通过 sensor 以及event 判断应该有那个 sensor 触发事件，并修正事件的 出发 dom 以及 mousePos */

@@ -1,0 +1,56 @@
+.pageMask {
+  position: fixed;
+  z-index: 3;
+  inset: 0;
+  pointer-events: auto;
+  background: transparent;
+  background-color: pink;
+  opacity: 0.1;
+}
+
+.sizeBox {
+  position: absolute;
+  z-index: 4;
+  box-sizing: border-box;
+  border: 1px solid #858585;
+  background: rgba(128, 128, 128, 0.32);
+  pointer-events: auto;
+}
+
+.handle {
+  position: absolute;
+  z-index: 1;
+  background: #666;
+}
+
+.top,
+.bottom {
+  left: 7px;
+  right: 7px;
+  height: 7px;
+  cursor: ns-resize;
+}
+
+.top {
+  top: -4px;
+}
+
+.bottom {
+  bottom: -4px;
+}
+
+.left,
+.right {
+  top: 7px;
+  bottom: 7px;
+  width: 7px;
+  cursor: ew-resize;
+}
+
+.left {
+  left: -4px;
+}
+
+.right {
+  right: -4px;
+}

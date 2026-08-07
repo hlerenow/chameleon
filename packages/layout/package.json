@@ -40,9 +40,9 @@
   "dependencies": {
     "@chamn/model": "workspace:*",
     "@chamn/render": "workspace:*",
+    "@dnd-kit/core": "^6.3.1",
     "lodash-es": "^4.17.21",
-    "mitt": "^3.0.0",
-    "re-resizable": "^6.9.9"
+    "mitt": "^3.0.0"
   },
   "devDependencies": {
     "@chamn/build-script": "workspace:*",

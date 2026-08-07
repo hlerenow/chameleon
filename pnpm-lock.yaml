@@ -457,9 +457,6 @@ importers:
       mitt:
         specifier: ^3.0.0
         version: 3.0.1
-      re-resizable:
-        specifier: ^6.9.9
-        version: 6.11.2(react-dom@18.3.1(react@18.2.0))(react@18.2.0)
       react-color:
         specifier: ^2.19.3
         version: 2.19.3(react@18.2.0)
@@ -539,6 +536,9 @@ importers:
       '@chamn/render':
         specifier: workspace:*
         version: link:../render
+      '@dnd-kit/core':
+        specifier: ^6.3.1
+        version: 6.3.1(react-dom@18.3.1(react@18.2.0))(react@18.2.0)
       lodash-es:
         specifier: ^4.17.21
         version: 4.18.1

@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import ReactDOMAll from 'react-dom';
 import { BasePage, Material } from '@chamn/demo-page';
-import { Layout, LayoutDragAndDropExtraDataType, LayoutPropsType } from '..';
+import { Layout, LayoutDragAndDropExtraDataType, LayoutPropsType, NodeSizeChangeEvent } from '..';
 import * as antD from 'antd';
 import { Sensor } from '../core/dragAndDrop/sensor';
 import { AssetPackage, CNode, CPage } from '@chamn/model';
@@ -81,9 +81,36 @@ const customRender: LayoutPropsType['customRender'] = async ({
   IframeReactDOM.createRoot(iframeDoc.getElementById('app')!).render(App);
 };
 
+type LogItem = { time: string; message: string; detail?: string };
+
+const stringifyLogDetail = (value: unknown) => {
+  const seen = new WeakSet<object>();
+  try {
+    return JSON.stringify(value, (_key, item) => {
+      if (typeof item === 'function') {
+        return `[Function ${item.name || 'anonymous'}]`;
+      }
+      if (item && typeof item === 'object') {
+        if (seen.has(item)) {
+          return '[Circular]';
+        }
+        seen.add(item);
+      }
+      return item;
+    });
+  } catch (error) {
+    return `[Unserializable: ${error instanceof Error ? error.message : 'unknown error'}]`;
+  }
+};
+
 const App = () => {
   const [_page] = useState<any>(BasePage);
-  const [ghostView, setGhostView] = useState(<div>213</div>);
+  const [ghostView, setGhostView] = useState(<div className="drag-ghost">New Button</div>);
+  const [hotkey, setHotkey] = useState('Shift');
+  const [selectedNode, setSelectedNode] = useState<CNode | null>(null);
+  const [lastSize, setLastSize] = useState<NodeSizeChangeEvent['extraData'] | null>(null);
+  const [logs, setLogs] = useState<LogItem[]>([]);
+  const [schemaPreview, setSchemaPreview] = useState('');
   const [pageModel] = useState<any>(
     new CPage(BasePage, {
       materials: [
@@ -105,9 +132,47 @@ const App = () => {
 
   const leftBoxRef = useRef<HTMLDivElement>(null);
   const layoutRef = useRef<Layout>(null);
+  const appendLog = (message: string, detail?: unknown) => {
+    setLogs((current) =>
+      [
+        {
+          time: new Date().toLocaleTimeString(),
+          message,
+          detail: detail === undefined ? undefined : stringifyLogDetail(detail),
+        },
+        ...current,
+      ].slice(0, 40)
+    );
+  };
+  const selectNode = (nodeId: string, label: string) => {
+    layoutRef.current?.selectNode(nodeId);
+    appendLog(`selectNode: ${label}`, nodeId);
+  };
+  const exportSchema = () => {
+    const value = layoutRef.current?.getPageModel()?.export();
+    setSchemaPreview(JSON.stringify(value, null, 2));
+    appendLog('pageModel.export()');
+  };
+  const updateNodeSize = (node: CNode, event: NodeSizeChangeEvent) => {
+    const width = `${Math.max(1, Math.round(event.extraData.width))}px`;
+    const height = `${Math.max(1, Math.round(event.extraData.height))}px`;
+    const nextStyle = [...(node.value.style || [])];
+    const sizeStyle = { width, height };
+    (Object.keys(sizeStyle) as Array<keyof typeof sizeStyle>).forEach((property) => {
+      const existing = nextStyle.find((item) => item.property === property);
+      if (existing) {
+        existing.value = sizeStyle[property];
+      } else {
+        nextStyle.push({ property, value: sizeStyle[property] });
+      }
+    });
+    node.updateValue({ style: nextStyle });
+    console.log('[layout dev] page style updated', { nodeId: node.id, width, height });
+    appendLog('page style updated', { nodeId: node.id, width, height });
+  };
   useEffect(() => {
     layoutRef.current?.ready(() => {
-      console.log('layoutRef', layoutRef);
+      appendLog('Layout ready');
       const boxSensor = new Sensor<LayoutDragAndDropExtraDataType>({
         name: 'widgetListBox',
         container: leftBoxRef.current!,
@@ -155,7 +220,7 @@ const App = () => {
       });
 
       boxSensor.emitter.on('dragStart', (eventObj) => {
-        setGhostView(<div>{eventObj.extraData?.dragNode?.value.componentName}</div>);
+        setGhostView(<div className="drag-ghost">{eventObj.extraData?.dragNode?.value.componentName}</div>);
         if (eventObj.currentSensor === boxSensor) {
           layoutRef.current?.clearSelectNode();
         }
@@ -180,64 +245,176 @@ const App = () => {
             pageModel?.moveNodeById(extraData.dragNode?.id || '', extraData?.dropNode?.id || '', 'AFTER');
           }
         }
-        console.log('选中元素', extraData.dragNode?.id || '', extraData?.dropNode?.id, extraData);
+        appendLog('drop', extraData);
         layoutRef.current?.selectNode(extraData.dragNode?.id || '');
-
-        console.log(pageModel?.export());
       });
-      const pageModel = layoutRef.current?.getPageModel();
-      console.log('pageModel?.export()', pageModel?.export());
+      appendLog('Sensors registered');
     });
   }, []);
   return (
-    <div
-      style={{
-        width: '100%',
-        height: '100%',
-        padding: '20px',
-        display: 'flex',
-      }}
-    >
-      <div
-        ref={leftBoxRef}
-        style={{ border: '1px solid rgba(0,0,0, 0.3)', padding: '10px', borderRadius: '2px', width: '300px' }}
-        onClick={() => {
-          layoutRef.current?.selectNode('32');
-        }}
-      >
-        Tool Box
-      </div>
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          margin: '0 auto',
-          overflow: 'hidden',
-        }}
-      >
-        <Layout
-          ref={layoutRef}
-          // page={page}
-          pageModel={pageModel}
-          components={components}
-          // selectToolBar={<div>123</div>}
-          assets={assets}
-          ghostView={ghostView}
-          beforeInitRender={beforeInitRender}
-          customRender={customRender}
-          selectToolbarView={
-            <div
-              style={{
-                width: '100px',
-                height: '20px',
-                backgroundColor: 'red',
-              }}
-            >
-              toolBar
+    <div className="dev-shell">
+      <header className="dev-header">
+        <div>
+          <div className="eyebrow">CHAMELEON / LAYOUT</div>
+          <h1>Layout interaction lab</h1>
+        </div>
+        <div className="header-status">
+          <span className="status-dot" /> Live iframe preview
+        </div>
+      </header>
+      <main className="dev-main">
+        <aside className="dev-sidebar dev-sidebar-left">
+          <section className="panel-section">
+            <div className="section-title">Controls</div>
+            <label className="field-label" htmlFor="size-hotkey">
+              Resize modifier
+            </label>
+            <input
+              id="size-hotkey"
+              className="text-input"
+              value={hotkey}
+              onChange={(event) => setHotkey(event.target.value || 'Shift')}
+              placeholder="Shift"
+            />
+            <div className="field-help">Hold this key after selecting a node.</div>
+            <div className="button-grid">
+              <button type="button" onClick={() => selectNode('qpbnqn', 'headline')}>
+                Select headline
+              </button>
+              <button type="button" onClick={() => selectNode('ckakcd', 'container')}>
+                Select container
+              </button>
+              <button type="button" className="button-muted" onClick={() => layoutRef.current?.clearSelectNode()}>
+                Clear selection
+              </button>
+              <button type="button" className="button-muted" onClick={() => setLogs([])}>
+                Clear log
+              </button>
             </div>
-          }
-        />
-      </div>
+          </section>
+          <section className="panel-section">
+            <div className="section-title">Drag source</div>
+            <div ref={leftBoxRef} className="drag-source">
+              <span className="drag-grip">::</span>
+              <span>
+                <strong>Button</strong>
+                <small>Drag into canvas</small>
+              </span>
+            </div>
+            <div className="field-help">Tests NEW_ADD and drop position events.</div>
+          </section>
+          <section className="panel-section panel-section-last">
+            <div className="section-title">Event contract</div>
+            <div className="contract-row">
+              <code>onSelectNode</code>
+              <span>selection</span>
+            </div>
+            <div className="contract-row">
+              <code>onNodeSizeChange</code>
+              <span>resize end</span>
+            </div>
+            <div className="contract-row">
+              <code>onNodeDrop</code>
+              <span>drop end</span>
+            </div>
+          </section>
+        </aside>
+        <section className="dev-canvas-area">
+          <div className="canvas-toolbar">
+            <span>Canvas</span>
+            <span className="canvas-hint">Select a node, then hold {hotkey}</span>
+          </div>
+          <div className="canvas-frame">
+            <Layout
+              ref={layoutRef}
+              pageModel={pageModel}
+              components={components}
+              assets={assets}
+              ghostView={ghostView}
+              nodeSizeChangeHotkey={hotkey}
+              onSelectNode={async (node) => {
+                setSelectedNode(node as CNode | null);
+                appendLog(node ? `selected: ${node.value.componentName}` : 'selection cleared', node?.id);
+              }}
+              onHoverNode={(node) => node && appendLog(`hover: ${node.value.componentName}`, node.id)}
+              onNodeSizeChange={(node, event) => {
+                setLastSize(event.extraData);
+                appendLog(`resized: ${node.value.componentName}`, event.extraData);
+                if (node.nodeType === 'NODE') {
+                  updateNodeSize(node, event);
+                }
+              }}
+              onNodeDrop={async (event) => appendLog('onNodeDrop', event.extraData)}
+              beforeInitRender={beforeInitRender}
+              customRender={customRender}
+              selectToolbarView={<div className="selection-toolbar">Selected</div>}
+            />
+          </div>
+        </section>
+        <aside className="dev-sidebar dev-sidebar-right">
+          <section className="panel-section">
+            <div className="section-title">Selection</div>
+            {selectedNode ? (
+              <>
+                <div className="selected-name">{selectedNode.value.componentName}</div>
+                <div className="meta-row">
+                  <span>ID</span>
+                  <code>{selectedNode.id}</code>
+                </div>
+                <div className="meta-row">
+                  <span>Type</span>
+                  <code>{selectedNode.nodeType}</code>
+                </div>
+              </>
+            ) : (
+              <div className="empty-state">No node selected</div>
+            )}
+          </section>
+          <section className="panel-section">
+            <div className="section-title">Last resize</div>
+            {lastSize ? (
+              <div className="size-readout">
+                <div>
+                  <strong>{Math.round(lastSize.width)}px</strong>
+                  <span>width</span>
+                </div>
+                <div>
+                  <strong>{Math.round(lastSize.height)}px</strong>
+                  <span>height</span>
+                </div>
+              </div>
+            ) : (
+              <div className="empty-state">Resize event pending</div>
+            )}
+          </section>
+          <section className="panel-section log-section">
+            <div className="section-title">
+              Event log <span>{logs.length}</span>
+            </div>
+            <div className="event-log">
+              {logs.length ? (
+                logs.map((item, index) => (
+                  <div className="log-item" key={`${item.time}-${index}`}>
+                    <div>
+                      <time>{item.time}</time>
+                      <strong>{item.message}</strong>
+                    </div>
+                    {item.detail && <code>{item.detail}</code>}
+                  </div>
+                ))
+              ) : (
+                <div className="empty-state">Waiting for interaction</div>
+              )}
+            </div>
+          </section>
+          <section className="panel-section panel-section-last">
+            <button type="button" className="export-button" onClick={exportSchema}>
+              Export page schema
+            </button>
+            {schemaPreview && <pre className="schema-preview">{schemaPreview}</pre>}
+          </section>
+        </aside>
+      </main>
     </div>
   );
 };
