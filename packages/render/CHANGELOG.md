@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.0](https://github.com/hlerenow/chameleon/compare/v0.10.5...v0.11.0) (2026-08-09)
+
+### ⚡ Performance Improvements | 性能优化
+
+* cache render preparation ([4befc16](https://github.com/hlerenow/chameleon/commit/4befc1640795cbcc49ef57a56e567e8895a7dfb4))
+* **render:** cache runtime code executors ([c33cf08](https://github.com/hlerenow/chameleon/commit/c33cf0895f1a71fcc344ee4cc451b51947fd8889))
+* **render:** reuse stable child elements ([f0269c4](https://github.com/hlerenow/chameleon/commit/f0269c43b0e059f8b76068cc593a7256693b60ca))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* load code map through UMD global ([f3bdffc](https://github.com/hlerenow/chameleon/commit/f3bdffc27f9c65c2ad0dad2ce51f2bffa40f2989))
+* **render:** isolate page runtime state ([2a682ad](https://github.com/hlerenow/chameleon/commit/2a682ade8da37ac6147fe5ad8d8dae0ba4d134b8))
+* **render:** refresh child cache on state changes ([4b57b09](https://github.com/hlerenow/chameleon/commit/4b57b09def9e435195b4e0b6b5ea85499ba30b55))
+* **render:** release runtime listeners ([8e499da](https://github.com/hlerenow/chameleon/commit/8e499da27ef46bf26a92dbdbd46bb084c0cb3c5d))
+* use iife bundles in browser runtime ([4bfeb5d](https://github.com/hlerenow/chameleon/commit/4bfeb5de81fb4ffd9db9c300b3977621ca7519c3))
+
+### ✨ Features | 新功能
+
+* add editable demo schemas ([03659d4](https://github.com/hlerenow/chameleon/commit/03659d459b01ae3f40b53151893f92c72102f558))
+* add render demo cases ([68bf102](https://github.com/hlerenow/chameleon/commit/68bf1029625083ddd07355d5a504ba71c765e303))
+* add responsive sizing support ([212839b](https://github.com/hlerenow/chameleon/commit/212839bf4417409bcedc3a8e20f1789a9218629c))
+* **render:** add page props expression alias ([934fd29](https://github.com/hlerenow/chameleon/commit/934fd297ed6443636ba42796221b370d0e6a8b5d))
+* **render:** add runtime debug logging ([1a1c3be](https://github.com/hlerenow/chameleon/commit/1a1c3bea8066f788c596ad23cb83617113a432a5))
+* **render:** support runtime page storage and props ([1ad5714](https://github.com/hlerenow/chameleon/commit/1ad5714d770f6ac041fb310dba362c7e26f8e477))
+
 ## [0.10.5](https://github.com/hlerenow/chameleon/compare/v0.10.4...v0.10.5) (2026-08-05)
 
 **Note:** Version bump only for package @chamn/render

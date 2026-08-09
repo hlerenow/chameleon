@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.0](https://github.com/hlerenow/chameleon/compare/v0.10.5...v0.11.0) (2026-08-09)
+
+### ⚡ Performance Improvements | 性能优化
+
+* throttle canvas style updates ([7791f8a](https://github.com/hlerenow/chameleon/commit/7791f8a548b9b2364a30f733b764d2b030580cb7))
+
+### ♻️ Code Refactoring | 代码重构
+
+* organize engine i18n resources ([50f19f8](https://github.com/hlerenow/chameleon/commit/50f19f8edab3aef8acb9e249df313b587e60decd))
+
+### ✨ Features | 新功能
+
+* add canvas refresh button ([cbfae03](https://github.com/hlerenow/chameleon/commit/cbfae03cbc3b0cf2bad2b83700c9ee766865be3b))
+* add engine internationalization ([231baea](https://github.com/hlerenow/chameleon/commit/231baea476592df6bcc6af1f7cdc01aeb9f9a1a4))
+* add responsive sizing support ([212839b](https://github.com/hlerenow/chameleon/commit/212839bf4417409bcedc3a8e20f1789a9218629c))
+* add simplified page schema API ([aef397f](https://github.com/hlerenow/chameleon/commit/aef397f182a11ce925a9be7b4bad7bd7f781c63d))
+* auto expand added array items ([e4d73d1](https://github.com/hlerenow/chameleon/commit/e4d73d19141c37887628ffdbf9cfd016544e4113))
+* **designer:** enhance canvas navigation ([f94e870](https://github.com/hlerenow/chameleon/commit/f94e870ee43c3340a0e971fa54c78de51d495034))
+* **designer:** refine canvas zoom interactions ([a777cec](https://github.com/hlerenow/chameleon/commit/a777cec5326e87bea3cadbeedaf41e320048cede))
+* **engine:** enhance outline tree node markers ([6eb0b1c](https://github.com/hlerenow/chameleon/commit/6eb0b1c31f097e818f6a6cbdae7fdb6828b18d35))
+* **engine:** refresh editor panel styles ([c3e8cbc](https://github.com/hlerenow/chameleon/commit/c3e8cbce3c3c0afc105d0db3a7f0451694cbdfc3))
+* **engine:** sync resize with responsive styles ([5ea4b25](https://github.com/hlerenow/chameleon/commit/5ea4b25ba3c414d1cc104af467cf46de413be7af))
+* **render:** add page props expression alias ([934fd29](https://github.com/hlerenow/chameleon/commit/934fd297ed6443636ba42796221b370d0e6a8b5d))
+* **render:** support runtime page storage and props ([1ad5714](https://github.com/hlerenow/chameleon/commit/1ad5714d770f6ac041fb310dba362c7e26f8e477))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* center empty right panel state ([91e988f](https://github.com/hlerenow/chameleon/commit/91e988f81a0c18699e0838ee4ff89dff3d88438e))
+* **engine:** improve hotkey handling ([510bef5](https://github.com/hlerenow/chameleon/commit/510bef5121a5c1a58aba3d43a00775bddd04b3f7))
+* ignore zoom control double clicks ([25e98dd](https://github.com/hlerenow/chameleon/commit/25e98dd8c590a55548790abce55f2d629eedbf69))
+
 ## [0.10.5](https://github.com/hlerenow/chameleon/compare/v0.10.4...v0.10.5) (2026-08-05)
 
 **Note:** Version bump only for package @chamn/engine

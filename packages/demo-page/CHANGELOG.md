@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.0](https://github.com/hlerenow/chameleon/compare/v0.10.5...v0.11.0) (2026-08-09)
+
+### ✨ Features | 新功能
+
+* add editable demo schemas ([03659d4](https://github.com/hlerenow/chameleon/commit/03659d459b01ae3f40b53151893f92c72102f558))
+* add render demo cases ([68bf102](https://github.com/hlerenow/chameleon/commit/68bf1029625083ddd07355d5a504ba71c765e303))
+* **render:** add page props expression alias ([934fd29](https://github.com/hlerenow/chameleon/commit/934fd297ed6443636ba42796221b370d0e6a8b5d))
+* **render:** add runtime debug logging ([1a1c3be](https://github.com/hlerenow/chameleon/commit/1a1c3bea8066f788c596ad23cb83617113a432a5))
+* **render:** support runtime page storage and props ([1ad5714](https://github.com/hlerenow/chameleon/commit/1ad5714d770f6ac041fb310dba362c7e26f8e477))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine:** improve hotkey handling ([510bef5](https://github.com/hlerenow/chameleon/commit/510bef5121a5c1a58aba3d43a00775bddd04b3f7))
+
 ## [0.10.5](https://github.com/hlerenow/chameleon/compare/v0.10.4...v0.10.5) (2026-08-05)
 
 **Note:** Version bump only for package @chamn/demo-page

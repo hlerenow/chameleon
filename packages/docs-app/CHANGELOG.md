@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.0](https://github.com/hlerenow/chameleon/compare/v0.10.5...v0.11.0) (2026-08-09)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine:** improve hotkey handling ([510bef5](https://github.com/hlerenow/chameleon/commit/510bef5121a5c1a58aba3d43a00775bddd04b3f7))
+
+### ✨ Features | 新功能
+
+* **layout:** keep node resize controls visible ([8d92cb7](https://github.com/hlerenow/chameleon/commit/8d92cb7dd2dd3b3b1d2332b64e8fc6a76297edf1))
+* **render:** support runtime page storage and props ([1ad5714](https://github.com/hlerenow/chameleon/commit/1ad5714d770f6ac041fb310dba362c7e26f8e477))
+
 ## [0.10.5](https://github.com/hlerenow/chameleon/compare/v0.10.4...v0.10.5) (2026-08-05)
 
 **Note:** Version bump only for package docs-app

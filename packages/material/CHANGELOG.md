@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.0](https://github.com/hlerenow/chameleon/compare/v0.10.5...v0.11.0) (2026-08-09)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* use iife bundles in browser runtime ([4bfeb5d](https://github.com/hlerenow/chameleon/commit/4bfeb5de81fb4ffd9db9c300b3977621ca7519c3))
+
+### ✨ Features | 新功能
+
+* **designer:** enhance canvas navigation ([f94e870](https://github.com/hlerenow/chameleon/commit/f94e870ee43c3340a0e971fa54c78de51d495034))
+* **render:** support runtime page storage and props ([1ad5714](https://github.com/hlerenow/chameleon/commit/1ad5714d770f6ac041fb310dba362c7e26f8e477))
+
 ## [0.10.5](https://github.com/hlerenow/chameleon/compare/v0.10.4...v0.10.5) (2026-08-05)
 
 **Note:** Version bump only for package @chamn/material

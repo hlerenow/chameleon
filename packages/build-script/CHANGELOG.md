@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.0](https://github.com/hlerenow/chameleon/compare/v0.10.5...v0.11.0) (2026-08-09)
+
+### ✨ Features | 新功能
+
+* **render:** support runtime page storage and props ([1ad5714](https://github.com/hlerenow/chameleon/commit/1ad5714d770f6ac041fb310dba362c7e26f8e477))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* load code map through UMD global ([f3bdffc](https://github.com/hlerenow/chameleon/commit/f3bdffc27f9c65c2ad0dad2ce51f2bffa40f2989))
+* use iife bundles in browser runtime ([4bfeb5d](https://github.com/hlerenow/chameleon/commit/4bfeb5de81fb4ffd9db9c300b3977621ca7519c3))
+
 ## [0.10.5](https://github.com/hlerenow/chameleon/compare/v0.10.4...v0.10.5) (2026-08-05)
 
 **Note:** Version bump only for package @chamn/build-script

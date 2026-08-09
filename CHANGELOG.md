@@ -3,6 +3,56 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.0](https://github.com/hlerenow/chameleon/compare/v0.10.5...v0.11.0) (2026-08-09)
+
+### 👷 Continuous Integration | CI 配置
+
+* install locked pnpm dependencies ([35fdf65](https://github.com/hlerenow/chameleon/commit/35fdf650c70e0e1633eb783bd00f4ee11b97b324))
+* publish packages to npm on master ([7710b92](https://github.com/hlerenow/chameleon/commit/7710b929aa82be9c1d547482ff5167dca4e404df))
+
+### ⚡ Performance Improvements | 性能优化
+
+* cache render preparation ([4befc16](https://github.com/hlerenow/chameleon/commit/4befc1640795cbcc49ef57a56e567e8895a7dfb4))
+* **render:** cache runtime code executors ([c33cf08](https://github.com/hlerenow/chameleon/commit/c33cf0895f1a71fcc344ee4cc451b51947fd8889))
+* **render:** reuse stable child elements ([f0269c4](https://github.com/hlerenow/chameleon/commit/f0269c43b0e059f8b76068cc593a7256693b60ca))
+* throttle canvas style updates ([7791f8a](https://github.com/hlerenow/chameleon/commit/7791f8a548b9b2364a30f733b764d2b030580cb7))
+
+### ♻️ Code Refactoring | 代码重构
+
+* organize engine i18n resources ([50f19f8](https://github.com/hlerenow/chameleon/commit/50f19f8edab3aef8acb9e249df313b587e60decd))
+
+### ✨ Features | 新功能
+
+* add canvas refresh button ([cbfae03](https://github.com/hlerenow/chameleon/commit/cbfae03cbc3b0cf2bad2b83700c9ee766865be3b))
+* add editable demo schemas ([03659d4](https://github.com/hlerenow/chameleon/commit/03659d459b01ae3f40b53151893f92c72102f558))
+* add engine internationalization ([231baea](https://github.com/hlerenow/chameleon/commit/231baea476592df6bcc6af1f7cdc01aeb9f9a1a4))
+* add render demo cases ([68bf102](https://github.com/hlerenow/chameleon/commit/68bf1029625083ddd07355d5a504ba71c765e303))
+* add responsive sizing support ([212839b](https://github.com/hlerenow/chameleon/commit/212839bf4417409bcedc3a8e20f1789a9218629c))
+* add simplified page schema API ([aef397f](https://github.com/hlerenow/chameleon/commit/aef397f182a11ce925a9be7b4bad7bd7f781c63d))
+* auto expand added array items ([e4d73d1](https://github.com/hlerenow/chameleon/commit/e4d73d19141c37887628ffdbf9cfd016544e4113))
+* **designer:** enhance canvas navigation ([f94e870](https://github.com/hlerenow/chameleon/commit/f94e870ee43c3340a0e971fa54c78de51d495034))
+* **designer:** refine canvas zoom interactions ([a777cec](https://github.com/hlerenow/chameleon/commit/a777cec5326e87bea3cadbeedaf41e320048cede))
+* **engine:** enhance outline tree node markers ([6eb0b1c](https://github.com/hlerenow/chameleon/commit/6eb0b1c31f097e818f6a6cbdae7fdb6828b18d35))
+* **engine:** refresh editor panel styles ([c3e8cbc](https://github.com/hlerenow/chameleon/commit/c3e8cbce3c3c0afc105d0db3a7f0451694cbdfc3))
+* **engine:** sync resize with responsive styles ([5ea4b25](https://github.com/hlerenow/chameleon/commit/5ea4b25ba3c414d1cc104af467cf46de413be7af))
+* **layout:** extract layout debug entry ([3fcc391](https://github.com/hlerenow/chameleon/commit/3fcc39163de5c38a5a6d15c8a1ffb07184f612ce))
+* **layout:** keep node resize controls visible ([8d92cb7](https://github.com/hlerenow/chameleon/commit/8d92cb7dd2dd3b3b1d2332b64e8fc6a76297edf1))
+* **render:** add page props expression alias ([934fd29](https://github.com/hlerenow/chameleon/commit/934fd297ed6443636ba42796221b370d0e6a8b5d))
+* **render:** add runtime debug logging ([1a1c3be](https://github.com/hlerenow/chameleon/commit/1a1c3bea8066f788c596ad23cb83617113a432a5))
+* **render:** support runtime page storage and props ([1ad5714](https://github.com/hlerenow/chameleon/commit/1ad5714d770f6ac041fb310dba362c7e26f8e477))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* center empty right panel state ([91e988f](https://github.com/hlerenow/chameleon/commit/91e988f81a0c18699e0838ee4ff89dff3d88438e))
+* **engine:** improve hotkey handling ([510bef5](https://github.com/hlerenow/chameleon/commit/510bef5121a5c1a58aba3d43a00775bddd04b3f7))
+* ignore zoom control double clicks ([25e98dd](https://github.com/hlerenow/chameleon/commit/25e98dd8c590a55548790abce55f2d629eedbf69))
+* load code map through UMD global ([f3bdffc](https://github.com/hlerenow/chameleon/commit/f3bdffc27f9c65c2ad0dad2ce51f2bffa40f2989))
+* **render:** isolate page runtime state ([2a682ad](https://github.com/hlerenow/chameleon/commit/2a682ade8da37ac6147fe5ad8d8dae0ba4d134b8))
+* **render:** refresh child cache on state changes ([4b57b09](https://github.com/hlerenow/chameleon/commit/4b57b09def9e435195b4e0b6b5ea85499ba30b55))
+* **render:** release runtime listeners ([8e499da](https://github.com/hlerenow/chameleon/commit/8e499da27ef46bf26a92dbdbd46bb084c0cb3c5d))
+* update layout debug page schema ([2026b11](https://github.com/hlerenow/chameleon/commit/2026b11efbc224ec03d3dfe329b18a6969ccb75e))
+* use iife bundles in browser runtime ([4bfeb5d](https://github.com/hlerenow/chameleon/commit/4bfeb5de81fb4ffd9db9c300b3977621ca7519c3))
+
 ## [0.10.5](https://github.com/hlerenow/chameleon/compare/v0.10.4...v0.10.5) (2026-08-05)
 
 **Note:** Version bump only for package chameleon

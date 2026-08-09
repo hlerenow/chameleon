@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.0](https://github.com/hlerenow/chameleon/compare/v0.10.5...v0.11.0) (2026-08-09)
+
+### ✨ Features | 新功能
+
+* add engine internationalization ([231baea](https://github.com/hlerenow/chameleon/commit/231baea476592df6bcc6af1f7cdc01aeb9f9a1a4))
+* **designer:** enhance canvas navigation ([f94e870](https://github.com/hlerenow/chameleon/commit/f94e870ee43c3340a0e971fa54c78de51d495034))
+* **designer:** refine canvas zoom interactions ([a777cec](https://github.com/hlerenow/chameleon/commit/a777cec5326e87bea3cadbeedaf41e320048cede))
+* **engine:** refresh editor panel styles ([c3e8cbc](https://github.com/hlerenow/chameleon/commit/c3e8cbce3c3c0afc105d0db3a7f0451694cbdfc3))
+* **engine:** sync resize with responsive styles ([5ea4b25](https://github.com/hlerenow/chameleon/commit/5ea4b25ba3c414d1cc104af467cf46de413be7af))
+* **layout:** extract layout debug entry ([3fcc391](https://github.com/hlerenow/chameleon/commit/3fcc39163de5c38a5a6d15c8a1ffb07184f612ce))
+* **layout:** keep node resize controls visible ([8d92cb7](https://github.com/hlerenow/chameleon/commit/8d92cb7dd2dd3b3b1d2332b64e8fc6a76297edf1))
+* **render:** support runtime page storage and props ([1ad5714](https://github.com/hlerenow/chameleon/commit/1ad5714d770f6ac041fb310dba362c7e26f8e477))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* update layout debug page schema ([2026b11](https://github.com/hlerenow/chameleon/commit/2026b11efbc224ec03d3dfe329b18a6969ccb75e))
+
+### ♻️ Code Refactoring | 代码重构
+
+* organize engine i18n resources ([50f19f8](https://github.com/hlerenow/chameleon/commit/50f19f8edab3aef8acb9e249df313b587e60decd))
+
 ## [0.10.5](https://github.com/hlerenow/chameleon/compare/v0.10.4...v0.10.5) (2026-08-05)
 
 **Note:** Version bump only for package @chamn/layout

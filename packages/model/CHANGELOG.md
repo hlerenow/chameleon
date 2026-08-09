@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.0](https://github.com/hlerenow/chameleon/compare/v0.10.5...v0.11.0) (2026-08-09)
+
+### ✨ Features | 新功能
+
+* **engine:** refresh editor panel styles ([c3e8cbc](https://github.com/hlerenow/chameleon/commit/c3e8cbce3c3c0afc105d0db3a7f0451694cbdfc3))
+* **layout:** keep node resize controls visible ([8d92cb7](https://github.com/hlerenow/chameleon/commit/8d92cb7dd2dd3b3b1d2332b64e8fc6a76297edf1))
+* **render:** support runtime page storage and props ([1ad5714](https://github.com/hlerenow/chameleon/commit/1ad5714d770f6ac041fb310dba362c7e26f8e477))
+
 ## [0.10.5](https://github.com/hlerenow/chameleon/compare/v0.10.4...v0.10.5) (2026-08-05)
 
 **Note:** Version bump only for package @chamn/model
