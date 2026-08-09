@@ -2,9 +2,12 @@
 import React from 'react';
 import { TWidgetVisible, Workbench } from './component/Workbench';
 import { loader } from '@monaco-editor/react';
+import { ConfigProvider } from 'antd';
+import enUS from 'antd/locale/en_US';
+import zhCN from 'antd/locale/zh_CN';
 
 import styles from './Engine.module.scss';
-import i18n from './i18n/index';
+import i18n, { addI18nResources, changeEngineLocale, normalizeLocale } from './i18n/index';
 import { PluginManager } from './core/pluginManager';
 import mitt, { Emitter } from 'mitt';
 import { AssetPackage, CMaterialType, CNode, CPage, CPageDataType, CRootNode, EmptyPage } from '@chamn/model';
@@ -16,6 +19,7 @@ import { AssetsPackageListManager } from './core/assetPackagesListManage';
 import { flatObject } from '@chamn/render';
 import customI18n from './i18n/index';
 import { EngineProps } from './type';
+import { I18nTextBridge } from './i18n/I18nTextBridge';
 
 export class Engine extends React.Component<EngineProps> {
   static version = __PACKAGE_VERSION__;
@@ -30,6 +34,7 @@ export class Engine extends React.Component<EngineProps> {
   assetsPackageListManager: AssetsPackageListManager;
 
   workbenchConfig?: EngineProps['workbenchConfig'] = {};
+  onLanguageChanged = () => this.forceUpdate();
   _oldHiddenWidgetConfig:
     | { hiddenTopBar: boolean | undefined; hiddenLeftPanel: boolean | undefined; hiddenRightPanel: boolean | undefined }
     | undefined;
@@ -42,6 +47,8 @@ export class Engine extends React.Component<EngineProps> {
     (window as any).__CHAMELEON_ENG__ = this;
     this.assetsPackageListManager = new AssetsPackageListManager(props.assetPackagesList || []);
     this.workbenchConfig = props.workbenchConfig || {};
+    addI18nResources(props.i18nResources);
+    changeEngineLocale(props.locale);
 
     if (props.monacoEditor?.cndUrl) {
       loader.config({
@@ -72,6 +79,7 @@ export class Engine extends React.Component<EngineProps> {
 
   async componentDidMount() {
     (window as any).__C_ENGINE__ = this;
+    i18n.on('languageChanged', this.onLanguageChanged);
     const plugins = this.props.plugins;
     const pluginManager = new PluginManager({
       engine: this,
@@ -121,6 +129,20 @@ export class Engine extends React.Component<EngineProps> {
       pluginManager: this.pluginManager,
       engine: this,
     });
+  }
+
+  componentDidUpdate(prevProps: EngineProps) {
+    if (prevProps.i18nResources !== this.props.i18nResources) {
+      addI18nResources(this.props.i18nResources);
+    }
+
+    if (prevProps.locale !== this.props.locale) {
+      changeEngineLocale(this.props.locale);
+    }
+  }
+
+  componentWillUnmount() {
+    i18n.off('languageChanged', this.onLanguageChanged);
   }
 
   getActiveNode() {
@@ -215,9 +237,15 @@ export class Engine extends React.Component<EngineProps> {
   }
 
   render() {
+    const language = normalizeLocale(i18n.language);
+    const antdLocale = language === 'en_US' ? enUS : zhCN;
     return (
       <div className={clsx([styles.engineContainer, this.props.className])} style={this.props.style}>
-        <Workbench ref={this.workbenchRef} emitter={this.emitter} {...this.workbenchConfig} />
+        <ConfigProvider locale={antdLocale}>
+          <I18nTextBridge language={language}>
+            <Workbench ref={this.workbenchRef} emitter={this.emitter} {...this.workbenchConfig} />
+          </I18nTextBridge>
+        </ConfigProvider>
       </div>
     );
   }
@@ -239,3 +267,4 @@ export * from './type';
 export * from './config/responsiveSizes';
 export * from './core/pluginManager';
 export * from './core/assetPackagesListManage';
+export { addI18nResources, changeEngineLocale, DEFAULT_LOCALE, normalizeLocale, SUPPORTED_LOCALES } from './i18n';

@@ -31,7 +31,7 @@ export type LayoutDragEvent<T = LayoutDragAndDropExtraDataType> = DragAndDropEve
 
 const isNodeSizeChangeEnabled = (instance: RenderInstance | null) => {
   const material = instance?._NODE_MODEL.material?.value;
-  return material?.enableNodeSizeChange === true || material?.advanceCustom?.rightPanel?.visual === true;
+  return material?.enableNodeSizeChange === true || material?.advanceCustom?.rightPanel?.visual !== false;
 };
 
 export enum LayoutMode {

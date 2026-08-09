@@ -1,28 +1,54 @@
 import i18n from 'i18next';
+import type { Resource } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { zh_CN } from './zh_CN';
 import { en_US } from './en_US';
 
-// the translations
-// (tip move them in a JSON file and import them,
-// or even better, manage them separated from your code: https://react.i18next.com/guides/multiple-translation-files)
-const resources = {
+export const DEFAULT_LOCALE = 'zh_CN';
+export const SUPPORTED_LOCALES = ['zh_CN', 'en_US'] as const;
+export type EngineLocale = typeof SUPPORTED_LOCALES[number];
+
+const resources: Resource = {
   zh_CN,
   en_US,
 };
 
-i18n
-  .use(initReactI18next) // passes i18n down to react-i18next
-  .init({
-    resources,
-    lng: 'zh_CN', // language to use, more information here: https://www.i18next.com/overview/configuration-options#languages-namespaces-resources
-    // you can use the i18n.changeLanguage function to change the language manually: https://www.i18next.com/overview/api#changelanguage
-    // if you're using a language detector, do not define the lng option
-    react: {
-      bindI18n: 'added languageChanged',
-      bindI18nStore: 'added',
-    },
+export function normalizeLocale(locale?: string): EngineLocale {
+  if (!locale) {
+    return DEFAULT_LOCALE;
+  }
+
+  const normalizedLocale = locale.replace('-', '_');
+  return SUPPORTED_LOCALES.includes(normalizedLocale as EngineLocale)
+    ? (normalizedLocale as EngineLocale)
+    : DEFAULT_LOCALE;
+}
+
+export function addI18nResources(extraResources?: Resource) {
+  if (!extraResources) {
+    return;
+  }
+
+  Object.entries(extraResources).forEach(([locale, namespaces]) => {
+    Object.entries(namespaces).forEach(([namespace, resource]) => {
+      i18n.addResourceBundle(normalizeLocale(locale), namespace, resource, true, true);
+    });
   });
+}
+
+i18n.use(initReactI18next).init({
+  resources,
+  lng: DEFAULT_LOCALE,
+  fallbackLng: DEFAULT_LOCALE,
+  supportedLngs: SUPPORTED_LOCALES,
+  interpolation: {
+    escapeValue: false,
+  },
+  react: {
+    bindI18n: 'added languageChanged',
+    bindI18nStore: 'added',
+  },
+});
 
 export type CustomI18n = typeof i18n & {
   update: () => void;
@@ -36,6 +62,8 @@ customI18n.update = () => {
   }, 0);
 };
 
-customI18n.changeLanguage('en_US');
+export function changeEngineLocale(locale?: string) {
+  return customI18n.changeLanguage(normalizeLocale(locale));
+}
 
 export default customI18n;

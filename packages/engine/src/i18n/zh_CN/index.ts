@@ -1,5 +1,7 @@
+import { staticTextTranslations } from '../staticText';
+
 export const zh_CN = {
   translation: {
-    'Welcome to React': '欢迎使用 React',
+    ...staticTextTranslations.zh_CN,
   },
 };

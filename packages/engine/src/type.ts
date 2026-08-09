@@ -3,6 +3,8 @@ import { Engine, WorkbenchPropsType } from '.';
 import { PluginManager, CPlugin } from './core/pluginManager';
 import { RenderPropsType } from '@chamn/render';
 import { ResponsiveSize } from './config/responsiveSizes';
+import type { Resource } from 'i18next';
+import type { EngineLocale } from './i18n';
 
 export type EnginContext = {
   pluginManager: PluginManager;
@@ -33,4 +35,8 @@ export type EngineProps = {
   monacoEditor?: {
     cndUrl?: string;
   };
+  /** 编辑器界面语言，支持 `zh_CN`、`en_US` 及其连字符形式。 */
+  locale?: EngineLocale | 'zh-CN' | 'en-US';
+  /** 追加或覆盖 i18next 资源，按语言和命名空间组织。 */
+  i18nResources?: Resource;
 };

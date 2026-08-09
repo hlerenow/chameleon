@@ -1,0 +1,88 @@
+export const staticTextTranslations = {
+  zh_CN: {},
+  en_US: {
+    'Welcome to React': 'Welcome to React',
+    组件库: 'Components',
+    大纲树: 'Outline Tree',
+    全局状态: 'Global State',
+    快捷键: 'Hotkeys',
+    属性: 'Properties',
+    属性名: 'Property name',
+    值: 'Value',
+    内置组件: 'Built-in components',
+    原子组件: 'Basic components',
+    块: 'Block',
+    文本: 'Text',
+    容器: 'Container',
+    图片: 'Image',
+    地址: 'URL',
+    视频: 'Video',
+    音频: 'Audio',
+    自动播放: 'Autoplay',
+    控制面板: 'Controls',
+    内容: 'Content',
+    渲染之后: 'After render',
+    销毁之前: 'Before destroy',
+    画布: 'Canvas',
+    'HTML 标签': 'HTML tag',
+    标签名: 'Tag name',
+    布局: 'Layout',
+    类名: 'Class name',
+    启用: 'Enabled',
+    初始化完成后: 'After initialization',
+    组件销毁之前: 'Before component destroy',
+    选择节点: 'Select node',
+    请求成功时: 'On request success',
+    请求异常时: 'On request failure',
+    请求方法: 'Request method',
+    返回值变量: 'Response variable',
+    返回值变量名: 'Response variable name',
+    组件: 'Component',
+    方法: 'Method',
+    参数: 'Parameters',
+    请求数据: 'Request data',
+    调用组件方法: 'Call component method',
+    运行代码: 'Run code',
+    '赋值/创建变量': 'Assign / create variable',
+    页面跳转: 'Navigate',
+    表达式: 'Expression',
+    逻辑流设置器: 'Action flow setter',
+    颜色设置器: 'Color setter',
+    长文本设置器: 'Long text setter',
+    选择设置器: 'Select setter',
+    空值设置器: 'Empty value setter',
+    滑动条设置器: 'Slider setter',
+    数组设置器: 'Array setter',
+    数字设置器: 'Number setter',
+    对象设置器: 'Object setter',
+    字符设置器: 'String setter',
+    单选设置器: 'Radio group setter',
+    函数设置器: 'Function setter',
+    'JSON 设置器': 'JSON setter',
+    CSS值设置器: 'CSS value setter',
+    'CSS size 设置器': 'CSS size setter',
+    'Bool 设置器': 'Boolean setter',
+    该节点不能删除: 'This node cannot be deleted',
+    不允许存在一个节点连接多个节点: 'A node cannot connect to multiple nodes',
+    资源加载出错: 'Failed to load resource',
+    '变量名必须以字母（a-z、A-Z）、下划线（_）或美元符号（$）开头。后续字符可以是字母、数字（0-9）、下划线或美元符号。变量名不能是保留关键字（例如 if、while 等）':
+      'Variable names must start with a letter, underscore, or dollar sign. Remaining characters may be letters, numbers, underscores, or dollar signs. Reserved keywords such as if and while are not allowed.',
+  },
+} as const;
+
+const englishToChinese = Object.fromEntries(
+  Object.entries(staticTextTranslations.en_US).map(([chinese, english]) => [english, chinese])
+);
+
+export function translateStaticText(value: string, language: string) {
+  if (language === 'zh_CN') {
+    return englishToChinese[value] ?? value;
+  }
+
+  const itemMatch = value.match(/^元素-(\d+)$/);
+  if (itemMatch) {
+    return `Item-${itemMatch[1]}`;
+  }
+
+  return staticTextTranslations.en_US[value as keyof typeof staticTextTranslations.en_US] ?? value;
+}

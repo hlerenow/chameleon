@@ -18,6 +18,31 @@ npm i @chamn/engine @chamn/model @chamn/render
 
 ### ScreenSnapshot
 
+### Internationalization
+
+The engine ships with `zh_CN` and `en_US`. Set `locale` during initialization, update it through props, or switch it at runtime through the engine instance.
+
+```tsx
+<Engine locale="en_US" {...engineProps} />
+
+engine.getI18n().changeLanguage('zh_CN');
+```
+
+Use `i18nResources` to add or override i18next namespaces:
+
+```tsx
+<Engine
+  {...engineProps}
+  i18nResources={{
+    en_US: {
+      custom: {
+        greeting: 'Hello',
+      },
+    },
+  }}
+/>
+```
+
 <img width="1776" alt="image" src="https://github.com/user-attachments/assets/7b06dc4c-80a3-455d-bc91-14a1cf1fb331">
 
 
