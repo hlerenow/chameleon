@@ -12,7 +12,6 @@ import commonComponentUrl from '@chamn/material/dist/index.iife.js?url';
 import commonComponentCSS from '@chamn/material/dist/style.css?url';
 import {
   DEFAULT_PLUGIN_LIST,
-  DesignerSizer,
   DisplaySourceSchema,
   EnginContext,
   Engine,
@@ -125,17 +124,6 @@ export const App = () => {
               },
             ]}
           />
-          <div
-            style={{
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginRight: '10px',
-            }}
-          >
-            {ctx && <DesignerSizer ctx={ctx} />}
-          </div>
           <Select
             defaultValue={lang}
             style={{ width: 100, marginRight: '10px' }}

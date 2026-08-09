@@ -1,0 +1,64 @@
+.toolbar {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+}
+
+.viewportControl,
+.canvasStatus {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zoomControl {
+  display: flex;
+  align-items: center;
+
+  :global(.ant-input-number) {
+    width: 76px;
+    border: 0;
+    background: transparent;
+    text-align: center;
+  }
+
+  :global(.ant-input-number-input) {
+    text-align: center;
+    font-weight: 600;
+  }
+
+  :global(.ant-divider-vertical) {
+    margin: 0 4px;
+  }
+}
+
+.canvasStatus {
+  justify-content: flex-end;
+
+  :global(.ant-tag) {
+    margin-inline-end: 0;
+    color: #47607d;
+    background: #f0f4f8;
+    border-radius: 999px;
+  }
+}
+
+.sectionLabel {
+  color: #7a8798;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+@media (max-width: 960px) {
+  .toolbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .canvasStatus {
+    display: none;
+  }
+}

@@ -288,6 +288,7 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
 
     const defaultSearchValue = (
       <Input
+        className={styles.searchInput}
         value={searchString}
         placeholder="input search text"
         suffix={<SearchOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}

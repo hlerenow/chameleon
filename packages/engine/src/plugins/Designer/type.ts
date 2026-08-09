@@ -21,6 +21,8 @@ export type DesignerExport = {
   updateRenderComponents: (newComponentMap: Record<string, string>) => void;
   /** set canvas width, width must below visible area width*/
   setCanvasWidth: (width: number | string) => void;
+  /** set canvas scale, scale must be greater than 0 */
+  setCanvasScale: (scale: number) => void;
   setMode: (mode: LayoutMode) => void;
   setPreviewMode: () => void;
   setEditMode: () => void;
@@ -32,6 +34,7 @@ export type DesignerPluginConfig = Omit<
   | 'hoverRectViewRender'
   | 'dropViewRender'
   | 'ghostView'
+  | 'canvasToolbarView'
   | 'selectToolBarView'
   | 'hoverToolBarView'
 > &

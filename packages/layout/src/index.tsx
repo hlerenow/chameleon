@@ -62,6 +62,7 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   forceNodeSizeChange?: boolean;
   /** @deprecated 尺寸调整层不再依赖快捷键 */
   nodeSizeChangeHotkey?: string;
+  canvasToolbarView?: React.ReactNode;
   selectToolbarView?: React.ReactNode;
   selectBoxStyle?: React.CSSProperties;
   hoverBoxStyle?: React.CSSProperties;
@@ -116,6 +117,7 @@ export type LayoutStateType = {
   dropEvent: DragAndDropEventType<LayoutDragAndDropExtraDataType>['dragging'] | null;
   dropInfo: DropPosType | null;
   canDrop: boolean;
+  canvasScale: number;
   /** 是否可以选中节点 */
   canSelectNode: boolean;
   pointerEventsForHightLightBox: 'auto' | 'none';
@@ -138,8 +140,13 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   assets: AssetPackage[] = [];
   dragStartNode: CNode | CRootNode | null = null;
   private disposeDndMouseMoveListener: (() => void) | null = null;
+  private canvasPanEventDisposeHandlers: (() => void)[] = [];
+  private canvasPanStart: { clientX: number; clientY: number; scrollLeft: number; scrollTop: number } | null = null;
+  private canvasPanOverlay: HTMLDivElement | null = null;
+  private isSpacePressed = false;
   realTimeSelectNodeInstanceTimer = 0;
   iframeDomId: string;
+  canvasWorkspaceRef: React.RefObject<HTMLDivElement>;
   /** 在 layout 层取消拖动行为，实际上 senor 的拖动行为仍然发生 */
   isCancelDrag: boolean;
   /** 渲染模式  */
@@ -168,12 +175,14 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       dropEvent: null,
       dropInfo: null,
       canDrop: true,
+      canvasScale: 1,
       canSelectNode: true,
       pointerEventsForHightLightBox: 'none',
     };
     this.highlightCanvasRef = React.createRef<HighlightCanvasRefType>();
     this.highlightHoverCanvasRef = React.createRef<HighlightCanvasRefType>();
     this.highlightDropAnchorCanvasRef = React.createRef<HighlightCanvasRefType>();
+    this.canvasWorkspaceRef = React.createRef<HTMLDivElement>();
 
     const dnd = new DragAndDrop({
       doc: document,
@@ -207,9 +216,21 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     }
   }
 
+  setCanvasScale(scale: number) {
+    if (!Number.isFinite(scale) || scale <= 0) {
+      return;
+    }
+    this.setState({ canvasScale: scale }, () => {
+      this.highlightCanvasRef.current?.update();
+      this.highlightHoverCanvasRef.current?.update();
+      this.highlightDropAnchorCanvasRef.current?.update();
+    });
+  }
+
   init() {
     this.disposeDndMouseMoveListener?.();
     this.disposeDndMouseMoveListener = null;
+    this.clearCanvasPanEvents();
     this.dnd.clearSensors();
     this.iframeContainer.destroy();
     this.iframeContainer = new IFrameContainer();
@@ -237,6 +258,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         (subWin as any).__C_ENGINE_DESIGNER_PLUGIN_CTX__ = this.props.pluginCtx;
       };
       await innerBeforeInitRender();
+      this.registerCanvasPanEvents();
 
       if (this.props.customRender) {
         this.props.customRender({
@@ -260,6 +282,128 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
         throw new Error('Must pass customRender methods');
       }
     });
+  }
+
+  clearCanvasPanEvents() {
+    this.canvasPanEventDisposeHandlers.forEach((dispose) => dispose());
+    this.canvasPanEventDisposeHandlers = [];
+    this.removeCanvasPanOverlay();
+    this.canvasPanStart = null;
+    this.isSpacePressed = false;
+  }
+
+  removeCanvasPanOverlay() {
+    this.canvasPanOverlay?.remove();
+    this.canvasPanOverlay = null;
+  }
+
+  registerCanvasPanEvents() {
+    const workspace = this.canvasWorkspaceRef.current;
+    const iframeDoc = this.iframeContainer.getDocument();
+    if (!workspace || !iframeDoc) {
+      return;
+    }
+
+    const isEditableTarget = (target: EventTarget | null) => {
+      const element = target as HTMLElement | null;
+      return element?.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(element?.tagName || '');
+    };
+    const updatePanCursor = (isPanning: boolean) => {
+      workspace.classList.toggle(styles.canvasPanning, isPanning);
+      workspace.classList.toggle(styles.canvasPanReady, this.isSpacePressed && !isPanning);
+      if (this.canvasPanOverlay) {
+        this.canvasPanOverlay.style.cursor = isPanning ? 'grabbing' : 'grab';
+      }
+    };
+    const endPan = () => {
+      if (!this.canvasPanStart) {
+        return;
+      }
+      this.canvasPanStart = null;
+      updatePanCursor(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.code !== 'Space' || isEditableTarget(event.target)) {
+        return;
+      }
+      if (!this.isSpacePressed) {
+        this.isCancelDrag = true;
+        this.dnd.cancelDrag();
+        createCanvasPanOverlay();
+      }
+      this.isSpacePressed = true;
+      event.preventDefault();
+      updatePanCursor(false);
+    };
+    const onKeyUp = (event: KeyboardEvent) => {
+      if (event.code !== 'Space') {
+        return;
+      }
+      this.isSpacePressed = false;
+      endPan();
+      this.removeCanvasPanOverlay();
+      this.resetDrag();
+      this.dnd.resetDrag();
+      this.isCancelDrag = false;
+      updatePanCursor(false);
+    };
+    const onMouseDown = (event: MouseEvent) => {
+      if (!this.isSpacePressed || event.button !== 0) {
+        return;
+      }
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      this.canvasPanStart = {
+        clientX: event.clientX,
+        clientY: event.clientY,
+        scrollLeft: workspace.scrollLeft,
+        scrollTop: workspace.scrollTop,
+      };
+      updatePanCursor(true);
+    };
+    const onMouseMove = (event: MouseEvent) => {
+      if (!this.canvasPanStart) {
+        return;
+      }
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      workspace.scrollLeft = this.canvasPanStart.scrollLeft - (event.clientX - this.canvasPanStart.clientX);
+      workspace.scrollTop = this.canvasPanStart.scrollTop - (event.clientY - this.canvasPanStart.clientY);
+    };
+    const onMouseUp = (event: MouseEvent) => {
+      if (!this.canvasPanStart) {
+        return;
+      }
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      endPan();
+    };
+    const createCanvasPanOverlay = () => {
+      const container = this.iframeContainer.containerDom;
+      if (this.canvasPanOverlay || !container) {
+        return;
+      }
+      const overlay = document.createElement('div');
+      overlay.style.cssText =
+        'position: absolute; inset: 0; z-index: 3; background: transparent; cursor: grab; user-select: none;';
+      overlay.addEventListener('mousedown', onMouseDown, true);
+      overlay.addEventListener('mousemove', onMouseMove, true);
+      overlay.addEventListener('mouseup', onMouseUp, true);
+      container.appendChild(overlay);
+      this.canvasPanOverlay = overlay;
+    };
+    const addListener = (target: EventTarget, type: string, listener: EventListener, capture = true) => {
+      target.addEventListener(type, listener, capture);
+      this.canvasPanEventDisposeHandlers.push(() => target.removeEventListener(type, listener, capture));
+    };
+
+    addListener(document, 'keydown', onKeyDown as EventListener);
+    addListener(document, 'keyup', onKeyUp as EventListener);
+    addListener(iframeDoc, 'keydown', onKeyDown as EventListener);
+    addListener(iframeDoc, 'keyup', onKeyUp as EventListener);
+    addListener(workspace, 'mousedown', onMouseDown as EventListener);
+    addListener(workspace, 'mousemove', onMouseMove as EventListener);
+    addListener(workspace, 'mouseup', onMouseUp as EventListener);
   }
 
   /** 禁止节点选中 */
@@ -456,6 +600,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       name: 'layout',
       container: iframeDoc,
       offsetDom: document.getElementById(this.iframeDomId),
+      pointerScale: () => this.state.canvasScale,
       mainDocument: document,
     });
 
@@ -806,6 +951,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
 
   componentWillUnmount(): void {
     this.disposeDndMouseMoveListener?.();
+    this.clearCanvasPanEvents();
     this.eventExposeHandler.forEach((el) => el());
     this.iframeContainer.iframe?.parentNode?.removeChild(this.iframeContainer.iframe);
     this.disposeRealTimeUpdate();
@@ -868,6 +1014,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       selectLockStyle,
       isDragging,
       mousePointer,
+      canvasScale,
     } = this.state;
     const { iframeDomId } = this;
     const selectedInstance = this.state.currentSelectInstance;
@@ -897,67 +1044,77 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     if (dropViewRender) {
       dropViewItemRender = this.dropViewItemRender;
     }
+    const canvasViewportHeight = canvasScale < 1 ? `${100 / canvasScale}%` : '100%';
     return (
-      <div className={styles.layoutContainer} id={iframeDomId}>
-        {/* 左上角添加显示元素名功能， hover */}
-        <HighlightCanvas
-          key={'highlightHoverCanvasRef'}
-          ref={this.highlightHoverCanvasRef}
-          instances={hoverComponentInstances}
-          style={{
-            pointerEvents: 'none',
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            outline: '1px dashed rgba(0,0,255, .8)',
-            whiteSpace: 'nowrap',
-            ...hoverBoxStyle,
-          }}
-          toolbarView={hoverToolBarView}
-          itemRender={hoverRectViewItemRender}
-        />
-
-        {/* TODO:  选中框， 添加锁定功能 */}
-        <HighlightCanvas
-          ref={this.highlightCanvasRef}
-          instances={selectComponentInstances}
-          style={{
-            ...selectBoxStyle,
-            ...selectLockStyle,
-          }}
-          toolbarView={selectToolbarView}
-          itemRender={selectRectViewItemRender}
-        />
-        {selectedInstance && canResizeSelectedNode && showNodeSizeChangeBox && this.props.onNodeSizeChange && (
-          <NodeSizeChangeBox
-            instance={selectedInstance}
-            node={selectedInstance._NODE_MODEL}
-            active
-            onChange={this.props.onNodeSizeChange}
-          />
-        )}
-
-        <DropAnchorCanvas
-          ref={this.highlightDropAnchorCanvasRef}
-          instances={dropComponentInstances}
-          mouseEvent={dropEvent}
-          dropInfos={dropPosInfos}
-          customDropViewRender={dropViewItemRender}
-        />
-        {isDragging && mousePointer && (
+      <div className={styles.layoutRoot}>
+        {this.props.canvasToolbarView && <div className={styles.canvasToolbar}>{this.props.canvasToolbarView}</div>}
+        <div ref={this.canvasWorkspaceRef} className={styles.layoutContainer}>
           <div
-            style={{
-              position: 'fixed',
-              left: mousePointer.x - 5 + 'px',
-              top: mousePointer.y - 8 + 'px',
-              cursor: 'move',
-              pointerEvents: 'none',
-              zIndex: 999,
-            }}
+            className={styles.canvasViewport}
+            id={iframeDomId}
+            style={{ height: canvasViewportHeight, transform: `scale(${canvasScale})` }}
           >
-            {ghostView}
+            {/* 左上角添加显示元素名功能， hover */}
+            <HighlightCanvas
+              key={'highlightHoverCanvasRef'}
+              ref={this.highlightHoverCanvasRef}
+              instances={hoverComponentInstances}
+              style={{
+                pointerEvents: 'none',
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                outline: '1px dashed rgba(0,0,255, .8)',
+                whiteSpace: 'nowrap',
+                ...hoverBoxStyle,
+              }}
+              toolbarView={hoverToolBarView}
+              itemRender={hoverRectViewItemRender}
+            />
+
+            {/* TODO:  选中框， 添加锁定功能 */}
+            <HighlightCanvas
+              ref={this.highlightCanvasRef}
+              instances={selectComponentInstances}
+              style={{
+                ...selectBoxStyle,
+                ...selectLockStyle,
+              }}
+              toolbarView={selectToolbarView}
+              itemRender={selectRectViewItemRender}
+            />
+            {selectedInstance && canResizeSelectedNode && showNodeSizeChangeBox && this.props.onNodeSizeChange && (
+              <NodeSizeChangeBox
+                instance={selectedInstance}
+                node={selectedInstance._NODE_MODEL}
+                active
+                onChange={this.props.onNodeSizeChange}
+              />
+            )}
+
+            <DropAnchorCanvas
+              ref={this.highlightDropAnchorCanvasRef}
+              instances={dropComponentInstances}
+              mouseEvent={dropEvent}
+              dropInfos={dropPosInfos}
+              customDropViewRender={dropViewItemRender}
+            />
           </div>
-        )}
+          {isDragging && mousePointer && (
+            <div
+              style={{
+                position: 'fixed',
+                left: mousePointer.x - 5 + 'px',
+                top: mousePointer.y - 8 + 'px',
+                cursor: 'move',
+                pointerEvents: 'none',
+                zIndex: 999,
+              }}
+            >
+              {ghostView}
+            </div>
+          )}
+        </div>
       </div>
     );
   }

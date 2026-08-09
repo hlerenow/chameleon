@@ -16,6 +16,7 @@ import { AdvanceCustomHook } from './advanceCustomHook';
 import { DesignerPluginConfig } from '../../type';
 import { AdvanceCustomFuncParam } from '@chamn/model';
 import { updateNodeSizeStyle } from '@/utils/css';
+import { DesignerSizer } from '@/component/DesignerSizer';
 
 export type DesignerCtx = CPluginCtx<DesignerPluginConfig>;
 export type DesignerPropsType = {
@@ -583,6 +584,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
           pageModel={pageModel}
           renderJSUrl={renderJSUrl}
           {...props}
+          canvasToolbarView={<DesignerSizer ctx={pluginCtx} />}
           hoverToolBarView={hoverToolbarView}
           selectBoxStyle={{}}
           hoverBoxStyle={{}}

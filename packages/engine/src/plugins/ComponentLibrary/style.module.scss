@@ -35,6 +35,16 @@
 .header {
   display: flex;
   align-items: center;
+
+  > * {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.searchInput {
+  width: 100%;
+  min-width: 0;
 }
 
 .notFoundComponent {

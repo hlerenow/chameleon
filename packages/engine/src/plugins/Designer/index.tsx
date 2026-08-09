@@ -43,6 +43,9 @@ export const DesignerPlugin: DesignerPluginType = () => {
             iframeContainer.containerDom.style.margin = '0 auto';
           }
         },
+        setCanvasScale(scale: number) {
+          designerRef.current?.layoutRef.current?.setCanvasScale(scale);
+        },
         getIframeDom() {
           return designerRef.current?.getIframeDom();
         },

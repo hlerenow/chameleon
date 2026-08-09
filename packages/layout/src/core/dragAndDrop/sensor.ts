@@ -42,6 +42,8 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
   container: HTMLElement | Document;
   /** 在主窗口的感应器区的 dom元素 */
   offsetDom?: HTMLElement | null;
+  /** iframe 内容坐标映射到主窗口时使用的缩放比例 */
+  pointerScale: number | (() => number) = 1;
 
   canDrag: (params: SensorEventObjType<E>) => Promise<SensorEventObjType<E> | null | undefined | boolean> = (params) =>
     Promise.resolve(params);
@@ -60,6 +62,7 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
     offset?: Sensor['offset'];
     offsetDom?: Sensor['offsetDom'];
     eventPriority?: number;
+    pointerScale?: Sensor['pointerScale'];
     /** 主窗口的文档对象用于获取dom 元素根据 clientX, clientY */
     mainDocument: Document;
     isIframe?: boolean;
@@ -73,6 +76,7 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
     }
 
     this.offsetDom = options.offsetDom;
+    this.pointerScale = options.pointerScale ?? this.pointerScale;
 
     this.registerEvent();
     this.registerSyncOffsetEvent();
@@ -231,9 +235,10 @@ export class Sensor<E extends Record<string, any> = any> extends DEmitter<Sensor
   }
 
   getPointer(e: { clientX: number; clientY: number }) {
+    const scale = typeof this.pointerScale === 'function' ? this.pointerScale() : this.pointerScale;
     return {
-      x: this.offset.x + e.clientX,
-      y: this.offset.y + e.clientY,
+      x: this.offset.x + e.clientX * scale,
+      y: this.offset.y + e.clientY * scale,
     };
   }
 

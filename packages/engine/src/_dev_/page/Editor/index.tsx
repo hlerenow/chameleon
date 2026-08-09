@@ -15,7 +15,6 @@ import { collectVariable, flatObject, getThirdLibs } from '@chamn/render';
 import { HistoryPluginInstance } from '@/plugins/History/type';
 import { DesignerPluginInstance } from '@/plugins/Designer/type';
 
-import { DesignerSizer } from '@/component/DesignerSizer';
 import { EnginContext } from '@/type';
 import renderAsURL from '@chamn/render/dist/index.umd.js?url';
 
@@ -145,17 +144,6 @@ export const App = () => {
           }}
         >
           <div className="logo">Chameleon EG</div>
-          <div
-            style={{
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginRight: '10px',
-            }}
-          >
-            {ctx && <DesignerSizer ctx={ctx} />}
-          </div>
           <Select
             defaultValue={lang}
             style={{ width: 100, marginRight: '10px' }}
