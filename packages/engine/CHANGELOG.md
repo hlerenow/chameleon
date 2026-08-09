@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.1](https://github.com/hlerenow/chameleon/compare/v0.11.0...v0.11.1) (2026-08-09)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* polish responsive style controls ([8a007c5](https://github.com/hlerenow/chameleon/commit/8a007c5667e56d7790f81e1c69d76707f648dbd2))
+* preserve default percent dimensions ([219118c](https://github.com/hlerenow/chameleon/commit/219118c26632bfd1c3f3a34c3889117a5cd7300d))
+* sync responsive size box styles ([ba3cfba](https://github.com/hlerenow/chameleon/commit/ba3cfba8db6b127b854429901468a07ba089552d))
+
 ## [0.11.0](https://github.com/hlerenow/chameleon/compare/v0.10.5...v0.11.0) (2026-08-09)
 
 ### ⚡ Performance Improvements | 性能优化

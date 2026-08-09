@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.1](https://github.com/hlerenow/chameleon/compare/v0.11.0...v0.11.1) (2026-08-09)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* sync responsive size box styles ([ba3cfba](https://github.com/hlerenow/chameleon/commit/ba3cfba8db6b127b854429901468a07ba089552d))
+
 ## [0.11.0](https://github.com/hlerenow/chameleon/compare/v0.10.5...v0.11.0) (2026-08-09)
 
 ### ✨ Features | 新功能
