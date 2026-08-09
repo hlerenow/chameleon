@@ -22,11 +22,19 @@
       "import": "./dist/index.es.js",
       "require": "./dist/index.cjs.js"
     },
+    "./debug": {
+      "types": "./dist/components/LayoutDebug/index.d.ts",
+      "module-sync": "./dist/debug.es.js",
+      "import": "./dist/debug.es.js",
+      "require": "./dist/debug.cjs.js"
+    },
     "./dist/*": "./dist/*"
   },
   "scripts": {
     "start": "build-script",
-    "build": "build-script --build",
+    "build": "pnpm run build:main && pnpm run build:debug",
+    "build:main": "cross-env BUILD_ENTRY=main build-script --build",
+    "build:debug": "cross-env BUILD_ENTRY=debug build-script --build",
     "build:analyze": "build-script --build --analyze",
     "build:w": "build-script --build --watch",
     "lint": "eslint --ext .tsx,.ts src/",

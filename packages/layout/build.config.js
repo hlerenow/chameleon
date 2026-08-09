@@ -16,6 +16,21 @@ const mainConfig = {
   },
 };
 
-const config = mainConfig;
+const debugConfig = {
+  ...mainConfig,
+  entry: './src/components/LayoutDebug/index.tsx',
+  libName: 'CLayoutDebug',
+  fileName: 'debug',
+  cssFileName: 'debug',
+  vite: {
+    ...mainConfig.vite,
+    build: {
+      ...mainConfig.vite.build,
+      emptyOutDir: false,
+    },
+  },
+};
+
+const config = process.env.BUILD_ENTRY === 'debug' ? debugConfig : mainConfig;
 
 export default config;
