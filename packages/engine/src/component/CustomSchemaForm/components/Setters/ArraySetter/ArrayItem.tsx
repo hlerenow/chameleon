@@ -11,6 +11,7 @@ export function ArrayItem(props: {
   value: Record<string, any>;
   setters: SetterObjType[];
   style: React.CSSProperties;
+  defaultOpen?: boolean;
   onValueChange: (val: Record<string, any>) => void;
   onDelete: () => void;
 }) {
@@ -52,6 +53,7 @@ export function ArrayItem(props: {
           }
           name={String(index)}
           label={`${props.labelPrefix ?? `元素-${index}`}`}
+          defaultCollapseOpen={props.defaultOpen}
           keyPaths={[...keyPaths, String(index)]}
           setters={setters}
         ></SetterSwitcher>

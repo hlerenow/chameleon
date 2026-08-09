@@ -19,6 +19,7 @@ export type SetterSwitcherProps = {
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
   style?: React.CSSProperties;
+  defaultCollapseOpen?: boolean;
   /** 是否实用 CFile 包裹 */
   useField?: boolean;
 } & Omit<CFieldProps, 'children'>;
@@ -27,6 +28,7 @@ export const SetterSwitcher = ({
   setters: outerSetter,
   keyPaths,
   condition,
+  defaultCollapseOpen,
   useField = true,
   ...props
 }: SetterSwitcherProps) => {
@@ -201,7 +203,7 @@ export const SetterSwitcher = ({
             marginBottom: '10px',
             flex: 1,
           }}
-          defaultActiveKey={[collapseObj.open ? props.name : '']}
+          defaultActiveKey={[defaultCollapseOpen ?? collapseObj.open ? props.name : '']}
           items={[
             {
               key: props.name,
@@ -220,7 +222,7 @@ export const SetterSwitcher = ({
 
       return CollapseComponent;
     },
-    [collapse, props.name, props.label, switcher, filedView]
+    [collapse, defaultCollapseOpen, props.name, props.label, switcher, filedView]
   );
 
   if (['ArraySetter'].includes(currentSetter?.componentName || '')) {

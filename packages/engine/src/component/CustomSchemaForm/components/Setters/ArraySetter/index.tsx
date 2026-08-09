@@ -49,6 +49,7 @@ export const ArraySetter = ({
       },
     ]
   );
+  const [newItemIndex, setNewItemIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (setterContext.setCollapseHeaderExt) {
@@ -86,6 +87,7 @@ export const ArraySetter = ({
             key={index}
             style={{ paddingBottom: '10px' }}
             index={index}
+            defaultOpen={newItemIndex === index}
             keyPaths={keyPaths}
             value={val}
             onValueChange={(val) => {
@@ -107,6 +109,7 @@ export const ArraySetter = ({
         size="small"
         onClick={() => {
           const newVal = [...listValue];
+          setNewItemIndex(newVal.length);
           onValueChange?.([...newVal, itemInitialValue ?? '']);
         }}
       >

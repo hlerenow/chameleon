@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { CNode, CRootNode } from '@chamn/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import { BUILD_IN_ADVANCE_SETTER_MAP } from '@/component/CustomSchemaForm/components/Setters/AdvanceSetterList';
@@ -10,26 +10,69 @@ export const PropertyPanel = (props: { node: CNode | CRootNode | null; pluginCtx
   const { node } = props;
   const properties = node?.material?.value.props || [];
   const formRef = useRef<CustomSchemaFormInstance>(null);
+  const skipPanelSyncRef = useRef(false);
+  const panelSyncFrameRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    const handel = () => {
-      const newVal = node?.getPlainProps?.() || {};
-      formRef.current?.setFields(newVal);
-    };
-    handel();
-    node?.emitter.on('onNodeChange', handel);
-    return () => {
-      node?.emitter.off('onNodeChange', handel);
-    };
+  const syncPanelValue = useCallback(() => {
+    if (skipPanelSyncRef.current) {
+      skipPanelSyncRef.current = false;
+      return;
+    }
+
+    const newVal = node?.getPlainProps?.() || {};
+    formRef.current?.setFields(newVal);
   }, [node]);
 
-  const value = node?.getPlainProps?.() || {};
+  const schedulePanelSync = useCallback(() => {
+    if (skipPanelSyncRef.current || panelSyncFrameRef.current !== null) {
+      return;
+    }
 
-  const onValueChange: CustomSchemaFormProps['onValueChange'] = (val) => {
-    node?.updateValue({
-      props: val,
+    panelSyncFrameRef.current = window.requestAnimationFrame(() => {
+      panelSyncFrameRef.current = null;
+      syncPanelValue();
     });
-  };
+  }, [syncPanelValue]);
+
+  useEffect(() => {
+    syncPanelValue();
+    const handleNodeChange = ({ node: changedNode }: { node?: { id?: string } }) => {
+      if (changedNode === node || changedNode?.id === node?.id) {
+        schedulePanelSync();
+      }
+    };
+    const handleReloadPage = () => schedulePanelSync();
+    node?.emitter.on('onNodeChange', handleNodeChange);
+    node?.emitter.on('onReloadPage', handleReloadPage);
+    return () => {
+      node?.emitter.off('onNodeChange', handleNodeChange);
+      node?.emitter.off('onReloadPage', handleReloadPage);
+      if (panelSyncFrameRef.current !== null) {
+        window.cancelAnimationFrame(panelSyncFrameRef.current);
+        panelSyncFrameRef.current = null;
+      }
+    };
+  }, [node, schedulePanelSync, syncPanelValue]);
+
+  const onValueChange = useCallback<NonNullable<CustomSchemaFormProps['onValueChange']>>(
+    (val) => {
+      if (!node) {
+        return;
+      }
+
+      skipPanelSyncRef.current = true;
+      try {
+        node.updateValue({
+          props: val,
+        });
+      } finally {
+        skipPanelSyncRef.current = false;
+      }
+    },
+    [node]
+  );
+
+  const value = node?.getPlainProps?.() || {};
 
   const onSetterChange: CustomSchemaFormProps['onSetterChange'] = (keyPaths, setterName) => {
     if (!node) {
