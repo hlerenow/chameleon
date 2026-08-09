@@ -98,7 +98,13 @@ export const DesignerSizer = (props: { ctx: EnginContext; zoom: number }) => {
   }, [props.zoom, setCanvasZoom]);
 
   useEffect(() => {
-    const resetCanvasZoom = () => setCanvasZoom(100);
+    const resetCanvasZoom = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest('button, input, textarea, select, [role="button"], .ant-segmented')) {
+        return;
+      }
+      setCanvasZoom(100);
+    };
 
     window.addEventListener('dblclick', resetCanvasZoom);
     return () => window.removeEventListener('dblclick', resetCanvasZoom);
