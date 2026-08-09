@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Chameleon</title>
+  <desc id="desc">A circular C mark assembled from three colored arc segments with a separate lightning bolt</desc>
+  <defs>
+    <linearGradient id="bolt" x1="169" y1="99" x2="199" y2="159" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8b7cff"/>
+      <stop offset="1" stop-color="#6f4de8"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="256" height="256" fill="#f7fbff"/>
+
+  <path
+    fill="#f06445"
+    d="M75.6 74.7A85 85 0 0 1 191.8 67l-22.6 26.2A50.4 50.4 0 0 0 101 97.7L75.6 74.7Z"
+  />
+  <path
+    fill="#ffc400"
+    d="M75.6 74.7 101 97.7a50.4 50.4 0 0 0 .5 61.2l-25 23.7A85 85 0 0 1 75.6 74.7Z"
+  />
+  <path
+    fill="#2fb75d"
+    d="M76.5 182.6 101.5 159a50.4 50.4 0 0 0 67.7 3.8l22.6 26.2a85 85 0 0 1-115.3-6.4Z"
+  />
+
+  <path
+    fill="url(#bolt)"
+    d="M171 99h27l-14.8 25.8H201L164 161l12.4-27.8h-19.6L171 99Z"
+  />
+</svg>
