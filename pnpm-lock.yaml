@@ -457,6 +457,9 @@ importers:
       mitt:
         specifier: ^3.0.0
         version: 3.0.1
+      re-resizable:
+        specifier: ^6.9.9
+        version: 6.11.2(react-dom@18.3.1(react@18.2.0))(react@18.2.0)
       react-color:
         specifier: ^2.19.3
         version: 2.19.3(react@18.2.0)
@@ -545,9 +548,6 @@ importers:
       mitt:
         specifier: ^3.0.0
         version: 3.0.1
-      re-resizable:
-        specifier: ^6.9.9
-        version: 6.11.2(react-dom@18.3.1(react@18.2.0))(react@18.2.0)
     devDependencies:
       '@chamn/build-script':
         specifier: workspace:*
