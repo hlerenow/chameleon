@@ -1,4 +1,6 @@
-import { Button, Card, Collapse, CollapseProps, ConfigProvider } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { Button, Card, Collapse, CollapseProps, ConfigProvider, Tooltip } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import styles from './style.module.scss';
 import { DimensionInput } from './DimensionInput';
@@ -24,6 +26,7 @@ export type StyleUIPanelRef = InputCommonRef;
 
 export const StyleUIPanel = forwardRef<StyleUIPanelRef, StyleUIPanelProps>(
   ({ value, initialVal, onValueChange, noCard }, ref) => {
+    const { t } = useTranslation();
     const [mode, setMode] = useState<'VISUAL' | 'CODE'>(
       (localStorage.getItem('CHAMN_STYLE_EDITOR_MODE') as any) || 'VISUAL'
     );
@@ -100,7 +103,14 @@ export const StyleUIPanel = forwardRef<StyleUIPanelRef, StyleUIPanelProps>(
       return [
         {
           key: 'dimension',
-          label: 'Dimension',
+          label: (
+            <span>
+              Dimension{' '}
+              <Tooltip title={t('style.dimension.mediaOverride')}>
+                <InfoCircleOutlined />
+              </Tooltip>
+            </span>
+          ),
           children: (
             <DimensionInput
               ref={dimensionRef}
@@ -179,7 +189,7 @@ export const StyleUIPanel = forwardRef<StyleUIPanelRef, StyleUIPanelProps>(
           ),
         },
       ];
-    }, [initialVal, onStyleItemChange, value]);
+    }, [initialVal, onStyleItemChange, t, value]);
 
     const coreEditView = (
       <>

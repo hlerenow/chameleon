@@ -71,9 +71,10 @@ export class Engine extends React.Component<EngineProps> {
   }
 
   updateCurrentSelectNode(node: CNode | CRootNode | null) {
-    this.currentSelectNode = node;
+    const currentNode = node?.id ? this.pageModel.getNode(node.id) || node : node;
+    this.currentSelectNode = currentNode;
     this.emitter.emit('onSelectNodeChange', {
-      node,
+      node: currentNode,
     });
   }
 

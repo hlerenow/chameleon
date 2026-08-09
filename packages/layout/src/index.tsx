@@ -34,6 +34,20 @@ const isNodeSizeChangeEnabled = (instance: RenderInstance | null) => {
   return material?.enableNodeSizeChange === true || material?.advanceCustom?.rightPanel?.visual !== false;
 };
 
+const hasExplicitSizeStyle = (instance: RenderInstance | null) => {
+  const style = instance?._NODE_MODEL.value.style as
+    | { property: string; value: unknown }[]
+    | Record<string, unknown>
+    | undefined;
+  if (!style) {
+    return false;
+  }
+  if (Array.isArray(style)) {
+    return style.some(({ property }) => property === 'width' || property === 'height');
+  }
+  return style.width !== undefined || style.height !== undefined;
+};
+
 export enum LayoutMode {
   EDIT = 'EDIT',
   /** 不触发任何编辑器的选择、拖拽、高亮、hover 交互 */
@@ -1068,7 +1082,9 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     } = this.state;
     const { iframeDomId } = this;
     const selectedInstance = this.state.currentSelectInstance;
-    const canResizeSelectedNode = this.props.forceNodeSizeChange || isNodeSizeChangeEnabled(selectedInstance);
+    const canResizeSelectedNode =
+      !hasExplicitSizeStyle(selectedInstance) &&
+      (this.props.forceNodeSizeChange || isNodeSizeChangeEnabled(selectedInstance));
     const showNodeSizeChangeBox = this.props.nodeSizeChangeAlwaysVisible ?? true;
     const {
       selectToolbarView,

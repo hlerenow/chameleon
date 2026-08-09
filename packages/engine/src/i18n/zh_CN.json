@@ -1,0 +1,5 @@
+{
+  "style.dimension.mediaOverride": "设置 width 或 height 后，media 中对应的尺寸设置将不会生效",
+  "style.dimension.widthMediaOverride": "设置 width 后，media 中的 width 设置将不会生效",
+  "style.dimension.heightMediaOverride": "设置 height 后，media 中的 height 设置将不会生效"
+}

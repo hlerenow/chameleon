@@ -1,5 +1,7 @@
 import { CSSSizeInput } from '@/component/CSSSizeInput';
-import { Row, Col, Radio, Button } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { Row, Col, Radio, Button, Tooltip } from 'antd';
+import { useTranslation } from 'react-i18next';
 import styles from '../style.module.scss';
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from 'react';
 import { InputCommonRef } from '../type';
@@ -63,6 +65,7 @@ const maxVal = {
 };
 
 export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((props, ref) => {
+  const { t } = useTranslation();
   const [innerVal, setInnerVal] = useState<Value>(props.initialValue ?? getDefaultValue(keyList as any));
 
   const updateInnerVal = useCallback(
@@ -327,6 +330,9 @@ export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((p
           }}
         >
           <span className={styles.label}>width:</span>
+          <Tooltip title={t('style.dimension.widthMediaOverride')}>
+            <InfoCircleOutlined style={{ marginRight: '4px' }} />
+          </Tooltip>
           <CSSSizeInput
             style={{
               width: '180px',
@@ -366,6 +372,9 @@ export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((p
           }}
         >
           <span className={styles.label}>height:</span>
+          <Tooltip title={t('style.dimension.heightMediaOverride')}>
+            <InfoCircleOutlined style={{ marginRight: '4px' }} />
+          </Tooltip>
           <CSSSizeInput
             min={0}
             style={{

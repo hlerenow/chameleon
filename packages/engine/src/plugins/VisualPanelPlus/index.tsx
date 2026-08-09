@@ -1,6 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { CNode, CRootNode } from '@chamn/model';
+import { useCallback, useEffect, useRef } from 'react';
 import { CRightPanelItem, RightPanelOptions } from '../RightPanel/view';
 
 import styles from './style.module.scss';
@@ -25,21 +24,20 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
   const styleVariableRef = useRef<CSSPropertiesVariableBindEditorRef>(null);
 
   const node = props.node!;
-  const classNameList = useMemo(() => {
-    const tempList = node.value.classNames || [];
-    return tempList;
-  }, [node]);
+  const classNameList = node.value.classNames || [];
   const cssEditorRef = useRef<CSSEditorRef>(null);
   const cssUIRef = useRef<StyleUIPanelRef>(null);
   const classNameEditorRef = useRef<ClassNameEditorRef>(null);
-  const formatStyle = useMemo(() => {
-    return formatStyleProperty(node.value.style || []);
-  }, [node.value.style]);
-
-  const lastNode = useRef<CNode | CRootNode>();
+  const skipPanelSyncRef = useRef(false);
+  const panelSyncFrameRef = useRef<number | null>(null);
+  const getStyleParts = useCallback(() => formatStyleProperty(node.value.style || []), [node]);
 
   const updatePanelValue = useCallback(() => {
-    lastNode.current = node;
+    if (skipPanelSyncRef.current) {
+      skipPanelSyncRef.current = false;
+      return;
+    }
+
     const newStyle = node.value.style || [];
     const { expressionProperty, normalProperty } = formatStyleProperty(newStyle);
     const fCss = formatNodeValToEditor(node.value.css);
@@ -49,34 +47,69 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
     cssUIRef.current?.setValue(styleArr2Obj(normalProperty) || {});
   }, [node]);
 
+  const commitNodeUpdate = useCallback((update: () => void) => {
+    skipPanelSyncRef.current = true;
+    try {
+      update();
+    } finally {
+      skipPanelSyncRef.current = false;
+    }
+  }, []);
+
+  const schedulePanelSync = useCallback(() => {
+    if (skipPanelSyncRef.current || panelSyncFrameRef.current !== null) {
+      return;
+    }
+
+    panelSyncFrameRef.current = window.requestAnimationFrame(() => {
+      panelSyncFrameRef.current = null;
+      updatePanelValue();
+    });
+  }, [updatePanelValue]);
+
   useEffect(() => {
     updatePanelValue();
-    node.emitter.on('onNodeChange', updatePanelValue);
-    node.emitter.on('onReloadPage', updatePanelValue);
-    return () => {
-      node.emitter.off('onNodeChange', updatePanelValue);
-      node.emitter.off('onReloadPage', updatePanelValue);
+    const handleNodeChange = ({ node: changedNode }: { node?: { id?: string } }) => {
+      if (changedNode === node || changedNode?.id === node.id) {
+        schedulePanelSync();
+      }
     };
-  }, [node.emitter, node.id, props.activeTab, updatePanelValue]);
+    node.emitter.on('onNodeChange', handleNodeChange);
+    node.emitter.on('onReloadPage', schedulePanelSync);
+    return () => {
+      node.emitter.off('onNodeChange', handleNodeChange);
+      node.emitter.off('onReloadPage', schedulePanelSync);
+      if (panelSyncFrameRef.current !== null) {
+        window.cancelAnimationFrame(panelSyncFrameRef.current);
+        panelSyncFrameRef.current = null;
+      }
+    };
+  }, [node, props.activeTab, schedulePanelSync, updatePanelValue]);
 
   const onUpdateStyleVariable = (styleArr: StyleArr) => {
     // merge style
-    const newStyleList = [...formatStyle.normalProperty, ...styleArr];
-    node.value.style = newStyleList;
-    node.updateValue();
+    const { normalProperty } = getStyleParts();
+    commitNodeUpdate(() => {
+      node.value.style = [...normalProperty, ...styleArr];
+      node.updateValue();
+    });
   };
 
   const onUpdateStyle = (styleArr: StyleArr) => {
     // merge style
-    const newStyleList = [...styleArr, ...formatStyle.expressionProperty];
-    node.value.style = newStyleList;
-    node.updateValue();
+    const { expressionProperty } = getStyleParts();
+    commitNodeUpdate(() => {
+      node.value.style = [...styleArr, ...expressionProperty];
+      node.updateValue();
+    });
   };
 
   const onUpdateCss = (val: CSSVal) => {
     // class name 不能以数字开头，这里使用c_前缀
-    node.value.css = formatCssToNodeVal(`c_${node.id}`, val);
-    node.updateValue();
+    commitNodeUpdate(() => {
+      node.value.css = formatCssToNodeVal(`c_${node.id}`, val);
+      node.updateValue();
+    });
   };
 
   return (
@@ -110,7 +143,7 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
               children: (
                 <CSSPropertiesVariableBindEditor
                   ref={styleVariableRef}
-                  initialValue={formatStyle.expressionProperty}
+                  initialValue={getStyleParts().expressionProperty}
                   onValueChange={(val) => {
                     onUpdateStyleVariable(val);
                   }}
@@ -130,8 +163,10 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
             ref={classNameEditorRef}
             pluginContext={props.pluginCtx}
             onValueChange={(newVal) => {
-              node.value.classNames = newVal;
-              node.updateValue();
+              commitNodeUpdate(() => {
+                node.value.classNames = newVal;
+                node.updateValue();
+              });
             }}
           />
         </div>

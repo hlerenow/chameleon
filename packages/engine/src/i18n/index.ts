@@ -1,16 +1,20 @@
 import i18n from 'i18next';
 import type { Resource } from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { zh_CN } from './zh_CN';
-import { en_US } from './en_US';
+import enUSResources from './en_US.json';
+import zhCNResources from './zh_CN.json';
 
 export const DEFAULT_LOCALE = 'zh_CN';
 export const SUPPORTED_LOCALES = ['zh_CN', 'en_US'] as const;
 export type EngineLocale = typeof SUPPORTED_LOCALES[number];
 
 const resources: Resource = {
-  zh_CN,
-  en_US,
+  zh_CN: {
+    translation: zhCNResources,
+  },
+  en_US: {
+    translation: enUSResources,
+  },
 };
 
 export function normalizeLocale(locale?: string): EngineLocale {
