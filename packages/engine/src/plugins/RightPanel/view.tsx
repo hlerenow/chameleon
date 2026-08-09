@@ -174,7 +174,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
     const { pluginCtx } = this.props;
     if (!node) {
       return (
-        <div style={{ overflow: 'hidden' }}>
+        <div className={styles.emptyPanel}>
           <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={'Please select a node from left view'} />
         </div>
       );
