@@ -2,12 +2,12 @@
   <img src="./packages/engine/md-images/chameleon-icon.svg" alt="Chameleon icon" width="128" />
 </p>
 
-<h1 align="center">Chameleon</h1>
+<h1 align="center">幻彩（CHAM）</h1>
 
 <p align="center">面向 React 应用的可视化页面编辑与低代码渲染引擎。</p>
 
 <p align="center">
-  <strong>简体中文</strong> | <a href="./packages/engine/README.en.md"><strong>English</strong></a>
+  <strong>简体中文</strong> | <a href="./README.en.md"><strong>English</strong></a>
 </p>
 
 [![npm version](https://img.shields.io/npm/v/@chamn/engine)](https://www.npmjs.com/package/@chamn/engine)
