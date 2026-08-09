@@ -7,6 +7,7 @@ import {
   DesktopOutlined,
   LaptopOutlined,
   MobileOutlined,
+  ReloadOutlined,
   ZoomInOutlined,
   ZoomOutOutlined,
 } from '@ant-design/icons';
@@ -47,6 +48,9 @@ export const DesignerSizer = (props: { ctx: EnginContext; zoom: number }) => {
   const setCanvasZoom = useCallback((nextZoom: number) => {
     const value = clampZoom(nextZoom);
     designerRef.current?.export.setCanvasScale(value / 100);
+  }, []);
+  const refreshCanvas = useCallback(() => {
+    designerRef.current?.export.reload();
   }, []);
 
   useEffect(() => {
@@ -213,6 +217,10 @@ export const DesignerSizer = (props: { ctx: EnginContext; zoom: number }) => {
         <Divider type="vertical" />
         <Tooltip title="Reset zoom (Ctrl/Cmd 0 or double-click anywhere)">
           <Button size="small" type="text" icon={<CompressOutlined />} onClick={() => setCanvasZoom(100)} />
+        </Tooltip>
+        <Divider type="vertical" />
+        <Tooltip title="Refresh canvas">
+          <Button size="small" type="text" icon={<ReloadOutlined />} onClick={refreshCanvas} />
         </Tooltip>
       </div>
       <Tooltip title="Canvas viewport size and zoom">
