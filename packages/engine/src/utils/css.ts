@@ -62,6 +62,21 @@ const updateCssTextProperties = (text: string, properties: Record<string, string
   return styleList2Text(styleList);
 };
 
+const updateDefaultCssTextProperties = (text: string, properties: Record<string, string>) => {
+  const styleList = formatCSSTextProperty(text);
+  const protectedProperties = new Set(
+    ['width', 'height'].filter((property) => {
+      const existing = styleList.find((item) => item.property === property);
+      return existing?.value.trim().toLowerCase() === '100%';
+    })
+  );
+
+  return updateCssTextProperties(
+    text,
+    Object.fromEntries(Object.entries(properties).filter(([property]) => !protectedProperties.has(property)))
+  );
+};
+
 export const updateNodeSizeStyle = (
   node: CNode | CRootNode,
   { width, height, viewportWidth }: { width: number; height: number; viewportWidth: number },
@@ -128,7 +143,7 @@ export const updateNodeSizeStyle = (
     media.sort((first, second) => Number.parseFloat(second.value || '') - Number.parseFloat(first.value || ''));
     updateNormalCss({
       ...normalCss,
-      text: syncPcAndAbove ? updateCssTextProperties(normalCss.text || '', sizeStyle) : normalCss.text,
+      text: syncPcAndAbove ? updateDefaultCssTextProperties(normalCss.text || '', sizeStyle) : normalCss.text,
       media,
     });
     return;
