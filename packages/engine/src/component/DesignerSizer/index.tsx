@@ -5,6 +5,7 @@ import {
   BorderOutlined,
   CompressOutlined,
   DesktopOutlined,
+  FullscreenOutlined,
   LaptopOutlined,
   MobileOutlined,
   ReloadOutlined,
@@ -51,6 +52,9 @@ export const DesignerSizer = (props: { ctx: EnginContext; zoom: number }) => {
   }, []);
   const refreshCanvas = useCallback(() => {
     designerRef.current?.export.reload();
+  }, []);
+  const fitCanvasToViewport = useCallback(() => {
+    designerRef.current?.export.fitCanvasToViewport();
   }, []);
 
   useEffect(() => {
@@ -114,7 +118,10 @@ export const DesignerSizer = (props: { ctx: EnginContext; zoom: number }) => {
   const setCanvasWidth = useCallback(
     debounce((width: number) => {
       designerRef.current?.export.setCanvasWidth(width);
-      window.setTimeout(syncViewport, 0);
+      window.setTimeout(() => {
+        designerRef.current?.export.fitCanvasToViewport();
+        syncViewport();
+      }, 0);
     }, 100),
     [syncViewport]
   );
@@ -126,12 +133,18 @@ export const DesignerSizer = (props: { ctx: EnginContext; zoom: number }) => {
     }
     if (value === 'AUTO') {
       designer.export.setCanvasWidth('100%');
-      window.setTimeout(syncViewport, 0);
+      window.setTimeout(() => {
+        designer.export.fitCanvasToViewport();
+        syncViewport();
+      }, 0);
     } else {
       const responsiveSize = responsiveSizes.find(({ key }) => key === value);
       if (responsiveSize) {
         designer.export.setCanvasWidth(responsiveSize.width);
-        window.setTimeout(syncViewport, 0);
+        window.setTimeout(() => {
+          designer.export.fitCanvasToViewport();
+          syncViewport();
+        }, 0);
       }
     }
     setCurrentSize(String(value));
@@ -223,6 +236,9 @@ export const DesignerSizer = (props: { ctx: EnginContext; zoom: number }) => {
         <Divider type="vertical" />
         <Tooltip title="Reset zoom (Ctrl/Cmd 0 or double-click anywhere)">
           <Button size="small" type="text" icon={<CompressOutlined />} onClick={() => setCanvasZoom(100)} />
+        </Tooltip>
+        <Tooltip title="Fit canvas to visible area">
+          <Button size="small" type="text" icon={<FullscreenOutlined />} onClick={fitCanvasToViewport} />
         </Tooltip>
         <Divider type="vertical" />
         <Tooltip title="Refresh canvas">

@@ -40,11 +40,20 @@ export const DesignerPlugin: DesignerPluginType = () => {
               newW = `${width}px`;
             }
             iframeContainer.containerDom.style.width = String(newW);
-            iframeContainer.containerDom.style.margin = '0 auto';
+            iframeContainer.containerDom.style.margin = '0';
           }
         },
         setCanvasScale(scale: number) {
           designerRef.current?.layoutRef.current?.setCanvasScale(scale);
+        },
+        fitCanvasToViewport() {
+          designerRef.current?.layoutRef.current?.fitCanvasToViewport();
+        },
+        setCanvasFooterView(canvasFooterView: React.ReactNode) {
+          designerRef.current?.setCanvasFooterView(canvasFooterView);
+        },
+        subscribePageRuntime(listener: (runtimeWindow: Window | null) => void) {
+          return designerRef.current?.subscribePageRuntime(listener) || (() => {});
         },
         getIframeDom() {
           return designerRef.current?.getIframeDom();

@@ -8,9 +8,11 @@ import { GlobalStatePanelPlugin } from './GlobalStatePanel';
 import { DisplaySourceSchema } from './DisplaySourceSchema';
 import { HistoryPlugin } from './History';
 import { HotkeysPlugin } from './Hotkeys';
+import { PageRuntimeLogPlugin } from './PageRuntimeLog';
 
 export const DEFAULT_PLUGIN_LIST: CPlugin[] = [
   DesignerPlugin,
+  PageRuntimeLogPlugin,
   OutlineTreePlugin,
   ComponentLibPlugin,
   GlobalStatePanelPlugin,
@@ -28,6 +30,7 @@ export {
   HistoryPlugin,
   DisplaySourceSchema,
   HotkeysPlugin,
+  PageRuntimeLogPlugin,
 };
 
 /** 组件唯一名 */
@@ -39,6 +42,7 @@ export const DEFAULT_PLUGIN_NAME_MAP = {
   HistoryPlugin: HistoryPlugin['PLUGIN_NAME']!,
   DesignerPlugin: DesignerPlugin['PLUGIN_NAME']!,
   OutlineTreePlugin: OutlineTreePlugin['PLUGIN_NAME']!,
+  PageRuntimeLogPlugin: PageRuntimeLogPlugin['PLUGIN_NAME']!,
 };
 
 export * from './AdvancePanel/index';
@@ -54,3 +58,4 @@ export * from './RightPanel';
 export * from './RightPanel/type';
 export * from './VisualPanelPlus';
 export * from './Hotkeys';
+export * from './PageRuntimeLog';

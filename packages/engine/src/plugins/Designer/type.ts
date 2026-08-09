@@ -23,6 +23,12 @@ export type DesignerExport = {
   setCanvasWidth: (width: number | string) => void;
   /** set canvas scale, scale must be greater than 0 */
   setCanvasScale: (scale: number) => void;
+  /** 使画布内容适配当前可视区域 */
+  fitCanvasToViewport: () => void;
+  /** 设置画布底部扩展区域 */
+  setCanvasFooterView: (canvasFooterView: React.ReactNode) => void;
+  /** 订阅页面运行时创建和重载事件 */
+  subscribePageRuntime: (listener: (runtimeWindow: Window | null) => void) => () => void;
   setMode: (mode: LayoutMode) => void;
   setPreviewMode: () => void;
   setEditMode: () => void;
@@ -35,6 +41,7 @@ export type DesignerPluginConfig = Omit<
   | 'dropViewRender'
   | 'ghostView'
   | 'canvasToolbarView'
+  | 'onPageRuntimeReady'
   | 'selectToolBarView'
   | 'hoverToolBarView'
 > &

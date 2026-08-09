@@ -78,6 +78,8 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   nodeSizeChangeHotkey?: string;
   onCanvasScaleChange?: (scale: number) => void;
   canvasToolbarView?: React.ReactNode;
+  /** 页面运行时创建完成后触发，可用于注册运行时事件 */
+  onPageRuntimeReady?: (runtimeWindow: Window | null) => void;
   selectToolbarView?: React.ReactNode;
   selectBoxStyle?: React.CSSProperties;
   hoverBoxStyle?: React.CSSProperties;
@@ -133,6 +135,7 @@ export type LayoutStateType = {
   dropInfo: DropPosType | null;
   canDrop: boolean;
   canvasScale: number;
+  canvasOffsetX: number;
   /** 是否可以选中节点 */
   canSelectNode: boolean;
   pointerEventsForHightLightBox: 'auto' | 'none';
@@ -192,6 +195,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       dropInfo: null,
       canDrop: true,
       canvasScale: 1,
+      canvasOffsetX: 0,
       canSelectNode: true,
       pointerEventsForHightLightBox: 'none',
     };
@@ -236,12 +240,46 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     if (!Number.isFinite(scale) || scale <= 0) {
       return;
     }
-    this.setState({ canvasScale: scale }, () => {
+    const workspace = this.canvasWorkspaceRef.current;
+    const canvas = this.iframeContainer.containerDom;
+    let canvasOffsetX = 0;
+    if (workspace && canvas) {
+      const workspaceStyle = window.getComputedStyle(workspace);
+      const availableWidth =
+        workspace.clientWidth -
+        Number.parseFloat(workspaceStyle.paddingLeft) -
+        Number.parseFloat(workspaceStyle.paddingRight);
+      const canvasWidth = canvas.offsetWidth;
+      const centeredLeft = (availableWidth - canvasWidth * scale) / 2;
+      canvasOffsetX = Math.max(0, centeredLeft);
+    }
+
+    this.setState({ canvasScale: scale, canvasOffsetX }, () => {
       const workspace = this.canvasWorkspaceRef.current;
       if (workspace) {
         requestAnimationFrame(() => {
-          workspace.scrollLeft = scale > 1 ? (workspace.scrollWidth - workspace.clientWidth) / 2 : 0;
+          // Transforms do not synchronously update scroll dimensions. Read
+          // them on the next frame, then reset the pan so the scaled canvas
+          // remains inside the visible workspace.
+          const maxScrollLeft = Math.max(0, workspace.scrollWidth - workspace.clientWidth);
+          workspace.scrollLeft = scale > 1 ? maxScrollLeft / 2 : 0;
           workspace.scrollTop = 0;
+
+          // Keep horizontal positioning consistent with space-drag panning:
+          // move by the visible delta instead of assigning an absolute offset.
+          const canvasViewport = document.getElementById(this.iframeDomId);
+          if (canvasViewport) {
+            const workspaceRect = workspace.getBoundingClientRect();
+            const canvasRect = canvasViewport.getBoundingClientRect();
+            const workspaceStyle = window.getComputedStyle(workspace);
+            const viewportLeft = workspaceRect.left + Number.parseFloat(workspaceStyle.paddingLeft);
+            const viewportRight = workspaceRect.right - Number.parseFloat(workspaceStyle.paddingRight);
+            if (canvasRect.left < viewportLeft) {
+              workspace.scrollLeft = Math.max(0, workspace.scrollLeft - (viewportLeft - canvasRect.left));
+            } else if (canvasRect.right > viewportRight) {
+              workspace.scrollLeft = Math.min(maxScrollLeft, workspace.scrollLeft + (canvasRect.right - viewportRight));
+            }
+          }
         });
       }
       this.highlightCanvasRef.current?.update();
@@ -251,11 +289,39 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     });
   }
 
+  fitCanvasToViewport() {
+    const workspace = this.canvasWorkspaceRef.current;
+    // containerDom is the full-size wrapper. The responsive canvas width is
+    // applied to the iframe inside it, so measuring the wrapper always returns
+    // the workspace width and prevents fitting modern canvas sizes.
+    const canvas = this.iframeContainer.containerDom;
+    if (!workspace || !canvas) {
+      return;
+    }
+
+    const workspaceStyle = window.getComputedStyle(workspace);
+    const availableWidth =
+      workspace.clientWidth -
+      Number.parseFloat(workspaceStyle.paddingLeft) -
+      Number.parseFloat(workspaceStyle.paddingRight);
+    const contentWidth = canvas.offsetWidth;
+
+    if (availableWidth <= 0 || contentWidth <= 0) {
+      return;
+    }
+
+    // Fit horizontally only. A narrow canvas keeps its natural scale and is
+    // centered; a wide canvas is reduced until it fills the viewport width.
+    const scale = Math.min(1, Math.max(0.25, availableWidth / contentWidth));
+    this.setCanvasScale(Number(scale.toFixed(2)));
+  }
+
   init() {
     this.disposeDndMouseMoveListener?.();
     this.disposeDndMouseMoveListener = null;
     this.clearCanvasPanEvents();
     this.dnd.clearSensors();
+    this.props.onPageRuntimeReady?.(null);
     this.iframeContainer.destroy();
     this.iframeContainer = new IFrameContainer();
 
@@ -267,6 +333,10 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       console.error('iframe canvas load failed', e);
     });
     iframeContainer.ready(async () => {
+      const runtimeWindow = iframeContainer.getWindow();
+      if (runtimeWindow) {
+        this.props.onPageRuntimeReady?.(runtimeWindow);
+      }
       if (this.props.beforeInitRender) {
         await this.props.beforeInitRender({
           pageModel: this.props.pageModel,
@@ -1017,6 +1087,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     this.disposeDndMouseMoveListener?.();
     this.clearCanvasPanEvents();
     this.eventExposeHandler.forEach((el) => el());
+    this.props.onPageRuntimeReady?.(null);
     this.iframeContainer.iframe?.parentNode?.removeChild(this.iframeContainer.iframe);
     this.disposeRealTimeUpdate();
   }
@@ -1079,6 +1150,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       isDragging,
       mousePointer,
       canvasScale,
+      canvasOffsetX,
     } = this.state;
     const { iframeDomId } = this;
     const selectedInstance = this.state.currentSelectInstance;
@@ -1111,7 +1183,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       dropViewItemRender = this.dropViewItemRender;
     }
     const canvasViewportHeight = canvasScale < 1 ? `${100 / canvasScale}%` : '100%';
-    const canvasViewportMarginLeft = canvasScale > 1 ? `${(canvasScale - 1) * 50}%` : undefined;
     const layoutContainerClassName =
       canvasScale > 1 ? `${styles.layoutContainer} ${styles.canvasZoomed}` : styles.layoutContainer;
     return (
@@ -1123,8 +1194,8 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             id={iframeDomId}
             style={{
               height: canvasViewportHeight,
-              marginLeft: canvasViewportMarginLeft,
-              transform: `scale(${canvasScale})`,
+              transform: `translateX(${canvasOffsetX}px) scale(${canvasScale})`,
+              transformOrigin: 'left top',
             }}
           >
             {/* 左上角添加显示元素名功能， hover */}

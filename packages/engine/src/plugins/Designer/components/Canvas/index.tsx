@@ -31,6 +31,7 @@ export type WrapComponentOptionsType = {
 type DesignerStateType = {
   pageModel: CPage;
   canvasScale: number;
+  canvasFooterView: React.ReactNode;
   hoverToolbarView: React.ReactNode;
   selectToolbarView: React.ReactNode;
   selectRectViewRender: AdvanceCustom['selectRectViewRender'] | null;
@@ -43,12 +44,14 @@ type DesignerStateType = {
 export class Designer extends React.Component<DesignerPropsType, DesignerStateType> {
   layoutRef: React.RefObject<Layout>;
   customAdvanceHook: AdvanceCustomHook;
+  pageRuntimeListeners = new Set<(runtimeWindow: Window | null) => void>();
   constructor(props: DesignerPropsType) {
     super(props);
 
     this.state = {
       pageModel: props.pluginCtx.pageModel,
       canvasScale: 1,
+      canvasFooterView: null,
       hoverToolbarView: null,
       selectToolbarView: null,
       ghostView: null,
@@ -119,6 +122,22 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     this.layoutRef.current?.reload();
     this.props.pluginCtx.pageModel.reloadPage();
   }
+
+  setCanvasFooterView = (canvasFooterView: React.ReactNode) => {
+    this.setState({ canvasFooterView });
+  };
+
+  subscribePageRuntime = (listener: (runtimeWindow: Window | null) => void) => {
+    this.pageRuntimeListeners.add(listener);
+    listener(this.getIframeDom()?.getWindow() || null);
+    return () => {
+      this.pageRuntimeListeners.delete(listener);
+    };
+  };
+
+  onPageRuntimeReady: NonNullable<LayoutPropsType['onPageRuntimeReady']> = (runtimeWindow) => {
+    this.pageRuntimeListeners.forEach((listener) => listener(runtimeWindow));
+  };
 
   async init() {
     const { layoutRef } = this;
@@ -551,6 +570,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       selectToolbarView,
       ghostView,
       portalView,
+      canvasFooterView,
       selectRectViewRender,
       hoverRectViewRender,
       dropViewRender,
@@ -578,35 +598,39 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     }
 
     return (
-      <>
-        <Layout
-          beforeInitRender={props.pluginCtx.config.beforeInitRender}
-          customRender={props.pluginCtx.config.customRender}
-          ref={layoutRef}
-          pageModel={pageModel}
-          renderJSUrl={renderJSUrl}
-          {...props}
-          canvasToolbarView={<DesignerSizer ctx={pluginCtx} zoom={this.state.canvasScale * 100} />}
-          onCanvasScaleChange={(canvasScale) => this.setState({ canvasScale })}
-          hoverToolBarView={hoverToolbarView}
-          selectBoxStyle={{}}
-          hoverBoxStyle={{}}
-          nodeCanDrag={this.nodeCanDrag}
-          nodeCanDrop={this.nodeCanDrop}
-          onSelectNode={onSelectNode}
-          onNodeDragStart={onDragStart}
-          onHoverNode={onHoverNode}
-          onNodeDrop={onNodeDrop}
-          onNodeDragging={onNodeDragging}
-          onNodeDraEnd={onNodeDragEnd}
-          onNodeSizeChange={onNodeSizeChange}
-          {...advanceCustomProps}
-          ghostView={ghostView}
-          assets={assets}
-          pluginCtx={this.props.pluginCtx}
-        />
+      <div className={styles.canvasRoot}>
+        <div className={styles.layoutWrapper}>
+          <Layout
+            beforeInitRender={props.pluginCtx.config.beforeInitRender}
+            customRender={props.pluginCtx.config.customRender}
+            ref={layoutRef}
+            pageModel={pageModel}
+            renderJSUrl={renderJSUrl}
+            {...props}
+            canvasToolbarView={<DesignerSizer ctx={pluginCtx} zoom={this.state.canvasScale * 100} />}
+            onPageRuntimeReady={this.onPageRuntimeReady}
+            onCanvasScaleChange={(canvasScale) => this.setState({ canvasScale })}
+            hoverToolBarView={hoverToolbarView}
+            selectBoxStyle={{}}
+            hoverBoxStyle={{}}
+            nodeCanDrag={this.nodeCanDrag}
+            nodeCanDrop={this.nodeCanDrop}
+            onSelectNode={onSelectNode}
+            onNodeDragStart={onDragStart}
+            onHoverNode={onHoverNode}
+            onNodeDrop={onNodeDrop}
+            onNodeDragging={onNodeDragging}
+            onNodeDraEnd={onNodeDragEnd}
+            onNodeSizeChange={onNodeSizeChange}
+            {...advanceCustomProps}
+            ghostView={ghostView}
+            assets={assets}
+            pluginCtx={this.props.pluginCtx}
+          />
+        </div>
+        {canvasFooterView}
         {portalView && createPortal(portalView, document.body)}
-      </>
+      </div>
     );
   }
 }
