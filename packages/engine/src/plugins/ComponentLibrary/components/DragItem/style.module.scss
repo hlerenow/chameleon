@@ -51,6 +51,16 @@
   justify-content: center;
 }
 
+.componentName {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  padding: 0 8px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .iconText {
   font-size: 18px;
   font-weight: bolder;

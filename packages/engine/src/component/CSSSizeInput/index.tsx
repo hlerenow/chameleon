@@ -354,26 +354,24 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
       x: [-60, undefined],
     },
   });
-  const unitSelect = (
-    <span className={styles.unitSelect}>
-      <Select
-        size={props.size}
-        defaultValue=""
-        value={valObj.unit}
-        onChange={(val) => {
-          updateValue({
-            value: valObj.value,
-            unit: val,
-          });
-        }}
-        style={{
-          width: '40px',
-        }}
-        popupMatchSelectWidth={false}
-        options={currentUnitList}
-      />
-    </span>
-  );
+  const unitSelect =
+    props.unit === false ? null : (
+      <span className={styles.unitSelect}>
+        <Select
+          size={props.size}
+          defaultValue=""
+          value={valObj.unit}
+          onChange={(val) => {
+            updateValue({
+              value: valObj.value,
+              unit: val,
+            });
+          }}
+          popupMatchSelectWidth={false}
+          options={currentUnitList}
+        />
+      </span>
+    );
   return (
     <ConfigProvider
       theme={{
@@ -382,11 +380,15 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
         },
       }}
     >
-      <div className={clsx([styles.cssSizeInput, props?.className])} {...dragSizeHandle} style={props.style}>
+      <div
+        className={clsx([styles.cssSizeInput, props?.className, props.unit === false && styles.noUnit])}
+        {...dragSizeHandle}
+        style={props.style}
+      >
         <InputNumberPlus
+          className={styles.valueInput}
           size={props.size}
           value={valObj.value}
-          addonAfter={props.unit === false ? '' : unitSelect}
           min={currentMinMix.min}
           max={currentMinMix.max}
           onChange={(val) => {
@@ -396,6 +398,7 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
             });
           }}
         />
+        {unitSelect}
       </div>
     </ConfigProvider>
   );

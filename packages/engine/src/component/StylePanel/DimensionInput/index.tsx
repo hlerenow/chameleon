@@ -407,7 +407,13 @@ export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((p
       </Row>
       <div>
         <Row className={styles.row}>
-          <Col span={12} className="flex">
+          <Col
+            span={12}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             <span className={styles.label}>minW:</span>
             <CSSSizeInput
               className={styles.inputWidth}
@@ -422,7 +428,13 @@ export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((p
               size="small"
             />
           </Col>
-          <Col span={12}>
+          <Col
+            span={12}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             <span className={styles.label}>minH:</span>
             <CSSSizeInput
               min={0}
@@ -439,7 +451,13 @@ export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((p
           </Col>
         </Row>
         <Row className={styles.row}>
-          <Col span={12} className="flex">
+          <Col
+            span={12}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             <span className={styles.label}>maxW:</span>
             <CSSSizeInput
               className={styles.inputWidth}
@@ -454,7 +472,13 @@ export const DimensionInput = forwardRef<InputCommonRef, DimensionInputProps>((p
               size="small"
             />
           </Col>
-          <Col span={12}>
+          <Col
+            span={12}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             <span className={styles.label}>maxH:</span>
             <CSSSizeInput
               className={styles.inputWidth}

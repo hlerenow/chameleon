@@ -82,12 +82,15 @@ export const updateNodeSizeStyle = (
         }
       : css.value[normalCssIndex];
   const responsiveSize = getResponsiveSizeByViewport(viewportWidth, responsiveSizes);
-  const responsiveSizeOrder = new Map(
-    getResponsiveSizes(responsiveSizes).map(({ width }, index) => [`${width}`, index])
-  );
-  const responsiveCssIndex = normalCss.media?.findIndex(
-    (item) => item.type === 'max-width' && item.value === `${responsiveSize?.width}`
-  );
+  const responsiveSizeList = getResponsiveSizes(responsiveSizes);
+  const responsiveSizeOrder = new Map(responsiveSizeList.map(({ width }, index) => [`${width}`, index]));
+  const pcSize = responsiveSizeList.find(({ key }) => key === 'PC');
+  const syncPcAndAbove = Boolean(pcSize && viewportWidth >= pcSize.width);
+  const targetResponsiveSizes = syncPcAndAbove
+    ? responsiveSizeList.filter(({ width }) => width >= pcSize!.width)
+    : responsiveSize
+    ? [responsiveSize]
+    : [];
   const updateNormalCss = (nextNormalCss: typeof normalCss) => {
     node.updateValue({
       css: {
@@ -100,30 +103,39 @@ export const updateNodeSizeStyle = (
     });
   };
 
-  if (responsiveSize) {
+  if (targetResponsiveSizes.length) {
     const media = [...(normalCss.media || [])];
-    const targetMedia =
-      responsiveCssIndex === undefined || responsiveCssIndex < 0
-        ? {
-            type: 'max-width' as const,
-            value: `${responsiveSize.width}`,
-            text: updateCssTextProperties('', sizeStyle),
-          }
-        : {
-            ...media[responsiveCssIndex],
-            text: updateCssTextProperties(media[responsiveCssIndex].text || '', sizeStyle),
-          };
-    if (responsiveCssIndex === undefined || responsiveCssIndex < 0) {
-      media.push(targetMedia);
-    } else {
-      media[responsiveCssIndex] = targetMedia;
-    }
+    targetResponsiveSizes.forEach((targetResponsiveSize) => {
+      const responsiveCssIndex = media.findIndex(
+        (item) => item.type === 'max-width' && item.value === `${targetResponsiveSize.width}`
+      );
+      const targetMedia =
+        responsiveCssIndex < 0
+          ? {
+              type: 'max-width' as const,
+              value: `${targetResponsiveSize.width}`,
+              text: updateCssTextProperties('', sizeStyle),
+            }
+          : {
+              ...media[responsiveCssIndex],
+              text: updateCssTextProperties(media[responsiveCssIndex].text || '', sizeStyle),
+            };
+      if (responsiveCssIndex < 0) {
+        media.push(targetMedia);
+      } else {
+        media[responsiveCssIndex] = targetMedia;
+      }
+    });
     media.sort(
       (first, second) =>
         (responsiveSizeOrder.get(first.value || '') ?? Number.POSITIVE_INFINITY) -
         (responsiveSizeOrder.get(second.value || '') ?? Number.POSITIVE_INFINITY)
     );
-    updateNormalCss({ ...normalCss, media });
+    updateNormalCss({
+      ...normalCss,
+      text: syncPcAndAbove ? updateCssTextProperties(normalCss.text || '', sizeStyle) : normalCss.text,
+      media,
+    });
     return;
   }
 

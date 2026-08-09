@@ -1,14 +1,49 @@
 .cssSizeInput {
-  display: inline-block;
+  display: flex;
+  align-items: stretch;
+  align-self: center;
+  flex-wrap: nowrap;
+  height: 24px;
+  min-width: 0;
+  white-space: nowrap;
+
+  .valueInput {
+    flex: 1;
+    min-width: 0;
+
+    :global(.ant-input) {
+      border-right: 0;
+      border-radius: 6px 0 0 6px;
+    }
+  }
+
   .unitSelect {
+    width: 40px;
+    flex: 0 0 40px;
+    display: flex;
+    flex-shrink: 0;
+
     :global {
+      .ant-select {
+        width: 100%;
+        height: 100%;
+      }
+
+      .ant-select-selector {
+        border: 1px solid #d9d9d9 !important;
+        border-left: 0 !important;
+        border-radius: 0 6px 6px 0 !important;
+        box-shadow: none !important;
+        background: transparent !important;
+      }
+
       .ant-select-focused .ant-select-selector {
         color: rgba(0, 0, 0, 0.675);
       }
 
       .ant-select-selector {
         color: #585858 !important;
-        padding: 0 0 0 3px !important;
+        padding: 0 0 0 6px !important;
         font-size: 12px;
       }
       .ant-select-selection-item {
@@ -17,6 +52,15 @@
       .ant-select-arrow {
         inset-inline-end: 3px !important;
       }
+    }
+  }
+}
+
+.noUnit {
+  .valueInput {
+    :global(.ant-input) {
+      border-right: 1px solid #d9d9d9;
+      border-radius: 6px;
     }
   }
 }

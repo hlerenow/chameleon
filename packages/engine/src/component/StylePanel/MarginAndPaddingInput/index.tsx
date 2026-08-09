@@ -118,6 +118,7 @@ export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPadding
           span={12}
           style={{
             display: 'flex',
+            alignItems: 'center',
           }}
         >
           <span className={clsx([styles.label, styles['m-p']])}>T:</span>
@@ -136,7 +137,13 @@ export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPadding
             size="small"
           />
         </Col>
-        <Col span={12}>
+        <Col
+          span={12}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
           <span className={clsx([styles.label, styles['m-p']])}>L:</span>
           <CSSSizeInput
             min={0}
@@ -156,7 +163,13 @@ export const MarginAndPaddingInput = forwardRef<InputCommonRef, MarginAndPadding
       </Row>
       <div>
         <Row className={styles.row}>
-          <Col span={12}>
+          <Col
+            span={12}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             <span className={clsx([styles.label, styles['m-p']])}>B:</span>
             <CSSSizeInput
               min={0}

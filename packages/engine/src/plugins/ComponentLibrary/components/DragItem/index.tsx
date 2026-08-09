@@ -1,6 +1,6 @@
-import { Popover } from 'antd';
+import { Popover, Tooltip } from 'antd';
 import clsx from 'clsx';
-import React, { useMemo } from 'react';
+import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import styles from './style.module.scss';
 
 export type DragComponentItemProps = {
@@ -17,6 +17,8 @@ export const DragComponentItem = (props: DragComponentItemProps) => {
   const dragInfo = {
     [DRAG_ITEM_KEY]: props.id,
   };
+  const nameRef = useRef<HTMLSpanElement>(null);
+  const [nameOverflow, setNameOverflow] = useState(false);
 
   const icon = useMemo(() => {
     if (props.iconText) {
@@ -29,11 +31,39 @@ export const DragComponentItem = (props: DragComponentItemProps) => {
     }
   }, [props.icon, props.iconText]);
 
+  useLayoutEffect(() => {
+    const nameElement = nameRef.current;
+    if (!nameElement) {
+      return;
+    }
+
+    const updateNameOverflow = () => {
+      setNameOverflow(nameElement.scrollWidth > nameElement.clientWidth);
+    };
+
+    updateNameOverflow();
+    const resizeObserver = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateNameOverflow);
+    resizeObserver?.observe(nameElement);
+    return () => resizeObserver?.disconnect();
+  }, [props.name]);
+
+  const nameView = (
+    <span ref={nameRef} className={styles.componentName}>
+      {props.name}
+    </span>
+  );
+
   const contentView = (
     <div className={clsx([styles.square, props.containerClassName])}>
       <div {...dragInfo} className={styles.componentItem} style={props.style}>
         <div className={styles.iconBox}>{icon}</div>
-        <span>{props.name}</span>
+        {nameOverflow ? (
+          <Tooltip title={props.name} placement="top">
+            {nameView}
+          </Tooltip>
+        ) : (
+          nameView
+        )}
       </div>
     </div>
   );
