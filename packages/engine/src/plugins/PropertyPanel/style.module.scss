@@ -1,12 +1,12 @@
 .CFromRenderBox {
-  padding: 0 15px;
+  padding: 10px 12px 32px;
   :global {
     .ant-collapse .ant-collapse-content > .ant-collapse-content-box {
-      padding-right: 5px;
+      padding-right: 8px;
     }
 
     .ant-collapse > .ant-collapse-item:last-child > .ant-collapse-header {
-      padding-right: 5px;
+      padding-right: 8px;
     }
   }
 }

@@ -1,20 +1,74 @@
 .visualPanelBox {
-  padding: 0 15px 300px;
+  padding: 8px 12px 300px;
+  color: $fontColor;
+  font-family: $fontFamily;
+  font-size: $fontSize;
 
   .header {
     color: $fontColor;
     display: flex;
+    font-size: $fontSizeSmall;
+    font-weight: 600;
+    letter-spacing: 0.02em;
   }
-}
 
-:global {
-  .ant-collapse .ant-collapse-item .ant-collapse-header {
-    padding: 5px 5px 5px 10px;
-    align-items: center;
-    color: $fontColor;
-    font-size: 12px;
-    .ant-collapse-expand-icon {
-      padding-inline-end: 4px;
+  :global {
+    .ant-card {
+      border-color: $borderColor;
+      border-radius: 4px;
+      box-shadow: 0 1px 2px rgb(28 39 64 / 4%);
+    }
+
+    .ant-card .ant-card-head {
+      min-height: 38px;
+      padding: 0 12px;
+      border-bottom-color: $borderColor;
+    }
+
+    .ant-card .ant-card-head-title {
+      color: $fontColor;
+      font-size: $fontSizeSmall;
+      font-weight: 650;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .ant-card .ant-card-extra {
+      color: $fontColorSecondary;
+    }
+
+    .ant-card .ant-card-body {
+      padding: 10px 12px;
+    }
+
+    .ant-collapse {
+      background: transparent;
+    }
+
+    .ant-collapse .ant-collapse-item {
+      border-bottom-color: $borderColor;
+    }
+
+    .ant-collapse .ant-collapse-item .ant-collapse-header {
+      min-height: 34px;
+      padding: 7px 6px;
+      align-items: center;
+      color: $fontColor;
+      font-size: $fontSizeSmall;
+      font-weight: 600;
+
+      .ant-collapse-expand-icon {
+        padding-inline-end: 6px;
+        color: $fontColorSecondary;
+      }
+    }
+
+    .ant-collapse .ant-collapse-content {
+      border-top-color: $borderColor;
+    }
+
+    .ant-collapse .ant-collapse-content > .ant-collapse-content-box {
+      padding: 4px 8px 10px;
     }
   }
 }

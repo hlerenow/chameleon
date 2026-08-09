@@ -1,11 +1,43 @@
+.cssCard {
+  margin-top: 10px;
+
+  :global {
+    .ant-card-extra {
+      display: flex;
+      align-items: center;
+    }
+
+    .ant-card-extra .anticon {
+      color: $fontColorSecondary;
+      font-size: 13px;
+    }
+  }
+}
+
+.stateTags {
+  padding-bottom: 8px !important;
+}
+
 .stateTag {
   position: relative;
+  margin-inline-end: 6px !important;
+  border-radius: 3px;
+  color: $fontColorSecondary;
+  font-size: 12px;
+  line-height: 22px;
+  transition: color 0.15s ease, background-color 0.15s ease;
+
+  &:global(.ant-tag-checkable-checked) {
+    color: #fff;
+    background: $baseColor;
+  }
+
   .stateTagClose {
     position: absolute;
     right: -10px;
     top: -10px;
     background-color: white;
-    color: #4d4d4d;
+    color: $fontColorSecondary;
     opacity: 0;
     font-size: 20px;
     transform: scale(0.6);
@@ -17,6 +49,15 @@
   &:hover {
     .stateTagClose {
       opacity: 1;
+    }
+  }
+}
+
+.cssRules {
+  :global {
+    .ant-collapse-header {
+      color: $fontColorSecondary !important;
+      font-weight: 500 !important;
     }
   }
 }

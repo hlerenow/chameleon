@@ -1,5 +1,5 @@
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { AutoComplete, Button } from 'antd';
+import { AutoComplete, Button, Tooltip } from 'antd';
 import { InputStatus } from 'antd/es/_util/statusUtils';
 import clsx from 'clsx';
 import { BaseSelectRef } from 'rc-select';
@@ -36,6 +36,8 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
       return mode === 'create';
     }, [mode]);
     const innerValue = props.value;
+    const propertyName = innerValue?.property || '';
+    const showPropertyTooltip = !isCreate && propertyName.length > 18;
     const [propertyOptions, setPropertyOptions] = useState(defaultPropertyOptions);
 
     const [valueOptions, setValueOptions] = useState<{ value: string }[]>([]);
@@ -104,65 +106,59 @@ export const SinglePropertyEditor = forwardRef<SinglePropertyEditorRef, SinglePr
 
     return (
       <div className={styles.cssFieldBox}>
-        <div
-          className={clsx([
-            styles.keyField,
-            isCreate && styles.inputAuto,
-            isCreate && focusState.key && styles.active,
-            keyFormatStatus === 'error' && styles.error,
-            !isCreate && styles.notEdit,
-          ])}
-        >
-          <AutoComplete
-            ref={propertyKeyRef}
-            variant={'borderless'}
-            disabled={!isCreate}
-            onSearch={onSearch}
-            status={keyFormatStatus}
-            popupMatchSelectWidth={200}
-            value={innerValue?.property}
-            onChange={(val) => {
-              updateKeyValue(val);
-            }}
-            style={{
-              width: '100%',
-              position: 'absolute',
-              left: 0,
-              top: 0,
-            }}
-            onFocus={() => {
-              setFocusState({
-                key: true,
-                value: false,
-              });
-            }}
-            onBlur={() => {
-              setFocusState({
-                key: false,
-                value: false,
-              });
-            }}
-            onKeyDown={(e) => {
-              if (e.code === 'Enter') {
-                if (!keyFormatStatus) {
-                  propertyValueRef.current?.focus();
-                }
-              }
-            }}
-            placeholder="property"
-            options={propertyOptions}
-          />
-          <span
-            style={{
-              display: 'inline-block',
-              visibility: 'hidden',
-              minWidth: '60px',
-              padding: '0 2px',
-            }}
+        <Tooltip title={showPropertyTooltip ? propertyName : undefined} placement="topLeft">
+          <div
+            className={clsx([
+              styles.keyField,
+              isCreate && styles.inputAuto,
+              isCreate && focusState.key && styles.active,
+              keyFormatStatus === 'error' && styles.error,
+              !isCreate && styles.notEdit,
+            ])}
           >
-            {innerValue?.property}
-          </span>
-        </div>
+            {isCreate ? (
+              <AutoComplete
+                ref={propertyKeyRef}
+                variant={'borderless'}
+                onSearch={onSearch}
+                status={keyFormatStatus}
+                popupMatchSelectWidth={200}
+                value={innerValue?.property}
+                onChange={(val) => {
+                  updateKeyValue(val);
+                }}
+                style={{
+                  width: '100%',
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                }}
+                onFocus={() => {
+                  setFocusState({
+                    key: true,
+                    value: false,
+                  });
+                }}
+                onBlur={() => {
+                  setFocusState({
+                    key: false,
+                    value: false,
+                  });
+                }}
+                onKeyDown={(e) => {
+                  if (e.code === 'Enter' && !keyFormatStatus) {
+                    propertyValueRef.current?.focus();
+                  }
+                }}
+                placeholder="property"
+                options={propertyOptions}
+              />
+            ) : (
+              <span className={styles.propertyLabel}>{propertyName}</span>
+            )}
+            {isCreate && <span className={styles.keyFieldSizer}>{propertyName}</span>}
+          </div>
+        </Tooltip>
         <span
           style={{
             padding: '0 2px',

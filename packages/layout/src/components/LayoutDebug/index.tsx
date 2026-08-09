@@ -75,6 +75,18 @@ const updateCssTextSize = (text: string, width: string, height: string) => {
   return element.style.cssText;
 };
 
+const DEFAULT_MEDIA_QUERIES: Array<{ key: string; minWidth: string; maxWidth?: string }> = [
+  { key: 'mobile', minWidth: '350', maxWidth: '767' },
+  { key: 'tablet', minWidth: '768', maxWidth: '991' },
+  { key: 'desktop', minWidth: '992' },
+];
+
+const getResponsiveMediaQuery = (viewportWidth: number) =>
+  DEFAULT_MEDIA_QUERIES.find(
+    ({ minWidth, maxWidth }) =>
+      viewportWidth >= Number.parseFloat(minWidth) && (!maxWidth || viewportWidth <= Number.parseFloat(maxWidth))
+  );
+
 const stringifyLogDetail = (value: unknown) => {
   const seen = new WeakSet<object>();
   try {
@@ -137,27 +149,41 @@ export const LayoutDebug = ({ renderUrl = '/src/_dev_/render.html' }: LayoutDebu
       const width = `${Math.max(1, Math.round(event.extraData.width))}px`;
       const height = `${Math.max(1, Math.round(event.extraData.height))}px`;
       const normalCss = node.value.css?.value.find((item) => item.state === 'normal');
-      const responsiveCss = normalCss?.media
-        ?.map((item, index) => ({ index, item, maxWidth: Number.parseFloat(item.value) }))
-        .filter(
-          ({ item, maxWidth }) =>
-            item.type === 'max-width' && Number.isFinite(maxWidth) && event.extraData.viewportWidth <= maxWidth
-        )
-        .sort((first, second) => first.maxWidth - second.maxWidth)[0];
+      const responsiveMediaQuery = getResponsiveMediaQuery(event.extraData.viewportWidth);
 
-      if (normalCss?.media && responsiveCss && node.value.css) {
+      if (normalCss && responsiveMediaQuery && node.value.css) {
         const nextCss = {
           ...node.value.css,
           value: node.value.css.value.map((item) => {
             if (item !== normalCss) {
               return item;
             }
+            const nextMedia = [...(item.media || [])];
+            const responsiveMediaIndex = nextMedia.findIndex(
+              (media) =>
+                media.type === 'range' &&
+                media.minWidth === responsiveMediaQuery.minWidth &&
+                media.maxWidth === responsiveMediaQuery.maxWidth
+            );
+            if (responsiveMediaIndex >= 0) {
+              nextMedia[responsiveMediaIndex] = {
+                ...nextMedia[responsiveMediaIndex],
+                text: updateCssTextSize(nextMedia[responsiveMediaIndex].text || '', width, height),
+              };
+            } else {
+              nextMedia.push({
+                type: 'range',
+                minWidth: responsiveMediaQuery.minWidth,
+                maxWidth: responsiveMediaQuery.maxWidth,
+                text: updateCssTextSize('', width, height),
+              });
+            }
             return {
               ...item,
-              media: item.media?.map((media, index) =>
-                index === responsiveCss.index
-                  ? { ...media, text: updateCssTextSize(media.text || '', width, height) }
-                  : media
+              media: nextMedia.sort(
+                (first, second) =>
+                  Number.parseFloat(first.minWidth || first.value || '0') -
+                  Number.parseFloat(second.minWidth || second.value || '0')
               ),
             };
           }),
@@ -167,7 +193,7 @@ export const LayoutDebug = ({ renderUrl = '/src/_dev_/render.html' }: LayoutDebu
           nodeId: node.id,
           width,
           height,
-          maxWidth: responsiveCss.item.value,
+          media: responsiveMediaQuery.key,
         });
         return;
       }
@@ -367,6 +393,7 @@ export const LayoutDebug = ({ renderUrl = '/src/_dev_/render.html' }: LayoutDebu
               components={antD}
               assets={assets}
               ghostView={ghostView}
+              forceNodeSizeChange
               nodeSizeChangeAlwaysVisible={nodeSizeChangeAlwaysVisible}
               onSelectNode={async (node) => {
                 setSelectedNode(node as CNode | null);

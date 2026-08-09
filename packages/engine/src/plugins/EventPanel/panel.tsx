@@ -62,7 +62,7 @@ export const EventPanel = (props: EventPanelProps) => {
 
   return (
     <div className={styles.eventBox}>
-      <div style={{ display: 'flex' }}>
+      <div className={styles.eventToolbar}>
         <Select
           value={currentEvent}
           showSearch
@@ -70,12 +70,12 @@ export const EventPanel = (props: EventPanelProps) => {
           optionFilterProp="label"
           onChange={onChange}
           allowClear
-          style={{ width: '100%' }}
+          className={styles.eventSelect}
           options={eventList}
         />
         <Button
           type="primary"
-          style={{ marginLeft: '10px' }}
+          className={styles.addButton}
           onClick={() => {
             const newEvent = currentEvent;
             if (!newEvent) {
@@ -100,28 +100,12 @@ export const EventPanel = (props: EventPanelProps) => {
           Add
         </Button>
       </div>
-      <div style={{ marginTop: '16px' }}>
+      <div className={styles.eventList}>
         {nodeEventList?.map((event: any, index: number) => {
           const eventLabel = eventList.find((el) => el.value === event.name);
           return (
-            <div
-              key={index}
-              style={{
-                padding: '8px 12px',
-                borderRadius: '4px',
-                backgroundColor: '#f5f5f5',
-                marginBottom: '8px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                cursor: 'pointer',
-              }}
-            >
-              <div
-                style={{
-                  width: '100%',
-                }}
-              >
+            <div key={index} className={styles.eventItem}>
+              <div className={styles.eventContent}>
                 <ActionFlowSetter
                   value={event.func}
                   onValueChange={(val: { handler: any }) => {

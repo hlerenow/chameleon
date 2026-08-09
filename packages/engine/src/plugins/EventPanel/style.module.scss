@@ -1,7 +1,52 @@
 .eventBox {
-  padding: 0 20px;
+  padding: 12px 12px 32px;
   overflow-x: hidden;
   overflow-y: auto;
+
+  .eventToolbar {
+    display: flex;
+    gap: 8px;
+  }
+
+  .eventSelect {
+    width: 100%;
+  }
+
+  .addButton {
+    min-width: 58px;
+  }
+
+  .eventList {
+    margin-top: 12px;
+  }
+
+  .eventItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    padding: 8px 10px 8px 12px;
+    border: 1px solid $borderColor;
+    border-radius: 4px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgb(28 39 64 / 3%);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+
+    &:hover {
+      border-color: rgba(22, 119, 255, 0.35);
+      background: #f8fbff;
+    }
+  }
+
+  .eventContent {
+    width: 100%;
+    min-width: 0;
+    color: $fontColor;
+    font-size: $fontSizeSmall;
+    font-weight: 500;
+  }
+
   :global {
     .ant-input-affix-wrapper .ant-input-prefix {
       margin-inline-end: 0;

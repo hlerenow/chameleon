@@ -1,7 +1,7 @@
 import { DesignerPluginInstance } from '@/plugins/Designer/type';
 import { EnginContext } from '@/type';
 import { BorderOutlined, MobileOutlined } from '@ant-design/icons';
-import { InputNumber, Segmented, Space } from 'antd';
+import { InputNumber, Segmented, Space, Tooltip } from 'antd';
 import { debounce } from 'lodash-es';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -66,44 +66,58 @@ export const DesignerSizer = (props: { ctx: EnginContext }) => {
         options={[
           {
             label: (
-              <span>
-                <span
-                  onClick={() => {
-                    const designer = designerRef.current;
-                    designer?.export.setCanvasWidth('100%');
-                    getSubWindowWidth();
-                  }}
-                >
-                  Auto
+              <Tooltip title={`Render width: ${width}px`}>
+                <span>
+                  <span
+                    onClick={() => {
+                      const designer = designerRef.current;
+                      designer?.export.setCanvasWidth('100%');
+                      getSubWindowWidth();
+                    }}
+                  >
+                    Auto
+                  </span>
+                  {currentSize === 'AUTO' && (
+                    <InputNumber
+                      size="small"
+                      style={{
+                        marginLeft: '10px',
+                      }}
+                      controls={false}
+                      changeOnWheel
+                      suffix="px"
+                      value={width}
+                      min={350}
+                      max={1920}
+                      onChange={(val) => {
+                        setWith(Number(val));
+                        setCanvasWidth(Number(val));
+                      }}
+                    ></InputNumber>
+                  )}
                 </span>
-                {currentSize === 'AUTO' && (
-                  <InputNumber
-                    size="small"
-                    style={{
-                      marginLeft: '10px',
-                    }}
-                    controls={false}
-                    changeOnWheel
-                    suffix="px"
-                    value={width}
-                    min={350}
-                    max={1920}
-                    onChange={(val) => {
-                      setWith(Number(val));
-                      setCanvasWidth(Number(val));
-                    }}
-                  ></InputNumber>
-                )}
-              </span>
+              </Tooltip>
             ),
             value: 'AUTO',
           },
           {
-            label: <BorderOutlined />,
+            label: (
+              <Tooltip title="Render width: 768px">
+                <span>
+                  <BorderOutlined />
+                </span>
+              </Tooltip>
+            ),
             value: 'IPAD',
           },
           {
-            label: <MobileOutlined />,
+            label: (
+              <Tooltip title="Render width: 350px">
+                <span>
+                  <MobileOutlined />
+                </span>
+              </Tooltip>
+            ),
             value: 'MOBILE',
           },
         ]}

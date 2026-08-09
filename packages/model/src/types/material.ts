@@ -577,7 +577,7 @@ export type CMaterialType<PropsSetter extends string = ''> = {
         id?: string[];
       }
     | boolean;
-  /** 是否启用编辑器的节点尺寸调整，默认启用 */
+  /** 是否启用编辑器的节点尺寸调整，默认不启用 */
   enableNodeSizeChange?: boolean;
   /** TODO: 组件支持的可被调用的方法， todo： 没有补充验证 类型 describe */
   methods?: {

@@ -29,8 +29,10 @@ import intersection from 'lodash-es/intersection';
 
 export type LayoutDragEvent<T = LayoutDragAndDropExtraDataType> = DragAndDropEventObj<T>;
 
-const isNodeSizeChangeEnabled = (instance: RenderInstance | null) =>
-  instance?._NODE_MODEL.material?.value.enableNodeSizeChange !== false;
+const isNodeSizeChangeEnabled = (instance: RenderInstance | null) => {
+  const material = instance?._NODE_MODEL.material?.value;
+  return material?.enableNodeSizeChange === true || material?.advanceCustom?.rightPanel?.visual === true;
+};
 
 export enum LayoutMode {
   EDIT = 'EDIT',
@@ -56,6 +58,8 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   onNodeSizeChange?: (node: CNode | CRootNode, event: NodeSizeChangeEvent) => void;
   /** 选中节点时常驻显示尺寸调整层，默认启用 */
   nodeSizeChangeAlwaysVisible?: boolean;
+  /** 忽略物料尺寸调整配置，允许所有选中节点显示尺寸调整层 */
+  forceNodeSizeChange?: boolean;
   /** @deprecated 尺寸调整层不再依赖快捷键 */
   nodeSizeChangeHotkey?: string;
   selectToolbarView?: React.ReactNode;
@@ -867,7 +871,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     } = this.state;
     const { iframeDomId } = this;
     const selectedInstance = this.state.currentSelectInstance;
-    const canResizeSelectedNode = isNodeSizeChangeEnabled(selectedInstance);
+    const canResizeSelectedNode = this.props.forceNodeSizeChange || isNodeSizeChangeEnabled(selectedInstance);
     const showNodeSizeChangeBox = this.props.nodeSizeChangeAlwaysVisible ?? true;
     const {
       selectToolbarView,

@@ -164,9 +164,10 @@ export const CSSEditor = (props: CSSEditorProps) => {
   return (
     <>
       <Card
+        className={styles.cssCard}
         size="small"
         type="inner"
-        title={<span style={{ fontSize: '12px' }}>CSS</span>}
+        title={<span>CSS</span>}
         extra={
           <Dropdown
             menu={{
@@ -183,6 +184,7 @@ export const CSSEditor = (props: CSSEditorProps) => {
         }
       >
         <Space
+          className={styles.stateTags}
           size={[0, 8]}
           wrap
           style={{
@@ -223,6 +225,7 @@ export const CSSEditor = (props: CSSEditorProps) => {
         </Space>
 
         <Collapse
+          className={styles.cssRules}
           defaultActiveKey={['normal']}
           bordered={false}
           style={{
@@ -235,7 +238,7 @@ export const CSSEditor = (props: CSSEditorProps) => {
           items={[
             {
               key: 'normal',
-              label: <span>Default</span>,
+              label: <span>Default (All sizes)</span>,
               children: (
                 <CSSPropertiesEditor
                   ref={(ref) => {

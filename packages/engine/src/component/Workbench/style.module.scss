@@ -2,6 +2,9 @@
   width: 100%;
   height: 100%;
   display: flex;
+  color: $fontColor;
+  font-family: $fontFamily;
+  font-size: $fontSize;
   transition: all 0.2s;
 
   flex-direction: column;

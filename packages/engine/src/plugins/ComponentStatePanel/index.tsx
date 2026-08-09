@@ -4,6 +4,7 @@ import { CNode, CRootNode } from '@chamn/model';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CRightPanelItem } from '../RightPanel/view';
 import { MonacoEditor, MonacoEditorInstance } from '../../component/MonacoEditor';
+import styles from './style.module.scss';
 
 export type ComponentStatePanelProps = {
   node: CNode | CRootNode | null;
@@ -31,26 +32,28 @@ export const ComponentStatePanel = (props: ComponentStatePanelProps) => {
   };
 
   return (
-    <>
-      <MonacoEditor
-        initialValue={JSON.stringify(nodeState, null, 2)}
-        language={'json'}
-        options={{
-          automaticLayout: true,
-          // lineDecorationsWidth: 0,
-          tabSize: 2,
-          minimap: { enabled: false },
-          quickSuggestions: false,
-          // lineNumbers: 'off',
-          suggestOnTriggerCharacters: false,
-          folding: false,
-        }}
-        onDidMount={(editor) => {
-          editorRef.current = editor;
-        }}
-        onChange={onValueChange}
-      />
-    </>
+    <div className={styles.statePanel}>
+      <div className={styles.editorBox}>
+        <MonacoEditor
+          initialValue={JSON.stringify(nodeState, null, 2)}
+          language={'json'}
+          options={{
+            automaticLayout: true,
+            // lineDecorationsWidth: 0,
+            tabSize: 2,
+            minimap: { enabled: false },
+            quickSuggestions: false,
+            // lineNumbers: 'off',
+            suggestOnTriggerCharacters: false,
+            folding: false,
+          }}
+          onDidMount={(editor) => {
+            editorRef.current = editor;
+          }}
+          onChange={onValueChange}
+        />
+      </div>
+    </div>
   );
 };
 

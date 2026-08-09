@@ -1,13 +1,15 @@
 @use 'sass:color';
 $baseColor: #1677ff;
 /* base style variables */
-$borderColor: rgb(233 233 233);
-$baseBackgroundColor: #edeff3;
+$borderColor: #e4e9f2;
+$baseBackgroundColor: #f4f6f9;
+$fontFamily: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 $fontSizeBigger: 16px;
-$fontSize: 14px;
+$fontSize: 13px;
 $fontSizeSmall: 12px;
 
-$fontColor: rgb(104, 104, 104);
+$fontColor: #263550;
+$fontColorSecondary: #71809a;
 
 $hoverColor: rgba(22, 119, 255, 0.3);
 $textColor: $fontColor;

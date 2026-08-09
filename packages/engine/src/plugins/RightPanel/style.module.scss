@@ -2,12 +2,103 @@
   height: 100%;
   width: 100%;
   overflow: hidden;
+  background: #fff;
+  color: $fontColor;
+  font-family: $fontFamily;
+  font-size: $fontSize;
+
+  .tabLabel {
+    padding: 0 11px;
+  }
+
   :global {
+    .ant-tabs {
+      color: $fontColor;
+    }
+
+    .ant-tabs > .ant-tabs-nav {
+      min-height: 44px;
+      margin: 0;
+      padding: 0 4px;
+      border-bottom: 1px solid $borderColor;
+    }
+
+    .ant-tabs > .ant-tabs-nav::before {
+      border-bottom: 0;
+    }
+
+    .ant-tabs .ant-tabs-tab {
+      margin: 0 !important;
+      padding: 0;
+      color: $fontColorSecondary;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .ant-tabs .ant-tabs-tab:hover,
+    .ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+      color: $baseColor;
+    }
+
+    .ant-tabs .ant-tabs-ink-bar {
+      height: 2px;
+      border-radius: 2px 2px 0 0;
+    }
+
+    .ant-tabs .ant-tabs-tabpane {
+      background: #fff;
+    }
+
+    .ant-input,
+    .ant-input-affix-wrapper,
+    .ant-select-selector {
+      border-color: $borderColor !important;
+      border-radius: 4px !important;
+      box-shadow: none !important;
+      font-size: $fontSizeSmall;
+    }
+
+    .ant-input::placeholder,
+    .ant-select-selection-placeholder {
+      color: $fontColorSecondary;
+    }
+
+    .ant-btn {
+      border-radius: 4px;
+      font-size: $fontSizeSmall;
+      font-weight: 500;
+    }
+
+    .ant-collapse {
+      background: transparent;
+    }
+
+    .ant-collapse > .ant-collapse-item {
+      border-bottom-color: $borderColor;
+    }
+
+    .ant-collapse .ant-collapse-header {
+      min-height: 34px;
+      padding: 7px 6px !important;
+      color: $fontColor !important;
+      font-size: $fontSizeSmall;
+      font-weight: 600;
+    }
+
+    .ant-collapse .ant-collapse-expand-icon {
+      color: $fontColorSecondary;
+    }
+
+    .ant-collapse .ant-collapse-content {
+      border-top-color: $borderColor;
+    }
+
+    .ant-collapse .ant-collapse-content > .ant-collapse-content-box {
+      padding: 4px 8px 10px;
+    }
+
     .monaco-editor .overflowingContentWidgets {
       overflow: visible !important;
-    }
-    .ant-tabs .ant-tabs-tab + .ant-tabs-tab {
-      margin-left: 0;
     }
     .ant-tabs-content.ant-tabs-content-top {
       height: 100%;
