@@ -32,7 +32,6 @@ their own component materials, page schemas, assets, and rendering strategy.
 | --------------- | ------------------------------------------------------------------------ |
 | Documentation   | [Chameleon Docs](https://hlerenow.github.io/chameleon/documents/)        |
 | Main demo       | [Open the editor](https://hlerenow.github.io/chameleon/)                 |
-| Preview demo    | [Open preview](https://hlerenow.github.io/chameleon/#/preview)           |
 | Layout debug    | [Open layout debug](https://hlerenow.github.io/chameleon/#/layout-debug) |
 | Example project | [chameleon-demo](https://github.com/ByteCrazy/chameleon-demo)            |
 | Repository      | [hlerenow/chameleon](https://github.com/hlerenow/chameleon)              |

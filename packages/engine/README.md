@@ -30,7 +30,6 @@ Chameleon 提供编辑器工作台、组件物料、属性面板、响应式布�
 | ------------- | ------------------------------------------------------------------------ |
 | 项目文档      | [Chameleon Docs](https://hlerenow.github.io/chameleon/documents/)        |
 | 主编辑器 Demo | [打开编辑器](https://hlerenow.github.io/chameleon/)                      |
-| 预览 Demo     | [打开预览](https://hlerenow.github.io/chameleon/#/preview)               |
 | 布局调试 Demo | [打开 Layout Debug](https://hlerenow.github.io/chameleon/#/layout-debug) |
 | 完整示例项目  | [chameleon-demo](https://github.com/ByteCrazy/chameleon-demo)            |
 | GitHub 仓库   | [hlerenow/chameleon](https://github.com/hlerenow/chameleon)              |
