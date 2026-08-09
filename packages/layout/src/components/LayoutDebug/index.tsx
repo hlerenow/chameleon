@@ -75,33 +75,35 @@ const updateCssTextSize = (text: string, width: string, height: string) => {
   return element.style.cssText;
 };
 
-const DEFAULT_MEDIA_QUERIES: Array<{ key: string; minWidth: string; maxWidth?: string }> = [
-  { key: 'mobile', minWidth: '350', maxWidth: '767' },
-  { key: 'tablet', minWidth: '768', maxWidth: '991' },
-  { key: 'desktop', minWidth: '992' },
+const DEFAULT_MEDIA_QUERIES: Array<{ key: string; maxWidth: string }> = [
+  { key: 'mobile', maxWidth: '350' },
+  { key: 'tablet', maxWidth: '768' },
+  { key: 'desktop', maxWidth: '1200' },
+  { key: 'wide', maxWidth: '1920' },
 ];
 
 const getResponsiveMediaQuery = (viewportWidth: number) =>
-  DEFAULT_MEDIA_QUERIES.find(
-    ({ minWidth, maxWidth }) =>
-      viewportWidth >= Number.parseFloat(minWidth) && (!maxWidth || viewportWidth <= Number.parseFloat(maxWidth))
-  );
+  DEFAULT_MEDIA_QUERIES.find(({ maxWidth }) => viewportWidth <= Number.parseFloat(maxWidth));
 
 const stringifyLogDetail = (value: unknown) => {
   const seen = new WeakSet<object>();
   try {
-    return JSON.stringify(value, (_key, item) => {
-      if (typeof item === 'function') {
-        return `[Function ${item.name || 'anonymous'}]`;
-      }
-      if (item && typeof item === 'object') {
-        if (seen.has(item)) {
-          return '[Circular]';
+    return JSON.stringify(
+      value,
+      (_key, item) => {
+        if (typeof item === 'function') {
+          return `[Function ${item.name || 'anonymous'}]`;
         }
-        seen.add(item);
-      }
-      return item;
-    });
+        if (item && typeof item === 'object') {
+          if (seen.has(item)) {
+            return '[Circular]';
+          }
+          seen.add(item);
+        }
+        return item;
+      },
+      2
+    );
   } catch (error) {
     return `[Unserializable: ${error instanceof Error ? error.message : 'unknown error'}]`;
   }
@@ -117,8 +119,9 @@ export const LayoutDebug = ({ renderUrl = '/src/_dev_/render.html' }: LayoutDebu
   const [selectedNode, setSelectedNode] = useState<CNode | null>(null);
   const [lastSize, setLastSize] = useState<NodeSizeChangeEvent['extraData'] | null>(null);
   const [logs, setLogs] = useState<LogItem[]>([]);
-  const [schemaPreview, setSchemaPreview] = useState('');
   const [pageModel] = useState(createDebugPageModel);
+  const [schemaPreview, setSchemaPreview] = useState(() => stringifyLogDetail(pageModel.export()));
+  const [schemaVisible, setSchemaVisible] = useState(false);
   const customRender = useMemo(() => createCustomRender(renderUrl), [renderUrl]);
 
   const leftBoxRef = useRef<HTMLDivElement>(null);
@@ -139,79 +142,100 @@ export const LayoutDebug = ({ renderUrl = '/src/_dev_/render.html' }: LayoutDebu
     layoutRef.current?.selectNode(nodeId);
     appendLog(`selectNode: ${label}`, nodeId);
   };
-  const exportSchema = () => {
-    const value = layoutRef.current?.getPageModel()?.export();
-    setSchemaPreview(JSON.stringify(value, null, 2));
+  const getSchemaPreview = useCallback(() => stringifyLogDetail(pageModel.export()), [pageModel]);
+  const refreshSchemaPreview = useCallback(() => {
+    setSchemaPreview(getSchemaPreview());
+  }, [getSchemaPreview]);
+  const viewSchema = () => {
+    refreshSchemaPreview();
+    setSchemaVisible(true);
     appendLog('pageModel.export()');
+  };
+  const copySchema = async () => {
+    const nextSchemaPreview = getSchemaPreview();
+    setSchemaPreview(nextSchemaPreview);
+    if (!navigator.clipboard) {
+      appendLog('copy pageSchema failed', 'Clipboard API unavailable');
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(nextSchemaPreview);
+      appendLog('pageSchema copied');
+    } catch (error) {
+      appendLog('copy pageSchema failed', error);
+    }
   };
   const updateNodeSize = useCallback(
     (node: CNode, event: NodeSizeChangeEvent) => {
       const width = `${Math.max(1, Math.round(event.extraData.width))}px`;
       const height = `${Math.max(1, Math.round(event.extraData.height))}px`;
-      const normalCss = node.value.css?.value.find((item) => item.state === 'normal');
       const responsiveMediaQuery = getResponsiveMediaQuery(event.extraData.viewportWidth);
+      const targetNodes = [
+        pageModel.getNode(node.id),
+        layoutRef.current?.getPageModel()?.getNode(node.id),
+        node,
+      ].filter(
+        (targetNode, index, nodes): targetNode is CNode => Boolean(targetNode) && nodes.indexOf(targetNode) === index
+      );
 
-      if (normalCss && responsiveMediaQuery && node.value.css) {
-        const nextCss = {
-          ...node.value.css,
-          value: node.value.css.value.map((item) => {
-            if (item !== normalCss) {
-              return item;
-            }
-            const nextMedia = [...(item.media || [])];
-            const responsiveMediaIndex = nextMedia.findIndex(
-              (media) =>
-                media.type === 'range' &&
-                media.minWidth === responsiveMediaQuery.minWidth &&
-                media.maxWidth === responsiveMediaQuery.maxWidth
-            );
-            if (responsiveMediaIndex >= 0) {
-              nextMedia[responsiveMediaIndex] = {
-                ...nextMedia[responsiveMediaIndex],
-                text: updateCssTextSize(nextMedia[responsiveMediaIndex].text || '', width, height),
+      targetNodes.forEach((targetNode) => {
+        const normalCss = targetNode.value.css?.value.find((item) => item.state === 'normal');
+        if (normalCss && responsiveMediaQuery && targetNode.value.css) {
+          const nextCss = {
+            ...targetNode.value.css,
+            value: targetNode.value.css.value.map((item) => {
+              if (item !== normalCss) {
+                return item;
+              }
+              const nextMedia = [...(item.media || [])];
+              const responsiveMediaIndex = nextMedia.findIndex(
+                (media) => media.type === 'max-width' && media.value === responsiveMediaQuery.maxWidth
+              );
+              if (responsiveMediaIndex >= 0) {
+                nextMedia[responsiveMediaIndex] = {
+                  ...nextMedia[responsiveMediaIndex],
+                  text: updateCssTextSize(nextMedia[responsiveMediaIndex].text || '', width, height),
+                };
+              } else {
+                nextMedia.push({
+                  type: 'max-width',
+                  value: responsiveMediaQuery.maxWidth,
+                  text: updateCssTextSize('', width, height),
+                });
+              }
+              return {
+                ...item,
+                media: nextMedia.sort(
+                  (first, second) => Number.parseFloat(first.value || '0') - Number.parseFloat(second.value || '0')
+                ),
               };
-            } else {
-              nextMedia.push({
-                type: 'range',
-                minWidth: responsiveMediaQuery.minWidth,
-                maxWidth: responsiveMediaQuery.maxWidth,
-                text: updateCssTextSize('', width, height),
-              });
-            }
-            return {
-              ...item,
-              media: nextMedia.sort(
-                (first, second) =>
-                  Number.parseFloat(first.minWidth || first.value || '0') -
-                  Number.parseFloat(second.minWidth || second.value || '0')
-              ),
-            };
-          }),
-        };
-        node.updateValue({ css: nextCss });
-        appendLog('responsive CSS size updated', {
-          nodeId: node.id,
-          width,
-          height,
-          media: responsiveMediaQuery.key,
-        });
-        return;
-      }
-
-      const nextStyle = [...(node.value.style || [])];
-      const sizeStyle = { width, height };
-      (Object.keys(sizeStyle) as Array<keyof typeof sizeStyle>).forEach((property) => {
-        const existing = nextStyle.find((item) => item.property === property);
-        if (existing) {
-          existing.value = sizeStyle[property];
-        } else {
-          nextStyle.push({ property, value: sizeStyle[property] });
+            }),
+          };
+          targetNode.updateValue({ css: nextCss });
+          return;
         }
+
+        const nextStyle = [...(targetNode.value.style || [])];
+        const sizeStyle = { width, height };
+        (Object.keys(sizeStyle) as Array<keyof typeof sizeStyle>).forEach((property) => {
+          const existing = nextStyle.find((item) => item.property === property);
+          if (existing) {
+            existing.value = sizeStyle[property];
+          } else {
+            nextStyle.push({ property, value: sizeStyle[property] });
+          }
+        });
+        targetNode.updateValue({ style: nextStyle });
       });
-      node.updateValue({ style: nextStyle });
-      appendLog('page style updated', { nodeId: node.id, width, height });
+
+      appendLog(responsiveMediaQuery ? 'responsive CSS size updated' : 'page style updated', {
+        nodeId: node.id,
+        width,
+        height,
+        media: responsiveMediaQuery?.key,
+      });
     },
-    [appendLog]
+    [appendLog, pageModel]
   );
   useEffect(() => {
     let disposed = false;
@@ -314,6 +338,19 @@ export const LayoutDebug = ({ renderUrl = '/src/_dev_/render.html' }: LayoutDebu
       boxSensor?.destroy();
     };
   }, [appendLog]);
+  useEffect(() => {
+    const refresh = () => refreshSchemaPreview();
+    pageModel.emitter.on('onPageChange', refresh);
+    pageModel.emitter.on('onReloadPage', refresh);
+    pageModel.emitter.on('onNodeChange', refresh);
+    pageModel.emitter.on('onPropChange', refresh);
+    return () => {
+      pageModel.emitter.off('onPageChange', refresh);
+      pageModel.emitter.off('onReloadPage', refresh);
+      pageModel.emitter.off('onNodeChange', refresh);
+      pageModel.emitter.off('onPropChange', refresh);
+    };
+  }, [pageModel, refreshSchemaPreview]);
   return (
     <div className="dev-shell">
       <header className="dev-header">
@@ -405,6 +442,7 @@ export const LayoutDebug = ({ renderUrl = '/src/_dev_/render.html' }: LayoutDebu
                 appendLog(`resized: ${node.value.componentName}`, event.extraData);
                 if (node.nodeType === 'NODE') {
                   updateNodeSize(node, event);
+                  refreshSchemaPreview();
                 }
               }}
               onNodeDrop={async (event) => appendLog('onNodeDrop', event.extraData)}
@@ -471,13 +509,36 @@ export const LayoutDebug = ({ renderUrl = '/src/_dev_/render.html' }: LayoutDebu
             </div>
           </section>
           <section className="panel-section panel-section-last">
-            <button type="button" className="export-button" onClick={exportSchema}>
-              Export page schema
-            </button>
-            {schemaPreview && <pre className="schema-preview">{schemaPreview}</pre>}
+            <div className="schema-toolbar">
+              <div>
+                <div className="section-title">pageSchema</div>
+                <div className="field-help">Live exported page model.</div>
+              </div>
+              <button type="button" className="schema-toggle-button" onClick={viewSchema}>
+                View
+              </button>
+            </div>
           </section>
         </aside>
       </main>
+      <antD.Modal
+        open={schemaVisible}
+        title="pageSchema"
+        width={860}
+        onCancel={() => setSchemaVisible(false)}
+        footer={
+          <div className="schema-modal-footer">
+            <button type="button" className="schema-copy-button" onClick={refreshSchemaPreview}>
+              Refresh
+            </button>
+            <button type="button" className="export-button" onClick={copySchema}>
+              Copy JSON
+            </button>
+          </div>
+        }
+      >
+        <pre className="schema-preview">{schemaPreview}</pre>
+      </antD.Modal>
     </div>
   );
 };

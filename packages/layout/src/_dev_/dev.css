@@ -321,9 +321,33 @@ time {
   width: 100%;
   text-align: center;
 }
+.schema-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.schema-toolbar .section-title {
+  margin-bottom: 0;
+}
+.schema-toggle-button,
+.schema-copy-button {
+  min-height: 28px;
+  padding: 0 9px;
+  color: #52627a;
+  background: #f1f4f8;
+  border: 0;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 600;
+}
+.schema-toggle-button:hover,
+.schema-copy-button:hover {
+  background: #e6ebf2;
+}
 .schema-preview {
-  max-height: 180px;
-  margin: 12px 0 0;
+  max-height: min(68vh, 680px);
+  margin: 0;
   overflow: auto;
   padding: 10px;
   color: #66758b;
@@ -331,6 +355,17 @@ time {
   border-radius: 5px;
   font-size: 9px;
   line-height: 1.5;
+}
+.schema-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.schema-modal-footer .export-button,
+.schema-modal-footer .schema-copy-button {
+  width: auto;
+  min-height: 30px;
+  padding: 0 14px;
 }
 .drag-ghost {
   padding: 7px 10px;
