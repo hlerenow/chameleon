@@ -2,7 +2,7 @@
   <img src="./md-images/chameleon-icon.svg" alt="Chameleon icon" width="128" />
 </p>
 
-<h1 align="center">Chameleon</h1>
+<h1 align="center">幻彩（CHAM）</h1>
 
 <p align="center">面向 React 应用的可视化页面编辑与低代码渲染引擎。</p>
 
@@ -21,7 +21,7 @@
 - 设计态与运行态渲染
 - 完整的 TypeScript 类型支持
 
-Chameleon 提供编辑器工作台、组件物料、属性面板、响应式布局、页面 Schema
+幻彩（CHAM）提供编辑器工作台、组件物料、属性面板、响应式布局、页面 Schema
 以及设计态和运行态渲染能力。业务应用可以接入自己的组件、资源、页面数据和渲染策略。
 
 ## 快速开始
@@ -49,15 +49,15 @@ Chameleon 提供编辑器工作台、组件物料、属性面板、响应式布�
 
 ## 截图
 
-![Chameleon 布局编辑器](./md-images/layout.gif)
+![幻彩布局编辑器](./md-images/layout.gif)
 
-![Chameleon 编辑器](https://github.com/user-attachments/assets/7b06dc4c-80a3-455d-bc91-14a1cf1fb331)
+![幻彩编辑器](https://github.com/user-attachments/assets/7b06dc4c-80a3-455d-bc91-14a1cf1fb331)
 
-![Chameleon 组件库和属性面板](https://user-images.githubusercontent.com/13299648/218920783-0d1cc275-a238-4d80-a717-dbbbf54b4713.png)
+![幻彩组件库和属性面板](https://user-images.githubusercontent.com/13299648/218920783-0d1cc275-a238-4d80-a717-dbbbf54b4713.png)
 
-![Chameleon 可视化编辑器](https://user-images.githubusercontent.com/13299648/218920845-0c4c549d-df56-4b0a-9b72-95dd0c0fcaf5.png)
+![幻彩可视化编辑器](https://user-images.githubusercontent.com/13299648/218920845-0c4c549d-df56-4b0a-9b72-95dd0c0fcaf5.png)
 
-![Chameleon 响应式编辑](https://user-images.githubusercontent.com/13299648/218921002-a25cfdd6-f27a-4b19-83fe-a6a264e4e4b5.png)
+![幻彩响应式编辑](https://user-images.githubusercontent.com/13299648/218921002-a25cfdd6-f27a-4b19-83fe-a6a264e4e4b5.png)
 
 ## 安装
 
