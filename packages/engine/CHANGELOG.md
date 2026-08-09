@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.0](https://github.com/hlerenow/chameleon/compare/v0.11.1...v0.12.0) (2026-08-09)
+
+### 📝 Documentation | 文档
+
+* consolidate engine readmes ([6990e04](https://github.com/hlerenow/chameleon/commit/6990e04a1cfc0bb8d3df58dc467bd78fc4b93ca3))
+* refresh engine readme branding ([ec3eb69](https://github.com/hlerenow/chameleon/commit/ec3eb69b979d336b6adeb696b437fadeffeafafb))
+* sync root readme branding ([db99db7](https://github.com/hlerenow/chameleon/commit/db99db710d284e7475db435977459138309450a5))
+* update Chinese branding ([54918e3](https://github.com/hlerenow/chameleon/commit/54918e3376ca27479ea461f08ea19df9b1bbd011))
+
 ## [0.11.1](https://github.com/hlerenow/chameleon/compare/v0.11.0...v0.11.1) (2026-08-09)
 
 ### 🐛 Bug Fixes | Bug 修复

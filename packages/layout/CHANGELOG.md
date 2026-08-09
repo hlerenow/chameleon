@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.0](https://github.com/hlerenow/chameleon/compare/v0.11.1...v0.12.0) (2026-08-09)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* sync node size handles after resize ([13f611d](https://github.com/hlerenow/chameleon/commit/13f611d8726b13eedec461c953d28d31a2cdeeee))
+
 ## [0.11.1](https://github.com/hlerenow/chameleon/compare/v0.11.0...v0.11.1) (2026-08-09)
 
 ### 🐛 Bug Fixes | Bug 修复
