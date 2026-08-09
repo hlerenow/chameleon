@@ -236,5 +236,6 @@ export * from './utils/index';
 export { registerCustomSetter } from './component/CustomSchemaForm/components/Form';
 
 export * from './type';
+export * from './config/responsiveSizes';
 export * from './core/pluginManager';
 export * from './core/assetPackagesListManage';

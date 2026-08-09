@@ -135,7 +135,11 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
             }}
           />
         </div>
-        <CSSEditor handler={cssEditorRef} onValueChange={onUpdateCss} />
+        <CSSEditor
+          handler={cssEditorRef}
+          onValueChange={onUpdateCss}
+          responsiveSizes={props.pluginCtx.engine.props.responsiveSizes}
+        />
       </div>
     </div>
   );

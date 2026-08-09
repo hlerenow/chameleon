@@ -1,5 +1,6 @@
 import { waitReactUpdate } from '@/utils';
 import { formatCSSTextProperty, StyleArr, styleList2Text } from '@/utils/css';
+import { getResponsiveSizes, ResponsiveSize } from '@/config/responsiveSizes';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Card, Collapse, Dropdown, Space } from 'antd';
 import CheckableTag from 'antd/es/tag/CheckableTag';
@@ -29,12 +30,6 @@ const DOM_CSS_STATUS_LIST = DOM_CSS_STATUS.map((el) => {
   };
 });
 
-type MediaQueryItem = {
-  key: string;
-  maxWidth: string;
-  label: string;
-};
-
 export type CSSVal = Partial<
   Record<
     DomCSSStatusType,
@@ -54,27 +49,19 @@ export type CSSEditorProps = {
   onValueChange?: (val: CSSVal) => void;
   initialValue?: CSSVal;
   handler?: MutableRefObject<CSSEditorRef | null>;
+  responsiveSizes?: ResponsiveSize[];
 };
 
 export const CSSEditor = (props: CSSEditorProps) => {
   const [selectedStateTag, setSelectedStateTag] = useState<DomCSSStatusType>('normal');
-  const [mediaQueryList] = useState<MediaQueryItem[]>([
-    {
-      key: '991',
-      maxWidth: '991',
-      label: 'Medial Query ( <= 991 px )',
-    },
-    {
-      key: '767',
-      maxWidth: '767',
-      label: 'Medial Query ( <= 767 px )',
-    },
-    {
-      key: '479',
-      maxWidth: '479',
-      label: 'Medial Query ( <= 479 px )',
-    },
-  ]);
+  const mediaQueryList = useMemo(
+    () =>
+      getResponsiveSizes(props.responsiveSizes).map(({ label, width }) => ({
+        key: `${width}`,
+        label: `${label} (${width} px)`,
+      })),
+    [props.responsiveSizes]
+  );
   const cssPropertyRefMap = useRef<Record<string, CSSPropertiesEditorRef | null>>({});
   const handleChange = (tag: DomCSSStatusType) => {
     setSelectedStateTag(tag);

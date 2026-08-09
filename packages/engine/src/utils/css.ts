@@ -1,4 +1,5 @@
 import { CSSVal } from '@/component/CSSEditor';
+import { getResponsiveSizeByViewport, getResponsiveSizes, ResponsiveSize } from '@/config/responsiveSizes';
 import {
   CNode,
   CNodeModelDataType,
@@ -63,19 +64,23 @@ const updateCssTextProperties = (text: string, properties: Record<string, string
 
 export const updateNodeSizeStyle = (
   node: CNode | CRootNode,
-  { width, height, viewportWidth }: { width: number; height: number; viewportWidth: number }
+  { width, height, viewportWidth }: { width: number; height: number; viewportWidth: number },
+  responsiveSizes?: ResponsiveSize[]
 ) => {
   const sizeStyle = {
     width: `${Math.max(1, Math.round(width))}px`,
     height: `${Math.max(1, Math.round(height))}px`,
   };
   const normalCss = node.value.css?.value.find((item) => item.state === 'normal');
-  const responsiveCss = normalCss?.media
-    ?.map((item, index) => ({ index, item, maxWidth: Number.parseFloat(item.value) }))
-    .filter(({ item, maxWidth }) => item.type === 'max-width' && Number.isFinite(maxWidth) && viewportWidth <= maxWidth)
-    .sort((first, second) => first.maxWidth - second.maxWidth)[0];
+  const responsiveSize = getResponsiveSizeByViewport(viewportWidth, responsiveSizes);
+  const responsiveSizeOrder = new Map(
+    getResponsiveSizes(responsiveSizes).map(({ width }, index) => [`${width}`, index])
+  );
+  const responsiveCssIndex = normalCss?.media?.findIndex(
+    (item) => item.type === 'max-width' && item.value === `${responsiveSize?.width}`
+  );
 
-  if (normalCss?.media && responsiveCss && node.value.css) {
+  if (normalCss && responsiveSize && node.value.css) {
     node.updateValue({
       css: {
         ...node.value.css,
@@ -83,13 +88,31 @@ export const updateNodeSizeStyle = (
           if (item !== normalCss) {
             return item;
           }
+          const media = [...(item.media || [])];
+          const targetMedia =
+            responsiveCssIndex === undefined || responsiveCssIndex < 0
+              ? {
+                  type: 'max-width' as const,
+                  value: `${responsiveSize.width}`,
+                  text: updateCssTextProperties('', sizeStyle),
+                }
+              : {
+                  ...media[responsiveCssIndex],
+                  text: updateCssTextProperties(media[responsiveCssIndex].text || '', sizeStyle),
+                };
+          if (responsiveCssIndex === undefined || responsiveCssIndex < 0) {
+            media.push(targetMedia);
+          } else {
+            media[responsiveCssIndex] = targetMedia;
+          }
+          media.sort(
+            (first, second) =>
+              (responsiveSizeOrder.get(first.value || '') ?? Number.POSITIVE_INFINITY) -
+              (responsiveSizeOrder.get(second.value || '') ?? Number.POSITIVE_INFINITY)
+          );
           return {
             ...item,
-            media: item.media?.map((media, index) =>
-              index === responsiveCss.index
-                ? { ...media, text: updateCssTextProperties(media.text || '', sizeStyle) }
-                : media
-            ),
+            media,
           };
         }),
       },

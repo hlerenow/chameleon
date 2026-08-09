@@ -526,7 +526,8 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     node: CNode | CRootNode,
     event: NodeSizeChangeEvent
   ) => {
-    updateNodeSizeStyle(node, event.extraData);
+    console.log('[nodeSize change]', { node, event });
+    updateNodeSizeStyle(node, event.extraData, this.props.pluginCtx.engine.props.responsiveSizes);
   };
 
   render() {

@@ -306,7 +306,7 @@ export const convertModelToComponent = (
             const mediaId = `${normalId}_${it.type}_${it.value}`;
             const styleDom = this.getStyleDomById(mediaId);
             styleDom.media = `screen and (${it.type}:${it.value}px)`;
-            styleDom.innerHTML = `.${className} { ${it.text} }`;
+            styleDom.innerHTML = `.${className} { ${it.text || ''} }`;
             header?.appendChild(styleDom);
           });
         }
