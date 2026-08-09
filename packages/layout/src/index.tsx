@@ -1159,6 +1159,14 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             {selectedInstance && canResizeSelectedNode && showNodeSizeChangeBox && this.props.onNodeSizeChange && (
               <NodeSizeChangeBox
                 instance={selectedInstance}
+                getCurrentInstance={() => {
+                  const instances = this.designRenderRef.current?.getInstancesById(selectedInstance._NODE_ID) || [];
+                  return (
+                    instances.find((instance) => instance._UNIQUE_ID === selectedInstance._UNIQUE_ID) ||
+                    instances[0] ||
+                    selectedInstance
+                  );
+                }}
                 node={selectedInstance._NODE_MODEL}
                 active
                 onChange={this.props.onNodeSizeChange}

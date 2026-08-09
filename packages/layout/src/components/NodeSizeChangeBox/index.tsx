@@ -32,6 +32,7 @@ type ResizeGesture = {
 
 export type NodeSizeChangeBoxProps = {
   instance: RenderInstance;
+  getCurrentInstance?: () => RenderInstance | null;
   node: CNode | CRootNode;
   active: boolean;
   onChange: (node: CNode | CRootNode, event: NodeSizeChangeEvent) => void;
@@ -64,21 +65,23 @@ const getResizedRect = (gesture: ResizeGesture, currentPointer: PointerPosition)
   const height = Math.max(MIN_SIZE, startRect.height + (edge === 'top' ? -deltaY : edge === 'bottom' ? deltaY : 0));
 
   return {
-    left: startRect.left,
-    top: startRect.top,
+    left: startRect.left + (edge === 'left' ? startRect.width - width : 0),
+    top: startRect.top + (edge === 'top' ? startRect.height - height : 0),
     width,
     height,
   };
 };
 
-export const NodeSizeChangeBox = ({ instance, node, active, onChange }: NodeSizeChangeBoxProps) => {
+export const NodeSizeChangeBox = ({ instance, getCurrentInstance, node, active, onChange }: NodeSizeChangeBoxProps) => {
   const [rect, setRect] = useState<BoxRect | null>(null);
   const instanceRef = useRef(instance);
+  const getCurrentInstanceRef = useRef(getCurrentInstance);
   const nodeRef = useRef(node);
   const onChangeRef = useRef(onChange);
   const gestureRef = useRef<ResizeGesture | null>(null);
 
   instanceRef.current = instance;
+  getCurrentInstanceRef.current = getCurrentInstance;
   nodeRef.current = node;
   onChangeRef.current = onChange;
 
@@ -86,7 +89,7 @@ export const NodeSizeChangeBox = ({ instance, node, active, onChange }: NodeSize
     if (gestureRef.current) {
       return;
     }
-    setRect(getRect(instanceRef.current));
+    setRect(getRect(getCurrentInstanceRef.current?.() || instanceRef.current));
   }, []);
 
   useLayoutEffect(() => {
@@ -97,7 +100,7 @@ export const NodeSizeChangeBox = ({ instance, node, active, onChange }: NodeSize
     }
 
     syncRect();
-    const frame = requestAnimationFrame(syncRect);
+    const frame = requestAnimationFrame(() => syncRect());
     return () => cancelAnimationFrame(frame);
   }, [active, syncRect]);
 
@@ -106,13 +109,25 @@ export const NodeSizeChangeBox = ({ instance, node, active, onChange }: NodeSize
       return;
     }
 
-    const target = getTargetDom(instance);
+    const target = getTargetDom(getCurrentInstanceRef.current?.() || instance);
     const targetWindow = target?.ownerDocument.defaultView;
     const windows = Array.from(new Set([window, targetWindow].filter(Boolean))) as Window[];
     const resizeObserver = typeof ResizeObserver === 'undefined' || !target ? null : new ResizeObserver(syncRect);
+    const MutationObserverImpl =
+      targetWindow?.MutationObserver ?? (typeof MutationObserver === 'undefined' ? null : MutationObserver);
+    const mutationObserver =
+      MutationObserverImpl && target?.ownerDocument.body ? new MutationObserverImpl(() => syncRect()) : null;
 
     if (resizeObserver && target) {
       resizeObserver.observe(target);
+    }
+    if (mutationObserver && target) {
+      mutationObserver.observe(target.ownerDocument.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style'],
+        childList: true,
+        subtree: true,
+      });
     }
     windows.forEach((targetWindowItem) => {
       targetWindowItem.addEventListener('resize', syncRect);
@@ -121,6 +136,7 @@ export const NodeSizeChangeBox = ({ instance, node, active, onChange }: NodeSize
 
     return () => {
       resizeObserver?.disconnect();
+      mutationObserver?.disconnect();
       windows.forEach((targetWindowItem) => {
         targetWindowItem.removeEventListener('resize', syncRect);
         targetWindowItem.removeEventListener('scroll', syncRect, true);
@@ -153,7 +169,9 @@ export const NodeSizeChangeBox = ({ instance, node, active, onChange }: NodeSize
           height: nextRect.height,
           originalWidth: gesture.startRect.width,
           originalHeight: gesture.startRect.height,
-          viewportWidth: getTargetDom(instanceRef.current)?.ownerDocument.defaultView?.innerWidth ?? window.innerWidth,
+          viewportWidth:
+            getTargetDom(getCurrentInstanceRef.current?.() || instanceRef.current)?.ownerDocument.defaultView
+              ?.innerWidth ?? window.innerWidth,
         },
       });
     };
@@ -162,6 +180,7 @@ export const NodeSizeChangeBox = ({ instance, node, active, onChange }: NodeSize
       updateResize(event);
       if (gestureRef.current?.pointerId === event.pointerId) {
         gestureRef.current = null;
+        requestAnimationFrame(() => syncRect());
       }
     };
 
@@ -173,7 +192,7 @@ export const NodeSizeChangeBox = ({ instance, node, active, onChange }: NodeSize
       window.removeEventListener('pointerup', finishResize);
       window.removeEventListener('pointercancel', finishResize);
     };
-  }, []);
+  }, [syncRect]);
 
   const handlePointerDown = (edge: NodeSizeChangeEdge, event: React.PointerEvent<HTMLDivElement>) => {
     if (event.button !== 0 || !rect) {
