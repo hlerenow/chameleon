@@ -62,6 +62,7 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   forceNodeSizeChange?: boolean;
   /** @deprecated 尺寸调整层不再依赖快捷键 */
   nodeSizeChangeHotkey?: string;
+  onCanvasScaleChange?: (scale: number) => void;
   canvasToolbarView?: React.ReactNode;
   selectToolbarView?: React.ReactNode;
   selectBoxStyle?: React.CSSProperties;
@@ -144,6 +145,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   private canvasPanStart: { clientX: number; clientY: number; scrollLeft: number; scrollTop: number } | null = null;
   private canvasPanOverlay: HTMLDivElement | null = null;
   private isSpacePressed = false;
+  private isZoomModifierPressed = false;
   realTimeSelectNodeInstanceTimer = 0;
   iframeDomId: string;
   canvasWorkspaceRef: React.RefObject<HTMLDivElement>;
@@ -221,9 +223,17 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       return;
     }
     this.setState({ canvasScale: scale }, () => {
+      const workspace = this.canvasWorkspaceRef.current;
+      if (workspace) {
+        requestAnimationFrame(() => {
+          workspace.scrollLeft = scale > 1 ? (workspace.scrollWidth - workspace.clientWidth) / 2 : 0;
+          workspace.scrollTop = 0;
+        });
+      }
       this.highlightCanvasRef.current?.update();
       this.highlightHoverCanvasRef.current?.update();
       this.highlightDropAnchorCanvasRef.current?.update();
+      this.props.onCanvasScaleChange?.(scale);
     });
   }
 
@@ -290,6 +300,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     this.removeCanvasPanOverlay();
     this.canvasPanStart = null;
     this.isSpacePressed = false;
+    this.isZoomModifierPressed = false;
   }
 
   removeCanvasPanOverlay() {
@@ -312,7 +323,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       workspace.classList.toggle(styles.canvasPanning, isPanning);
       workspace.classList.toggle(styles.canvasPanReady, this.isSpacePressed && !isPanning);
       if (this.canvasPanOverlay) {
-        this.canvasPanOverlay.style.cursor = isPanning ? 'grabbing' : 'grab';
+        this.canvasPanOverlay.style.cursor = this.isSpacePressed ? (isPanning ? 'grabbing' : 'grab') : 'default';
       }
     };
     const endPan = () => {
@@ -323,6 +334,13 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       updatePanCursor(false);
     };
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Control' || event.key === 'Meta') {
+        if (!this.isZoomModifierPressed) {
+          createCanvasPanOverlay();
+        }
+        this.isZoomModifierPressed = true;
+        return;
+      }
       if (event.code !== 'Space' || isEditableTarget(event.target)) {
         return;
       }
@@ -336,12 +354,21 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       updatePanCursor(false);
     };
     const onKeyUp = (event: KeyboardEvent) => {
+      if (event.key === 'Control' || event.key === 'Meta') {
+        this.isZoomModifierPressed = false;
+        if (!this.isSpacePressed) {
+          this.removeCanvasPanOverlay();
+        }
+        return;
+      }
       if (event.code !== 'Space') {
         return;
       }
       this.isSpacePressed = false;
       endPan();
-      this.removeCanvasPanOverlay();
+      if (!this.isZoomModifierPressed) {
+        this.removeCanvasPanOverlay();
+      }
       this.resetDrag();
       this.dnd.resetDrag();
       this.isCancelDrag = false;
@@ -378,29 +405,52 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       event.stopImmediatePropagation();
       endPan();
     };
+    const onWheel = (event: WheelEvent) => {
+      if (!event.ctrlKey && !event.metaKey) {
+        return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      const zoomStep = event.deltaY > 0 ? -0.1 : 0.1;
+      const nextScale = Math.min(2, Math.max(0.25, this.state.canvasScale + zoomStep));
+      this.setCanvasScale(Number(nextScale.toFixed(2)));
+    };
+    const onDoubleClick = (event: MouseEvent) => {
+      event.preventDefault();
+      this.setCanvasScale(1);
+    };
     const createCanvasPanOverlay = () => {
       const container = this.iframeContainer.containerDom;
       if (this.canvasPanOverlay || !container) {
         return;
       }
       const overlay = document.createElement('div');
-      overlay.style.cssText =
-        'position: absolute; inset: 0; z-index: 3; background: transparent; cursor: grab; user-select: none;';
+      overlay.style.cssText = `position: absolute; inset: 0; z-index: 3; background: transparent; cursor: ${
+        this.isSpacePressed ? 'grab' : 'default'
+      }; user-select: none;`;
       overlay.addEventListener('mousedown', onMouseDown, true);
       overlay.addEventListener('mousemove', onMouseMove, true);
       overlay.addEventListener('mouseup', onMouseUp, true);
       container.appendChild(overlay);
       this.canvasPanOverlay = overlay;
     };
-    const addListener = (target: EventTarget, type: string, listener: EventListener, capture = true) => {
-      target.addEventListener(type, listener, capture);
-      this.canvasPanEventDisposeHandlers.push(() => target.removeEventListener(type, listener, capture));
+    const addListener = (
+      target: EventTarget,
+      type: string,
+      listener: EventListener,
+      options: boolean | AddEventListenerOptions = true
+    ) => {
+      target.addEventListener(type, listener, options);
+      this.canvasPanEventDisposeHandlers.push(() => target.removeEventListener(type, listener, options));
     };
 
     addListener(document, 'keydown', onKeyDown as EventListener);
     addListener(document, 'keyup', onKeyUp as EventListener);
     addListener(iframeDoc, 'keydown', onKeyDown as EventListener);
     addListener(iframeDoc, 'keyup', onKeyUp as EventListener);
+    addListener(document, 'wheel', onWheel as EventListener, { capture: true, passive: false });
+    addListener(iframeDoc, 'wheel', onWheel as EventListener, { capture: true, passive: false });
+    addListener(iframeDoc, 'dblclick', onDoubleClick as EventListener);
     addListener(workspace, 'mousedown', onMouseDown as EventListener);
     addListener(workspace, 'mousemove', onMouseMove as EventListener);
     addListener(workspace, 'mouseup', onMouseUp as EventListener);
@@ -1045,14 +1095,21 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       dropViewItemRender = this.dropViewItemRender;
     }
     const canvasViewportHeight = canvasScale < 1 ? `${100 / canvasScale}%` : '100%';
+    const canvasViewportMarginLeft = canvasScale > 1 ? `${(canvasScale - 1) * 50}%` : undefined;
+    const layoutContainerClassName =
+      canvasScale > 1 ? `${styles.layoutContainer} ${styles.canvasZoomed}` : styles.layoutContainer;
     return (
       <div className={styles.layoutRoot}>
         {this.props.canvasToolbarView && <div className={styles.canvasToolbar}>{this.props.canvasToolbarView}</div>}
-        <div ref={this.canvasWorkspaceRef} className={styles.layoutContainer}>
+        <div ref={this.canvasWorkspaceRef} className={layoutContainerClassName}>
           <div
             className={styles.canvasViewport}
             id={iframeDomId}
-            style={{ height: canvasViewportHeight, transform: `scale(${canvasScale})` }}
+            style={{
+              height: canvasViewportHeight,
+              marginLeft: canvasViewportMarginLeft,
+              transform: `scale(${canvasScale})`,
+            }}
           >
             {/* 左上角添加显示元素名功能， hover */}
             <HighlightCanvas

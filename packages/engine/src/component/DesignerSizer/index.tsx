@@ -26,7 +26,7 @@ type CanvasViewport = {
 
 const clampZoom = (zoom: number) => Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, zoom));
 
-export const DesignerSizer = (props: { ctx: EnginContext }) => {
+export const DesignerSizer = (props: { ctx: EnginContext; zoom: number }) => {
   const designerRef = useRef<DesignerPluginInstance>();
   const responsiveSizes = getResponsiveSizes(props.ctx.engine.props.responsiveSizes);
 
@@ -35,7 +35,6 @@ export const DesignerSizer = (props: { ctx: EnginContext }) => {
     width: responsiveSizes.find(({ key }) => key === 'PC')?.width ?? responsiveSizes[0].width,
     height: 0,
   });
-  const [zoom, setZoom] = useState(100);
   const getViewport = (subWin?: Window | null): CanvasViewport => ({
     width: subWin?.document.documentElement.clientWidth ?? subWin?.innerWidth ?? 0,
     height: subWin?.document.documentElement.clientHeight ?? subWin?.innerHeight ?? 0,
@@ -48,7 +47,6 @@ export const DesignerSizer = (props: { ctx: EnginContext }) => {
   const setCanvasZoom = useCallback((nextZoom: number) => {
     const value = clampZoom(nextZoom);
     designerRef.current?.export.setCanvasScale(value / 100);
-    setZoom(value);
   }, []);
 
   useEffect(() => {
@@ -81,10 +79,10 @@ export const DesignerSizer = (props: { ctx: EnginContext }) => {
       }
       if (['+', '=', 'Add'].includes(event.key)) {
         event.preventDefault();
-        setCanvasZoom(zoom + ZOOM_STEP);
+        setCanvasZoom(props.zoom + ZOOM_STEP);
       } else if (['-', '_', 'Subtract'].includes(event.key)) {
         event.preventDefault();
-        setCanvasZoom(zoom - ZOOM_STEP);
+        setCanvasZoom(props.zoom - ZOOM_STEP);
       } else if (event.key === '0') {
         event.preventDefault();
         setCanvasZoom(100);
@@ -93,7 +91,14 @@ export const DesignerSizer = (props: { ctx: EnginContext }) => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [setCanvasZoom, zoom]);
+  }, [props.zoom, setCanvasZoom]);
+
+  useEffect(() => {
+    const resetCanvasZoom = () => setCanvasZoom(100);
+
+    window.addEventListener('dblclick', resetCanvasZoom);
+    return () => window.removeEventListener('dblclick', resetCanvasZoom);
+  }, [setCanvasZoom]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const setCanvasWidth = useCallback(
@@ -179,7 +184,12 @@ export const DesignerSizer = (props: { ctx: EnginContext }) => {
       </div>
       <div className={styles.zoomControl}>
         <Tooltip title="Zoom out (Ctrl/Cmd -)">
-          <Button size="small" type="text" icon={<ZoomOutOutlined />} onClick={() => setCanvasZoom(zoom - ZOOM_STEP)} />
+          <Button
+            size="small"
+            type="text"
+            icon={<ZoomOutOutlined />}
+            onClick={() => setCanvasZoom(props.zoom - ZOOM_STEP)}
+          />
         </Tooltip>
         <Tooltip title="Set zoom percentage">
           <InputNumber
@@ -188,15 +198,20 @@ export const DesignerSizer = (props: { ctx: EnginContext }) => {
             min={ZOOM_MIN}
             max={ZOOM_MAX}
             suffix="%"
-            value={zoom}
+            value={props.zoom}
             onChange={(value) => setCanvasZoom(Number(value))}
           />
         </Tooltip>
         <Tooltip title="Zoom in (Ctrl/Cmd +)">
-          <Button size="small" type="text" icon={<ZoomInOutlined />} onClick={() => setCanvasZoom(zoom + ZOOM_STEP)} />
+          <Button
+            size="small"
+            type="text"
+            icon={<ZoomInOutlined />}
+            onClick={() => setCanvasZoom(props.zoom + ZOOM_STEP)}
+          />
         </Tooltip>
         <Divider type="vertical" />
-        <Tooltip title="Reset zoom (Ctrl/Cmd 0)">
+        <Tooltip title="Reset zoom (Ctrl/Cmd 0 or double-click anywhere)">
           <Button size="small" type="text" icon={<CompressOutlined />} onClick={() => setCanvasZoom(100)} />
         </Tooltip>
       </div>
@@ -205,7 +220,7 @@ export const DesignerSizer = (props: { ctx: EnginContext }) => {
           <span className={styles.sectionLabel}>Canvas</span>
           <Tag bordered={false}>{`${viewport.width} × ${viewport.height}`}</Tag>
           <Tag bordered={false} color="blue">
-            {`${zoom}%`}
+            {`${props.zoom}%`}
           </Tag>
         </div>
       </Tooltip>

@@ -30,6 +30,7 @@ export type WrapComponentOptionsType = {
 
 type DesignerStateType = {
   pageModel: CPage;
+  canvasScale: number;
   hoverToolbarView: React.ReactNode;
   selectToolbarView: React.ReactNode;
   selectRectViewRender: AdvanceCustom['selectRectViewRender'] | null;
@@ -47,6 +48,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
 
     this.state = {
       pageModel: props.pluginCtx.pageModel,
+      canvasScale: 1,
       hoverToolbarView: null,
       selectToolbarView: null,
       ghostView: null,
@@ -584,7 +586,8 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
           pageModel={pageModel}
           renderJSUrl={renderJSUrl}
           {...props}
-          canvasToolbarView={<DesignerSizer ctx={pluginCtx} />}
+          canvasToolbarView={<DesignerSizer ctx={pluginCtx} zoom={this.state.canvasScale * 100} />}
+          onCanvasScaleChange={(canvasScale) => this.setState({ canvasScale })}
           hoverToolBarView={hoverToolbarView}
           selectBoxStyle={{}}
           hoverBoxStyle={{}}
