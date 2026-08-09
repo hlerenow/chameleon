@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, LayoutPropsType } from '@chamn/layout';
+import { Layout, LayoutPropsType, NodeSizeChangeEvent } from '@chamn/layout';
 import { AdvanceCustom, CNode, CPage, CRootNode, InsertNodePosType } from '@chamn/model';
 import localize from '../../localize';
 import { PLUGIN_NAME } from '../../config';
@@ -15,6 +15,7 @@ import { CPluginCtx } from '@/core/pluginManager';
 import { AdvanceCustomHook } from './advanceCustomHook';
 import { DesignerPluginConfig } from '../../type';
 import { AdvanceCustomFuncParam } from '@chamn/model';
+import { updateNodeSizeStyle } from '@/utils/css';
 
 export type DesignerCtx = CPluginCtx<DesignerPluginConfig>;
 export type DesignerPropsType = {
@@ -521,9 +522,25 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     );
   };
 
+  onNodeSizeChange: NonNullable<LayoutPropsType['onNodeSizeChange']> = (
+    node: CNode | CRootNode,
+    event: NodeSizeChangeEvent
+  ) => {
+    updateNodeSizeStyle(node, event.extraData);
+  };
+
   render() {
-    const { layoutRef, props, onSelectNode, onDragStart, onHoverNode, onNodeDrop, onNodeDragging, onNodeDragEnd } =
-      this;
+    const {
+      layoutRef,
+      props,
+      onSelectNode,
+      onDragStart,
+      onHoverNode,
+      onNodeDrop,
+      onNodeDragging,
+      onNodeDragEnd,
+      onNodeSizeChange,
+    } = this;
     const {
       pageModel,
       hoverToolbarView,
@@ -576,6 +593,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
           onNodeDrop={onNodeDrop}
           onNodeDragging={onNodeDragging}
           onNodeDraEnd={onNodeDragEnd}
+          onNodeSizeChange={onNodeSizeChange}
           {...advanceCustomProps}
           ghostView={ghostView}
           assets={assets}

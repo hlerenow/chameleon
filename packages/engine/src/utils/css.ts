@@ -1,5 +1,14 @@
 import { CSSVal } from '@/component/CSSEditor';
-import { CNodeModelDataType, CSSType, CSSValue, JSExpressionPropType, getRandomStr, isExpression } from '@chamn/model';
+import {
+  CNode,
+  CNodeModelDataType,
+  CRootNode,
+  CSSType,
+  CSSValue,
+  JSExpressionPropType,
+  getRandomStr,
+  isExpression,
+} from '@chamn/model';
 import Color from 'color';
 import { isPlainObject } from 'lodash-es';
 import * as csstree from 'css-tree';
@@ -37,6 +46,67 @@ export const styleList2Text = (val: StyleArr) => {
     res += `${item.property}:${item.value};`;
   });
   return res;
+};
+
+const updateCssTextProperties = (text: string, properties: Record<string, string>) => {
+  const styleList = formatCSSTextProperty(text);
+  Object.entries(properties).forEach(([property, value]) => {
+    const existing = styleList.find((item) => item.property === property);
+    if (existing) {
+      existing.value = value;
+    } else {
+      styleList.push({ id: getRandomStr(), property, value });
+    }
+  });
+  return styleList2Text(styleList);
+};
+
+export const updateNodeSizeStyle = (
+  node: CNode | CRootNode,
+  { width, height, viewportWidth }: { width: number; height: number; viewportWidth: number }
+) => {
+  const sizeStyle = {
+    width: `${Math.max(1, Math.round(width))}px`,
+    height: `${Math.max(1, Math.round(height))}px`,
+  };
+  const normalCss = node.value.css?.value.find((item) => item.state === 'normal');
+  const responsiveCss = normalCss?.media
+    ?.map((item, index) => ({ index, item, maxWidth: Number.parseFloat(item.value) }))
+    .filter(({ item, maxWidth }) => item.type === 'max-width' && Number.isFinite(maxWidth) && viewportWidth <= maxWidth)
+    .sort((first, second) => first.maxWidth - second.maxWidth)[0];
+
+  if (normalCss?.media && responsiveCss && node.value.css) {
+    node.updateValue({
+      css: {
+        ...node.value.css,
+        value: node.value.css.value.map((item) => {
+          if (item !== normalCss) {
+            return item;
+          }
+          return {
+            ...item,
+            media: item.media?.map((media, index) =>
+              index === responsiveCss.index
+                ? { ...media, text: updateCssTextProperties(media.text || '', sizeStyle) }
+                : media
+            ),
+          };
+        }),
+      },
+    });
+    return;
+  }
+
+  const nextStyle = [...(node.value.style || [])];
+  Object.entries(sizeStyle).forEach(([property, value]) => {
+    const existing = nextStyle.find((item) => item.property === property);
+    if (existing) {
+      existing.value = value;
+    } else {
+      nextStyle.push({ property, value });
+    }
+  });
+  node.updateValue({ style: nextStyle });
 };
 
 export const formatStyleProperty = (styleList: CNodeModelDataType['style'] = []) => {

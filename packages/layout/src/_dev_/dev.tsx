@@ -154,9 +154,52 @@ const App = () => {
     setSchemaPreview(JSON.stringify(value, null, 2));
     appendLog('pageModel.export()');
   };
+  const updateCssTextSize = (text: string, width: string, height: string) => {
+    const element = document.createElement('div');
+    element.style.cssText = text;
+    element.style.setProperty('width', width);
+    element.style.setProperty('height', height);
+    return element.style.cssText;
+  };
   const updateNodeSize = (node: CNode, event: NodeSizeChangeEvent) => {
     const width = `${Math.max(1, Math.round(event.extraData.width))}px`;
     const height = `${Math.max(1, Math.round(event.extraData.height))}px`;
+    const normalCss = node.value.css?.value.find((item) => item.state === 'normal');
+    const responsiveCss = normalCss?.media
+      ?.map((item, index) => ({ index, item, maxWidth: Number.parseFloat(item.value) }))
+      .filter(
+        ({ item, maxWidth }) =>
+          item.type === 'max-width' && Number.isFinite(maxWidth) && event.extraData.viewportWidth <= maxWidth
+      )
+      .sort((first, second) => first.maxWidth - second.maxWidth)[0];
+
+    if (normalCss?.media && responsiveCss && node.value.css) {
+      const nextCss = {
+        ...node.value.css,
+        value: node.value.css.value.map((item) => {
+          if (item !== normalCss) {
+            return item;
+          }
+          return {
+            ...item,
+            media: item.media?.map((media, index) =>
+              index === responsiveCss.index
+                ? { ...media, text: updateCssTextSize(media.text || '', width, height) }
+                : media
+            ),
+          };
+        }),
+      };
+      node.updateValue({ css: nextCss });
+      appendLog('responsive CSS size updated', {
+        nodeId: node.id,
+        width,
+        height,
+        maxWidth: responsiveCss.item.value,
+      });
+      return;
+    }
+
     const nextStyle = [...(node.value.style || [])];
     const sizeStyle = { width, height };
     (Object.keys(sizeStyle) as Array<keyof typeof sizeStyle>).forEach((property) => {
@@ -168,7 +211,6 @@ const App = () => {
       }
     });
     node.updateValue({ style: nextStyle });
-    console.log('[layout dev] page style updated', { nodeId: node.id, width, height });
     appendLog('page style updated', { nodeId: node.id, width, height });
   };
   useEffect(() => {
