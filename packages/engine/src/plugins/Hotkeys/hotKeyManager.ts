@@ -3,9 +3,10 @@ import { defaultGetCode, getKeyString } from './keymap';
 export class HotKeysManager {
   private splitStr = '_';
   // 按下的键盘按键列表
-  private downKeyCodeList: number[] = [];
+  private downKeyCodeSet = new Set<number>();
   private elements: HTMLElement[];
   private disposeEventCbList: (() => void)[] = [];
+  private customGetKeyCodeByEvent?: (event: KeyboardEvent) => number;
 
   /** 是否禁用热键 */
   private disable: boolean = false;
@@ -15,6 +16,7 @@ export class HotKeysManager {
 
   constructor(options: { elements: HTMLElement[]; customGetKeyCodeByEvent?: (event: KeyboardEvent) => number }) {
     this.elements = options.elements;
+    this.customGetKeyCodeByEvent = options.customGetKeyCodeByEvent;
     this.init();
   }
 
@@ -40,33 +42,21 @@ export class HotKeysManager {
       // 表单控件过滤 默认表单控件不触发快捷键
       if (this.filterInputElement(event)) return;
 
-      const key = event.keyCode || event.which || event.charCode;
-      if (!this.downKeyCodeList.includes(key)) {
-        this.downKeyCodeList.push(key);
-      }
+      const key = this.getKeyCodeByEvent(event);
+      if (this.downKeyCodeSet.has(key)) return;
+
+      this.downKeyCodeSet.add(key);
       triggerAction();
     };
     el?.addEventListener('keydown', keydownCb);
 
     const keyupCb = (event: KeyboardEvent) => {
-      setTimeout(() => {
-        // 表单控件过滤 默认表单控件不触发快捷键
-        if (this.filterInputElement(event)) return;
-
-        const key = event.keyCode || event.which || event.charCode;
-
-        const findKeyIndex = this.downKeyCodeList.findIndex((el) => el === key);
-        if (findKeyIndex >= 0) {
-          this.downKeyCodeList.splice(findKeyIndex, 1);
-        }
-
-        // 用户释放了所有的按键
-      }, 0);
+      this.downKeyCodeSet.delete(this.getKeyCodeByEvent(event));
     };
     el?.addEventListener('keyup', keyupCb);
 
     const clearKeyDownList = () => {
-      this.downKeyCodeList = [];
+      this.downKeyCodeSet.clear();
     };
     // 修正某些意外情况下，文档失焦，导致快捷键失效等情况
     window?.addEventListener('blur', clearKeyDownList);
@@ -80,13 +70,9 @@ export class HotKeysManager {
 
   /** 添加快捷操作 */
   addHotAction(keys: (number | string)[], cb: () => void) {
-    const newKeysCode = keys.map((el) => {
-      if (typeof el !== 'number') {
-        return this.getKeyCodeByLabel(el);
-      } else {
-        return el;
-      }
-    });
+    const newKeysCode = this.normalizeKeyCodes(
+      keys.map((el) => (typeof el !== 'number' ? this.getKeyCodeByLabel(el) : el))
+    );
     this.hotActionMap[newKeysCode.join(this.splitStr)] = () => {
       // 可以自做一些拦截操作
       if (this.disable) {
@@ -97,11 +83,18 @@ export class HotKeysManager {
   }
 
   triggerHotKey() {
-    const hotActionId = this.downKeyCodeList.join(this.splitStr);
+    const hotActionId = this.normalizeKeyCodes(this.downKeyCodeSet).join(this.splitStr);
     // 本次快捷操作回合已经触发过，跳过触发
     const cb = this.hotActionMap[hotActionId];
-
     cb?.();
+  }
+
+  /**
+   * 快捷键按键顺序不固定，统一排序后再匹配。
+   * 例如 Ctrl + Shift + Z 和 Shift + Ctrl + Z 应视为同一个快捷键。
+   */
+  private normalizeKeyCodes(keyCodes: Iterable<number>) {
+    return Array.from(keyCodes).sort((a, b) => a - b);
   }
 
   /**
@@ -115,6 +108,70 @@ export class HotKeysManager {
   /** 根据可识别的字符串获取对应的键码 */
   getKeyCodeByLabel(label: string) {
     return defaultGetCode(label);
+  }
+
+  private getKeyCodeByEvent(event: KeyboardEvent) {
+    if (this.customGetKeyCodeByEvent) {
+      return this.customGetKeyCodeByEvent(event);
+    }
+
+    const keyAliases: Record<string, string> = {
+      ' ': 'space',
+      ArrowDown: 'down',
+      ArrowLeft: 'left',
+      ArrowRight: 'right',
+      ArrowUp: 'up',
+      Backspace: 'backspace',
+      Tab: 'tab',
+      Control: 'ctrl',
+      Alt: 'alt',
+      Meta: 'cmd',
+      CapsLock: 'capslock',
+      Delete: 'delete',
+      Escape: 'escape',
+      Enter: 'enter',
+      Shift: 'shift',
+    };
+    const key = keyAliases[event.key];
+
+    if (key) {
+      return defaultGetCode(key);
+    }
+    if (event.key.length === 1) {
+      return defaultGetCode(event.key);
+    }
+    if (/^F([1-9]|1[0-9])$/.test(event.key)) {
+      return defaultGetCode(event.key.toLowerCase());
+    }
+
+    const codeAliases: Record<string, string> = {
+      ArrowDown: 'down',
+      ArrowLeft: 'left',
+      ArrowRight: 'right',
+      ArrowUp: 'up',
+      Backspace: 'backspace',
+      ControlLeft: 'ctrl',
+      ControlRight: 'ctrl',
+      Delete: 'delete',
+      Enter: 'enter',
+      Escape: 'escape',
+      ShiftLeft: 'shift',
+      ShiftRight: 'shift',
+    };
+    const code = codeAliases[event.code] ?? event.code;
+
+    if (/^Key[A-Z]$/.test(code)) {
+      return code.charCodeAt(3);
+    }
+    if (/^Digit[0-9]$/.test(code)) {
+      return code.charCodeAt(5);
+    }
+    if (codeAliases[event.code]) {
+      return defaultGetCode(code);
+    }
+
+    // Legacy browser compatibility.
+    return event.keyCode || event.which || event.charCode;
   }
 
   getKeyString(code: number) {

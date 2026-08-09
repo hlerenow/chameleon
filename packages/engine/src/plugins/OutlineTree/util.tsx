@@ -1,6 +1,7 @@
 import {
   ArraySetterObjType,
   CNode,
+  CRootNode,
   CNodeDataType,
   CPage,
   CPageDataType,
@@ -16,7 +17,7 @@ import {
   ShapeSetterObjType,
 } from '@chamn/model';
 import { isPlainObject } from 'lodash-es';
-import { TreeNodeData } from './components/TreeView/dataStruct';
+import { TreeNodeData, TreeNodeFeature } from './components/TreeView/dataStruct';
 
 export const getTargetMNodeKeyVal = (dom: HTMLElement | null, key: string): null | string => {
   if (!dom) {
@@ -44,12 +45,14 @@ export const transformNodeSchemaToTreeData = (
     // 过滤掉字符串的情况
     nodeChild = nodeChild.filter((el) => typeof el !== 'string');
     const nodeMeta = pageModel.materialsModel.findByComponentName(node.componentName)?.value.title;
+    const nodeModel = pageModel.getNode(node.id || '');
     const newCurrentNode: TreeNodeData = {
       title: node.title || nodeMeta || node.componentName,
       key: node.id,
       children: [],
       parent: parent,
-      canDropPos: pageModel.getNode(node.id || '')?.isContainer() ? undefined : ['after', 'before'],
+      features: getNodeFeatures(nodeModel),
+      canDropPos: nodeModel?.isContainer() ? undefined : ['after', 'before'],
     };
     // 还需要处理 props 中的节点
     const propsNodeList: TreeNodeData[] = [];
@@ -176,6 +179,80 @@ export const transformPageSchemaToTreeData = (pageSchema: CPageDataType, pageMod
   };
   rootNode.children = transformNodeSchemaToTreeData(child, rootNode, pageModel) as TreeNodeData[];
   return [rootNode];
+};
+
+const hasValueAtPath = (value: unknown, path: string[]): boolean => {
+  if (path.length === 0) {
+    return value !== undefined;
+  }
+
+  if (path[0] === '$NUM') {
+    return Array.isArray(value) && value.some((item) => hasValueAtPath(item, path.slice(1)));
+  }
+
+  if (!isPlainObject(value) && !Array.isArray(value)) {
+    return false;
+  }
+
+  const key = path[0];
+  if (Array.isArray(value)) {
+    const index = Number(key);
+    return Number.isInteger(index) && index >= 0 && index < value.length
+      ? hasValueAtPath(value[index], path.slice(1))
+      : false;
+  }
+
+  return Object.prototype.hasOwnProperty.call(value, key)
+    ? hasValueAtPath((value as Record<string, unknown>)[key], path.slice(1))
+    : false;
+};
+
+const hasFunctionProp = (node: CNode | CRootNode): boolean => {
+  const props = node.getPlainProps();
+  if (!props) {
+    return false;
+  }
+
+  const propsSetter = node.value.configure?.propsSetter || {};
+  const hasFunctionSetter = Object.values(propsSetter).some((config) => {
+    if (config?.setter !== 'FunctionSetter') {
+      return false;
+    }
+    return hasValueAtPath(props, config.name.split('.'));
+  });
+
+  return hasFunctionSetter || hasSpecialFunctionValue(props);
+};
+
+const hasSpecialFunctionValue = (value: unknown): boolean => {
+  if (Array.isArray(value)) {
+    return value.some((item) => hasSpecialFunctionValue(item));
+  }
+  if (!isPlainObject(value)) {
+    return false;
+  }
+  if ((value as { type?: unknown }).type === 'FUNCTION') {
+    return true;
+  }
+  return Object.values(value as Record<string, unknown>).some((item) => hasSpecialFunctionValue(item));
+};
+
+export const getNodeFeatures = (node?: CNode | CRootNode | null): TreeNodeFeature[] => {
+  if (!node) {
+    return [];
+  }
+
+  const features: TreeNodeFeature[] = [];
+  if (Object.keys(node.value.state || {}).length > 0) {
+    features.push('state');
+  }
+  if ((node.value.eventListener || []).length > 0) {
+    features.push('event');
+  }
+  if (hasFunctionProp(node)) {
+    features.push('function');
+  }
+  return features;
 };
 
 export const traverseTree = (

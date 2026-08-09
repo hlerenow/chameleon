@@ -15,11 +15,31 @@ export class StoreManager {
     this.storeDisposeMap.set(
       storeName,
       store.subscribe((state, previousState) => {
+        const changedKeys = Array.from(
+          new Set([...Object.keys(previousState || {}), ...Object.keys(state || {})])
+        ).filter((key) => !Object.is(previousState?.[key], state?.[key]));
         debugLog(RENDER_DEBUG_CODE.STORE_CHANGED, {
           storeName,
           previousState,
           state,
         });
+        if (changedKeys.length) {
+          const changes = changedKeys.reduce<Record<string, { previousValue: unknown; nextValue: unknown }>>(
+            (result, key) => {
+              result[key] = {
+                previousValue: previousState?.[key],
+                nextValue: state?.[key],
+              };
+              return result;
+            },
+            {}
+          );
+          debugLog(RENDER_DEBUG_CODE.STATE_KEYS_UPDATED, {
+            storeName,
+            changedKeys,
+            changes,
+          });
+        }
         this.invalidateStateSnapshot();
       })
     );

@@ -51,7 +51,16 @@ export const HotkeysPlugin: HotKeysPluginType = {
       actionMap.moveToUp(ctx);
     });
 
-    hotkeyManager.addHotAction(['shift', 'w'], () => {
+    hotkeyManager.addHotAction(['alt', 'w'], () => {
+      actionMap.moveToSiblingUp(ctx);
+    });
+
+    hotkeyManager.addHotAction(['alt', 'up'], () => {
+      actionMap.moveToSiblingUp(ctx);
+    });
+
+    // window 键
+    hotkeyManager.addHotAction([93, 'up'], () => {
       actionMap.moveToSiblingUp(ctx);
     });
 
@@ -63,7 +72,16 @@ export const HotkeysPlugin: HotKeysPluginType = {
       actionMap.moveToDown(ctx);
     });
 
-    hotkeyManager.addHotAction(['shift', 's'], () => {
+    hotkeyManager.addHotAction(['alt', 's'], () => {
+      actionMap.moveToSiblingDown(ctx);
+    });
+
+    hotkeyManager.addHotAction(['alt', 'down'], () => {
+      actionMap.moveToSiblingDown(ctx);
+    });
+
+    // window 键
+    hotkeyManager.addHotAction([93, 'down'], () => {
       actionMap.moveToSiblingDown(ctx);
     });
 

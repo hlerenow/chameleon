@@ -52,7 +52,6 @@ export const SamplePage: CPageDataType = {
                 console.log(a, $$context);
                 const stateManager = $$context.stateManager;
                 const methods = $$context.getMethods();
-                console.log("🚀 ~ methods:", methods)
                 const state = stateManager.RowState.state;
                 stateManager.RowState.updateState({
                   rowMark: state.rowMark  +1
@@ -277,7 +276,6 @@ export const SamplePage: CPageDataType = {
                 console.log(a, $$context);
                 const stateManager = $$context.stateManager;
                 const methods = $$context.getMethods();
-                console.log("🚀 ~ methods:", methods)
                 const state = stateManager.RowState.state;
                 stateManager.RowState.updateState({
                   rowMark: state.rowMark  +1

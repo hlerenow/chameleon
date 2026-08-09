@@ -6,7 +6,8 @@ import path from 'path';
 const env = process.env.BUILD_TYPE === 'PKG' ? 'production' : '';
 const mainConfig = {
   entry: './src/index.ts',
-  // formats 会根据构建模式自动设置：生产模式包含 umd，开发模式只有 cjs 和 es
+  // IIFE is used by browser-only consumers that cannot provide CommonJS globals.
+  formats: ['cjs', 'es', 'umd', 'iife'],
   libName: 'CRender',
   fileName: 'index',
   global: {

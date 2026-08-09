@@ -1,9 +1,12 @@
 import React from 'react';
 
+export type TreeNodeFeature = 'state' | 'event' | 'function';
+
 export type TreeNodeData = {
   containerRender?: (params: { item: TreeNodeData; treeNodeView: JSX.Element }) => React.ReactElement;
   titleViewRender?: (params: { item: TreeNodeData; titleView: React.ReactNode }) => React.ReactElement;
   title: React.ReactNode;
+  features?: TreeNodeFeature[];
   icon?: React.ReactNode;
   key?: string;
   children?: TreeNodeData[];

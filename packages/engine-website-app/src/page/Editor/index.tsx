@@ -8,7 +8,7 @@ import { ArrowUpOutlined, RollbackOutlined } from '@ant-design/icons';
 
 import commonMeta from '@chamn/material/dist/meta';
 
-import commonComponentUrl from '@chamn/material/dist/index.umd.js?url';
+import commonComponentUrl from '@chamn/material/dist/index.iife.js?url';
 import commonComponentCSS from '@chamn/material/dist/style.css?url';
 import {
   DEFAULT_PLUGIN_LIST,

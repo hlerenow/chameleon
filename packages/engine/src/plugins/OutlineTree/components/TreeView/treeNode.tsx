@@ -223,30 +223,41 @@ export const TreeNode = (props: TreeNodeProps) => {
             }, 16.66);
           }}
         >
-          {!titleEditable && titleView}
-          {titleEditable && (
-            <div
-              style={{
-                paddingRight: '10px',
-              }}
-            >
-              <Input
-                size="small"
-                maxLength={20}
-                style={{}}
-                ref={titleEditInputRef}
-                value={editInputValue}
-                onPressEnter={() => {
-                  setTitleEditable(false);
-                  targetNodeModel.updateValue();
+          <div className={styles.nodeTitle}>
+            {!titleEditable && titleView}
+            {titleEditable && (
+              <div
+                style={{
+                  paddingRight: '10px',
                 }}
-                onChange={(e) => {
-                  targetNodeModel.value.title = e.target.value;
-                  setEditInputValue(e.target.value);
-                }}
-              />
+              >
+                <Input
+                  size="small"
+                  maxLength={20}
+                  style={{}}
+                  ref={titleEditInputRef}
+                  value={editInputValue}
+                  onPressEnter={() => {
+                    setTitleEditable(false);
+                    targetNodeModel.updateValue();
+                  }}
+                  onChange={(e) => {
+                    targetNodeModel.value.title = e.target.value;
+                    setEditInputValue(e.target.value);
+                  }}
+                />
+              </div>
+            )}
+          </div>
+          {!titleEditable && item.features?.length ? (
+            <div className={styles.featureTags}>
+              {item.features.map((feature) => (
+                <span key={feature} className={clsx(styles.featureTag, styles[`featureTag-${feature}`])}>
+                  {feature === 'state' ? 'S' : feature === 'event' ? 'E' : 'F'}
+                </span>
+              ))}
             </div>
-          )}
+          ) : null}
         </div>
 
         {!titleEditable && !item.rootNode && (

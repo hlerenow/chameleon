@@ -27,6 +27,7 @@ import { buildComponent } from './buildComponent';
 import { IDynamicComponent, TRenderBaseOption } from './type';
 import { transformActionNode } from './transformProps/actionNode';
 import { isEqual } from 'lodash-es';
+import { debugLog, RENDER_DEBUG_CODE } from '../../debug/debugLogger';
 
 type PropsType = {
   $$context: ContextType;
@@ -34,8 +35,6 @@ type PropsType = {
 };
 
 const RUNTIME_CONTEXT_KEY_SET = new Set([
-  'state',
-  'globalState',
   'staticVar',
   'methods',
   'updateState',
@@ -51,7 +50,6 @@ const RUNTIME_CONTEXT_KEY_SET = new Set([
   'getMethodsById',
   'getProps',
   'callEventMethod',
-  'stateManager',
   'storeManager',
   'nodeRefs',
 ]);
@@ -483,9 +481,21 @@ export const convertModelToComponent = (
         newChildren = Array.isArray(children) ? children : [children];
       } else {
         const contextSignature = getChildContextSignature(newContext);
+        const cacheDebugData = {
+          nodeId: nodeModel.id,
+          componentName: nodeModel.value.componentName,
+          childCount: nodeModel.value.children.length,
+          contextKeys: Object.keys(contextSignature),
+        };
         if (this.childElementCache && isEqual(this.childElementCache.contextSignature, contextSignature)) {
+          debugLog(RENDER_DEBUG_CODE.CHILD_ELEMENT_CACHE_HIT, cacheDebugData);
           return this.childElementCache.children;
         }
+
+        debugLog(RENDER_DEBUG_CODE.CHILD_ELEMENT_CACHE_MISS, {
+          ...cacheDebugData,
+          hasCache: Boolean(this.childElementCache),
+        });
 
         const nodeChildren: React.ReactNode[] = [];
         const childModel = nodeModel.value.children;
