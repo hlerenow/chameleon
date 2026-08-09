@@ -153,8 +153,7 @@ export const NodeSizeChangeBox = ({ instance, node, active, onChange }: NodeSize
           height: nextRect.height,
           originalWidth: gesture.startRect.width,
           originalHeight: gesture.startRect.height,
-          viewportWidth:
-            getTargetDom(instanceRef.current)?.ownerDocument.documentElement.clientWidth ?? window.innerWidth,
+          viewportWidth: getTargetDom(instanceRef.current)?.ownerDocument.defaultView?.innerWidth ?? window.innerWidth,
         },
       });
     };

@@ -83,7 +83,6 @@ export const updateNodeSizeStyle = (
       : css.value[normalCssIndex];
   const responsiveSize = getResponsiveSizeByViewport(viewportWidth, responsiveSizes);
   const responsiveSizeList = getResponsiveSizes(responsiveSizes);
-  const responsiveSizeOrder = new Map(responsiveSizeList.map(({ width }, index) => [`${width}`, index]));
   const pcSize = responsiveSizeList.find(({ key }) => key === 'PC');
   const syncPcAndAbove = Boolean(pcSize && viewportWidth >= pcSize.width);
   const targetResponsiveSizes = syncPcAndAbove
@@ -107,7 +106,7 @@ export const updateNodeSizeStyle = (
     const media = [...(normalCss.media || [])];
     targetResponsiveSizes.forEach((targetResponsiveSize) => {
       const responsiveCssIndex = media.findIndex(
-        (item) => item.type === 'max-width' && item.value === `${targetResponsiveSize.width}`
+        (item) => item.type === 'max-width' && Number.parseFloat(item.value || '') === targetResponsiveSize.width
       );
       const targetMedia =
         responsiveCssIndex < 0
@@ -126,11 +125,7 @@ export const updateNodeSizeStyle = (
         media[responsiveCssIndex] = targetMedia;
       }
     });
-    media.sort(
-      (first, second) =>
-        (responsiveSizeOrder.get(first.value || '') ?? Number.POSITIVE_INFINITY) -
-        (responsiveSizeOrder.get(second.value || '') ?? Number.POSITIVE_INFINITY)
-    );
+    media.sort((first, second) => Number.parseFloat(second.value || '') - Number.parseFloat(first.value || ''));
     updateNormalCss({
       ...normalCss,
       text: syncPcAndAbove ? updateCssTextProperties(normalCss.text || '', sizeStyle) : normalCss.text,

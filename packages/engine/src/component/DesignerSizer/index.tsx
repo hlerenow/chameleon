@@ -37,8 +37,8 @@ export const DesignerSizer = (props: { ctx: EnginContext; zoom: number }) => {
     height: 0,
   });
   const getViewport = (subWin?: Window | null): CanvasViewport => ({
-    width: subWin?.document.documentElement.clientWidth ?? subWin?.innerWidth ?? 0,
-    height: subWin?.document.documentElement.clientHeight ?? subWin?.innerHeight ?? 0,
+    width: subWin?.innerWidth ?? 0,
+    height: subWin?.innerHeight ?? 0,
   });
   const syncViewport = useCallback(() => {
     const designer = designerRef.current;
