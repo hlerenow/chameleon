@@ -71,65 +71,66 @@ export const updateNodeSizeStyle = (
     width: `${Math.max(1, Math.round(width))}px`,
     height: `${Math.max(1, Math.round(height))}px`,
   };
-  const normalCss = node.value.css?.value.find((item) => item.state === 'normal');
+  const css = node.value.css || { value: [] };
+  const normalCssIndex = css.value.findIndex((item) => item.state === 'normal');
+  const normalCss =
+    normalCssIndex < 0
+      ? {
+          state: 'normal' as const,
+          media: [],
+          text: '',
+        }
+      : css.value[normalCssIndex];
   const responsiveSize = getResponsiveSizeByViewport(viewportWidth, responsiveSizes);
   const responsiveSizeOrder = new Map(
     getResponsiveSizes(responsiveSizes).map(({ width }, index) => [`${width}`, index])
   );
-  const responsiveCssIndex = normalCss?.media?.findIndex(
+  const responsiveCssIndex = normalCss.media?.findIndex(
     (item) => item.type === 'max-width' && item.value === `${responsiveSize?.width}`
   );
-
-  if (normalCss && responsiveSize && node.value.css) {
+  const updateNormalCss = (nextNormalCss: typeof normalCss) => {
     node.updateValue({
       css: {
-        ...node.value.css,
-        value: node.value.css.value.map((item) => {
-          if (item !== normalCss) {
-            return item;
-          }
-          const media = [...(item.media || [])];
-          const targetMedia =
-            responsiveCssIndex === undefined || responsiveCssIndex < 0
-              ? {
-                  type: 'max-width' as const,
-                  value: `${responsiveSize.width}`,
-                  text: updateCssTextProperties('', sizeStyle),
-                }
-              : {
-                  ...media[responsiveCssIndex],
-                  text: updateCssTextProperties(media[responsiveCssIndex].text || '', sizeStyle),
-                };
-          if (responsiveCssIndex === undefined || responsiveCssIndex < 0) {
-            media.push(targetMedia);
-          } else {
-            media[responsiveCssIndex] = targetMedia;
-          }
-          media.sort(
-            (first, second) =>
-              (responsiveSizeOrder.get(first.value || '') ?? Number.POSITIVE_INFINITY) -
-              (responsiveSizeOrder.get(second.value || '') ?? Number.POSITIVE_INFINITY)
-          );
-          return {
-            ...item,
-            media,
-          };
-        }),
+        ...css,
+        value:
+          normalCssIndex < 0
+            ? [...css.value, nextNormalCss]
+            : css.value.map((item, index) => (index === normalCssIndex ? nextNormalCss : item)),
       },
     });
+  };
+
+  if (responsiveSize) {
+    const media = [...(normalCss.media || [])];
+    const targetMedia =
+      responsiveCssIndex === undefined || responsiveCssIndex < 0
+        ? {
+            type: 'max-width' as const,
+            value: `${responsiveSize.width}`,
+            text: updateCssTextProperties('', sizeStyle),
+          }
+        : {
+            ...media[responsiveCssIndex],
+            text: updateCssTextProperties(media[responsiveCssIndex].text || '', sizeStyle),
+          };
+    if (responsiveCssIndex === undefined || responsiveCssIndex < 0) {
+      media.push(targetMedia);
+    } else {
+      media[responsiveCssIndex] = targetMedia;
+    }
+    media.sort(
+      (first, second) =>
+        (responsiveSizeOrder.get(first.value || '') ?? Number.POSITIVE_INFINITY) -
+        (responsiveSizeOrder.get(second.value || '') ?? Number.POSITIVE_INFINITY)
+    );
+    updateNormalCss({ ...normalCss, media });
     return;
   }
 
-  const nextStyle = [...(node.value.style || [])];
-  Object.entries(sizeStyle).forEach(([property, value]) => {
-    const existing = nextStyle.find((item) => item.property === property);
-    if (existing) {
-      existing.value = value;
-    } else {
-      nextStyle.push({ property, value });
-    }
+  updateNormalCss({
+    ...normalCss,
+    text: updateCssTextProperties(normalCss.text || '', sizeStyle),
   });
-  node.updateValue({ style: nextStyle });
 };
 
 export const formatStyleProperty = (styleList: CNodeModelDataType['style'] = []) => {
