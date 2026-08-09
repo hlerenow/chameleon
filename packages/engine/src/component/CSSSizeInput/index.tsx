@@ -166,6 +166,11 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
     value: 0,
     status: '',
   });
+  const dragBaseValueRef = useRef<number | undefined>();
+  const dragBaseUnitRef = useRef<keyof MinMaxType>('px');
+  const dragActiveRef = useRef(false);
+  const dragFrameRef = useRef<number | null>(null);
+  const pendingDragValueRef = useRef<number | undefined>();
 
   const originalValObj = useMemo(() => {
     const res: {
@@ -232,6 +237,30 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
     [props]
   );
 
+  const flushDragValue = useCallback(() => {
+    dragFrameRef.current = null;
+    if (!dragActiveRef.current || pendingDragValueRef.current === undefined) {
+      return;
+    }
+
+    updateValue({
+      value: pendingDragValueRef.current,
+      unit: dragBaseUnitRef.current,
+    });
+    pendingDragValueRef.current = undefined;
+  }, [updateValue]);
+
+  const scheduleDragValue = useCallback(
+    (value: number) => {
+      pendingDragValueRef.current = value;
+      if (dragFrameRef.current !== null) {
+        return;
+      }
+      dragFrameRef.current = window.requestAnimationFrame(flushDragValue);
+    },
+    [flushDragValue]
+  );
+
   const processNewVal = useCallback(
     (cumulativeData: CumulativeInfoType, value: number | undefined) => {
       let data = { ...cumulativeData };
@@ -258,42 +287,53 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
 
   const onDragStart = useCallback(
     (data: CumulativeInfoType) => {
+      dragBaseValueRef.current = originalValObj.value;
+      dragBaseUnitRef.current = originalValObj.unit;
+      dragActiveRef.current = true;
       setDragSizing({
         status: 'dragging',
         value: processNewVal(data, originalValObj.value),
       });
     },
-    [originalValObj.value, processNewVal]
+    [originalValObj.unit, originalValObj.value, processNewVal]
   );
 
   const onDragMoveChange = useCallback(
     (data: CumulativeInfoType) => {
-      const nV = processNewVal(data, originalValObj.value);
+      const nV = processNewVal(data, dragBaseValueRef.current);
       setDragSizing({
         status: 'dragging',
         value: nV,
       });
+      scheduleDragValue(nV);
     },
-    [originalValObj.value, processNewVal]
+    [processNewVal, scheduleDragValue]
   );
 
   const onDragEnd = useCallback(
     (data: CumulativeInfoType) => {
-      const newVal = processNewVal(data, originalValObj.value);
-      if (dragSizing.status !== 'dragging') {
+      if (!dragActiveRef.current) {
         return;
       }
 
+      const newVal = processNewVal(data, dragBaseValueRef.current);
+      if (dragFrameRef.current !== null) {
+        window.cancelAnimationFrame(dragFrameRef.current);
+        dragFrameRef.current = null;
+      }
+      pendingDragValueRef.current = undefined;
       updateValue({
         value: newVal,
-        unit: originalValObj.unit,
+        unit: dragBaseUnitRef.current,
       });
+      dragActiveRef.current = false;
+      dragBaseValueRef.current = undefined;
       setDragSizing({
         status: '',
         value: 0,
       });
     },
-    [dragSizing.status, originalValObj, processNewVal, updateValue]
+    [processNewVal, updateValue]
   );
   const handleRef = useRef({
     onStart: onDragStart,
