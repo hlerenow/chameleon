@@ -5,7 +5,6 @@ import react from '@astrojs/react';
 import astroMermaid from 'astro-mermaid';
 
 const isProd = process.env.NODE_ENV === 'production';
-console.log('🚀 ~ isProd:', isProd);
 
 // https://astro.build/config
 export default defineConfig({
