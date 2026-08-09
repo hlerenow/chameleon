@@ -106,7 +106,7 @@ const stringifyLogDetail = (value: unknown) => {
 const App = () => {
   const [_page] = useState<any>(BasePage);
   const [ghostView, setGhostView] = useState(<div className="drag-ghost">New Button</div>);
-  const [hotkey, setHotkey] = useState('Shift');
+  const [nodeSizeChangeAlwaysVisible, setNodeSizeChangeAlwaysVisible] = useState(true);
   const [selectedNode, setSelectedNode] = useState<CNode | null>(null);
   const [lastSize, setLastSize] = useState<NodeSizeChangeEvent['extraData'] | null>(null);
   const [logs, setLogs] = useState<LogItem[]>([]);
@@ -124,6 +124,7 @@ const App = () => {
           title: '块',
           componentName: 'CBlock',
           disableEditorDragDom: true,
+          enableNodeSizeChange: false,
           snippets: [],
         } as any,
       ],
@@ -266,17 +267,16 @@ const App = () => {
         <aside className="dev-sidebar dev-sidebar-left">
           <section className="panel-section">
             <div className="section-title">Controls</div>
-            <label className="field-label" htmlFor="size-hotkey">
-              Resize modifier
+            <label className="field-label" htmlFor="node-size-change-visible">
+              Show resize controls
             </label>
             <input
-              id="size-hotkey"
-              className="text-input"
-              value={hotkey}
-              onChange={(event) => setHotkey(event.target.value || 'Shift')}
-              placeholder="Shift"
+              id="node-size-change-visible"
+              type="checkbox"
+              checked={nodeSizeChangeAlwaysVisible}
+              onChange={(event) => setNodeSizeChangeAlwaysVisible(event.target.checked)}
             />
-            <div className="field-help">Hold this key after selecting a node.</div>
+            <div className="field-help">Shows automatically when a resizable node is selected.</div>
             <div className="button-grid">
               <button type="button" onClick={() => selectNode('qpbnqn', 'headline')}>
                 Select headline
@@ -311,7 +311,7 @@ const App = () => {
             </div>
             <div className="contract-row">
               <code>onNodeSizeChange</code>
-              <span>resize end</span>
+              <span>resize while dragging</span>
             </div>
             <div className="contract-row">
               <code>onNodeDrop</code>
@@ -322,7 +322,7 @@ const App = () => {
         <section className="dev-canvas-area">
           <div className="canvas-toolbar">
             <span>Canvas</span>
-            <span className="canvas-hint">Select a node, then hold {hotkey}</span>
+            <span className="canvas-hint">Select a resizable node to show controls</span>
           </div>
           <div className="canvas-frame">
             <Layout
@@ -331,7 +331,7 @@ const App = () => {
               components={components}
               assets={assets}
               ghostView={ghostView}
-              nodeSizeChangeHotkey={hotkey}
+              nodeSizeChangeAlwaysVisible={nodeSizeChangeAlwaysVisible}
               onSelectNode={async (node) => {
                 setSelectedNode(node as CNode | null);
                 appendLog(node ? `selected: ${node.value.componentName}` : 'selection cleared', node?.id);

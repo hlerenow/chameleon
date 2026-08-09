@@ -1,56 +1,117 @@
-.pageMask {
-  position: fixed;
-  z-index: 3;
-  inset: 0;
-  pointer-events: auto;
-  background: transparent;
-  background-color: pink;
-  opacity: 0.1;
-}
+@use 'sass:math';
+
+$handle-hotspot-length: 28px;
+$handle-hotspot-thickness: 28px;
+$handle-offset: -(math.div($handle-hotspot-thickness, 2));
+$button-size: 20px;
+$button-border-width: 1px;
+$triangle-size: 5px;
+$triangle-visual-offset: 3px;
+$button-hover-scale: 1.25;
+$button-active-scale: 1.1;
 
 .sizeBox {
   position: absolute;
   z-index: 4;
-  box-sizing: border-box;
-  border: 1px solid #858585;
-  background: rgba(128, 128, 128, 0.32);
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 .handle {
   position: absolute;
   z-index: 1;
-  background: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3d6df2;
+  touch-action: none;
+  outline: 0;
+  pointer-events: auto;
+  border-radius: 50%;
 }
 
 .top,
 .bottom {
-  left: 7px;
-  right: 7px;
-  height: 7px;
+  width: $handle-hotspot-length;
+  height: $handle-hotspot-thickness;
+  left: 50%;
   cursor: ns-resize;
+  transform: translateX(-50%);
 }
 
 .top {
-  top: -4px;
+  top: $handle-offset;
 }
 
 .bottom {
-  bottom: -4px;
+  bottom: $handle-offset;
 }
 
 .left,
 .right {
-  top: 7px;
-  bottom: 7px;
-  width: 7px;
+  width: $handle-hotspot-thickness;
+  height: $handle-hotspot-length;
+  top: 50%;
   cursor: ew-resize;
+  transform: translateY(-50%);
 }
 
 .left {
-  left: -4px;
+  left: $handle-offset;
 }
 
 .right {
-  right: -4px;
+  right: $handle-offset;
+}
+
+.arrow {
+  display: block;
+  position: relative;
+  box-sizing: border-box;
+  width: $button-size;
+  height: $button-size;
+  border: $button-border-width solid #dfe5ed;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(31 50 88 / 22%);
+  transition: box-shadow 120ms ease, transform 120ms ease;
+}
+
+.arrow::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  content: '';
+  border: $triangle-size solid transparent;
+}
+
+.top .arrow::after {
+  border-bottom-color: #3d6df2;
+  transform: translate(-$triangle-size, -($triangle-size + $triangle-visual-offset));
+}
+
+.bottom .arrow::after {
+  border-top-color: #3d6df2;
+  transform: translate(-$triangle-size, -($triangle-size - $triangle-visual-offset));
+}
+
+.left .arrow::after {
+  border-right-color: #3d6df2;
+  transform: translate(-($triangle-size + $triangle-visual-offset), -$triangle-size);
+}
+
+.right .arrow::after {
+  border-left-color: #3d6df2;
+  transform: translate(-($triangle-size - $triangle-visual-offset), -$triangle-size);
+}
+
+.handle:hover .arrow,
+.handle:focus-visible .arrow {
+  box-shadow: 0 2px 7px rgb(49 94 220 / 36%);
+  transform: scale($button-hover-scale);
+}
+
+.handle:active .arrow {
+  transform: scale($button-active-scale);
 }

@@ -577,6 +577,8 @@ export type CMaterialType<PropsSetter extends string = ''> = {
         id?: string[];
       }
     | boolean;
+  /** 是否启用编辑器的节点尺寸调整，默认启用 */
+  enableNodeSizeChange?: boolean;
   /** TODO: 组件支持的可被调用的方法， todo： 没有补充验证 类型 describe */
   methods?: {
     title: string;
@@ -644,6 +646,7 @@ export const CMaterialTypeDescribe = object({
     ])
   ),
   disableEditorDragDom: optional(any()),
+  enableNodeSizeChange: optional(boolean()),
   // 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize
   isLayout: optional(boolean()),
   rootSelector: optional(string()),

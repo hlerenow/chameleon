@@ -29,6 +29,9 @@ import intersection from 'lodash-es/intersection';
 
 export type LayoutDragEvent<T = LayoutDragAndDropExtraDataType> = DragAndDropEventObj<T>;
 
+const isNodeSizeChangeEnabled = (instance: RenderInstance | null) =>
+  instance?._NODE_MODEL.material?.value.enableNodeSizeChange !== false;
+
 export enum LayoutMode {
   EDIT = 'EDIT',
   /** 不触发任何编辑器的选择、拖拽、高亮、hover 交互 */
@@ -51,7 +54,9 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   onNodeDrop?: (event: LayoutDragEvent) => ReturnType<Required<AdvanceCustom>['onDrop']>;
   onNodeNewAdd?: (event: LayoutDragEvent) => ReturnType<Required<AdvanceCustom>['onNewAdd']>;
   onNodeSizeChange?: (node: CNode | CRootNode, event: NodeSizeChangeEvent) => void;
-  /** 按住该按键时显示节点尺寸调整层，默认 Shift */
+  /** 选中节点时常驻显示尺寸调整层，默认启用 */
+  nodeSizeChangeAlwaysVisible?: boolean;
+  /** @deprecated 尺寸调整层不再依赖快捷键 */
   nodeSizeChangeHotkey?: string;
   selectToolbarView?: React.ReactNode;
   selectBoxStyle?: React.CSSProperties;
@@ -110,8 +115,6 @@ export type LayoutStateType = {
   /** 是否可以选中节点 */
   canSelectNode: boolean;
   pointerEventsForHightLightBox: 'auto' | 'none';
-  isNodeSizeChangeActive: boolean;
-  isNodeSizeChangeDragging: boolean;
 };
 
 const SELECT_LOCK_STYLE: React.CSSProperties = {
@@ -130,7 +133,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   readyCbList: ((layoutInstance: Layout) => void)[] = [];
   assets: AssetPackage[] = [];
   dragStartNode: CNode | CRootNode | null = null;
-  private nodeSizeChangeDndPaused = false;
   private disposeDndMouseMoveListener: (() => void) | null = null;
   realTimeSelectNodeInstanceTimer = 0;
   iframeDomId: string;
@@ -164,8 +166,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       canDrop: true,
       canSelectNode: true,
       pointerEventsForHightLightBox: 'none',
-      isNodeSizeChangeActive: false,
-      isNodeSizeChangeDragging: false,
     };
     this.highlightCanvasRef = React.createRef<HighlightCanvasRefType>();
     this.highlightHoverCanvasRef = React.createRef<HighlightCanvasRefType>();
@@ -180,7 +180,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
   }
 
   componentDidMount(): void {
-    this.registerNodeSizeChangeHotkey();
     this.init();
   }
 
@@ -250,7 +249,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
             this.registerSelectEvent();
             this.registerHoverEvent();
             this.registerEventLimit();
-            this.registerNodeSizeChangeHotkey(iframeContainer.getWindow());
             this.readyOk();
           },
         });
@@ -259,61 +257,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       }
     });
   }
-
-  registerNodeSizeChangeHotkey(targetWindow?: Window | null) {
-    const isHotkey = (event: Event) => {
-      const keyboardEvent = event as KeyboardEvent;
-      const hotkey = (this.props.nodeSizeChangeHotkey || 'Shift').toLowerCase();
-      return keyboardEvent.key?.toLowerCase() === hotkey || keyboardEvent.code?.toLowerCase().startsWith(hotkey);
-    };
-    const onKeyDown = (event: Event) => {
-      if (!isHotkey(event) || !this.state.currentSelectInstance) {
-        return;
-      }
-      this.pauseNodeSizeChangeDnd();
-      this.setState({ isNodeSizeChangeActive: true });
-    };
-    const onKeyUp = (event: Event) => {
-      if (isHotkey(event)) {
-        this.setState({ isNodeSizeChangeActive: false }, this.resumeNodeSizeChangeDnd);
-      }
-    };
-    const onBlur = () => this.setState({ isNodeSizeChangeActive: false }, this.resumeNodeSizeChangeDnd);
-    const target = targetWindow || window;
-    const eventTargets: Array<Window | Document> = [target, target.document];
-    eventTargets.forEach((eventTarget) => {
-      eventTarget.addEventListener('keydown', onKeyDown, true);
-      eventTarget.addEventListener('keyup', onKeyUp, true);
-      eventTarget.addEventListener('blur', onBlur, true);
-      this.eventExposeHandler.push(() => {
-        eventTarget.removeEventListener('keydown', onKeyDown, true);
-        eventTarget.removeEventListener('keyup', onKeyUp, true);
-        eventTarget.removeEventListener('blur', onBlur, true);
-      });
-    });
-  }
-
-  private pauseNodeSizeChangeDnd = () => {
-    if (this.nodeSizeChangeDndPaused) {
-      return;
-    }
-    this.nodeSizeChangeDndPaused = true;
-    this.resetDrag();
-    this.isCancelDrag = false;
-    this.disposeDndMouseMoveListener?.();
-    this.disposeDndMouseMoveListener = null;
-    this.dnd.clearSensors();
-  };
-
-  private resumeNodeSizeChangeDnd = () => {
-    if (!this.nodeSizeChangeDndPaused) {
-      return;
-    }
-    this.nodeSizeChangeDndPaused = false;
-    if (this.mode !== LayoutMode.PREVIEW && this.iframeContainer.getDocument()) {
-      this.registerDragAndDropEvent();
-    }
-  };
 
   /** 禁止节点选中 */
   banSelectNode() {
@@ -841,8 +784,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       currentSelectId: '',
       currentSelectInstance: null,
       selectComponentInstances: [],
-      isNodeSizeChangeActive: false,
-      isNodeSizeChangeDragging: false,
     });
     // 清空之前的选中
     this.props.onSelectNode?.(null, null);
@@ -857,20 +798,6 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       dropComponentInstances: [],
       selectLockStyle: {},
     });
-  };
-
-  handleNodeSizeChange = (node: CNode | CRootNode, event: NodeSizeChangeEvent) => {
-    this.props.onNodeSizeChange?.(node, event);
-  };
-
-  handleNodeSizeChangeDragStart = () => {
-    this.setState({ isNodeSizeChangeDragging: true });
-  };
-
-  handleNodeSizeChangeDragEnd = () => {
-    // Drag end only ends the resize gesture. The box remains visible while
-    // the activation hotkey is still held; keyup owns its visibility.
-    this.setState({ isNodeSizeChangeDragging: false });
   };
 
   componentWillUnmount(): void {
@@ -937,11 +864,11 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       selectLockStyle,
       isDragging,
       mousePointer,
-      isNodeSizeChangeActive,
-      isNodeSizeChangeDragging,
     } = this.state;
     const { iframeDomId } = this;
     const selectedInstance = this.state.currentSelectInstance;
+    const canResizeSelectedNode = isNodeSizeChangeEnabled(selectedInstance);
+    const showNodeSizeChangeBox = this.props.nodeSizeChangeAlwaysVisible ?? true;
     const {
       selectToolbarView,
       hoverToolBarView,
@@ -997,14 +924,12 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           toolbarView={selectToolbarView}
           itemRender={selectRectViewItemRender}
         />
-        {selectedInstance && (
+        {selectedInstance && canResizeSelectedNode && showNodeSizeChangeBox && this.props.onNodeSizeChange && (
           <NodeSizeChangeBox
             instance={selectedInstance}
             node={selectedInstance._NODE_MODEL}
-            active={isNodeSizeChangeActive || isNodeSizeChangeDragging}
-            onChange={this.handleNodeSizeChange}
-            onDragStart={this.handleNodeSizeChangeDragStart}
-            onDragEnd={this.handleNodeSizeChangeDragEnd}
+            active
+            onChange={this.props.onNodeSizeChange}
           />
         )}
 
