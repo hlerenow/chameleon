@@ -39,6 +39,7 @@ export type NodeSizeChangeBoxProps = {
 };
 
 const MIN_SIZE = 1;
+const HANDLE_RESTORE_DELAY = 16 * 3;
 const directions: NodeSizeChangeEdge[] = ['top', 'right', 'bottom', 'left'];
 
 const getTargetDom = (instance: RenderInstance): HTMLElement | null => {
@@ -74,16 +75,26 @@ const getResizedRect = (gesture: ResizeGesture, currentPointer: PointerPosition)
 
 export const NodeSizeChangeBox = ({ instance, getCurrentInstance, node, active, onChange }: NodeSizeChangeBoxProps) => {
   const [rect, setRect] = useState<BoxRect | null>(null);
+  const [isResizing, setIsResizing] = useState(false);
   const instanceRef = useRef(instance);
   const getCurrentInstanceRef = useRef(getCurrentInstance);
   const nodeRef = useRef(node);
   const onChangeRef = useRef(onChange);
   const gestureRef = useRef<ResizeGesture | null>(null);
+  const restoreHandleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   instanceRef.current = instance;
   getCurrentInstanceRef.current = getCurrentInstance;
   nodeRef.current = node;
   onChangeRef.current = onChange;
+
+  useEffect(() => {
+    return () => {
+      if (restoreHandleTimerRef.current) {
+        clearTimeout(restoreHandleTimerRef.current);
+      }
+    };
+  }, []);
 
   const syncRect = useCallback(() => {
     if (gestureRef.current) {
@@ -95,6 +106,11 @@ export const NodeSizeChangeBox = ({ instance, getCurrentInstance, node, active, 
   useLayoutEffect(() => {
     if (!active) {
       gestureRef.current = null;
+      if (restoreHandleTimerRef.current) {
+        clearTimeout(restoreHandleTimerRef.current);
+        restoreHandleTimerRef.current = null;
+      }
+      setIsResizing(false);
       setRect(null);
       return;
     }
@@ -180,6 +196,13 @@ export const NodeSizeChangeBox = ({ instance, getCurrentInstance, node, active, 
       updateResize(event);
       if (gestureRef.current?.pointerId === event.pointerId) {
         gestureRef.current = null;
+        if (restoreHandleTimerRef.current) {
+          clearTimeout(restoreHandleTimerRef.current);
+        }
+        restoreHandleTimerRef.current = setTimeout(() => {
+          restoreHandleTimerRef.current = null;
+          setIsResizing(false);
+        }, HANDLE_RESTORE_DELAY);
         requestAnimationFrame(() => syncRect());
       }
     };
@@ -201,6 +224,10 @@ export const NodeSizeChangeBox = ({ instance, getCurrentInstance, node, active, 
 
     event.preventDefault();
     event.stopPropagation();
+    if (restoreHandleTimerRef.current) {
+      clearTimeout(restoreHandleTimerRef.current);
+      restoreHandleTimerRef.current = null;
+    }
     const pointer = getPointerPosition(event.nativeEvent);
     gestureRef.current = {
       edge,
@@ -210,6 +237,7 @@ export const NodeSizeChangeBox = ({ instance, getCurrentInstance, node, active, 
       startPointer: pointer,
       lastPointer: pointer,
     };
+    setIsResizing(true);
     event.currentTarget.setPointerCapture(event.pointerId);
   };
 
@@ -232,7 +260,7 @@ export const NodeSizeChangeBox = ({ instance, getCurrentInstance, node, active, 
       {directions.map((edge) => (
         <div
           key={edge}
-          className={`${styles.handle} ${styles[edge]}`}
+          className={`${styles.handle} ${styles[edge]} ${isResizing ? styles.resizing : ''}`}
           data-chameleon-dnd-ignore="true"
           role="button"
           aria-label={`Resize from ${edge}`}

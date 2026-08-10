@@ -30,6 +30,23 @@ const properties: CMaterialPropsType = [
     ],
   },
   {
+    name: 'componentName',
+    title: {
+      label: 'CName',
+      tip: 'component name',
+    },
+    valueType: 'string',
+    setters: [
+      {
+        componentName: 'StringSetter',
+        props: {
+          disabled: true,
+          variant: 'borderless',
+        },
+      },
+    ],
+  },
+  {
     name: 'condition',
     title: {
       label: 'Render',
@@ -197,6 +214,7 @@ export const AdvancePanel = (props: AdvancePanelProps) => {
     const loopObj = node?.value.loop;
     const newValue = {
       id: node?.id,
+      componentName: node?.value.componentName,
       condition: node?.value.condition ?? true,
       loop: {
         open: loopObj?.open || false,

@@ -63,6 +63,10 @@ $button-active-scale: 1.1;
   right: $handle-offset;
 }
 
+.resizing {
+  opacity: 0;
+}
+
 .arrow {
   display: block;
   position: relative;

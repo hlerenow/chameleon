@@ -44,7 +44,7 @@ import GridItemMeta from '../../../../codeSnippets/GridItemMeta.tsx?raw';
 - `canDropNode`：控制节点是否可被放置
 - `canAcceptNode`：控制节点是否可接受子节点
 - `disableEditorDragDom`：禁用编辑器默认的拖拽行为
-- `enableNodeSizeChange`：控制组件是否显示编辑器节点尺寸调整控件，默认启用
+- `enableNodeSizeChange`：控制组件是否显示编辑器节点尺寸调整控件，默认不启用。可显式设置为 `true`，或设置为接收当前节点并返回布尔值的函数；节点的 `style` 或 `css` 设置 `display: inline` 或 `display: none` 时不支持。
 
 ### 视图定制
 

@@ -578,7 +578,7 @@ export type CMaterialType<PropsSetter extends string = ''> = {
       }
     | boolean;
   /** 是否启用编辑器的节点尺寸调整，默认不启用 */
-  enableNodeSizeChange?: boolean;
+  enableNodeSizeChange?: boolean | ((node: CNode | CRootNode) => boolean);
   /** TODO: 组件支持的可被调用的方法， todo： 没有补充验证 类型 describe */
   methods?: {
     title: string;
@@ -646,7 +646,7 @@ export const CMaterialTypeDescribe = object({
     ])
   ),
   disableEditorDragDom: optional(any()),
-  enableNodeSizeChange: optional(boolean()),
+  enableNodeSizeChange: optional(union([boolean(), func()])),
   // 如果是布局组件，可以考虑将拖拽控制权转移 or 实现 resize
   isLayout: optional(boolean()),
   rootSelector: optional(string()),

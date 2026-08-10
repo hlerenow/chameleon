@@ -105,6 +105,7 @@ export const updateNodeSizeStyle = (
     : responsiveSize
     ? [responsiveSize]
     : [];
+  const syncDefaultCss = Boolean(pcSize && targetResponsiveSizes.some(({ width }) => width >= pcSize.width));
   const updateNormalCss = (nextNormalCss: typeof normalCss) => {
     node.updateValue({
       css: {
@@ -143,7 +144,7 @@ export const updateNodeSizeStyle = (
     media.sort((first, second) => Number.parseFloat(second.value || '') - Number.parseFloat(first.value || ''));
     updateNormalCss({
       ...normalCss,
-      text: syncPcAndAbove ? updateDefaultCssTextProperties(normalCss.text || '', sizeStyle) : normalCss.text,
+      text: syncDefaultCss ? updateDefaultCssTextProperties(normalCss.text || '', sizeStyle) : normalCss.text,
       media,
     });
     return;

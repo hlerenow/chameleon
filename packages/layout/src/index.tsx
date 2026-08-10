@@ -23,30 +23,12 @@ import { Pointer } from './core/dragAndDrop/common';
 import { calculateDropPosInfo } from './components/DropAnchor/util';
 import { DragAndDropEventObj, LayoutDragAndDropExtraDataType } from './types/dragAndDrop';
 import { NodeSizeChangeBox, NodeSizeChangeEvent } from './components/NodeSizeChangeBox';
+import { canNodeSizeChange } from './nodeSizeChange';
 
 import styles from './index.module.scss';
 import intersection from 'lodash-es/intersection';
 
 export type LayoutDragEvent<T = LayoutDragAndDropExtraDataType> = DragAndDropEventObj<T>;
-
-const isNodeSizeChangeEnabled = (instance: RenderInstance | null) => {
-  const material = instance?._NODE_MODEL.material?.value;
-  return material?.enableNodeSizeChange === true || material?.advanceCustom?.rightPanel?.visual !== false;
-};
-
-const hasExplicitSizeStyle = (instance: RenderInstance | null) => {
-  const style = instance?._NODE_MODEL.value.style as
-    | { property: string; value: unknown }[]
-    | Record<string, unknown>
-    | undefined;
-  if (!style) {
-    return false;
-  }
-  if (Array.isArray(style)) {
-    return style.some(({ property }) => property === 'width' || property === 'height');
-  }
-  return style.width !== undefined || style.height !== undefined;
-};
 
 export enum LayoutMode {
   EDIT = 'EDIT',
@@ -70,9 +52,9 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
   onNodeDrop?: (event: LayoutDragEvent) => ReturnType<Required<AdvanceCustom>['onDrop']>;
   onNodeNewAdd?: (event: LayoutDragEvent) => ReturnType<Required<AdvanceCustom>['onNewAdd']>;
   onNodeSizeChange?: (node: CNode | CRootNode, event: NodeSizeChangeEvent) => void;
-  /** 选中节点时常驻显示尺寸调整层，默认启用 */
+  /** 选中支持尺寸调整的节点时常驻显示尺寸调整层，默认启用 */
   nodeSizeChangeAlwaysVisible?: boolean;
-  /** 忽略物料尺寸调整配置，允许所有选中节点显示尺寸调整层 */
+  /** 忽略物料尺寸调整配置；`display: inline` 和 `display: none` 的节点仍不支持 */
   forceNodeSizeChange?: boolean;
   /** @deprecated 尺寸调整层不再依赖快捷键 */
   nodeSizeChangeHotkey?: string;
@@ -1154,9 +1136,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
     } = this.state;
     const { iframeDomId } = this;
     const selectedInstance = this.state.currentSelectInstance;
-    const canResizeSelectedNode =
-      !hasExplicitSizeStyle(selectedInstance) &&
-      (this.props.forceNodeSizeChange || isNodeSizeChangeEnabled(selectedInstance));
+    const canResizeSelectedNode = canNodeSizeChange(selectedInstance, this.props.forceNodeSizeChange);
     const showNodeSizeChangeBox = this.props.nodeSizeChangeAlwaysVisible ?? true;
     const {
       selectToolbarView,

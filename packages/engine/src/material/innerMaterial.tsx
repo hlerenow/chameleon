@@ -71,6 +71,7 @@ const BaseComponentMeta: CMaterialType[] = [
   {
     title: '块',
     componentName: 'CBlock',
+    enableNodeSizeChange: true,
     props: [
       {
         name: 'children',
@@ -104,6 +105,7 @@ const BaseComponentMeta: CMaterialType[] = [
   {
     title: '容器',
     componentName: 'CContainer',
+    enableNodeSizeChange: true,
     isContainer: true,
     props: [...(containerProps as any), customAttributesMeta],
     groupName: groupName,
@@ -129,6 +131,7 @@ const BaseComponentMeta: CMaterialType[] = [
   {
     title: '图片',
     componentName: 'CImage',
+    enableNodeSizeChange: true,
     props: [
       {
         name: 'src',
@@ -173,6 +176,7 @@ const BaseComponentMeta: CMaterialType[] = [
   {
     title: '视频',
     componentName: 'CVideo',
+    enableNodeSizeChange: true,
     props: [
       {
         name: 'src',
@@ -247,6 +251,7 @@ const BaseComponentMeta: CMaterialType[] = [
     title: '音频',
     groupName: groupName,
     componentName: 'CAudio',
+    enableNodeSizeChange: true,
     props: [
       {
         name: 'src',
@@ -333,6 +338,7 @@ const BaseComponentMeta: CMaterialType[] = [
   {
     title: 'Canvas',
     componentName: 'CCanvas',
+    enableNodeSizeChange: true,
     props: [
       {
         name: 'afterMount',
