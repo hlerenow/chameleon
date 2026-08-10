@@ -19,6 +19,7 @@ const properties: CMaterialPropsType = [
       tip: 'node unique id',
     },
     valueType: 'string',
+    readOnly: true,
     setters: [
       {
         componentName: 'StringSetter',
@@ -36,6 +37,7 @@ const properties: CMaterialPropsType = [
       tip: 'component name',
     },
     valueType: 'string',
+    readOnly: true,
     setters: [
       {
         componentName: 'StringSetter',

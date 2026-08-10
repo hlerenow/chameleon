@@ -1,22 +1,23 @@
 .toolbar {
-  width: 100%;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  width: max-content;
+  min-width: 100%;
+  display: flex;
   align-items: center;
   gap: 16px;
 }
 
 .viewportControl,
 .canvasStatus {
-  min-width: 0;
   display: flex;
   align-items: center;
   gap: 8px;
+  flex: none;
 }
 
 .zoomControl {
   display: flex;
   align-items: center;
+  flex: none;
 
   :global(.ant-input-number) {
     width: 76px;
@@ -36,6 +37,7 @@
 }
 
 .canvasStatus {
+  margin-left: auto;
   justify-content: flex-end;
 
   :global(.ant-tag) {
@@ -51,14 +53,4 @@
   font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
-}
-
-@media (max-width: 960px) {
-  .toolbar {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .canvasStatus {
-    display: none;
-  }
 }

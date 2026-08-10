@@ -15,6 +15,8 @@
   flex: 0 0 64px;
   align-items: center;
   box-sizing: border-box;
+  overflow-x: auto;
+  overflow-y: hidden;
   background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
   border-bottom: 1px solid #e1e7f0;
   box-shadow: 0 2px 8px rgb(31 50 88 / 5%);

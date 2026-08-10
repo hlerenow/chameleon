@@ -247,11 +247,7 @@ export const DesignerSizer = (props: { ctx: EnginContext; zoom: number }) => {
       </div>
       <Tooltip title="Canvas viewport size and zoom">
         <div className={styles.canvasStatus}>
-          <span className={styles.sectionLabel}>Canvas</span>
           <Tag bordered={false}>{`${viewport.width} × ${viewport.height}`}</Tag>
-          <Tag bordered={false} color="blue">
-            {`${props.zoom}%`}
-          </Tag>
         </div>
       </Tooltip>
     </div>

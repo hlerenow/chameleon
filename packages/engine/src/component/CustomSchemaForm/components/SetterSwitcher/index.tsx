@@ -20,6 +20,7 @@ export type SetterSwitcherProps = {
   suffix?: React.ReactNode;
   style?: React.CSSProperties;
   defaultCollapseOpen?: boolean;
+  readOnly?: boolean;
   /** 是否实用 CFile 包裹 */
   useField?: boolean;
 } & Omit<CFieldProps, 'children'>;
@@ -29,6 +30,7 @@ export const SetterSwitcher = ({
   keyPaths,
   condition,
   defaultCollapseOpen,
+  readOnly = false,
   useField = true,
   ...props
 }: SetterSwitcherProps) => {
@@ -41,13 +43,16 @@ export const SetterSwitcher = ({
   };
   // 统一添加一些内置的 setter
   const setters = useMemo(() => {
+    if (readOnly) {
+      return outerSetter;
+    }
     return [
       ...outerSetter,
       {
         componentName: SetterTypeEnum.EMPTY_VALUE_SETTER,
       },
     ];
-  }, [outerSetter]);
+  }, [outerSetter, readOnly]);
   const [currentSetter, setCurrentSetter] = useState<SetterObjType>(() => {
     const currentSetterName = defaultSetterConfig[keyPaths.join('.')]?.setter || '';
     const devConfigSetter = setters.find((el) => el.componentName === currentSetterName);
@@ -71,7 +76,7 @@ export const SetterSwitcher = ({
         onSetterChange?.(keyPaths, targetSetter.componentName);
       }
     };
-    if (menuItems.length === 1) {
+    if (readOnly || menuItems.length === 1) {
       return null;
     }
 
@@ -96,7 +101,7 @@ export const SetterSwitcher = ({
         </Dropdown>
       </div>
     );
-  }, [menuItems, currentSetter?.componentName, setters, onSetterChange, keyPaths]);
+  }, [menuItems, currentSetter?.componentName, setters, onSetterChange, keyPaths, readOnly]);
 
   const setterProps = useMemo(() => {
     let newProps = {

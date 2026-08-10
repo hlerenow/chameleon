@@ -242,6 +242,7 @@ export type MaterialPropType<CustomSetter extends SetterBasicType = ''> = {
   description?: string;
   defaultValue?: any;
   setters?: SetterType<CustomSetter>[];
+  readOnly?: boolean;
   condition?: (state: any) => boolean;
 };
 
@@ -254,6 +255,7 @@ export const MaterialPropDescribe = object({
   defaultValue: any(),
   //用于产生 valueType 类型的值
   setters: optional(array(SetterTypeDescribe)),
+  readOnly: optional(boolean()),
   condition: optional(func()),
 });
 
