@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.3](https://github.com/hlerenow/chameleon/compare/v0.12.2...v0.12.3) (2026-08-11)
+
+**Note:** Version bump only for package @chamn/material
+
 ## [0.12.2](https://github.com/hlerenow/chameleon/compare/v0.12.1...v0.12.2) (2026-08-10)
 
 **Note:** Version bump only for package @chamn/material
