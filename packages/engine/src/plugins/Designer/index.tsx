@@ -6,6 +6,11 @@ import { Designer } from './components/Canvas';
 import { DesignerPluginType } from './type';
 import { LayoutMode } from '@chamn/layout';
 
+export const CANVAS_SIZE_OFFSET = 0;
+
+// 计算应用的 canvas 宽度，保证最小为 1px
+const getAppliedCanvasWidth = (width: number) => Math.max(1, width - CANVAS_SIZE_OFFSET);
+
 export const DesignerPlugin: DesignerPluginType = () => {
   const designerRef = React.createRef<Designer>();
   return {
@@ -35,9 +40,9 @@ export const DesignerPlugin: DesignerPluginType = () => {
           const iframeContainer = designerRef.current?.getIframeDom();
 
           if (iframeContainer?.containerDom) {
-            let newW = width;
+            let newW: number | string = width;
             if (typeof width === 'number') {
-              newW = `${width}px`;
+              newW = `${getAppliedCanvasWidth(width)}px`;
             }
             iframeContainer.containerDom.style.width = String(newW);
             iframeContainer.containerDom.style.margin = '0';

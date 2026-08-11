@@ -1,5 +1,5 @@
 import { CSSVal } from '@/component/CSSEditor';
-import { getResponsiveSizeByViewport, getResponsiveSizes, ResponsiveSize } from '@/config/responsiveSizes';
+import { getResponsiveSizeByViewport, ResponsiveSize } from '@/config/responsiveSizes';
 import {
   CNode,
   CNodeModelDataType,
@@ -97,15 +97,8 @@ export const updateNodeSizeStyle = (
         }
       : css.value[normalCssIndex];
   const responsiveSize = getResponsiveSizeByViewport(viewportWidth, responsiveSizes);
-  const responsiveSizeList = getResponsiveSizes(responsiveSizes);
-  const pcSize = responsiveSizeList.find(({ key }) => key === 'PC');
-  const syncPcAndAbove = Boolean(pcSize && viewportWidth >= pcSize.width);
-  const targetResponsiveSizes = syncPcAndAbove
-    ? responsiveSizeList.filter(({ width }) => width >= pcSize!.width)
-    : responsiveSize
-    ? [responsiveSize]
-    : [];
-  const syncDefaultCss = Boolean(pcSize && targetResponsiveSizes.some(({ width }) => width >= pcSize.width));
+  const targetResponsiveSizes = responsiveSize ? [responsiveSize] : [];
+  const syncDefaultCss = Boolean(responsiveSize && ['PC', 'MODERN_PC'].includes(responsiveSize.key));
   const updateNormalCss = (nextNormalCss: typeof normalCss) => {
     node.updateValue({
       css: {
