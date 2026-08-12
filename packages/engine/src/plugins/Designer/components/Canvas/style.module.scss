@@ -88,6 +88,26 @@
   top: 50%;
   transform: translate(50%, -50%);
 }
+
+.vertical .before.inside {
+  top: 26px;
+  transform: translate(-50%, -50%);
+}
+
+.vertical .after.inside {
+  bottom: 26px;
+  transform: translate(-50%, 50%);
+}
+
+.horizontal .before.inside {
+  left: 26px;
+  transform: translate(-50%, -50%);
+}
+
+.horizontal .after.inside {
+  right: 26px;
+  transform: translate(50%, -50%);
+}
 .quickAddList {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

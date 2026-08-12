@@ -8,11 +8,12 @@ import styles from './style.module.scss';
 export type QuickAddViewProps = {
   instance: RenderInstance;
   direction: 'vertical' | 'horizontal';
+  insideBoundary?: { before: boolean; after: boolean };
   getMaterials: (node: CNode | CRootNode) => SnippetsType[];
   onAdd: (node: CNode | CRootNode, snippet: SnippetsType, pos: InsertNodePosType) => void;
 };
 
-export const QuickAddView = ({ instance, direction, getMaterials, onAdd }: QuickAddViewProps) => {
+export const QuickAddView = ({ instance, direction, insideBoundary, getMaterials, onAdd }: QuickAddViewProps) => {
   const node = instance._NODE_MODEL;
   const [openPosition, setOpenPosition] = useState<'before' | 'after' | null>(null);
   const materials = useMemo(() => getMaterials(node), [getMaterials, node]);
@@ -84,7 +85,9 @@ export const QuickAddView = ({ instance, direction, getMaterials, onAdd }: Quick
         >
           <button
             type="button"
-            className={`${styles.quickAddButton} ${styles[position]}`}
+            className={`${styles.quickAddButton} ${styles[position]} ${
+              insideBoundary?.[position] ? styles.inside : ''
+            }`}
             aria-label={`Add ${position}`}
             onClick={() => setOpenPosition(position)}
           >

@@ -227,26 +227,6 @@ export const HighlightCanvasCore = (
     allBoxRef.current = list.filter((el) => el !== ref);
   };
 
-  // The overlay is outside the rendered page, so its coordinates must be
-  // refreshed when either the workspace or the iframe document scrolls.
-  useEffect(() => {
-    const scheduleUpdate = () => {
-      allBoxRef.current.forEach((box) => box.current?.update());
-    };
-    const targetWindows = new Set<Window>([window]);
-    instances.forEach((instance) => {
-      const target = instance.getDom();
-      const targetWindow = target?.ownerDocument.defaultView;
-      if (targetWindow) targetWindows.add(targetWindow);
-    });
-    targetWindows.forEach((targetWindow) => targetWindow.addEventListener('scroll', scheduleUpdate, true));
-    window.addEventListener('resize', scheduleUpdate);
-    return () => {
-      targetWindows.forEach((targetWindow) => targetWindow.removeEventListener('scroll', scheduleUpdate, true));
-      window.removeEventListener('resize', scheduleUpdate);
-    };
-  }, [instances]);
-
   return (
     <div className={styles.borderDrawBox} style={containerStyle || {}}>
       {instances.map((el, index) => {

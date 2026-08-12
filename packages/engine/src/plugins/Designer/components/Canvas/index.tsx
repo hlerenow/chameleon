@@ -47,6 +47,8 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
   layoutRef: React.RefObject<Layout>;
   customAdvanceHook: AdvanceCustomHook;
   pageRuntimeListeners = new Set<(runtimeWindow: Window | null) => void>();
+  quickAddPositionFrame: number | null = null;
+  removeQuickAddPositionListeners: (() => void) | null = null;
   constructor(props: DesignerPropsType) {
     super(props);
 
@@ -117,6 +119,34 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     this.init();
   }
 
+  componentWillUnmount(): void {
+    this.removeQuickAddPositionListeners?.();
+    if (this.quickAddPositionFrame !== null) {
+      cancelAnimationFrame(this.quickAddPositionFrame);
+    }
+  }
+
+  bindQuickAddPositionListeners = () => {
+    this.removeQuickAddPositionListeners?.();
+
+    const iframeDocument = this.layoutRef.current?.iframeContainer.iframe?.contentDocument;
+    const refresh = () => {
+      if (this.quickAddPositionFrame !== null) return;
+      this.quickAddPositionFrame = requestAnimationFrame(() => {
+        this.quickAddPositionFrame = null;
+        if (this.state.quickAddNode) this.forceUpdate();
+      });
+    };
+    const targets: Array<Document | Window> = [window];
+    if (iframeDocument) targets.push(iframeDocument);
+    targets.forEach((target) => target.addEventListener('scroll', refresh, true));
+    window.addEventListener('resize', refresh);
+    this.removeQuickAddPositionListeners = () => {
+      targets.forEach((target) => target.removeEventListener('scroll', refresh, true));
+      window.removeEventListener('resize', refresh);
+    };
+  };
+
   getIframeDom() {
     return this.layoutRef.current?.iframeContainer;
   }
@@ -152,6 +182,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
 
     await layoutRef.current.ready();
     const layoutInstance = layoutRef.current;
+    this.bindQuickAddPositionListeners();
 
     pluginCtx.emitter.emit('ready', {
       UIInstance: this,
@@ -475,14 +506,24 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     const targetDom = dom as HTMLElement;
     const rect = targetDom.getBoundingClientRect();
     const iframe = this.layoutRef.current?.iframeContainer.iframe;
-    if (!iframe) return null;
+    const canvasWorkspace = this.layoutRef.current?.canvasWorkspaceRef.current;
+    if (!iframe || !canvasWorkspace) return null;
 
     // The target rect is relative to the iframe viewport. The quick-add controls
     // render through a portal in the host document, so translate it into the
     // host viewport and preserve the canvas scale.
     const iframeRect = iframe.getBoundingClientRect();
+    const workspaceRect = canvasWorkspace.getBoundingClientRect();
     const scaleX = iframe.clientWidth ? iframeRect.width / iframe.clientWidth : 1;
     const scaleY = iframe.clientHeight ? iframeRect.height / iframe.clientHeight : 1;
+    const targetRect = {
+      top: iframeRect.top + rect.top * scaleY,
+      bottom: iframeRect.top + (rect.top + rect.height) * scaleY,
+      left: iframeRect.left + rect.left * scaleX,
+      right: iframeRect.left + (rect.left + rect.width) * scaleX,
+    };
+    const buttonRadius = 13;
+    const buttonGap = 52;
     const direction = (() => {
       const parent = targetDom.parentElement;
       if (!parent) return 'vertical' as const;
@@ -497,9 +538,9 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     return createPortal(
       <div
         style={{
-          position: 'fixed',
-          left: iframeRect.left + rect.left * scaleX,
-          top: iframeRect.top + rect.top * scaleY,
+          position: 'absolute',
+          left: iframeRect.left - workspaceRect.left + rect.left * scaleX,
+          top: iframeRect.top - workspaceRect.top + rect.top * scaleY,
           width: rect.width * scaleX,
           height: rect.height * scaleY,
           pointerEvents: 'none',
@@ -509,11 +550,21 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
         <QuickAddView
           instance={instance}
           direction={direction}
+          insideBoundary={{
+            before:
+              direction === 'vertical'
+                ? targetRect.top - buttonGap - buttonRadius < workspaceRect.top
+                : targetRect.left - buttonGap - buttonRadius < workspaceRect.left,
+            after:
+              direction === 'vertical'
+                ? targetRect.bottom + buttonGap + buttonRadius > workspaceRect.bottom
+                : targetRect.right + buttonGap + buttonRadius > workspaceRect.right,
+          }}
           getMaterials={this.getQuickAddMaterials}
           onAdd={this.onQuickAdd}
         />
       </div>,
-      document.body
+      canvasWorkspace
     );
   };
 
