@@ -1,4 +1,4 @@
-import { CPageDataType, CMaterialType, AssetPackage } from '@chamn/model';
+import { CPageDataType, CMaterialType, AssetPackage, CNode, CRootNode, SnippetsType } from '@chamn/model';
 import { Engine, WorkbenchPropsType } from '.';
 import { PluginManager, CPlugin } from './core/pluginManager';
 import { RenderPropsType } from '@chamn/render';
@@ -17,6 +17,8 @@ export type EngineProps = {
   plugins: CPlugin[];
   schema: CPageDataType;
   material?: CMaterialType[];
+  /** 单节点快捷添加物料；节点物料的 advanceCustom.quickAddMaterials 优先 */
+  quickAddMaterials?: SnippetsType[] | ((node: CNode | CRootNode, materials: SnippetsType[]) => SnippetsType[]);
   components?: Record<string, any>;
   assetPackagesList?: AssetPackage[];
   beforePluginRun?: (options: { pluginManager: PluginManager }) => void;

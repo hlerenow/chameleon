@@ -414,6 +414,8 @@ export type AdvanceCustomFuncParam = {
 export type EventName = keyof HTMLElementEventMap;
 
 export type AdvanceCustom = {
+  /** 单节点快捷添加物料，优先于 Engine 全局配置 */
+  quickAddMaterials?: SnippetsType[] | ((node: CNode | CRootNode, materials: SnippetsType[]) => SnippetsType[]);
   canDragNode?: (
     node: CNode | CRootNode,
     params: AdvanceCustomFuncParam

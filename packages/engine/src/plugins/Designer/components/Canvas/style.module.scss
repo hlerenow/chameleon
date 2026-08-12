@@ -46,3 +46,126 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.quickAddBox {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.quickAddButton {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #1677ff;
+  color: #fff;
+  cursor: pointer;
+  pointer-events: all;
+  z-index: 3;
+  box-shadow: 0 2px 6px rgb(22 119 255 / 28%);
+}
+
+.vertical .before {
+  top: -52px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.vertical .after {
+  bottom: -52px;
+  left: 50%;
+  transform: translate(-50%, 50%);
+}
+.horizontal .before {
+  left: -32px;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.horizontal .after {
+  right: -32px;
+  top: 50%;
+  transform: translate(50%, -50%);
+}
+.quickAddList {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-content: start;
+  gap: 12px;
+  width: 348px;
+  height: auto;
+  max-height: 300px;
+  box-sizing: border-box;
+  padding: 14px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  background: #fff;
+  border: 1px solid #e1e7f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(118, 118, 118, 0.08);
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #cbd4e2;
+    border-radius: 3px;
+  }
+}
+
+.quickAddItem {
+  display: flex;
+  min-width: 0;
+  height: 82px;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 8px;
+  border: 1px solid #e1e7f0;
+  border-radius: 8px;
+  background: #fff;
+  color: #1f3258;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgb(31 50 88 / 3%);
+  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease,
+    transform 0.15s ease;
+
+  &:hover {
+    position: relative;
+    z-index: 1;
+    background: #f7f9fc;
+    color: #1677ff;
+    border-color: #b8cdf8;
+    box-shadow: 0 2px 6px rgb(22 119 255 / 10%);
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgb(22 119 255 / 35%);
+    outline-offset: 2px;
+  }
+}
+
+.quickAddName {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quickAddTitle {
+  max-width: 100%;
+  margin-top: 6px;
+  overflow: hidden;
+  color: #52627a;
+  font-size: 14px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

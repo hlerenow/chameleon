@@ -9,7 +9,7 @@ import { GhostView } from '../GhostView';
 
 import styles from './style.module.scss';
 import '@chamn/layout/dist/style.css';
-import { AssetPackage } from '@chamn/model';
+import { AssetPackage, SnippetsType } from '@chamn/model';
 import { createPortal } from 'react-dom';
 import { CPluginCtx } from '@/core/pluginManager';
 import { AdvanceCustomHook } from './advanceCustomHook';
@@ -17,6 +17,7 @@ import { DesignerPluginConfig } from '../../type';
 import { AdvanceCustomFuncParam } from '@chamn/model';
 import { updateNodeSizeStyle } from '@/utils/css';
 import { DesignerSizer } from '@/component/DesignerSizer';
+import { QuickAddView } from './QuickAddView';
 
 export type DesignerCtx = CPluginCtx<DesignerPluginConfig>;
 export type DesignerPropsType = {
@@ -39,6 +40,7 @@ type DesignerStateType = {
   dropViewRender: AdvanceCustom['dropViewRender'] | null;
   ghostView: React.ReactNode;
   portalView: React.ReactNode;
+  quickAddNode: CNode | CRootNode | null;
 };
 
 export class Designer extends React.Component<DesignerPropsType, DesignerStateType> {
@@ -56,6 +58,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       selectToolbarView: null,
       ghostView: null,
       portalView: null,
+      quickAddNode: null,
       selectRectViewRender: null,
       hoverRectViewRender: null,
       dropViewRender: null,
@@ -274,6 +277,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       layoutRef.current?.selectNode('');
       this.setState({
         selectToolbarView: null,
+        quickAddNode: null,
       });
       return false;
     }
@@ -290,6 +294,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
     const toolbarView = this.getToolbarView(node);
     this.setState({
       selectToolbarView: toolbarView,
+      quickAddNode: node,
       selectRectViewRender:
         this.customAdvanceHook.getSelectRectViewRender(node) || this.props.pluginCtx.config.selectRectViewRender,
     });
@@ -424,6 +429,92 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
       );
     }
     return toolbarView;
+  };
+
+  getQuickAddMaterials = (node: CNode | CRootNode): SnippetsType[] => {
+    const allMaterials = this.props.pluginCtx.pageModel.materialsModel
+      .getAllSnippets()
+      .flatMap((group) => group.list.flatMap((category) => category.list));
+    const customMaterials = node.material?.value.advanceCustom?.quickAddMaterials;
+    if (customMaterials) {
+      return typeof customMaterials === 'function' ? customMaterials(node, allMaterials) : customMaterials;
+    }
+    const globalMaterials = this.props.pluginCtx.engine.props.quickAddMaterials;
+    if (globalMaterials) {
+      return typeof globalMaterials === 'function' ? globalMaterials(node, allMaterials) : globalMaterials;
+    }
+    return allMaterials;
+  };
+
+  onQuickAdd = (node: CNode | CRootNode, snippet: SnippetsType, pos: InsertNodePosType) => {
+    if (!snippet.schema.componentName) return;
+    const newNode = this.props.pluginCtx.pageModel.createNode({
+      ...snippet.schema,
+      componentName: snippet.schema.componentName,
+    });
+    if (!newNode) return;
+    this.props.pluginCtx.pageModel.addNode(newNode, node, pos);
+    setTimeout(() => this.toSelectNode(newNode.id), 16);
+  };
+
+  renderQuickAddView = () => {
+    const node = this.state.quickAddNode;
+    const instances = node ? this.layoutRef.current?.designRenderRef.current?.getInstancesById(node.id) : [];
+    const selectedInstance = this.layoutRef.current?.state.currentSelectInstance;
+    const instance =
+      selectedInstance?._NODE_ID === node?.id
+        ? selectedInstance
+        : instances?.find((item) => item._UNIQUE_ID === selectedInstance?._UNIQUE_ID) || instances?.[0];
+    if (!node || !instance) return null;
+    let dom = instance.getDom();
+    const rootSelector = instance._NODE_MODEL.material?.value.rootSelector;
+    if (rootSelector && dom) {
+      dom = (dom.querySelector?.(rootSelector) as HTMLElement) || dom;
+    }
+    if (!dom || !('getBoundingClientRect' in dom)) return null;
+    const targetDom = dom as HTMLElement;
+    const rect = targetDom.getBoundingClientRect();
+    const iframe = this.layoutRef.current?.iframeContainer.iframe;
+    if (!iframe) return null;
+
+    // The target rect is relative to the iframe viewport. The quick-add controls
+    // render through a portal in the host document, so translate it into the
+    // host viewport and preserve the canvas scale.
+    const iframeRect = iframe.getBoundingClientRect();
+    const scaleX = iframe.clientWidth ? iframeRect.width / iframe.clientWidth : 1;
+    const scaleY = iframe.clientHeight ? iframeRect.height / iframe.clientHeight : 1;
+    const direction = (() => {
+      const parent = targetDom.parentElement;
+      if (!parent) return 'vertical' as const;
+      const parentStyle = window.getComputedStyle(parent);
+      const style = window.getComputedStyle(targetDom);
+      return parentStyle.display === 'flex' && ['row', 'row-reverse'].includes(parentStyle.flexDirection)
+        ? 'horizontal'
+        : ['inline', 'inline-block', 'float', 'grid'].includes(style.display)
+        ? 'horizontal'
+        : ('vertical' as const);
+    })();
+    return createPortal(
+      <div
+        style={{
+          position: 'fixed',
+          left: iframeRect.left + rect.left * scaleX,
+          top: iframeRect.top + rect.top * scaleY,
+          width: rect.width * scaleX,
+          height: rect.height * scaleY,
+          pointerEvents: 'none',
+          zIndex: 1000,
+        }}
+      >
+        <QuickAddView
+          instance={instance}
+          direction={direction}
+          getMaterials={this.getQuickAddMaterials}
+          onAdd={this.onQuickAdd}
+        />
+      </div>,
+      document.body
+    );
   };
 
   onHoverNode: LayoutPropsType['onHoverNode'] = (node, dragNode, e) => {
@@ -628,6 +719,7 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
             pluginCtx={this.props.pluginCtx}
           />
         </div>
+        {this.renderQuickAddView()}
         {canvasFooterView}
         {portalView && createPortal(portalView, document.body)}
       </div>
