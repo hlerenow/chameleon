@@ -210,7 +210,7 @@ export const ActionFlowSetter = (props: TActionFlowSetterCore) => {
       </div>
 
       <MoveableModal
-        destroyOnClose
+        destroyOnHidden
         open={open}
         centered
         title="Edit Flow"

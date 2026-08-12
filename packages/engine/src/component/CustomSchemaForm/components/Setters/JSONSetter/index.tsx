@@ -102,7 +102,7 @@ export const JSONSetter: CSetter<any> = ({
             Edit
           </Button>
           <MoveableModal
-            destroyOnClose
+            destroyOnHidden
             open={open}
             title="JSON Editor"
             width="800px"

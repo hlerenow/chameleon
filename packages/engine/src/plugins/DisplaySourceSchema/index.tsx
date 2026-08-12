@@ -56,7 +56,7 @@ export const DisplaySourceSchema = (props: DisplaySourceSchemaProps) => {
           height: 'calc(100vh - 50px)',
           top: '25px',
         }}
-        destroyOnClose
+        destroyOnHidden
       >
         <div style={{ width: '100%', height: 'calc(100vh - 200px)' }}>
           <MonacoEditor

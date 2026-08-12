@@ -86,7 +86,7 @@ const assetPackagesList = [
   },
 ];
 
-export const Editor = () => {
+export const Editor = ({ loadingUI }: { loadingUI?: React.ReactNode }) => {
   const [ready, setReady] = useState(false);
   const [page, setPage] = useState(EmptyPage);
 
@@ -236,7 +236,7 @@ export const Editor = () => {
   }, []);
 
   if (!ready) {
-    return <>loading...</>;
+    return loadingUI ?? null;
   }
   return (
     <Engine

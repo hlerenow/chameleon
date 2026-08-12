@@ -10,7 +10,6 @@ import {
 import { isArray, isPlainObject, merge } from 'lodash-es';
 import React, { useMemo, useRef } from 'react';
 import { RenderPropsType, Render, UseRenderReturnType } from './render';
-import { findDOMNode } from 'react-dom';
 import ErrorBoundary from './ReactErrorBoundary';
 import { RenderInstance } from './type';
 
@@ -170,9 +169,6 @@ export class DesignRender extends React.Component<DesignRenderProp> {
       getDom() {
         const autoGetDom = node.material?.value.advanceCustom?.autoGetDom ?? true;
         if (autoGetDom) {
-          if (findDOMNode) {
-            return findDOMNode(this);
-          }
           // 返回第一个孩子节点, 模拟 ReactDOM.findDOMNode 行为
           return this._dom?.children?.[0];
         } else {
@@ -212,22 +208,18 @@ export class DesignRender extends React.Component<DesignRenderProp> {
 
         if (autoGetDom) {
           const coreEl = React.createElement(innerComp, restProps, ...newChildren);
-          if (!findDOMNode) {
-            return React.createElement(
-              'div',
-              {
-                style: {
-                  display: 'contents',
-                },
-                ref: (ref: any) => {
-                  this._dom = ref;
-                },
+          return React.createElement(
+            'div',
+            {
+              style: {
+                display: 'contents',
               },
-              coreEl
-            );
-          } else {
-            return coreEl;
-          }
+              ref: (ref: any) => {
+                this._dom = ref;
+              },
+            },
+            coreEl
+          );
         } else {
           const coreEl = React.createElement(
             innerComp,

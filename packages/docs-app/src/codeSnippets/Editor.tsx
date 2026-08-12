@@ -15,7 +15,7 @@ win.React = React;
 win.ReactDOM = ReactDOM;
 win.ReactDOMClient = ReactDOMClient;
 
-export const App = () => {
+export const App = ({ loadingUI }: { loadingUI?: React.ReactNode }) => {
   const [ready, setReady] = useState(false);
   const [page, setPage] = useState(BasePage);
 
@@ -160,7 +160,7 @@ export const App = () => {
   }, []);
 
   if (!ready) {
-    return <>loading...</>;
+    return loadingUI ?? null;
   }
 
   return (

@@ -139,6 +139,14 @@ createRoot(document.getElementById('root')!).render(<App />);
 engine.getI18n().changeLanguage('zh_CN');
 ```
 
+## 加载 UI
+
+编辑器加载期间可通过 `loadingUI` 传入自定义内容；未传入时不渲染任何内容。
+
+```tsx
+<App loadingUI={<CustomLoading />} />
+```
+
 ## 本地开发
 
 ```bash

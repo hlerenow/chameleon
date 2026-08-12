@@ -76,7 +76,7 @@ const customRender: LayoutPropsType['customRender'] = async ({
 const buildVersion = `t_${__BUILD_VERSION__}`;
 
 const assetPackagesList = [] as any[];
-export const App = () => {
+export const App = ({ loadingUI }: { loadingUI?: React.ReactNode }) => {
   const [ready, setReady] = useState(false);
   const [page, setPage] = useState(BasePage);
   const [lang, setLang] = useState(() => {
@@ -276,7 +276,7 @@ export const App = () => {
   );
 
   if (!ready) {
-    return <>loading...</>;
+    return loadingUI ?? null;
   }
 
   return (

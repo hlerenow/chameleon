@@ -119,7 +119,7 @@ export const FunctionSetter: CSetter<{
       </Button>
       <Modal
         centered
-        destroyOnClose
+        destroyOnHidden
         open={open}
         title="Function Editor"
         onCancel={() => setOpen(false)}

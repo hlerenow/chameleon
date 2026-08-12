@@ -21,7 +21,7 @@ win.ReactDOMClient = ReactDOMClient;
 const buildVersion = `t_${__BUILD_VERSION__}`;
 
 const assetPackagesList = [] as any[];
-export const ComponentEditor = () => {
+export const ComponentEditor = ({ loadingUI }: { loadingUI?: React.ReactNode }) => {
   const [ready, setReady] = useState(false);
   const [page, setPage] = useState(BasePage);
   const [lang] = useState(() => {
@@ -77,7 +77,7 @@ export const ComponentEditor = () => {
   );
 
   if (!ready) {
-    return <>loading...</>;
+    return loadingUI ?? null;
   }
 
   return (

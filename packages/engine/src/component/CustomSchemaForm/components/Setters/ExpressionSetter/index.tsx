@@ -134,7 +134,7 @@ export const ExpressionSetter: CSetter<ExpressionSetterProps> = ({
         {props.value?.value || 'Edit Expression'}
       </Button>
       <Modal
-        destroyOnClose
+        destroyOnHidden
         open={open}
         title="Expression Editor"
         onCancel={() => setOpen(false)}
