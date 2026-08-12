@@ -1,0 +1,147 @@
+.visualSize {
+  margin: 6px 10px 10px;
+  padding: 0 0 12px;
+  color: #52627a;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 11px;
+}
+
+.header,
+.dimensions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header {
+  margin-bottom: 8px;
+  color: #25344c;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.hint {
+  color: #94a3b8;
+  font-size: 10px;
+  font-weight: 400;
+  text-transform: none;
+}
+
+.diagram {
+  position: relative;
+  min-height: 176px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 4px;
+}
+
+.layer {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px dashed;
+}
+
+.margin {
+  width: 96%;
+  height: 94%;
+  border-color: #e2a45d;
+  background: rgb(251 191 36 / 10%);
+}
+.border {
+  width: 76%;
+  height: 68%;
+  border-color: #64748b;
+  background: rgb(148 163 184 / 10%);
+}
+.padding {
+  width: 58%;
+  height: 40%;
+  border-color: #9caf58;
+  background: rgb(163 184 96 / 12%);
+}
+
+.layerName {
+  position: absolute;
+  left: 4px;
+  color: #52627a;
+  font-weight: 600;
+}
+.top,
+.bottom {
+  position: absolute;
+  left: 50%;
+  text-align: center;
+  transform: translateX(-50%);
+}
+.right,
+.left {
+  position: absolute;
+  text-align: center;
+}
+.right {
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+}
+.bottom {
+  bottom: 4px;
+}
+.left {
+  top: 50%;
+  left: 4px;
+  transform: translateY(-50%);
+}
+
+.value {
+  position: relative;
+  left: 0;
+  display: block;
+  box-sizing: border-box;
+  overflow: hidden;
+  color: #334155;
+  text-overflow: ellipsis;
+  width: 28px;
+  white-space: nowrap;
+}
+
+.content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 100px;
+  min-height: 30px;
+  padding: 4px;
+  background: #d8edf2;
+  border: 1px solid #598d9c;
+  color: #315b68;
+  transform: translate(-50%, -50%);
+}
+.contentLabel {
+  font-size: 10px;
+  font-weight: 600;
+}
+.contentSize {
+  margin-top: 2px;
+  font-size: 10px;
+}
+
+.dimensions {
+  gap: 8px;
+  margin-top: 8px;
+}
+.dimensions label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #64748b;
+  font-size: 11px;
+}

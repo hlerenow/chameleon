@@ -140,6 +140,7 @@ export const useDragSize = function (options?: {
 
 type MinMaxType = {
   px?: number;
+  '%'?: number;
   vw?: number;
   vh?: number;
   rem?: number;
@@ -158,6 +159,7 @@ export type CSSSizeInputProps = {
   /** 累计的偏移量，映射为具体的值，默认 1:1 */
   cumulativeTransform?: (params: CumulativeInfoType) => CumulativeInfoType;
   unitList?: (keyof MinMaxType)[];
+  dragAxis?: 'x' | 'y' | 'both';
 };
 
 export const CSSSizeInput = (props: CSSSizeInputProps) => {
@@ -272,7 +274,15 @@ export const CSSSizeInput = (props: CSSSizeInputProps) => {
       if (isNaN(num)) {
         num = 0;
       }
-      let newVal = num + data.cumulativeX;
+      const delta =
+        props.dragAxis === 'y'
+          ? data.cumulativeY
+          : props.dragAxis === 'both'
+          ? Math.abs(data.cumulativeX) >= Math.abs(data.cumulativeY)
+            ? data.cumulativeX
+            : data.cumulativeY
+          : data.cumulativeX;
+      let newVal = num + delta;
 
       if (currentMinMix.min !== undefined) {
         newVal = Math.max(newVal, currentMinMix.min);

@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { CRightPanelItem, RightPanelOptions } from '../RightPanel/view';
 
 import styles from './style.module.scss';
@@ -19,11 +19,13 @@ import {
   styleObjToArr,
 } from '@/utils/css';
 import { StyleUIPanel, StyleUIPanelRef } from '@/component/StylePanel';
+import { DesignerPluginInstance } from '../Designer/type';
 
 export const VisualPanelPlus = (props: RightPanelOptions) => {
   const styleVariableRef = useRef<CSSPropertiesVariableBindEditorRef>(null);
 
   const node = props.node!;
+  const [visualSizeDom, setVisualSizeDom] = useState<HTMLElement | null>(null);
   const classNameList = node.value.classNames || [];
   const cssEditorRef = useRef<CSSEditorRef>(null);
   const cssUIRef = useRef<StyleUIPanelRef>(null);
@@ -31,6 +33,27 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
   const skipPanelSyncRef = useRef(false);
   const panelSyncFrameRef = useRef<number | null>(null);
   const getStyleParts = useCallback(() => formatStyleProperty(node.value.style || []), [node]);
+
+  useEffect(() => {
+    let disposed = false;
+    let timer: number | undefined;
+    const findDom = async () => {
+      const designer = await props.pluginCtx.pluginManager.get<DesignerPluginInstance>('Designer');
+      const dom = designer?.export.getComponentInstances(node.id)?.[0]?.getDom?.();
+      if (disposed) return;
+      if (dom) {
+        setVisualSizeDom(dom as HTMLElement);
+        return;
+      }
+      timer = window.setTimeout(findDom, 50);
+    };
+    findDom();
+    return () => {
+      disposed = true;
+      if (timer) window.clearTimeout(timer);
+      setVisualSizeDom(null);
+    };
+  }, [node, props.pluginCtx.pluginManager]);
 
   const updatePanelValue = useCallback(() => {
     if (skipPanelSyncRef.current) {
@@ -121,6 +144,7 @@ export const VisualPanelPlus = (props: RightPanelOptions) => {
       >
         <StyleUIPanel
           ref={cssUIRef}
+          visualSizeDom={visualSizeDom}
           onValueChange={(newNormaCss) => {
             onUpdateStyle(styleObjToArr(newNormaCss));
           }}

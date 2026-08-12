@@ -14,18 +14,20 @@ import { waitReactUpdate } from '@/utils';
 import { isNil, omitBy } from 'lodash-es';
 import { CSSCodeEditor, CSSCodeEditorRef } from '../CSSCodeEditor';
 import { Component, SquareCode } from 'lucide-react';
+import { VisualSize } from './VisualSize';
 
 export type StyleUIPanelProps = {
   initialVal?: Record<string, string>;
   value?: Record<string, string>;
   onValueChange?: (newVal: Record<string, string>) => void;
   noCard?: boolean;
+  visualSizeDom?: HTMLElement | null;
 };
 
 export type StyleUIPanelRef = InputCommonRef;
 
 export const StyleUIPanel = forwardRef<StyleUIPanelRef, StyleUIPanelProps>(
-  ({ value, initialVal, onValueChange, noCard }, ref) => {
+  ({ value, initialVal, onValueChange, noCard, visualSizeDom }, ref) => {
     const { t } = useTranslation();
     const [mode, setMode] = useState<'VISUAL' | 'CODE'>(
       (localStorage.getItem('CHAMN_STYLE_EDITOR_MODE') as any) || 'VISUAL'
@@ -204,17 +206,20 @@ export const StyleUIPanel = forwardRef<StyleUIPanelRef, StyleUIPanelProps>(
         )}
 
         {mode !== 'CODE' && (
-          <Collapse
-            className={styles.styleUIPanel}
-            items={items}
-            bordered={false}
-            defaultActiveKey={['dimension', 'background', 'padding', 'margin']}
-            onChange={async () => {
-              await waitReactUpdate();
-              // 每次展开需要重新同步值
-              updateInnerVal(tempValueRef.current);
-            }}
-          />
+          <>
+            <VisualSize value={tempValueRef.current || value} dom={visualSizeDom} />
+            <Collapse
+              className={styles.styleUIPanel}
+              items={items}
+              bordered={false}
+              defaultActiveKey={['dimension', 'background', 'padding', 'margin']}
+              onChange={async () => {
+                await waitReactUpdate();
+                // 每次展开需要重新同步值
+                updateInnerVal(tempValueRef.current);
+              }}
+            />
+          </>
         )}
       </>
     );
