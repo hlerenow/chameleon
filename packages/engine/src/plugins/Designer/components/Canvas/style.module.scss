@@ -22,3 +22,27 @@
   padding: 1px 3px;
   border-radius: 2px;
 }
+
+.ghostView {
+  display: inline-flex;
+  align-items: center;
+  max-width: 220px;
+  min-height: 28px;
+  padding: 0 10px 0 8px;
+  box-sizing: border-box;
+  color: #fff;
+  background: rgb(44 115 253 / 78%);
+  border-radius: 3px;
+  box-shadow: 0 2px 6px rgb(24 47 92 / 18%);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  transform: translateY(-1px);
+  transform-origin: left center;
+}
+
+.ghostLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

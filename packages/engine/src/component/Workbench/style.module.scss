@@ -151,6 +151,10 @@
     }
 
     .centerBox {
+      // Keep canvas interaction overlays (hover toolbar, drop anchor and drag
+      // ghost) above the adjacent panel when they extend past the canvas edge.
+      position: relative;
+      z-index: 101;
       transition: all 0.2s;
       display: flex;
       flex-direction: column;

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import ReactDOMAll from 'react-dom';
 import { BasePage, Material } from '@chamn/demo-page';
 import { Layout, LayoutDragAndDropExtraDataType, LayoutPropsType, NodeSizeChangeEvent } from '../..';
+import { DefaultDropPlaceholder } from '../DefaultDropPlaceholder';
 import { Sensor } from '../../core/dragAndDrop/sensor';
 import { AssetPackage, CNode, CPage, getRandomStr } from '@chamn/model';
 import * as antD from 'antd';
@@ -47,6 +48,7 @@ const createCustomRender =
       pageModel,
       components,
       requestAPI: async (params) => console.log(222, params),
+      dropPlaceholder: DefaultDropPlaceholder,
       onMount: ready,
     });
     iframeWindow.ReactDOMClient!.createRoot(iframeDocument.getElementById('app')!).render(app);

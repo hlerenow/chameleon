@@ -24,6 +24,7 @@ import { calculateDropPosInfo } from './components/DropAnchor/util';
 import { DragAndDropEventObj, LayoutDragAndDropExtraDataType } from './types/dragAndDrop';
 import { NodeSizeChangeBox, NodeSizeChangeEvent } from './components/NodeSizeChangeBox';
 import { canNodeSizeChange } from './nodeSizeChange';
+import { DefaultDropPlaceholder } from './components/DefaultDropPlaceholder';
 
 import styles from './index.module.scss';
 import intersection from 'lodash-es/intersection';
@@ -97,6 +98,7 @@ export type LayoutPropsType = Omit<DesignRenderProp, 'adapter' | 'ref'> & {
     assets: AssetPackage[];
     renderJSUrl?: string;
     beforeInitRender?: () => void;
+    dropPlaceholder?: DesignRenderProp['dropPlaceholder'];
     ready: (designRender: DesignRender) => void;
   }) => void;
   pluginCtx?: any;
@@ -344,6 +346,7 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
           iframe: iframeContainer,
           renderJSUrl: this.props.renderJSUrl,
           beforeInitRender: innerBeforeInitRender,
+          dropPlaceholder: this.props.dropPlaceholder || DefaultDropPlaceholder,
           ready: (designRenderInstance) => {
             this.designRenderRef.current = designRenderInstance;
 
@@ -1257,3 +1260,4 @@ export * from './core/iframeContainer';
 export * from './utils';
 export * from './types';
 export type { NodeSizeChangeEdge, NodeSizeChangeEvent } from './components/NodeSizeChangeBox';
+export { DefaultDropPlaceholder } from './components/DefaultDropPlaceholder';

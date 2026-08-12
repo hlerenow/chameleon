@@ -1,6 +1,6 @@
 import { getUniqueAssetsList } from '@/core/assetPackagesListManage';
 import { LayoutPropsType } from '@chamn/layout';
-import { collectVariable, flatObject, getThirdLibs, RenderPropsType } from '@chamn/render';
+import { collectVariable, flatObject, getThirdLibs, DesignRenderProp, RenderPropsType } from '@chamn/render';
 
 /** 默认使用 react 18 模式渲染 */
 export const beforeInitRender: LayoutPropsType['beforeInitRender'] = async ({ iframe }) => {
@@ -16,7 +16,7 @@ export const beforeInitRender: LayoutPropsType['beforeInitRender'] = async ({ if
 /** 默认使用 react 18 模式渲染 */
 export const getDefaultRender = (options: {
   components: Record<string, any>;
-  renderProps: Partial<RenderPropsType>;
+  renderProps: Partial<RenderPropsType & DesignRenderProp>;
 }) => {
   const defaultRender: LayoutPropsType['customRender'] = async ({
     iframe: iframeContainer,
@@ -25,6 +25,7 @@ export const getDefaultRender = (options: {
     pageModel,
     ready,
     renderJSUrl,
+    dropPlaceholder,
   }) => {
     await iframeContainer.injectJS(renderJSUrl || '');
     const iframeWindow = iframeContainer.getWindow()!;
@@ -57,6 +58,7 @@ export const getDefaultRender = (options: {
           $$context: {
             thirdLibs,
           },
+          dropPlaceholder,
           onMount: (designRenderInstance) => {
             ready(designRenderInstance);
           },
