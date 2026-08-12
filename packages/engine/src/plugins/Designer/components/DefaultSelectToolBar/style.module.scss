@@ -1,25 +1,45 @@
 .toolBarBox {
   display: flex;
-  margin-bottom: 3px;
-  margin-right: -2px;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 4px;
+  margin-right: -1px;
+  padding: 2px;
+  background: rgb(31 50 88 / 10%);
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgb(31 50 88 / 14%);
   pointer-events: all;
   float: right;
 }
 
 .item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  box-sizing: border-box;
   background-color: $baseColor;
   color: white;
-  padding: 2px 3px;
-  font-size: 12px;
+  border-radius: 3px;
+  font-size: 13px;
   overflow: hidden;
-  margin-left: 1px;
   cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    filter: brightness(0.92);
+  }
+
+  &:active {
+    transform: scale(0.94);
+  }
 }
 
 .layoutSelectBox {
   position: relative;
-  margin-right: 1px;
-  height: 21px;
+  margin-right: 0;
+  height: 24px;
 
   .hoverBox {
     transition: all 0.3s;
@@ -39,11 +59,16 @@
 
     .hoverItem {
       background-color: $baseColor;
-      padding: 2px 3px;
+      padding: 5px 8px;
       color: white;
       font-size: 12px;
-      margin-bottom: 1px;
+      border-radius: 3px;
+      margin-bottom: 2px;
       cursor: pointer;
+
+      &:hover {
+        filter: brightness(0.92);
+      }
     }
   }
   .placeholder {
@@ -52,8 +77,12 @@
     white-space: nowrap;
     background-color: $baseColor;
     color: white;
-    padding: 2px 5px;
+    padding: 0 8px;
+    height: 24px;
+    display: flex;
+    align-items: center;
     font-size: 12px;
+    border-radius: 3px;
     max-width: 100px;
   }
 }

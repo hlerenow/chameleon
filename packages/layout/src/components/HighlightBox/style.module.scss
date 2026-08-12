@@ -1,7 +1,8 @@
 .highlightBox {
   position: absolute;
   will-change: transform, width, height, left, right;
-  outline: 2px solid rgb(44, 115, 253);
+  outline: 1px solid rgb(44 115 253 / 88%);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 72%), 0 2px 8px rgb(44 115 253 / 12%);
 }
 
 .borderDrawBox {
