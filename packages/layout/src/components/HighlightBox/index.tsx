@@ -3,6 +3,40 @@ import styles from './style.module.scss';
 import { animationFrame, isDOM } from '../../utils';
 import { RenderInstance } from '@chamn/render';
 
+const parsePixelValue = (value: string) => Number.parseFloat(value) || 0;
+
+const getHighlightRect = (dom: HTMLElement): DOMRect => {
+  const rect = dom.getBoundingClientRect();
+  const computedStyle = dom.ownerDocument.defaultView?.getComputedStyle(dom);
+  if (!computedStyle) {
+    return rect;
+  }
+
+  const marginLeft = parsePixelValue(computedStyle.marginLeft);
+  const marginRight = parsePixelValue(computedStyle.marginRight);
+  const marginTop = parsePixelValue(computedStyle.marginTop);
+  const marginBottom = parsePixelValue(computedStyle.marginBottom);
+  let width = rect.width + marginLeft + marginRight;
+  let height = rect.height + marginTop + marginBottom;
+
+  // getBoundingClientRect() already represents the border box. For content-box
+  // sizing, include the padding and border explicitly when building the overlay.
+  if (computedStyle.boxSizing !== 'border-box') {
+    width +=
+      parsePixelValue(computedStyle.paddingLeft) +
+      parsePixelValue(computedStyle.paddingRight) +
+      parsePixelValue(computedStyle.borderLeftWidth) +
+      parsePixelValue(computedStyle.borderRightWidth);
+    height +=
+      parsePixelValue(computedStyle.paddingTop) +
+      parsePixelValue(computedStyle.paddingBottom) +
+      parsePixelValue(computedStyle.borderTopWidth) +
+      parsePixelValue(computedStyle.borderBottomWidth);
+  }
+
+  return new DOMRect(rect.left - marginLeft, rect.top - marginTop, width, height);
+};
+
 export type HighlightCanvasRefType = {
   update: () => void;
 };
@@ -26,6 +60,7 @@ export const HighlightBox = ({
 }: HighlightBoxPropsType) => {
   const [styleObj, setStyleObj] = useState<Record<string, string>>();
   const ref = useRef<HighlightCanvasRefType>(null);
+  const highlightBoxRef = useRef<HTMLDivElement>(null);
 
   const toolBoxRef = useRef<HTMLDivElement>(null);
   const instanceRef = useRef<RenderInstance>();
@@ -104,7 +139,7 @@ export const HighlightBox = ({
       return;
     }
 
-    const tempRect = instanceDom.getBoundingClientRect();
+    const tempRect = getHighlightRect(instanceDom);
 
     const transformStr = `translate3d(${tempRect?.left}px, ${tempRect.top}px, 0)`;
     const tempObj = {
@@ -141,6 +176,7 @@ export const HighlightBox = ({
 
   return (
     <div
+      ref={highlightBoxRef}
       className={styles.highlightBox}
       id={instance?._UNIQUE_ID}
       style={{
@@ -190,6 +226,26 @@ export const HighlightCanvasCore = (
     const list = allBoxRef.current || [];
     allBoxRef.current = list.filter((el) => el !== ref);
   };
+
+  // The overlay is outside the rendered page, so its coordinates must be
+  // refreshed when either the workspace or the iframe document scrolls.
+  useEffect(() => {
+    const scheduleUpdate = () => {
+      allBoxRef.current.forEach((box) => box.current?.update());
+    };
+    const targetWindows = new Set<Window>([window]);
+    instances.forEach((instance) => {
+      const target = instance.getDom();
+      const targetWindow = target?.ownerDocument.defaultView;
+      if (targetWindow) targetWindows.add(targetWindow);
+    });
+    targetWindows.forEach((targetWindow) => targetWindow.addEventListener('scroll', scheduleUpdate, true));
+    window.addEventListener('resize', scheduleUpdate);
+    return () => {
+      targetWindows.forEach((targetWindow) => targetWindow.removeEventListener('scroll', scheduleUpdate, true));
+      window.removeEventListener('resize', scheduleUpdate);
+    };
+  }, [instances]);
 
   return (
     <div className={styles.borderDrawBox} style={containerStyle || {}}>
