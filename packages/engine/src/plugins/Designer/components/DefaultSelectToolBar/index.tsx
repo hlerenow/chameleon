@@ -4,6 +4,7 @@ import { CopyOutlined, DeleteOutlined, EyeInvisibleOutlined } from '@ant-design/
 import styles from './style.module.scss';
 import { CNode } from '@chamn/model';
 import clsx from 'clsx';
+import { NodeSchemaButton } from '../NodeSchemaButton';
 
 export type DefaultSelectToolBarProps = {
   nodeList: CNode[];
@@ -73,6 +74,8 @@ export const getDefaultToolbarItem = (props: DefaultSelectToolBarProps) => {
     </div>
   );
 
+  const nodeSchemaItem = <NodeSchemaButton node={currentNode} key="NodeSchemaOutlined" />;
+
   const nodeLayout = (
     <LayoutSelect dataSource={parentNodeItems.reverse()} onSelect={toSelectNode} key={'LayoutSelect'}>
       <div>{currentNode?.value.title || currentNode?.material?.value.title || 'Empty'}</div>
@@ -80,18 +83,19 @@ export const getDefaultToolbarItem = (props: DefaultSelectToolBarProps) => {
   );
 
   return {
-    map: { copyItem, deleteItem, visibleItem, nodeLayout },
-    list: [nodeLayout, visibleItem, copyItem, deleteItem],
+    map: { copyItem, deleteItem, visibleItem, nodeLayout, nodeSchemaItem },
+    list: [nodeSchemaItem, nodeLayout, visibleItem, copyItem, deleteItem],
   };
 };
 
 export const DefaultSelectToolBar = (props: DefaultSelectToolBarProps) => {
-  const { copyItem, deleteItem, visibleItem, nodeLayout } = useMemo(() => {
+  const { copyItem, deleteItem, visibleItem, nodeLayout, nodeSchemaItem } = useMemo(() => {
     return getDefaultToolbarItem(props).map;
   }, [props]);
 
   return (
     <div className={styles.toolBarBox}>
+      {nodeSchemaItem}
       {nodeLayout}
       {visibleItem}
       {copyItem}
