@@ -48,7 +48,8 @@
   --sl-shadow-lg: 0 28px 80px rgba(0, 0, 0, 0.55);
 }
 
-:root[data-theme='dark'] {
+:root[data-theme='dark'],
+:root[data-theme='light'] {
   --sl-color-white: #f8f7ff;
   --sl-color-gray-1: #eceaf3;
   --sl-color-gray-2: #c6c3d0;
