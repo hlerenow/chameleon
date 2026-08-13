@@ -234,6 +234,12 @@ importers:
       astro-mermaid:
         specifier: ^1.2.0
         version: 1.4.0(astro@5.18.2(@types/node@24.13.3)(lightningcss@1.33.0)(rollup@4.62.4)(sass@1.102.0)(terser@5.49.2)(typescript@5.7.3)(yaml@2.9.0))(mermaid@11.16.1)
+      gridstack:
+        specifier: ^11.1.1
+        version: 11.5.1
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.18.1
       mermaid:
         specifier: ^11.12.2
         version: 11.16.1

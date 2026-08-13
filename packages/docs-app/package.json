@@ -28,6 +28,8 @@
     "antd": "^5.23.2",
     "astro": "^5.5.3",
     "astro-mermaid": "^1.2.0",
+    "gridstack": "^11.1.1",
+    "lodash-es": "^4.17.21",
     "mermaid": "^11.12.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
