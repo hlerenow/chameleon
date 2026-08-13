@@ -1,0 +1,42 @@
+---
+title: Engine 架构与包职责
+sidebar:
+  order: 4
+---
+
+# Engine 架构与包职责
+
+## 运行链路
+
+```text
+Engine
+  ├─ PluginManager
+  │   ├─ DesignerPlugin / Canvas
+  │   ├─ ComponentLibPlugin
+  │   ├─ OutlineTreePlugin
+  │   ├─ RightPanelPlugin
+  │   ├─ HistoryPlugin
+  │   ├─ HotkeysPlugin
+  │   └─ PageRuntimeLogPlugin
+  ├─ CPage (@chamn/model)
+  ├─ Workbench (@chamn/layout)
+  └─ Render / AssetLoader (@chamn/render)
+```
+
+`Engine` 构造时创建页面模型和资源包管理器；挂载后创建 `PluginManager`，按 `plugins` 顺序注册插件；所有插件完成初始化后触发 `onReady`。设计器通过 `renderJSUrl` 加载 UMD 渲染器，画布在 iframe 中运行。
+
+## 默认插件
+
+`plugins.DEFAULT_PLUGIN_LIST` 当前包含：`DesignerPlugin`、`PageRuntimeLogPlugin`、`OutlineTreePlugin`、`ComponentLibPlugin`、`GlobalStatePanelPlugin`、`RightPanelPlugin`、`HistoryPlugin`、`HotkeysPlugin`。
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+
+<Engine plugins={plugins.DEFAULT_PLUGIN_LIST} schema={schema} material={materials} />;
+```
+
+也可以传入子集。省略某个插件后，对应面板或能力不会自动出现；例如省略 `HotkeysPlugin` 后不会注册默认快捷键。
+
+## 设计态与预览态
+
+设计态由 Designer 插件持有画布和渲染实例，允许选中节点、修改属性和拖拽；`engine.preview()` 隐藏工作台并切换渲染器为预览模式；`engine.existPreview()` 恢复之前的工作台显示配置并返回编辑模式。

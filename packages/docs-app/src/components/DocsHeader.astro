@@ -1,0 +1,111 @@
+---
+import Search from 'virtual:starlight/components/Search';
+import SiteTitle from 'virtual:starlight/components/SiteTitle';
+import SocialIcons from 'virtual:starlight/components/SocialIcons';
+
+const base = '/chameleon/documents';
+const links = [
+  { label: '首页', href: `${base}/` },
+  { label: '快速开始', href: `${base}/guides/` },
+  { label: '编辑器', href: `${base}/guides/editor-basics/` },
+  { label: 'Engine', href: `${base}/reference/engine/introduction/` },
+  { label: '物料', href: `${base}/reference/material/introduction/` },
+  { label: '插件', href: `${base}/reference/plugin/plugin-develop/` },
+];
+---
+
+<div class="docs-header sl-flex">
+  <div class="title-wrapper sl-flex">
+    <img class="site-logo" src={`${base}/favicon.svg`} alt="" aria-hidden="true" />
+    <SiteTitle />
+  </div>
+
+  <nav class="top-nav" aria-label="主导航">
+    {links.map((link) => <a href={link.href}>{link.label}</a>)}
+  </nav>
+
+  <div class="header-tools sl-flex print:hidden">
+    <Search />
+    <div class="social-icons sl-flex"><SocialIcons /></div>
+  </div>
+</div>
+
+<style>
+  :global(:root) {
+    color-scheme: dark;
+  }
+  :global(html),
+  :global(body) {
+    background: #050505;
+  }
+  .docs-header {
+    height: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .title-wrapper {
+    min-width: 11rem;
+    align-items: center;
+    gap: 0.55rem;
+    overflow: clip;
+    padding: 0.25rem;
+    margin: -0.25rem;
+  }
+  .site-logo {
+    width: 3rem;
+    height: 3rem;
+    flex: none;
+  }
+  .top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    flex: 1;
+  }
+  .top-nav a {
+    color: var(--sl-color-gray-2);
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.48rem 0.62rem;
+    border-radius: 0.5rem;
+    transition:
+      color 0.2s,
+      background 0.2s;
+  }
+  .top-nav a:hover {
+    color: var(--sl-color-text-accent);
+    background: var(--sl-color-gray-6);
+  }
+  .header-tools {
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .social-icons {
+    gap: 0.75rem;
+    padding-left: 0.8rem;
+    border-left: 1px solid var(--sl-color-gray-5);
+  }
+  @media (max-width: 72rem) {
+    .top-nav {
+      gap: 0;
+    }
+    .top-nav a {
+      padding-inline: 0.4rem;
+      font-size: 0.76rem;
+    }
+  }
+  @media (max-width: 50rem) {
+    .top-nav {
+      display: none;
+    }
+    .docs-header {
+      justify-content: space-between;
+    }
+    .header-tools {
+      margin-left: auto;
+    }
+  }
+</style>

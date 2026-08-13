@@ -1,0 +1,39 @@
+---
+title: 预览与渲染
+sidebar:
+  order: 5
+---
+
+# 预览与渲染
+
+## Engine 内预览
+
+```tsx
+const onReady = ({ engine }) => {
+  engine.preview();
+};
+```
+
+`preview()` 会隐藏顶部栏、左右面板并将画布铺满，同时调用 Designer 的 `setPreviewMode()`。退出时调用 `existPreview()`，它会恢复进入预览前的工作台配置。
+
+## 配置设计器渲染器
+
+设计画布通过 iframe 加载 UMD 渲染器。Vite 项目推荐：
+
+```tsx
+import renderAsURL from '@chamn/render/dist/index.umd.js?url';
+
+<Engine {...props} renderJSUrl={renderAsURL} />;
+```
+
+也可以把 UMD 文件复制到构建产物后传入 `renderJSUrl="./render.umd.js"`，或传入可访问的 CDN URL。默认值是 `./render.umd.js`。
+
+## 独立预览页
+
+独立预览页可以从后端取得页面协议，加载 `assets`，再用 `@chamn/render` 的 `Render` 配合 `ReactAdapter` 渲染。仓库开发预览页的流程是：从 `localStorage.pageSchema` 读取协议，使用 `AssetLoader` 加载资源，按 `componentsMeta` 区分组件库和第三方库，最后渲染页面。
+
+```tsx
+<Render page={page} components={components} render={renderHandle} adapter={ReactAdapter} $$context={{ thirdLibs }} />
+```
+
+独立预览不包含编辑器面板和节点选择能力，适合发布后的只读页面；发布前仍需验证资源地址、组件版本和页面协议兼容性。

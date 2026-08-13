@@ -8,6 +8,8 @@ import { Code } from '@astrojs/starlight/components';
 
 引擎内置只提供了基础的 HTML Tag 组件以及对应的物料, 如: div、p、video...等等，如果需要扩展使用自定义的物料，参考如下方式
 
+接入分为两条链路：编辑器 iframe 需要 UMD JS/CSS 和物料描述；发布/预览页可以直接 import React 组件后交给 `Render`。两条链路的组件名和物料协议必须一致。
+
 ## 编辑器配置
 
 ### 导入组件物料
@@ -216,3 +218,11 @@ export const Preview = () => {
 
 查看 [物料开发指南](../reference/Material/developMaterial/) 了解如何开发自定义组件物料。
 :::
+
+## 接入检查清单
+
+- `material[].componentName` 与资源实际导出的组件名一致。
+- `assetPackagesList[].package` 与物料中的 npm 包信息一致。
+- 编辑器资源可从 iframe 访问，且 JS/CSS 顺序和跨域策略正确。
+- 发布页使用 `Render` 时传入对应的 `components` 映射。
+- 先在 `/preview` 或独立预览页验证，再接入业务保存和发布流程。

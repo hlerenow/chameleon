@@ -8,6 +8,31 @@ title: 插件开发指南
 
 Chameleon Engine 采用插件化架构，所有功能都可以通过插件扩展。本文档将详细介绍如何开发自定义插件。
 
+## 最小接入流程
+
+1. 定义插件函数，接收 `CPluginCtx`。
+2. 在 `init` 中创建视图、订阅事件或准备导出 API。
+3. 通过 `pluginManager.add()` 加入 Engine 的 `plugins` 数组。
+4. 在 `destroy` 中释放订阅和资源。
+
+插件之间通过 `pluginManager.get(name)` 获取已注册插件；需要覆盖内置插件初始化前配置时，在 Engine 的 `beforePluginRun` 中调用 `customPlugin`。
+
+```tsx
+const MyPlugin = (ctx) => ({
+  name: 'MyPlugin',
+  async init(pluginCtx) {
+    // 使用 pluginCtx.engine、pageModel、emitter 等核心上下文
+  },
+  async destroy() {},
+  export: () => ({}),
+  meta: { engine: { version: '0.12.3' } },
+});
+
+<Engine plugins={[...plugins.DEFAULT_PLUGIN_LIST, MyPlugin]} schema={schema} />;
+```
+
+实际插件类型和生命周期以 `CPlugin` / `PluginManager` 导出类型为准；插件名必须唯一。
+
 ## 插件架构总览
 
 ```mermaid

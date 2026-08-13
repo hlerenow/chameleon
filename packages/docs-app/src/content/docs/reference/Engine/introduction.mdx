@@ -8,7 +8,9 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 # Engine 介绍
 
-`@chamn/engine` 是 Chameleon 可视化编程引擎的核心包，提供了一个完整的低代码编辑器解决方案。它基于 React 构建，提供了丰富的 API 和插件系统，让你可以快速构建自己的可视化页面编辑器。
+`@chamn/engine` 是基于 React 的可视化页面编辑器容器。它组合 `@chamn/model` 的页面模型、`@chamn/render` 的渲染能力和 `@chamn/layout` 的工作台布局，通过插件提供设计器、组件库、属性面板、历史记录、快捷键等功能。
+
+本页回答“Engine 是什么”；接入代码见[快速开始](../../guides/)，公开 Props 和实例方法见 [Engine API](./api)，模块职责见 [Engine 架构](./architecture)。
 
 ## 核心特性
 
@@ -180,6 +182,17 @@ Engine 内部使用 `CPage` 来管理页面数据，提供了完整的页面节�
 ### 物料系统
 
 物料系统包括组件描述（Material）和组件库（AssetPackage），通过 `componentName` 进行关联。
+
+## 包职责
+
+| 包              | 责任                     | 在 Engine 中的用途                |
+| --------------- | ------------------------ | --------------------------------- |
+| `@chamn/engine` | 编辑器容器、插件和工作台 | 提供 `Engine`、内置插件和接入 API |
+| `@chamn/model`  | 页面协议、节点和物料模型 | 保存、读取、更新页面节点          |
+| `@chamn/render` | 设计态/运行态渲染        | 在画布 iframe 或预览页中渲染页面  |
+| `@chamn/layout` | 工作台布局能力           | 承载顶部栏、左右面板和画布        |
+
+`@chamn/engine` 的运行时依赖通过 workspace 包连接。业务侧通常直接安装 Engine、Model、Render，并按需提供物料资源。
 
 ## 与阿里 LowCode Engine 对比
 

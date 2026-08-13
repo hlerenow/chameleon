@@ -4,26 +4,49 @@ import starlight from '@astrojs/starlight';
 import react from '@astrojs/react';
 import astroMermaid from 'astro-mermaid';
 
-const isProd = process.env.NODE_ENV === 'production';
-
 // https://astro.build/config
 export default defineConfig({
-  base: isProd ? '/chameleon/documents' : '/documents',
+  base: '/chameleon/documents',
   integrations: [
     starlight({
       title: 'Chameleon Docs',
       social: {
         github: 'https://github.com/hlerenow/chameleon',
       },
+      components: {
+        Header: './src/components/DocsHeader.astro',
+      },
       sidebar: [
         {
-          label: 'Guides',
+          label: '首页 / 文档总览',
+          link: '/',
+        },
+        {
+          label: '常用入口',
+          items: [
+            { label: '快速开始', link: '/guides/' },
+            { label: '编辑器基础操作', link: '/guides/editor-basics/' },
+            { label: '调试指南', link: '/guides/debugging/' },
+            { label: '预览与渲染', link: '/guides/preview-rendering/' },
+          ],
+        },
+        {
+          label: 'Engine 核心',
+          items: [
+            { label: 'Engine 介绍', link: '/reference/engine/introduction/' },
+            { label: 'Engine 架构', link: '/reference/engine/architecture/' },
+            { label: 'Engine API', link: '/reference/engine/api/' },
+            { label: '快捷键', link: '/reference/engine/hotkeys/' },
+          ],
+        },
+        {
+          label: 'Guides / 使用指南',
           autogenerate: {
             directory: 'guides',
           },
         },
         {
-          label: 'Reference',
+          label: 'Reference / API 参考',
           autogenerate: {
             directory: 'reference',
           },

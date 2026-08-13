@@ -9,6 +9,8 @@ import { Tabs, TabItem, Code } from '@astrojs/starlight/components';
 
 接入编辑器之后，通过页面编辑，最终导出后可以得到一个页面的 schema JSON 协议。如何将协议重新渲染为一个可以运行的 React 页面呢？
 
+本页面向发布页/只读页；如果要在编辑器内切换预览模式，请看[预览与渲染](./preview-rendering)。
+
 ## 安装
 
 <Tabs>
@@ -18,6 +20,8 @@ import { Tabs, TabItem, Code } from '@astrojs/starlight/components';
 </Tabs>
 
 ## 使用方式
+
+渲染前必须保证 `page` 已加载，且 `components` 的 key 与页面协议中的 `componentName` 对应。动态资源模式还需要确保 `assets`、`componentsMeta` 和 `thirdLibs` 配置完整。
 
 渲染器支持两种使用方式：
 

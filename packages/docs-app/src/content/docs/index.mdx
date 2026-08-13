@@ -1,37 +1,311 @@
 ---
-title: Welcome to Chameleon Engine
-description: Get started building your docs site with Starlight.
+title: Chameleon Engine
+description: React 可视化页面编辑器引擎，连接页面模型、物料系统与渲染器。
 template: splash
 hero:
-  tagline: Congrats on setting up a new Starlight project!
-  image:
-    file: ../../assets/houston.webp
-  actions:
-    - text: Start Guide
-      link: /chameleon/documents/guides
-      icon: right-arrow
-      variant: primary
-    # - text: Read the docs
-    #   link: /reference/
-    #   icon: external
+  tagline: Schema-driven React editor
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
-import { Link } from '../../components/Link.tsx';
+import { Steps } from '@astrojs/starlight/components';
+import engineScreenshot from '../../assets/engine-workbench-latest.png';
 
-## Next steps
+<div class="home-intro">
+  <div class="intro-copy">
+    <p class="eyebrow">CHAMELEON / REACT VISUAL EDITOR</p>
+    <h2>把页面协议，变成可编辑的产品界面。</h2>
+    <p class="intro-description">
+      Chameleon 是面向 React 应用的可视化页面编辑与低代码渲染引擎。用 Schema 保存页面，用 Material 描述业务组件，再由 Engine、Plugin 与 Render 串起编辑、预览和发布。
+    </p>
+    <div class="intro-actions">
+      <a class="button-primary" href="https://hlerenow.github.io/chameleon/">在线体验编辑器 <span>↗</span></a>
+      <a class="button-secondary" href="/chameleon/documents/guides/">快速开始 <span>→</span></a>
+    </div>
+    <div class="trust-row">
+      <span><i class="dot dot-blue"></i>Schema 驱动</span>
+      <span><i class="dot dot-purple"></i>插件化工作台</span>
+      <span><i class="dot dot-green"></i>TypeScript 类型支持</span>
+    </div>
+  </div>
 
-<CardGrid stagger>
-  <Card title="Material Develop" icon="pencil">
-    How to develop a component that can be used in the editor? <Link url="reference/material/introduction/">Doc</Link>
-  </Card>
-  <Card title="Schema Defined" icon="add-document">
-    Definition of page protocol <Link url="reference/pageschema/page/">Doc</Link>
-  </Card>
-  <Card title="Plugins" icon="setting">
-    How to develop editor plugins? <Link url="reference/plugin/plugin-develop">Doc</Link>
-  </Card>
-  <Card title="API" icon="open-book">
-    API Description, Learn more in <Link url="guides">Doc</Link>
-  </Card>
-</CardGrid>
+  <div class="engine-orbit" aria-label="Chameleon Engine architecture">
+    <div class="orbit-ring orbit-ring-one"></div>
+    <div class="orbit-ring orbit-ring-two"></div>
+    <div class="orbit-glow"></div>
+    <div class="engine-mark"><img src="/chameleon/documents/favicon.svg" alt="Chameleon" /><small>ENGINE</small></div>
+    <div class="orbit-chip chip-model">MODEL</div>
+    <div class="orbit-chip chip-render">RENDER</div>
+    <div class="orbit-chip chip-plugin">PLUGIN</div>
+  </div>
+</div>
+
+<div class="metric-grid">
+  <div>
+    <strong>Schema</strong>
+    <span>页面协议是唯一数据源</span>
+  </div>
+  <div>
+    <strong>Material</strong>
+    <span>业务组件即编辑器物料</span>
+  </div>
+  <div>
+    <strong>Plugin</strong>
+    <span>工作台和交互可按需扩展</span>
+  </div>
+  <div>
+    <strong>Render</strong>
+    <span>同一协议完成独立预览</span>
+  </div>
+</div>
+
+## Workbench
+
+<div class="screenshot-card">
+  <img src={engineScreenshot.src} alt="Chameleon Engine 工作台：大纲树、画布和属性面板" loading="lazy" />
+  <div class="screenshot-caption">
+    <span>ENGINE WORKBENCH</span>
+    <small>Outline → Canvas → Inspector</small>
+  </div>
+</div>
+
+Outline, canvas and inspector converge on the page model. Export the schema once; let Render consume it anywhere.
+
+## 在线体验与示例
+
+<div class="demo-grid">
+  <a class="demo-card demo-card-primary" href="https://hlerenow.github.io/chameleon/">
+    <span class="demo-kicker">LIVE / EDITOR</span>
+    <b>
+      主编辑器 Demo <i>↗</i>
+    </b>
+    <p>直接在浏览器中拖拽组件、编辑属性和样式，查看页面 Schema 的实时变化。</p>
+    <small>可视化编辑 · 组件物料 · 页面大纲</small>
+  </a>
+  <a class="demo-card" href="https://hlerenow.github.io/chameleon/#/layout-debug">
+    <span class="demo-kicker">LIVE / LAYOUT</span>
+    <b>
+      Layout Debug <i>↗</i>
+    </b>
+    <p>验证画布布局、选中态、尺寸调整与响应式断点行为。</p>
+    <small>布局调试 · 拖拽交互 · 响应式</small>
+  </a>
+  <a class="demo-card" href="https://github.com/ByteCrazy/chameleon-demo">
+    <span class="demo-kicker">SOURCE / APP</span>
+    <b>
+      完整业务示例 <i>↗</i>
+    </b>
+    <p>查看自定义物料、iframe 渲染、第三方资源与页面持久化接入。</p>
+    <small>React 项目 · 可复制源码 · 真实接入</small>
+  </a>
+</div>
+
+## Entry points
+
+<div class="section-lead">从最贴近当前任务的入口开始。</div>
+
+<div class="path-grid">
+  <a class="entry-card" href="/chameleon/documents/guides/">
+    <strong>接入 Engine</strong>
+    <span aria-hidden="true">→</span>
+    <p>用 Schema、物料和插件挂载最小编辑器。</p>
+  </a>
+  <a class="entry-card" href="/chameleon/documents/reference/engine/architecture/">
+    <strong>理解架构</strong>
+    <span aria-hidden="true">→</span>
+    <p>梳理 Engine、Model、Layout 与 Render 的职责。</p>
+  </a>
+  <a class="entry-card" href="/chameleon/documents/guides/preview-rendering/">
+    <strong>构建预览</strong>
+    <span aria-hidden="true">→</span>
+    <p>让保存后的页面在编辑器之外独立运行。</p>
+  </a>
+</div>
+
+## Runtime map
+
+<div class="module-grid">
+  <article class="runtime-module">
+    <b>Engine</b>
+    <span>Workbench entry point; wires model, materials and plugins.</span>
+    <a href="/chameleon/documents/reference/engine/introduction/">API →</a>
+  </article>
+  <article class="runtime-module">
+    <b>Model</b>
+    <span>Owns the node tree, selection, history and schema I/O.</span>
+    <a href="/chameleon/documents/reference/pageschema/page/">Schema →</a>
+  </article>
+  <article class="runtime-module">
+    <b>Layout</b>
+    <span>Hosts the canvas, panels, docking and drag surfaces.</span>
+    <a href="https://github.com/hlerenow/chameleon/tree/master/packages/layout">Source →</a>
+  </article>
+  <article class="runtime-module">
+    <b>Material</b>
+    <span>Defines componentName, props, setters, events and assets.</span>
+    <a href="/chameleon/documents/guides/addcustomcomponent/">Materials →</a>
+  </article>
+  <article class="runtime-module">
+    <b>Plugin</b>
+    <span>Adds Designer, panels, shortcuts and custom workbench behavior.</span>
+    <a href="/chameleon/documents/reference/plugin/plugin-develop/">Plugins →</a>
+  </article>
+  <article class="runtime-module">
+    <b>Render</b>
+    <span>Maps page and components into a design or production React tree.</span>
+    <a href="/chameleon/documents/guides/userender/">Render →</a>
+  </article>
+</div>
+
+## System flow
+
+<div
+  class="architecture-diagram"
+  role="img"
+  aria-label="Chameleon Engine architecture: material and page schema enter Engine, then Render outputs a runtime page"
+>
+  <div class="arch-column">
+    <small>INPUT</small>
+    <div class="arch-node">
+      <b>Material</b>
+      <span>meta / assets</span>
+    </div>
+    <div class="arch-node">
+      <b>Page Schema</b>
+      <span>nodes / props / style</span>
+    </div>
+  </div>
+  <div class="arch-connector">→</div>
+  <div class="arch-column arch-core">
+    <small>DESIGN TIME</small>
+    <div class="arch-node">
+      <b>Engine</b>
+      <span>Workbench + PluginManager</span>
+    </div>
+    <div class="arch-node">
+      <b>Model</b>
+      <span>tree / selection / history</span>
+    </div>
+  </div>
+  <div class="arch-connector">→</div>
+  <div class="arch-column">
+    <small>OUTPUT</small>
+    <div class="arch-node">
+      <b>Render</b>
+      <span>ReactAdapter + map</span>
+    </div>
+    <div class="arch-node">
+      <b>Preview / Publish</b>
+      <span>runtime page</span>
+    </div>
+  </div>
+</div>
+
+<div class="chain-grid">
+  <article class="flow-step">
+    <span>01</span>
+    <b>Edit</b>
+    <small>Mutate nodes, props and styles through the workbench.</small>
+  </article>
+  <article class="flow-step">
+    <span>02</span>
+    <b>Export</b>
+    <small>Persist a portable page schema from pageModel.</small>
+  </article>
+  <article class="flow-step">
+    <span>03</span>
+    <b>Render</b>
+    <small>Resolve page, components and adapter into React.</small>
+  </article>
+  <article class="flow-step">
+    <span>04</span>
+    <b>Ship</b>
+    <small>Load assets and publish an independent runtime page.</small>
+  </article>
+</div>
+
+## Quickstart
+
+<Steps>
+1. **安装核心包**
+
+```bash
+pnpm add @chamn/engine @chamn/model @chamn/render
+```
+
+2. **传入页面与物料**
+
+   使用 `schema` 描述页面结构，使用 `material` 描述组件能力；动态资源通过 `assetPackagesList` 加载。
+
+3. **连接你的业务工作流**
+
+   在 `onReady` 中访问 `pageModel`，导出 schema，接入保存与预览。
+
+   </Steps>
+
+```tsx
+import { Engine, plugins } from '@chamn/engine';
+import '@chamn/engine/dist/style.css';
+
+export function Editor({ schema, materials }) {
+  return (
+    <Engine
+      plugins={plugins.DEFAULT_PLUGIN_LIST}
+      schema={schema}
+      material={materials}
+      onReady={({ engine }) => console.log(engine.pageModel.export())}
+    />
+  );
+}
+```
+
+<div class="home-footer-cta">
+  <p class="eyebrow">THE RUNTIME IS YOURS</p>
+  <h2>Compose. Render. Ship.</h2>
+  <a class="button-primary" href="/chameleon/documents/guides/">
+    Start building <span>→</span>
+  </a>
+</div>
+
+<style>{String.raw`
+  :global(:root) { color-scheme: dark; }
+  :global(html), :global(body) { background: #050505; }
+  :global(main) { background: #050505; }
+  .home-intro { display: grid; grid-template-columns: 1.1fr .9fr; gap: 2rem; align-items: center; padding: 3rem 0 2.5rem; }
+  .eyebrow { color: #a78bfa; font-size: .72rem; font-weight: 800; letter-spacing: .16em; margin: 0 0 1rem; }
+  .intro-copy h2 { max-width: 680px; color: #fafafa; font-size: clamp(2.5rem, 5vw, 4.8rem); line-height: 1.02; letter-spacing: -.055em; margin: 0; }
+  .intro-description { max-width: 620px; color: var(--sl-color-gray-2); font-size: 1.08rem; line-height: 1.8; margin: 1.5rem 0; }
+  .intro-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+  .button-primary, .button-secondary { display: inline-flex; align-items: center; gap: .7rem; border-radius: 999px; padding: .82rem 1.2rem; font-weight: 700; text-decoration: none; transition: transform .2s, box-shadow .2s; }
+  .button-primary { color: white !important; background: #7c3aed; box-shadow: 0 12px 28px #7c3aed45; }
+  .button-secondary { color: #e5e5e5 !important; border: 1px solid #333; background: #0c0c0c; }
+  .button-primary:hover, .button-secondary:hover { transform: translateY(-2px); }
+  .trust-row { display: flex; flex-wrap: wrap; gap: 1.2rem; margin-top: 1.5rem; color: var(--sl-color-gray-3); font-size: .82rem; }
+  .trust-row span { display: inline-flex; gap: .4rem; align-items: center; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; } .dot-blue { background: #a78bfa; } .dot-purple { background: #7c3aed; } .dot-green { background: #d4d4d4; }
+  .engine-orbit { position: relative; min-height: 360px; display: grid; place-items: center; overflow: hidden; }
+  .orbit-ring { position: absolute; border: 1px solid #7c3aed55; border-radius: 50%; transform: rotate(-20deg); }
+  .orbit-ring-one { width: 290px; height: 150px; } .orbit-ring-two { width: 340px; height: 210px; transform: rotate(55deg); border-color: #a78bfa45; }
+  .orbit-glow { width: 170px; height: 170px; border-radius: 50%; background: radial-gradient(circle, #7c3aed55, transparent 68%); filter: blur(12px); }
+  .engine-mark { position: absolute; width: 128px; height: 128px; display: grid; place-content: center; gap: .4rem; text-align: center; border-radius: 24px; color: white; background: #0b0b0b; border: 1px solid #7c3aed; box-shadow: 0 22px 45px #7c3aed55; transform: rotate(-8deg); }
+  .engine-mark img { width: 82px; height: 82px; margin: 0 auto; } .engine-mark small { font-size: .55rem; letter-spacing: .22em; opacity: .7; }
+  .orbit-chip { position: absolute; padding: .45rem .7rem; border-radius: 999px; background: #0b0b0b; border: 1px solid #333; font-size: .68rem; font-weight: 800; letter-spacing: .12em; box-shadow: 0 8px 22px #000; } .chip-model { top: 20%; left: 8%; color: #a78bfa; } .chip-render { right: 4%; top: 30%; color: #d4d4d4; } .chip-plugin { bottom: 17%; left: 18%; color: #c4b5fd; }
+  .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-block: 1px solid var(--sl-color-gray-5); margin: 1rem 0 4rem; }
+  .metric-grid div { display: grid; gap: .2rem; padding: 1.35rem 1rem; border-right: 1px solid var(--sl-color-gray-5); } .metric-grid div:last-child { border: 0; } .metric-grid strong { color: #fafafa; font-size: 1.3rem; letter-spacing: -.06em; } .metric-grid span, .section-lead { color: var(--sl-color-gray-3); font-size: .85rem; }
+  .screenshot-card { margin: 1.5rem 0 4rem; border: 1px solid #292929; border-radius: 10px; overflow: hidden; background: #0b0b0b; } .screenshot-card img { display: block; width: 100%; max-height: 520px; object-fit: cover; object-position: top; filter: saturate(.8) contrast(1.05); } .screenshot-caption { display: flex; justify-content: space-between; gap: 1rem; padding: .8rem 1rem; color: #a78bfa; font: 700 .7rem ui-monospace, monospace; letter-spacing: .08em; } .screenshot-caption small { color: #737373; font: .78rem ui-sans-serif, sans-serif; letter-spacing: 0; }
+  .demo-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin: 1.5rem 0 4rem; border: 1px solid #292929; background: #292929; }
+  .demo-card { display: grid; grid-template-rows: 1rem 1.8rem minmax(4.3rem, 1fr) auto; gap: .8rem; min-height: 15rem; padding: 1.35rem; color: inherit; text-decoration: none; background: #0b0b0b; transition: background .2s, transform .2s; } .demo-card:hover { background: #121212; transform: translateY(-3px); } .demo-card-primary { background: linear-gradient(145deg, #28114a, #0b0b0b 70%); } .demo-kicker { color: #a78bfa; font: 800 .66rem/1rem ui-monospace, monospace; letter-spacing: .12em; } .demo-card b { display: flex; justify-content: space-between; align-items: center; color: #fafafa; font-size: 1.08rem; } .demo-card i { color: #c4b5fd; font-style: normal; } .demo-card p { margin: 0; color: #a3a3a3; font-size: .87rem; line-height: 1.65; } .demo-card small { padding-top: .8rem; border-top: 1px solid #333; color: #737373; font-size: .72rem; }
+  .module-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; border: 1px solid #292929; background: #292929; margin: 1.5rem 0 4rem; }
+  .module-grid > .runtime-module { box-sizing: border-box; display: grid; grid-template-rows: 1.6rem minmax(3.2rem, 1fr) 1.25rem; align-content: start; gap: .65rem; min-width: 0; min-height: 10rem; margin: 0 !important; padding: 1.2rem !important; border: 0 !important; background: #0b0b0b; transition: transform .2s ease, background .2s ease, box-shadow .2s ease; }
+  .module-grid > .runtime-module:hover { position: relative; z-index: 1; background: #111; box-shadow: inset 0 0 0 1px #7c3aed, 0 12px 28px #7c3aed20; transform: translateY(-3px); }
+  .module-grid > .runtime-module b { display: block; margin: 0 !important; color: #fafafa; font: 700 1.05rem/1.6rem ui-monospace, monospace; } .module-grid > .runtime-module span { display: block; margin: 0 !important; color: #a3a3a3; font-size: .85rem; line-height: 1.6; } .module-grid > .runtime-module a { display: block; margin: 0 !important; align-self: end; color: #a78bfa; font-size: .78rem; line-height: 1.25rem; text-decoration: none; transition: transform .2s ease, color .2s ease; } .module-grid > .runtime-module:hover a { color: #c4b5fd; transform: translateX(4px); }
+  .architecture-diagram { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 1rem; align-items: center; padding: 1.3rem; border: 1px solid #292929; background: radial-gradient(circle at 50% 50%, #7c3aed12, transparent 48%), #0b0b0b; } .arch-column { display: grid; gap: .65rem; } .arch-column > small { color: #737373; font: 700 .65rem ui-monospace, monospace; letter-spacing: .14em; } .arch-node { box-sizing: border-box; display: grid; grid-template-rows: 1.35rem 1.2rem; align-content: center; gap: .55rem; width: 100%; min-height: 8.5rem; padding: 1rem 1.2rem; border: 1px solid #333; border-radius: 7px; background: #111; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; } .arch-node:hover { border-color: #7c3aed; box-shadow: 0 12px 28px #7c3aed25; transform: translateY(-3px); } .arch-node b { color: #e5e5e5; font-size: .85rem; line-height: 1.35rem; } .arch-node span { color: #737373; font: .7rem/1.2rem ui-monospace, monospace; } .arch-core .arch-node:first-of-type { border-color: #7c3aed; box-shadow: 0 0 25px #7c3aed20; } .arch-connector { display: flex; align-items: center; justify-content: center; height: 8.5rem; color: #a78bfa; font-size: 1.4rem; transition: transform .2s ease, color .2s ease; } .architecture-diagram:hover .arch-connector { color: #c4b5fd; transform: translateX(3px); }
+  .chain-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0 4rem; }
+  .chain-grid > .flow-step { box-sizing: border-box; display: grid; grid-template-rows: 1.1rem 1.5rem minmax(3.2rem, auto); align-self: start; align-content: start; gap: .4rem; min-width: 0; min-height: 8.1rem; margin: 0 !important; padding: .8rem 0 0 !important; border: 0 !important; border-top: 1px solid #7c3aed !important; transition: transform .2s ease, border-color .2s ease, filter .2s ease; }
+  .chain-grid > .flow-step:hover { border-top-color: #c4b5fd !important; filter: drop-shadow(0 10px 16px #7c3aed20); transform: translateY(-3px); }
+  .chain-grid > .flow-step span { display: block; margin: 0 !important; color: #a78bfa; font: 700 .7rem/1.1rem ui-monospace, monospace; } .chain-grid > .flow-step b { display: block; margin: 0 !important; color: #fafafa; line-height: 1.5rem; } .chain-grid > .flow-step small { display: block; margin: 0 !important; color: #737373; line-height: 1.55; max-width: 20rem; }
+  .section-lead { margin: -.8rem 0 1.5rem; font-size: 1rem; } .path-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 4rem; }
+  .path-grid > .entry-card { box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 1fr) 1.25rem; grid-template-rows: 1.7rem minmax(3.2rem, 1fr); column-gap: .8rem; row-gap: .9rem; min-height: 150px; margin: 0 !important; padding: 1.3rem !important; border: 1px solid #292929 !important; border-radius: 10px; background: #0b0b0b; color: inherit; text-decoration: none; transition: transform .2s, border-color .2s; } .path-grid > .entry-card:hover { transform: translateY(-4px); border-color: #7c3aed !important; }
+  .entry-card strong { display: block; margin: 0 !important; color: #fafafa; font-size: 1.1rem; line-height: 1.7rem; } .entry-card > span { display: block; margin: 0 !important; color: #a78bfa; font-size: 1.25rem; line-height: 1.7rem; text-align: right; } .entry-card p { grid-column: 1 / -1; display: block; margin: 0 !important; color: var(--sl-color-gray-3); line-height: 1.6; }
+  .home-footer-cta { text-align: center; padding: 3rem 1rem; border-radius: 10px; background: #0b0b0b; border: 1px solid #7c3aed; color: white; } .home-footer-cta .eyebrow { color: #c4b5fd; } .home-footer-cta h2 { font-size: clamp(1.8rem, 4vw, 3rem); margin: 0 0 1.5rem; letter-spacing: -.04em; } .home-footer-cta .button-primary { background: #7c3aed; color: white !important; box-shadow: none; }
+  @media (prefers-reduced-motion: reduce) { .module-grid > .runtime-module, .module-grid > .runtime-module a, .arch-node, .arch-connector, .chain-grid > .flow-step { transition: none; } .module-grid > .runtime-module:hover, .arch-node:hover, .chain-grid > .flow-step:hover, .architecture-diagram:hover .arch-connector { transform: none; } }
+  @media (max-width: 700px) { .home-intro { grid-template-columns: 1fr; padding-top: 1rem; } .engine-orbit { min-height: 260px; } .metric-grid { grid-template-columns: repeat(2, 1fr); } .metric-grid div:nth-child(2) { border-right: 0; } .path-grid, .module-grid, .chain-grid, .demo-grid { grid-template-columns: 1fr; } .architecture-diagram { grid-template-columns: 1fr; } .arch-connector { transform: rotate(90deg); text-align: center; } .screenshot-caption { flex-direction: column; } }
+`}</style>

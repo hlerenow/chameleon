@@ -6,6 +6,16 @@ sidebar:
 
 # Engine 使用示例
 
+## 接入前准备
+
+准备三类数据：
+
+- `schema`：`@chamn/model` 页面协议数据。
+- `material`：组件属性、事件和 setter 等物料描述。
+- `assetPackagesList`：渲染器需要加载的组件 JS/CSS 资源包；使用 `components` 直接传入组件时可不配置资源包。
+
+Engine 容器必须有明确高度，否则工作台和画布没有可用空间。
+
 ## 基础使用
 
 最简单的使用方式，使用默认插件列表：
@@ -217,6 +227,22 @@ function App() {
   return <Engine plugins={DEFAULT_PLUGIN_LIST} schema={pageSchema} material={materials} onReady={onReady} />;
 }
 ```
+
+## 语言与响应式配置
+
+```tsx
+<Engine
+  {...props}
+  locale="zh_CN"
+  responsiveSizes={[
+    { name: 'desktop', width: 1200 },
+    { name: 'mobile', width: 375 },
+  ]}
+  i18nResources={customResources}
+/>
+```
+
+`locale` 支持 `zh_CN`、`en_US` 及对应连字符形式。`responsiveSizes` 按宽到窄的顺序传入，用于控制响应式 CSS 覆盖优先级。
 
 ## 动态更新物料
 

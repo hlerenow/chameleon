@@ -6,6 +6,8 @@ sidebar:
 
 物料开发使用该[【模版工程】](https://github.com/ByteCrazy/chameleon-material-template.git)即可
 
+物料包同时描述“编辑器如何配置组件”和“运行时如何找到组件”。开发前先确认组件的 `componentName`、属性 setter、事件和资源包全局变量，再设计 meta。
+
 ```bash
 git clone https://github.com/ByteCrazy/chameleon-material-template.git
 
@@ -23,6 +25,8 @@ pnpm run build
 
 访问 [http://localhost:3000](http://localhost:3000)
 开发完成之后发布 npm 包即可
+
+发布后，在 Engine 中传入物料 meta，并为编辑器提供 UMD JS/CSS；在生产预览页则直接导入组件映射。详细接入示例见[添加自定义组件物料](../../guides/addCustomComponent)。
 
 ### 物料包命名规范
 

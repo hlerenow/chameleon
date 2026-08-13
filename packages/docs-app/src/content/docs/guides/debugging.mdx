@@ -1,0 +1,53 @@
+---
+title: 调试指南
+sidebar:
+  order: 4
+---
+
+# 调试指南
+
+## 先确认三层数据
+
+遇到渲染或编辑问题，按以下顺序检查：
+
+1. `schema`：节点结构、`componentName`、组件属性是否正确。
+2. `material`：组件是否有物料描述，setter 和组件名是否匹配。
+3. `assetPackagesList` / `components`：运行时组件和 CSS 是否成功加载。
+
+## 查看 Engine 上下文
+
+在 `onReady` 中查看页面模型、插件管理器和当前节点：
+
+```tsx
+<Engine
+  {...props}
+  onReady={(ctx) => {
+    console.log('engine', ctx.engine);
+    console.log('page', ctx.engine.pageModel.export());
+    console.log('plugins', ctx.pluginManager);
+  }}
+/>
+```
+
+开发环境下 Engine 还会把实例挂到 `window.__C_ENGINE__` 和 `window.__CHAMELEON_ENG__`，便于浏览器控制台检查。业务代码不要依赖这些内部调试字段。
+
+## 使用运行时日志
+
+默认插件列表包含 `PageRuntimeLogPlugin`。它收集页面运行时的 `debug`、`info`、`log`、`warn`、`error`、`exception` 和未处理 Promise 拒绝等记录。若看不到日志，确认没有从插件列表移除该插件，并检查 iframe 控制台。
+
+## 开发环境验证
+
+Engine 包提供 `pnpm --filter @chamn/engine dev`、`pnpm --filter @chamn/engine build` 和 `pnpm --filter @chamn/engine test` 脚本。仓库源码示例还包含 `/preview`、`/previewComp` 路由，可用来验证独立页面和组件预览。具体启动参数以根目录 workspace 脚本为准。
+
+## 查看页面协议
+
+Engine 导出 `DisplaySourceSchema`，可用于在开发工具中展示当前 `pageModel` 的源数据。保存前也可用 `pageModel.export()` 输出协议，重点检查节点 ID、父子关系和资源列表。
+
+## iframe 与资源问题
+
+设计画布在 iframe 中运行。组件显示为空时，检查：
+
+- `renderJSUrl` 是否指向可访问的 `@chamn/render` UMD 文件。
+- 浏览器 Network 是否有组件 JS/CSS 加载失败。
+- 组件全局变量是否与资源包和 `componentsMeta` 对应。
+- iframe 控制台是否有跨域、脚本异常或未处理 Promise 错误。
