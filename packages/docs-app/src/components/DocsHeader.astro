@@ -1,5 +1,6 @@
 ---
 import Search from 'virtual:starlight/components/Search';
+import LanguageSelect from 'virtual:starlight/components/LanguageSelect';
 import SiteTitle from 'virtual:starlight/components/SiteTitle';
 import SocialIcons from 'virtual:starlight/components/SocialIcons';
 
@@ -26,6 +27,7 @@ const links = [
 
   <div class="header-tools sl-flex print:hidden">
     <Search />
+    <LanguageSelect />
     <div class="social-icons sl-flex"><SocialIcons /></div>
   </div>
 </div>
@@ -38,11 +40,27 @@ const links = [
   :global(body) {
     background: #050505;
   }
+  :global(header.header) {
+    background: linear-gradient(90deg, #020202 0%, #08050d 52%, #020202 100%);
+    border-bottom-color: #221734;
+    box-shadow: 0 1px 0 #7c3aed30, 0 14px 36px #00000080;
+  }
   .docs-header {
+    position: relative;
     height: 100%;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
+  }
+  .docs-header::after {
+    position: absolute;
+    right: 18%;
+    bottom: -1px;
+    left: 18%;
+    height: 1px;
+    content: '';
+    background: linear-gradient(90deg, transparent, #7c3aed80, transparent);
+    pointer-events: none;
   }
   .title-wrapper {
     min-width: 11rem;
@@ -56,6 +74,7 @@ const links = [
     width: 3rem;
     height: 3rem;
     flex: none;
+    filter: drop-shadow(0 0 10px #7c3aed55);
   }
   .top-nav {
     display: flex;
@@ -76,8 +95,9 @@ const links = [
       background 0.2s;
   }
   .top-nav a:hover {
-    color: var(--sl-color-text-accent);
-    background: var(--sl-color-gray-6);
+    color: #ddd6fe;
+    background: #1a1028;
+    box-shadow: inset 0 0 0 1px #7c3aed45;
   }
   .header-tools {
     align-items: center;
@@ -86,7 +106,7 @@ const links = [
   .social-icons {
     gap: 0.75rem;
     padding-left: 0.8rem;
-    border-left: 1px solid var(--sl-color-gray-5);
+    border-left: 1px solid #2b2038;
   }
   @media (max-width: 72rem) {
     .top-nav {

@@ -10,12 +10,20 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'Chameleon Docs',
+      customCss: ['./src/styles/fonts.css'],
+      locales: {
+        root: { label: '中文', lang: 'zh-CN' },
+        en: { label: 'English', lang: 'en' },
+      },
+      defaultLocale: 'root',
       social: {
         github: 'https://github.com/hlerenow/chameleon',
       },
       components: {
         Header: './src/components/DocsHeader.astro',
+        Footer: './src/components/DocsFooter.astro',
       },
+      pagination: false,
       sidebar: [
         {
           label: '首页 / 文档总览',

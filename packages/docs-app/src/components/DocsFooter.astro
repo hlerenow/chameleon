@@ -1,0 +1,83 @@
+---
+const base = '/chameleon/documents';
+const isEnglish = Astro.url.pathname.includes('/en/');
+const copy = isEnglish
+  ? {
+      overview: 'Overview',
+      resources: 'Resources',
+      reference: 'Reference',
+      social: 'Social',
+      home: 'Home',
+      guides: 'Guides',
+      editor: 'Editor basics',
+      engine: 'Engine',
+      architecture: 'Architecture',
+      materials: 'Materials',
+      plugins: 'Plugins',
+      copyright: '© 2026 Chameleon contributors',
+    }
+  : {
+      overview: '概览',
+      resources: '资源',
+      reference: '参考',
+      social: '社区',
+      home: '首页',
+      guides: '快速开始',
+      editor: '编辑器基础',
+      engine: 'Engine',
+      architecture: '系统架构',
+      materials: '物料系统',
+      plugins: '插件开发',
+      copyright: '© 2026 Chameleon contributors',
+    };
+---
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src={`${base}/favicon.svg`} alt="" aria-hidden="true" />
+      <span>CHAMELEON</span>
+    </div>
+    <div class="footer-grid">
+      <section>
+        <p>{copy.overview}</p>
+        <a href={`${base}/`}>{copy.home}</a>
+        <a href={`${base}/guides/`}>{copy.guides}</a>
+        <a href={`${base}/guides/editor-basics/`}>{copy.editor}</a>
+      </section>
+      <section>
+        <p>{copy.resources}</p>
+        <a href="https://hlerenow.github.io/chameleon/">Editor demo ↗</a>
+        <a href="https://github.com/ByteCrazy/chameleon-demo">Example app ↗</a>
+        <a href="https://github.com/hlerenow/chameleon/releases">Releases ↗</a>
+      </section>
+      <section>
+        <p>{copy.reference}</p>
+        <a href={`${base}/reference/engine/introduction/`}>{copy.engine}</a>
+        <a href={`${base}/reference/engine/architecture/`}>{copy.architecture}</a>
+        <a href={`${base}/reference/material/introduction/`}>{copy.materials}</a>
+        <a href={`${base}/reference/plugin/plugin-develop/`}>{copy.plugins}</a>
+      </section>
+      <section>
+        <p>{copy.social}</p>
+        <a href="https://github.com/hlerenow/chameleon">GitHub ↗</a>
+        <a href="https://www.npmjs.com/search?q=%40chamn">npm ↗</a>
+      </section>
+    </div>
+  </div>
+  <div class="footer-meta"><span>{copy.copyright}</span><span>React visual editor runtime</span></div>
+</footer>
+
+<style>
+  .site-footer { position: relative; left: 50%; width: 100vw; margin: 5rem 0 -1.5rem; transform: translateX(-50%); border-top: 1px solid #2b2038; background: #101014; color: #a1a1aa; }
+  .footer-inner { display: grid; grid-template-columns: minmax(10rem, .85fr) minmax(0, 3fr); gap: 3rem; max-width: 90rem; margin: 0 auto; padding: 3.5rem 2rem 4rem; }
+  .footer-brand { display: inline-flex; align-items: center; align-self: start; gap: .65rem; color: #f4f4f5; font: 700 .75rem var(--sl-font-mono); letter-spacing: .12em; }
+  .footer-brand img { width: 1.8rem; height: 1.8rem; filter: drop-shadow(0 0 8px #7c3aed55); }
+  .footer-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2.25rem; }
+  .footer-grid section { display: grid; align-content: start; gap: .78rem; }
+  .footer-grid p { margin: 0 0 .55rem; color: #8b8b96; font: 600 .65rem var(--sl-font-mono); letter-spacing: .12em; text-transform: uppercase; }
+  .footer-grid a { color: #e4e4e7; font-size: .9rem; text-decoration: none; transition: color .18s ease; }
+  .footer-grid a:hover { color: #c4b5fd; }
+  .footer-meta { display: flex; justify-content: space-between; gap: 1rem; max-width: 90rem; margin: 0 auto; padding: 1.1rem 2rem; border-top: 1px solid #2b2038; color: #777783; font-size: .74rem; }
+  @media (max-width: 50rem) { .footer-inner { grid-template-columns: 1fr; gap: 2rem; padding: 2.5rem 1.25rem; } .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem 1rem; } .footer-meta { padding: 1rem 1.25rem; flex-direction: column; } }
+</style>

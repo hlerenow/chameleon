@@ -12,7 +12,7 @@ import engineScreenshot from '../../assets/engine-workbench-latest.png';
 <div class="home-intro">
   <div class="intro-copy">
     <p class="eyebrow">CHAMELEON / REACT VISUAL EDITOR</p>
-    <h2>把页面协议，变成可编辑的产品界面。</h2>
+    <h2>把页面协议<br />变成可编辑的产品界面</h2>
     <p class="intro-description">
       Chameleon 是面向 React 应用的可视化页面编辑与低代码渲染引擎。用 Schema 保存页面，用 Material 描述业务组件，再由 Engine、Plugin 与 Render 串起编辑、预览和发布。
     </p>
@@ -228,42 +228,49 @@ Outline, canvas and inspector converge on the page model. Export the schema once
 1. **安装核心包**
 
 ```bash
-pnpm add @chamn/engine @chamn/model @chamn/render
+pnpm add @chamn/engine @chamn/model @chamn/render react react-dom
 ```
 
-2. **传入页面与物料**
+2. **准备渲染器**
 
-   使用 `schema` 描述页面结构，使用 `material` 描述组件能力；动态资源通过 `assetPackagesList` 加载。
+   Vite 项目直接导入 `@chamn/render` 的 UMD 地址，供编辑器 iframe 加载。
 
-3. **连接你的业务工作流**
+3. **挂载 Engine**
 
-   在 `onReady` 中访问 `pageModel`，导出 schema，接入保存与预览。
+   `plugins` 与 `schema` 是必填项；`material` 描述可编辑组件，`assetPackagesList` 提供组件运行资源。
 
-   </Steps>
+</Steps>
 
 ```tsx
-import { Engine, plugins } from '@chamn/engine';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import ReactDOMClient from 'react-dom/client';
+import { Engine, InnerComponentMeta, plugins } from '@chamn/engine';
+import renderJSUrl from '@chamn/render/dist/index.umd.js?url';
 import '@chamn/engine/dist/style.css';
 
-export function Editor({ schema, materials }) {
+const win = window as any;
+win.React = React;
+win.ReactDOM = ReactDOM;
+win.ReactDOMClient = ReactDOMClient;
+
+const { DEFAULT_PLUGIN_LIST } = plugins;
+
+export function Editor({ pageSchema, materials, assetPackagesList = [] }) {
   return (
     <Engine
-      plugins={plugins.DEFAULT_PLUGIN_LIST}
-      schema={schema}
-      material={materials}
-      onReady={({ engine }) => console.log(engine.pageModel.export())}
+      plugins={DEFAULT_PLUGIN_LIST}
+      schema={pageSchema}
+      material={[...InnerComponentMeta, ...materials]}
+      assetPackagesList={assetPackagesList}
+      renderJSUrl={renderJSUrl}
+      onReady={({ engine }) => {
+        console.log(engine.pageModel.export());
+      }}
     />
   );
 }
 ```
-
-<div class="home-footer-cta">
-  <p class="eyebrow">THE RUNTIME IS YOURS</p>
-  <h2>Compose. Render. Ship.</h2>
-  <a class="button-primary" href="/chameleon/documents/guides/">
-    Start building <span>→</span>
-  </a>
-</div>
 
 <style>{String.raw`
   :global(:root) { color-scheme: dark; }
@@ -305,7 +312,6 @@ export function Editor({ schema, materials }) {
   .section-lead { margin: -.8rem 0 1.5rem; font-size: 1rem; } .path-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 4rem; }
   .path-grid > .entry-card { box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 1fr) 1.25rem; grid-template-rows: 1.7rem minmax(3.2rem, 1fr); column-gap: .8rem; row-gap: .9rem; min-height: 150px; margin: 0 !important; padding: 1.3rem !important; border: 1px solid #292929 !important; border-radius: 10px; background: #0b0b0b; color: inherit; text-decoration: none; transition: transform .2s, border-color .2s; } .path-grid > .entry-card:hover { transform: translateY(-4px); border-color: #7c3aed !important; }
   .entry-card strong { display: block; margin: 0 !important; color: #fafafa; font-size: 1.1rem; line-height: 1.7rem; } .entry-card > span { display: block; margin: 0 !important; color: #a78bfa; font-size: 1.25rem; line-height: 1.7rem; text-align: right; } .entry-card p { grid-column: 1 / -1; display: block; margin: 0 !important; color: var(--sl-color-gray-3); line-height: 1.6; }
-  .home-footer-cta { text-align: center; padding: 3rem 1rem; border-radius: 10px; background: #0b0b0b; border: 1px solid #7c3aed; color: white; } .home-footer-cta .eyebrow { color: #c4b5fd; } .home-footer-cta h2 { font-size: clamp(1.8rem, 4vw, 3rem); margin: 0 0 1.5rem; letter-spacing: -.04em; } .home-footer-cta .button-primary { background: #7c3aed; color: white !important; box-shadow: none; }
   @media (prefers-reduced-motion: reduce) { .module-grid > .runtime-module, .module-grid > .runtime-module a, .arch-node, .arch-connector, .chain-grid > .flow-step { transition: none; } .module-grid > .runtime-module:hover, .arch-node:hover, .chain-grid > .flow-step:hover, .architecture-diagram:hover .arch-connector { transform: none; } }
   @media (max-width: 700px) { .home-intro { grid-template-columns: 1fr; padding-top: 1rem; } .engine-orbit { min-height: 260px; } .metric-grid { grid-template-columns: repeat(2, 1fr); } .metric-grid div:nth-child(2) { border-right: 0; } .path-grid, .module-grid, .chain-grid, .demo-grid { grid-template-columns: 1fr; } .architecture-diagram { grid-template-columns: 1fr; } .arch-connector { transform: rotate(90deg); text-align: center; } .screenshot-caption { flex-direction: column; } }
 `}</style>
