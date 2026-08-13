@@ -11,6 +11,15 @@ import { Tabs, TabItem, Code } from '@astrojs/starlight/components';
 
 本页面向发布页/只读页；如果要在编辑器内切换预览模式，请看[预览与渲染](./preview-rendering)。
 
+## 先选渲染方式
+
+| 你的页面资源          | 推荐方式        | 关键条件                                                  |
+| --------------------- | --------------- | --------------------------------------------------------- |
+| 组件已由业务项目安装  | 直接导入 npm 包 | `components` 的 key 与 Schema `componentName` 一致        |
+| 页面携带 UMD 资源描述 | 动态加载资源    | `assets`、`componentsMeta`、`thirdLibs` 完整且 URL 可访问 |
+
+无论哪种方式，`Render` 都只消费保存后的 PageSchema；它不会自动读取 Engine 的物料或 iframe 资源。
+
 ## 安装
 
 <Tabs>
@@ -234,6 +243,13 @@ const thirdLibs = getThirdLibs(allLibs, pageInfo.thirdLibs || []);
 ```
 
 ## 注意事项
+
+### 发布检查
+
+- 从 API 获取真实保存的 JSON，再传给 `Render`。
+- 确认每个页面组件都在 `components` 映射中，且 CSS 已加载。
+- 页面依赖外部库时，先完成资源加载，再渲染组件树。
+- 数据来自宿主应用时使用 `pageProps` 或运行时上下文传入，不修改历史 Schema。
 
 1. **组件名唯一性**：`components` 对象中的每个 key（组件名）必须唯一
 2. **组件导入**：如果使用第三方组件库（如 antd），需要手动导入并拍平后传递给 `components`

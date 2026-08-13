@@ -1,9 +1,56 @@
 ---
+title: 物料协议
+description: CMaterialType 字段、默认节点与组件契约。
 sidebar:
   order: 2
-title: 物料协议
 ---
 
-描述请参考 [【 Material 模型定义】](https://github.com/hlerenow/chameleon/blob/master/packages/model/src/types/material.ts#L338)
+物料协议是 `CMaterialType`。它不是 React 组件本身，而是 Engine 对组件库、属性面板和拖拽规则的描述。
 
-Example: [【示例物料】](https://github.com/hlerenow/chameleon/tree/master/packages/demo-page/src/material)
+## 核心字段
+
+| 字段                              | 必填 | 用途                          |
+| --------------------------------- | ---- | ----------------------------- |
+| `componentName`                   | 是   | 与 Schema、React 组件一一对应 |
+| `title`                           | 是   | 编辑器展示名称                |
+| `snippets`                        | 是   | 拖入时生成的默认节点          |
+| `props`                           | 是   | 可编辑属性及 setter           |
+| `category` / `groupName` / `tags` | 否   | 分类、分组、搜索              |
+| `isContainer`                     | 否   | 允许子节点拖入                |
+| `events` / `methods`              | 否   | 事件流程和方法调用            |
+| `npm`                             | 否   | 组件库元信息                  |
+| `advanceCustom`                   | 否   | 高级面板、DOM 与编辑行为      |
+
+## 示例
+
+```ts
+import type { CMaterialType } from '@chamn/model';
+
+export const CardMeta: CMaterialType = {
+  componentName: 'Card',
+  title: '卡片',
+  category: '布局',
+  tags: ['容器', '内容'],
+  isContainer: true,
+  snippets: [{ componentName: 'Card', props: { title: '卡片标题' }, children: [] }],
+  props: [
+    {
+      name: 'title',
+      title: '标题',
+      valueType: 'string',
+      defaultValue: '卡片标题',
+      setters: ['StringSetter'],
+    },
+  ],
+};
+```
+
+## 设计约束
+
+- `componentName` 改名等同 breaking change，需迁移旧 Schema。
+- `snippets` 默认 props 必须能被 React 组件直接接受。
+- `props` 字段名必须与真实组件 props 对齐，setter 只负责编辑值。
+- React 组件可有未暴露 props，但业务用户无法通过编辑器配置。
+- 需要自定义输入控件时，先注册 setter，再在 `props.setters` 引用其名称。
+
+关联文档：[物料介绍](../Material/introduction)、[内置 Setter](./built-in-setter)、[自定义 Setter](../Plugin/custom-setter)。

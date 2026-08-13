@@ -2,7 +2,17 @@
 sidebar:
   order: 2
 title: 自定义 setter
+description: 注册并在物料中使用自定义属性输入控件。
 ---
+
+自定义 Setter 只负责编辑单个物料字段，并通过 `onValueChange` 把新值交给 Engine。它不应直接改页面 Schema、组件实例或外部 React state。
+
+## 最短链路
+
+1. 编写 `CSetter` 组件，接收 `value` 和 `onValueChange`。
+2. 在 RightPanel 的 `customPropertySetterMap` 注册名称和组件。
+3. 在物料 `props[].setters` 中引用该名称。
+4. 拖入组件、修改字段、导出 Schema，确认保存值符合真实组件 props 类型。
 
 ### Setter 定义
 

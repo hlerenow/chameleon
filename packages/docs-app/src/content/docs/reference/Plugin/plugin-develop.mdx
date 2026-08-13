@@ -2,11 +2,21 @@
 sidebar:
   order: 1
 title: 插件开发指南
+description: 定义、加载、销毁和维护 Engine 工作台插件。
 ---
 
 # 插件开发指南
 
 Chameleon Engine 采用插件化架构，所有功能都可以通过插件扩展。本文档将详细介绍如何开发自定义插件。
+
+插件扩展工作台，不承载业务页面逻辑。典型用途：新增面板、监听编辑事件、替换组件库视图、注入保存工具、定制快捷操作。
+
+## 生命周期规则
+
+1. `init` 中创建视图、注册事件，并在准备完成后调用 `pluginReadyOk()`。
+2. `export` 只暴露稳定的业务调用 API。
+3. `destroy` 中移除事件、计时器和挂载视图。
+4. 插件名保持唯一；覆盖内置插件时优先使用公开扩展点，不直接修改 Engine 源码。
 
 ## 最小接入流程
 
@@ -852,7 +862,7 @@ A: 可以。使用 `ctx.pluginManager.get('PluginName')` 获取其他插件实�
 
 ## 参考资源
 
-- [内置插件列表](../innder-plugin-list/) - 查看所有内置插件
-- [内置插件使用指南](../built-in-plugins-usage/) - 学习内置插件的用法
-- [Engine API](../../engine/api/) - 了解 Engine 的 API
-- [示例项目](https://github.com/ByteCrazy/chameleon-demo) - 查看完整示例
+- [内置插件列表](./innder-plugin-list/) - 查看所有内置插件
+- [内置插件使用指南](./built-in-plugins-usage/) - 学习内置插件的用法
+- [Engine API](../Engine/api/) - 了解 Engine 的 API
+- [仓库 Demo 页面](https://github.com/hlerenow/chameleon/tree/master/packages/demo-page) - 查看页面协议与物料示例

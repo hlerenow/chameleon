@@ -1,5 +1,6 @@
 ---
 title: 添加自定义组件物料
+description: 同时打通业务组件的物料 Meta、iframe 资源与 Render 运行时映射。
 sidebar:
   order: 3
 ---
@@ -9,6 +10,24 @@ import { Code } from '@astrojs/starlight/components';
 引擎内置只提供了基础的 HTML Tag 组件以及对应的物料, 如: div、p、video...等等，如果需要扩展使用自定义的物料，参考如下方式
 
 接入分为两条链路：编辑器 iframe 需要 UMD JS/CSS 和物料描述；发布/预览页可以直接 import React 组件后交给 `Render`。两条链路的组件名和物料协议必须一致。
+
+```mermaid
+flowchart LR
+  A[React 组件] --> B[物料 Meta]
+  A --> C[UMD JS/CSS]
+  B --> D[Engine 组件库与属性面板]
+  C --> D
+  A --> E[Render components 映射]
+  B --> F[页面 Schema]
+  F --> E
+```
+
+## 接入完成标准
+
+- 组件能从物料库拖入画布，并显示正确样式。
+- 物料 `props` 能修改对应 React props。
+- 保存后重新加载，节点 `componentName` 不变。
+- 同一份保存的 Schema 可在 `Render` 预览页正常显示。
 
 ## 编辑器配置
 

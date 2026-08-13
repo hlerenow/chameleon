@@ -1,5 +1,6 @@
 ---
 title: Engine API
+description: Engine 初始化、实例、Workbench 与插件管理 API。
 sidebar:
   order: 2
 ---
@@ -7,6 +8,13 @@ sidebar:
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 # Engine API
+
+## 使用原则
+
+- `EngineProps` 控制初始化；`workbenchConfig` 仅初始化时生效。
+- 页面内容变更优先使用 `engine.updatePage()`，不要直接改外部 `schema` 对象。
+- `onReady` 后再调用依赖插件的 API；保存数据使用 `engine.pageModel.export()`。
+- 工作台替换、插件增删属于高级定制，先使用默认插件列表验证需求。
 
 本文档详细介绍了 Chameleon Engine 的所有 API，包括组件 Props、实例方法、事件系统等。
 

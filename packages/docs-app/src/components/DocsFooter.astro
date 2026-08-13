@@ -47,9 +47,9 @@ const copy = isEnglish
       </section>
       <section>
         <p>{copy.resources}</p>
-        <a href="https://hlerenow.github.io/chameleon/">Editor demo ↗</a>
-        <a href="https://github.com/ByteCrazy/chameleon-demo">Example app ↗</a>
-        <a href="https://github.com/hlerenow/chameleon/releases">Releases ↗</a>
+        <a href="https://hlerenow.github.io/chameleon/">Editor demo <svg class="external-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M9.5 2.5H13.5V6.5M13.25 2.75L7.5 8.5M12 9.25V12.5C12 13.05 11.55 13.5 11 13.5H3.5C2.95 13.5 2.5 13.05 2.5 12.5V5C2.5 4.45 2.95 4 3.5 4H6.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg></a>
+        <a href="https://github.com/ByteCrazy/chameleon-demo">Example app <svg class="external-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M9.5 2.5H13.5V6.5M13.25 2.75L7.5 8.5M12 9.25V12.5C12 13.05 11.55 13.5 11 13.5H3.5C2.95 13.5 2.5 13.05 2.5 12.5V5C2.5 4.45 2.95 4 3.5 4H6.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg></a>
+        <a href="https://github.com/hlerenow/chameleon/releases">Releases <svg class="external-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M9.5 2.5H13.5V6.5M13.25 2.75L7.5 8.5M12 9.25V12.5C12 13.05 11.55 13.5 11 13.5H3.5C2.95 13.5 2.5 13.05 2.5 12.5V5C2.5 4.45 2.95 4 3.5 4H6.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg></a>
       </section>
       <section>
         <p>{copy.reference}</p>
@@ -60,8 +60,8 @@ const copy = isEnglish
       </section>
       <section>
         <p>{copy.social}</p>
-        <a href="https://github.com/hlerenow/chameleon">GitHub ↗</a>
-        <a href="https://www.npmjs.com/search?q=%40chamn">npm ↗</a>
+        <a href="https://github.com/hlerenow/chameleon">GitHub <svg class="external-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M9.5 2.5H13.5V6.5M13.25 2.75L7.5 8.5M12 9.25V12.5C12 13.05 11.55 13.5 11 13.5H3.5C2.95 13.5 2.5 13.05 2.5 12.5V5C2.5 4.45 2.95 4 3.5 4H6.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg></a>
+        <a href="https://www.npmjs.com/search?q=%40chamn">npm <svg class="external-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M9.5 2.5H13.5V6.5M13.25 2.75L7.5 8.5M12 9.25V12.5C12 13.05 11.55 13.5 11 13.5H3.5C2.95 13.5 2.5 13.05 2.5 12.5V5C2.5 4.45 2.95 4 3.5 4H6.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg></a>
       </section>
     </div>
   </div>
@@ -76,8 +76,10 @@ const copy = isEnglish
   .footer-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2.25rem; }
   .footer-grid section { display: grid; align-content: start; gap: .78rem; }
   .footer-grid p { margin: 0 0 .55rem; color: #8b8b96; font: 600 .65rem var(--sl-font-mono); letter-spacing: .12em; text-transform: uppercase; }
-  .footer-grid a { color: #e4e4e7; font-size: .9rem; text-decoration: none; transition: color .18s ease; }
+  .footer-grid a { display: inline-flex; align-items: center; gap: .38rem; width: fit-content; color: #e4e4e7; font-size: .9rem; text-decoration: none; transition: color .18s ease; }
+  .external-icon { width: .82rem; height: .82rem; flex: 0 0 auto; opacity: .58; transition: opacity .18s ease, transform .18s ease; }
   .footer-grid a:hover { color: #c4b5fd; }
+  .footer-grid a:hover .external-icon, .footer-grid a:focus-visible .external-icon { opacity: 1; transform: translate(1px, -1px); }
   .footer-meta { display: flex; justify-content: space-between; gap: 1rem; max-width: 90rem; margin: 0 auto; padding: 1.1rem 2rem; border-top: 1px solid #2b2038; color: #777783; font-size: .74rem; }
   @media (max-width: 50rem) { .footer-inner { grid-template-columns: 1fr; gap: 2rem; padding: 2.5rem 1.25rem; } .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem 1rem; } .footer-meta { padding: 1rem 1.25rem; flex-direction: column; } }
 </style>

@@ -1,53 +1,59 @@
 ---
 title: 调试指南
+description: 用 Schema、资源和组件映射三层定位编辑器与运行时问题。
 sidebar:
-  order: 4
+  order: 3
 ---
 
-# 调试指南
+先按“数据 → 资源 → 组件”排查。空白画布、预览缺组件和属性不同步大多可在这三层定位。
 
-## 先确认三层数据
+```mermaid
+flowchart TD
+  A[问题出现] --> B{Schema 合法?}
+  B -- 否 --> C[检查 componentsTree / componentName]
+  B -- 是 --> D{资源成功加载?}
+  D -- 否 --> E[检查 renderJSUrl、UMD 与 CSS URL]
+  D -- 是 --> F{组件映射一致?}
+  F -- 否 --> G[统一 componentName、globalName、components]
+  F -- 是 --> H[检查 props、CSS、插件配置]
+```
 
-遇到渲染或编辑问题，按以下顺序检查：
+## 1. 检查页面协议
 
-1. `schema`：节点结构、`componentName`、组件属性是否正确。
-2. `material`：组件是否有物料描述，setter 和组件名是否匹配。
-3. `assetPackagesList` / `components`：运行时组件和 CSS 是否成功加载。
+打印 `engine.pageModel.export()`，重点确认：
 
-## 查看 Engine 上下文
+- `componentsTree` 存在，且根节点来自 `EmptyPage` 或 Engine。
+- 节点 `componentName` 与物料 Meta 一致。
+- 自定义组件的 `componentsMeta`、`assets` 没有在后端持久化时丢失。
+- 后端返回的是 JSON 对象，而非二次编码的 JSON 字符串。
 
-在 `onReady` 中查看页面模型、插件管理器和当前节点：
+## 2. 检查 Engine 上下文
 
 ```tsx
 <Engine
   {...props}
-  onReady={(ctx) => {
-    console.log('engine', ctx.engine);
-    console.log('page', ctx.engine.pageModel.export());
-    console.log('plugins', ctx.pluginManager);
+  onReady={({ engine, pluginManager }) => {
+    console.log('page', engine.pageModel.export());
+    console.log('plugins', pluginManager);
   }}
 />
 ```
 
-开发环境下 Engine 还会把实例挂到 `window.__C_ENGINE__` 和 `window.__CHAMELEON_ENG__`，便于浏览器控制台检查。业务代码不要依赖这些内部调试字段。
+`onReady` 表示插件已初始化，适合挂载保存、加载和调试功能。需要观察 DOM 挂载时使用 `onMount`。
 
-## 使用运行时日志
+## 3. 检查 iframe 资源
 
-默认插件列表包含 `PageRuntimeLogPlugin`。它收集页面运行时的 `debug`、`info`、`log`、`warn`、`error`、`exception` 和未处理 Promise 拒绝等记录。若看不到日志，确认没有从插件列表移除该插件，并检查 iframe 控制台。
+编辑器画布运行在 iframe。打开浏览器 DevTools 的 Network，检查：
 
-## 开发环境验证
+- `renderJSUrl` 返回 200，且指向 UMD 构建。
+- `assetPackagesList.resources` 的 JS/CSS URL 对 iframe 可访问。
+- 资源包 `globalName` 与 UMD 实际暴露变量一致。
+- JS 与 CSS 都加载成功；只加载 JS 时常见表现是组件无样式。
 
-Engine 包提供 `pnpm --filter @chamn/engine dev`、`pnpm --filter @chamn/engine build` 和 `pnpm --filter @chamn/engine test` 脚本。仓库源码示例还包含 `/preview`、`/previewComp` 路由，可用来验证独立页面和组件预览。具体启动参数以根目录 workspace 脚本为准。
+## 4. 检查独立 Render
 
-## 查看页面协议
+Render 不会自动从 Engine 取组件。比对 Schema 中的组件名与 `Render` 的 `components` key；先解决映射缺失，再检查业务 props 和样式。
 
-Engine 导出 `DisplaySourceSchema`，可用于在开发工具中展示当前 `pageModel` 的源数据。保存前也可用 `pageModel.export()` 输出协议，重点检查节点 ID、父子关系和资源列表。
+## 5. 最小复现
 
-## iframe 与资源问题
-
-设计画布在 iframe 中运行。组件显示为空时，检查：
-
-- `renderJSUrl` 是否指向可访问的 `@chamn/render` UMD 文件。
-- 浏览器 Network 是否有组件 JS/CSS 加载失败。
-- 组件全局变量是否与资源包和 `componentsMeta` 对应。
-- iframe 控制台是否有跨域、脚本异常或未处理 Promise 错误。
+用 `EmptyPage` + `InnerComponentMeta` 验证 Engine 基础配置，再逐步加入业务物料、资源包和保存的数据。这样可准确分离基础接入、物料资源和业务 Schema 问题。

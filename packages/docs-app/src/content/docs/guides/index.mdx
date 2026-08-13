@@ -1,185 +1,104 @@
 ---
 title: 快速开始
-descripttopn:
+description: 用最小配置接入 Chameleon 编辑器、保存页面并在运行时预览。
 sidebar:
   order: 1
 ---
 
-import { Tabs, TabItem, FileTree, CardGrid, LinkCard, Steps, Code } from '@astrojs/starlight/components';
-import EditorSourceCode from '../../../codeSnippets/Editor.tsx?raw';
-import cssSourceCode from '../../../codeSnippets/index.css?raw';
-import engImg from '../../../assets/engine-thumbail.png';
+Chameleon 用同一份 PageSchema 驱动编辑器和运行时。完成本页后，你将得到可编辑画布、可保存 JSON，以及独立预览页。
+
+```mermaid
+flowchart LR
+  A[加载 Schema] --> B[Engine 编辑]
+  B --> C[pageModel.export]
+  C --> D[业务后端保存]
+  D --> E[Render 预览或发布]
+```
+
+## 前置条件
+
+- React、React DOM 版本不低于 `16.9`。
+- 编辑器根容器必须有明确高度。
+- 组件资源需可被浏览器 iframe 访问。
 
 ## 安装
 
-<Tabs>
-  <TabItem label="npm">```shell npm i @chamn/engine @chamn/model @chamn/render ```</TabItem>
-  <TabItem label="pnpm">```shell pnpm i @chamn/engine @chamn/model @chamn/render ```</TabItem>
-  <TabItem label="yarn">```shell yarn i @chamn/engine @chamn/model @chamn/render ```</TabItem>
-</Tabs>
+```bash
+pnpm add @chamn/engine @chamn/model @chamn/render
+```
 
-## 推荐阅读路径
+业务组件库不是必需依赖。首次接入可先使用 Engine 内置 HTML 物料；需要业务组件时再接入自己的物料包。
 
-1. 先阅读 [Engine 介绍](../reference/Engine/introduction) 和 [Engine 架构](../reference/Engine/architecture)，理解 Engine、Model、Render 的边界。
-2. 按本文完成最小接入，并配置 `renderJSUrl`。
-3. 使用 [编辑器基础操作](./editor-basics) 设置元素宽高和样式。
-4. 需要定位问题时查看 [调试指南](./debugging)，需要独立渲染页面时查看 [预览与渲染](./preview-rendering)。
-5. 最后阅读 [自定义组件接入](./addCustomComponent)、物料和插件开发文档。
-
-你可以在你的机器上的任何地方运行 `create astro`，因此在开始之前无需创建一个新的空目录。如果你还没有为你的新项目准备一个空目录，向导将会自动为你创建一个。
-
-如果一切顺利，你将看到一个成功信息，随后是一些推荐的后续步骤。现在你的项目已经创建好了，你可以 `cd` 进入你的新项目目录开始使用 Astro。
-
-由于演示用例使用了 `antd` 以及 `@chamn/demo-page` 库(这不是必须的，只是这里做演示使用)，所以你还需要安装：
-
-<Tabs>
-  <TabItem label="npm">```shell npm i antd @ant-design/icons @chamn/demo-page ```</TabItem>
-  <TabItem label="pnpm">```shell pnpm i antd @ant-design/icons @chamn/demo-page ```</TabItem>
-  <TabItem label="yarn">```shell yarn i antd @ant-design/icons @chamn/demo-page ```</TabItem>
-</Tabs>
-
-## 用法
-
-创建一个 Editor.tsx 文件，将以下代码拷贝进去:
-
-<Code code={EditorSourceCode} lang="tsx" title="Editor.tsx" />
-
-添加 css 让编辑器撑满窗口
-
-<Code code={cssSourceCode} lang="css" title="index.css" />
-
-## 配置 render.umd.js
-
-因为渲染画布是在 iframe 中运行，所以需使用 umd 模式的 js，然后让 iframe 加载。在 vite 构建工具下，有以下三种配置方式：
-
-### 方式一：使用 `?url` 后缀导入（推荐）
-
-这是最简单的方式，直接使用 vite 的 `?url` 后缀导入文件 URL，无需额外配置：
+## 最小编辑器
 
 ```tsx
-import renderAsURL from '@chamn/render/dist/index.umd.js?url';
+import { Engine, InnerComponentMeta, plugins } from '@chamn/engine';
+import { EmptyPage } from '@chamn/model';
+import '@chamn/engine/dist/style.css';
 
-<Engine
-  plugins={DEFAULT_PLUGIN_LIST}
-  schema={page}
-  material={[...InnerComponentMeta, ...Material]}
-  assetPackagesList={assetPackagesList}
-  onReady={onReady}
-  renderJSUrl={renderAsURL}
-/>;
+export function PageEditor() {
+  return (
+    <div style={{ height: '100vh' }}>
+      <Engine
+        plugins={plugins.DEFAULT_PLUGIN_LIST}
+        schema={EmptyPage}
+        material={InnerComponentMeta}
+        onReady={({ engine }) => console.info('editor ready', engine)}
+      />
+    </div>
+  );
+}
 ```
 
-或者从 node_modules 路径导入：
+`DEFAULT_PLUGIN_LIST` 提供设计器、大纲树、组件库、右侧面板、历史记录和快捷键。`InnerComponentMeta` 提供内置 HTML 基础物料；业务组件接入见[添加自定义组件物料](./addCustomComponent)。
+
+## 配置 iframe 渲染器
+
+Engine 的画布在 iframe 内运行。生产构建时，将 `@chamn/render` 的 UMD 文件作为 URL 传入 `renderJSUrl`。Vite 可直接使用 `?url`：
 
 ```tsx
-import renderAsURL from '../../node_modules/@chamn/render/dist/index.umd.js?url';
+import renderJSUrl from '@chamn/render/dist/index.umd.js?url';
+
+<Engine plugins={plugins.DEFAULT_PLUGIN_LIST} schema={schema} material={materials} renderJSUrl={renderJSUrl} />;
 ```
 
-### 方式二：使用 vite-plugin-static-copy 插件
+自定义物料同样需要提供 UMD JS/CSS，并通过 `assetPackagesList` 传入。部署前在 Network 面板确认 iframe 的渲染器和物料资源都返回成功。
 
-使用 `vite-plugin-static-copy` 插件在构建时自动将文件拷贝到输出目录：
-
-首先安装依赖：
-
-<Tabs>
-  <TabItem label="npm">```shell npm i vite-plugin-static-copy ```</TabItem>
-  <TabItem label="pnpm">```shell pnpm i vite-plugin-static-copy ```</TabItem>
-  <TabItem label="yarn">```shell yarn i vite-plugin-static-copy ```</TabItem>
-</Tabs>
-
-然后在 `vite.config.ts` 中配置：
-
-```ts
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import monacoEditorPlugin from 'vite-plugin-monaco-editor';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
-
-export default defineConfig({
-  plugins: [
-    react(),
-    monacoEditorPlugin({}),
-    viteStaticCopy({
-      targets: [
-        {
-          src: './node_modules/@chamn/render/dist/index.umd.js',
-          dest: './',
-          rename: 'render.umd.js',
-        },
-      ],
-    }),
-  ],
-});
-```
-
-这样构建时会自动将 `render.umd.js` 拷贝到输出目录的根目录下，然后使用相对路径：
+## 保存与加载
 
 ```tsx
-<Engine
-  plugins={DEFAULT_PLUGIN_LIST}
-  schema={page}
-  material={[...InnerComponentMeta, ...Material]}
-  assetPackagesList={assetPackagesList}
-  onReady={onReady}
-  renderJSUrl="./render.umd.js"
-/>
+function setupPersistence(engine: Engine) {
+  async function save() {
+    const schema = engine.pageModel.export();
+    await fetch('/api/pages/current', {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(schema),
+    });
+  }
+
+  async function load() {
+    const schema = await fetch('/api/pages/current').then((res) => res.json());
+    await engine.updatePage(schema);
+  }
+
+  return { save, load };
+}
 ```
 
-### 方式三：使用 CDN 或自定义路径
+只持久化 `pageModel.export()` 的 JSON，不保存 Engine、PageModel、插件或 React 实例。服务端应保留 `componentsTree`、`componentsMeta` 和 `assets`。
 
-如果使用 CDN 或其他自定义路径，可以直接传入 URL：
+## 接入检查
 
-```tsx
-<Engine
-  plugins={DEFAULT_PLUGIN_LIST}
-  schema={page}
-  material={[...InnerComponentMeta, ...Material]}
-  assetPackagesList={assetPackagesList}
-  onReady={onReady}
-  renderJSUrl="https://cdn.example.com/render.umd.js"
-/>
-```
+- 已导入 `@chamn/engine/dist/style.css`，且 Engine 容器有高度。
+- `schema` 合法；空白页面从 `EmptyPage` 开始。
+- 自定义组件的 `componentName` 在 Schema、物料 Meta、UMD 全局对象、Render 映射中一致。
+- `renderJSUrl`、物料 UMD JS/CSS 对 iframe 可访问。
+- 保存用 `pageModel.export()`；加载用 `schema` 或 `engine.updatePage()`。
 
-或者使用相对路径：
+## 下一步
 
-```tsx
-<Engine
-  plugins={DEFAULT_PLUGIN_LIST}
-  schema={page}
-  material={[...InnerComponentMeta, ...Material]}
-  assetPackagesList={assetPackagesList}
-  onReady={onReady}
-  renderJSUrl="./public/render.umd.js"
-/>
-```
-
-## 配置 monaco-editor 构建
-
-因为引擎使用了 monaco-editor 代码编辑器所以需要配置相应的构建配置
-
-### Vite
-
-```ts
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import monacoEditorPlugin from 'vite-plugin-monaco-editor';
-
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react(), monacoEditorPlugin({})],
-});
-```
-
-### Webpack
-
-[Refenrence](https://www.npmjs.com/package/monaco-editor-webpack-plugin)
-
-## 运行
-
-将 Editor.tsx 页面作为你项目中的一个页面，运行，打开对应的地址你将会得到一个编辑页面
-
-<img src={engImg.src} style={{ marginBottom: '20px', border: '1px solid #ededed' }} alt="Engine thumbail" />
-
-:::info
-Good Luck! :)
-:::
+- 使用画布：[编辑器基础操作](./editor-basics)
+- 排查接入：[调试指南](./debugging)
+- 独立运行时：[预览与渲染](./preview-rendering)
+- 业务组件接入：[添加自定义组件物料](./addCustomComponent)

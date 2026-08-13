@@ -2,7 +2,22 @@
 sidebar:
   order: 3
 title: Setter
+description: 为物料 props 选择内置输入控件，并理解自定义扩展边界。
 ---
+
+Setter 决定右侧属性面板如何编辑物料 `props`。先选择与数据类型匹配的内置 Setter；只有内置控件无法满足业务交互时才开发自定义 Setter。
+
+## 选择原则
+
+| 数据形态           | 优先 Setter                                              |
+| ------------------ | -------------------------------------------------------- |
+| 短文本、长文本     | `StringSetter`、`TextAreaSetter`                         |
+| 数字、布尔         | `NumberSetter`、`BooleanSetter`                          |
+| 枚举               | `SelectSetter`、`RadioGroupSetter`                       |
+| 对象、数组         | `JSONSetter`、`ShapeSetter`、`ArraySetter`               |
+| 表达式、函数、流程 | `ExpressionSetter`、`FunctionSetter`、`ActionFlowSetter` |
+
+Setter 保存的值必须符合 React 组件 props 类型。不要在 Setter 内直接改页面 Schema、组件实例或外部 React state；用 `onValueChange` 交给 Engine 更新协议。
 
 ## 什么是 setter ？
 

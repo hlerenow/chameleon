@@ -1,33 +1,72 @@
 ---
 title: 物料开发
+description: 交付 React 组件、物料 Meta 与 iframe 资源。
 sidebar:
   order: 2
 ---
 
-物料开发使用该[【模版工程】](https://github.com/ByteCrazy/chameleon-material-template.git)即可
+物料开发交付三部分：React 组件、物料 Meta、浏览器可加载资源。缺任意一项都会造成“能编辑不能预览”或“能预览不能编辑”。
 
-物料包同时描述“编辑器如何配置组件”和“运行时如何找到组件”。开发前先确认组件的 `componentName`、属性 setter、事件和资源包全局变量，再设计 meta。
+## 交付物
 
-```bash
-git clone https://github.com/ByteCrazy/chameleon-material-template.git
+| 交付物     | 消费方                 | 必要条件                                  |
+| ---------- | ---------------------- | ----------------------------------------- |
+| React 组件 | Render 预览/发布页     | 用 `componentName` 放入 `components` 映射 |
+| Meta 数组  | Engine 组件库/属性面板 | 与组件同名，包含 snippets 和 props        |
+| UMD JS/CSS | Engine iframe 设计态   | URL 可访问，`globalName` 与资源包一致     |
 
-cd chameleon-material-template
+## 推荐目录
 
-pnpm i
-
-// 开发
-pnpm run start
-
-// 构建
-
-pnpm run build
+```text
+my-material/
+├── src/components/Notice.tsx
+├── src/meta/notice.ts
+├── src/meta/index.ts
+├── src/index.ts
+└── src/umd.ts
 ```
 
-访问 [http://localhost:3000](http://localhost:3000)
-开发完成之后发布 npm 包即可
+`src/index.ts` 导出 React 组件；`src/meta/index.ts` 导出 Meta；UMD 入口以资源包约定 `globalName` 暴露组件集合。
 
-发布后，在 Engine 中传入物料 meta，并为编辑器提供 UMD JS/CSS；在生产预览页则直接导入组件映射。详细接入示例见[添加自定义组件物料](../../guides/addCustomComponent)。
+## 接入 Engine
 
-### 物料包命名规范
+```tsx
+import { Engine, InnerComponentMeta, plugins } from '@chamn/engine';
+import { materialMeta } from '@acme/chameleon-material/meta';
+import materialJSUrl from '@acme/chameleon-material/umd?url';
+import materialCSSUrl from '@acme/chameleon-material/style.css?url';
 
-统一采用 `chamn-material-xxxx` 的方式命名
+const assetPackagesList = [
+  {
+    package: '@acme/chameleon-material',
+    globalName: 'AcmeMaterial',
+    resources: [{ src: materialJSUrl }, { src: materialCSSUrl }],
+  },
+];
+
+<Engine
+  plugins={plugins.DEFAULT_PLUGIN_LIST}
+  schema={schema}
+  material={[...InnerComponentMeta, ...materialMeta]}
+  assetPackagesList={assetPackagesList}
+/>;
+```
+
+## 接入 Render
+
+```tsx
+import { Render, ReactAdapter } from '@chamn/render';
+import * as AcmeMaterial from '@acme/chameleon-material';
+
+<Render page={page} adapter={ReactAdapter} components={AcmeMaterial} />;
+```
+
+## 发布前检查
+
+- Meta、UMD、React 导出使用同一组 `componentName`。
+- 每个 `snippets` 生成组件可接受的默认 props。
+- 容器组件声明 `isContainer`，否则编辑器不允许拖入子节点。
+- 用真实部署 URL 在 iframe 内验证 UMD JS 和 CSS。
+- 用已保存 Schema 打开 Render，验证组件、样式和事件。
+
+复杂面板、DOM 选择和权限控制见[高级物料开发](./advanceDevelopMaterial)。

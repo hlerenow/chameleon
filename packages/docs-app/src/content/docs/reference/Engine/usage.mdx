@@ -1,5 +1,6 @@
 ---
 title: Engine 使用示例
+description: 从基础挂载到保存、响应式和工作台定制的接入示例。
 sidebar:
   order: 3
 ---
@@ -15,6 +16,14 @@ sidebar:
 - `assetPackagesList`：渲染器需要加载的组件 JS/CSS 资源包；使用 `components` 直接传入组件时可不配置资源包。
 
 Engine 容器必须有明确高度，否则工作台和画布没有可用空间。
+
+## 推荐接入顺序
+
+1. 用 `EmptyPage` 和 `DEFAULT_PLUGIN_LIST` 验证编辑器基础挂载。
+2. 配置 `renderJSUrl`，确认 iframe 渲染器可访问。
+3. 接入业务物料 Meta 与 `assetPackagesList`。
+4. 在 `onReady` 中绑定保存、加载和业务工作台动作。
+5. 用独立 `Render` 页面读取保存结果进行发布验证。
 
 ## 基础使用
 

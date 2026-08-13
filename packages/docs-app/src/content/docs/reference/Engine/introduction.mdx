@@ -1,5 +1,6 @@
 ---
 title: Engine 介绍
+description: 何时使用可视化编辑器，以及如何进入最小接入流程。
 sidebar:
   order: 1
 ---
@@ -11,6 +12,12 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 `@chamn/engine` 是基于 React 的可视化页面编辑器容器。它组合 `@chamn/model` 的页面模型、`@chamn/render` 的渲染能力和 `@chamn/layout` 的工作台布局，通过插件提供设计器、组件库、属性面板、历史记录、快捷键等功能。
 
 本页回答“Engine 是什么”；接入代码见[快速开始](../../guides/)，公开 Props 和实例方法见 [Engine API](./api)，模块职责见 [Engine 架构](./architecture)。
+
+## 何时使用 Engine
+
+使用 Engine：需要让运营、设计或业务人员可视化编辑页面，并保存可复用 Schema。
+
+不要在最终用户页面直接使用 Engine：发布页/只读页应该使用 `@chamn/render`，避免引入编辑器工作台和 iframe。
 
 ## 核心特性
 
@@ -291,6 +298,8 @@ Chameleon Engine 更适合追求**灵活性、可定制性和轻量级**的团�
 
 ## 下一步
 
+完成首次挂载后，按以下顺序继续：配置 `renderJSUrl` → 接入业务物料 → 保存 `pageModel.export()` → 使用 Render 验证发布页。每一步都有对应文档：[快速开始](../../guides/)、[添加自定义组件物料](../../guides/addCustomComponent)、[预览与渲染](../../guides/preview-rendering)。
+
 - 查看 [API 文档](./api/) 了解详细的 API 使用
 - 查看 [使用示例](./usage/) 学习更多用法
-- 查看 [插件开发](../plugin/plugin-develop/) 了解如何开发自定义插件
+- 查看 [插件开发](../Plugin/plugin-develop/) 了解如何开发自定义插件

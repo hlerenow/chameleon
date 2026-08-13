@@ -1,42 +1,62 @@
 ---
-title: 什么是组件物料？
+title: 物料介绍
+description: 理解物料 Meta 如何连接 React 组件、编辑器和运行时。
 sidebar:
   order: 1
 ---
 
-import { Code } from '@astrojs/starlight/components';
-import MetarialImg from './assets/material.png';
-import ButtonMeta from '../../../../codeSnippets/ButtonMeta.tsx?raw';
+物料是业务 React 组件的“编辑器说明书”。React 组件负责运行时渲染；物料 Meta 决定组件如何出现在组件库、哪些属性可编辑、能否容纳子节点，以及事件和方法怎样暴露。
 
-<img
-  style={{
-    marginBottom: '20px',
-    border: '1px solid #ededed',
-    height: '324px',
-  }}
-  src={MetarialImg.src}
-  alt="Component Metarial"
-/>
+## 物料组成
 
-组件物料包括两部分:
+| 字段                          | 用途                                       |
+| ----------------------------- | ------------------------------------------ |
+| `componentName`               | 唯一组件名；必须与 Schema、Render 映射一致 |
+| `title` / `category` / `tags` | 组件库展示、分类、搜索                     |
+| `snippets`                    | 拖入画布时创建的初始节点                   |
+| `props`                       | 右侧属性面板生成的可编辑字段与 setter      |
+| `isContainer`                 | 是否可接收子节点                           |
+| `events` / `methods`          | 事件流、方法调用等高级能力                 |
+| `npm` / `advanceCustom`       | 资源定位和高级编辑行为                     |
 
-- 组件库
-- 组件描述
+```mermaid
+flowchart LR
+  A[React 组件] --> B[物料 Meta]
+  B --> C[组件库 / 属性面板]
+  B --> D[初始 Schema 节点]
+  D --> E[Render components 映射]
+  A --> E
+```
 
-组件库和组件描述之间 通过 componentName 来一一绑定对应
+## 最小物料
 
-## 组件库
+```ts
+import type { CMaterialType } from '@chamn/model';
 
-组件库就是组件的 JS 运行库, 比如 Ant Design、ElemtnUI、Vant UI 等等，它们是可以被运行的 JS 代码库。
+export const NoticeMeta: CMaterialType = {
+  componentName: 'Notice',
+  title: '提示条',
+  category: '反馈',
+  snippets: [{ componentName: 'Notice', props: { message: '提示内容' } }],
+  props: [
+    {
+      name: 'message',
+      title: '内容',
+      valueType: 'string',
+      defaultValue: '提示内容',
+      setters: ['TextAreaSetter'],
+    },
+  ],
+};
+```
 
-## 组件描述
+这只描述编辑器。预览页还需要 `components={{ Notice }}`；Engine 设计态还需要通过 `assetPackagesList` 让 iframe 加载同一组件实现。
 
-如果想要编辑器知道组件的具体功能，比如支持那些属性，那些事件等等，则需要一份对应的描述文件详细描述了组件的 props 的各种行为，以及数据结构，这样编辑器才能对组件进行控制编辑。这份描述文件就是组件描述。
+## 开发顺序
 
-物料协议请参考 Schema 文档
+1. 固化 `componentName`，避免后续重命名导致历史 Schema 失效。
+2. 写最小 `snippets`、`props`，先让组件可拖入、可配置。
+3. 容器组件补 `isContainer`；交互组件补事件和方法。
+4. 产出 Meta、UMD JS/CSS，同时验证 Engine 和 Render。
 
-### Example:
-
-对 Ant Design UI 库的 Button 组件的物料描述:
-
-<Code code={ButtonMeta} lang="tsx" title="Editor.tsx" showLineNumbers></Code>
+继续阅读：[物料开发](./developMaterial)、[物料协议](../PageSchema/material)。

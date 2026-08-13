@@ -88,13 +88,13 @@ Outline, canvas and inspector converge on the page model. Export the schema once
     <p>验证画布布局、选中态、尺寸调整与响应式断点行为。</p>
     <small>布局调试 · 拖拽交互 · 响应式</small>
   </a>
-  <a class="demo-card" href="https://github.com/ByteCrazy/chameleon-demo">
-    <span class="demo-kicker">SOURCE / APP</span>
+  <a class="demo-card" href="https://github.com/hlerenow/chameleon/tree/master/packages/demo-page">
+    <span class="demo-kicker">SOURCE / DEMO</span>
     <b>
-      完整业务示例 <i>↗</i>
+      仓库 Demo 页面 <i>↗</i>
     </b>
-    <p>查看自定义物料、iframe 渲染、第三方资源与页面持久化接入。</p>
-    <small>React 项目 · 可复制源码 · 真实接入</small>
+    <p>查看仓库内的页面 Schema、物料和编辑器集成实现。</p>
+    <small>工作区源码 · Schema 示例 · 编辑器集成</small>
   </a>
 </div>
 
@@ -224,22 +224,15 @@ Outline, canvas and inspector converge on the page model. Export the schema once
 
 ## Quickstart
 
-<Steps>
 1. **安装核心包**
 
 ```bash
 pnpm add @chamn/engine @chamn/model @chamn/render react react-dom
 ```
 
-2. **准备渲染器**
+2. **准备渲染器**：Vite 项目直接导入 `@chamn/render` 的 UMD 地址，供编辑器 iframe 加载。
 
-   Vite 项目直接导入 `@chamn/render` 的 UMD 地址，供编辑器 iframe 加载。
-
-3. **挂载 Engine**
-
-   `plugins` 与 `schema` 是必填项；`material` 描述可编辑组件，`assetPackagesList` 提供组件运行资源。
-
-</Steps>
+3. **挂载 Engine**：`plugins` 与 `schema` 是必填项；`material` 描述可编辑组件，`assetPackagesList` 提供组件运行资源。
 
 ```tsx
 import React from 'react';

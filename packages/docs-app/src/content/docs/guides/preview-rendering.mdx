@@ -1,39 +1,49 @@
 ---
 title: 预览与渲染
+description: 区分 Engine 设计态预览和 Render 独立运行时。
 sidebar:
-  order: 5
+  order: 4
 ---
 
-# 预览与渲染
+Chameleon 有两条渲染链路：Engine 提供可编辑的设计态画布，Render 在业务页面中显示已保存的 Schema。两者共享页面协议，但职责不同。
+
+| 场景           | 使用     | 输入                      | 输出                     |
+| -------------- | -------- | ------------------------- | ------------------------ |
+| 编辑过程预览   | `Engine` | `schema`、物料、资源包    | 可选择、拖拽、配置的画布 |
+| 用户预览或发布 | `Render` | 保存后的 `page`、组件映射 | 普通 React 组件树        |
+
+```mermaid
+flowchart LR
+  A[Engine 设计态 iframe] -->|pageModel.export| B[PageSchema]
+  B --> C[业务 API / 存储]
+  C --> D[Render 运行态]
+  D --> E[预览页 / 发布页]
+```
 
 ## Engine 内预览
 
-```tsx
-const onReady = ({ engine }) => {
-  engine.preview();
-};
-```
-
-`preview()` 会隐藏顶部栏、左右面板并将画布铺满，同时调用 Designer 的 `setPreviewMode()`。退出时调用 `existPreview()`，它会恢复进入预览前的工作台配置。
-
-## 配置设计器渲染器
-
-设计画布通过 iframe 加载 UMD 渲染器。Vite 项目推荐：
-
-```tsx
-import renderAsURL from '@chamn/render/dist/index.umd.js?url';
-
-<Engine {...props} renderJSUrl={renderAsURL} />;
-```
-
-也可以把 UMD 文件复制到构建产物后传入 `renderJSUrl="./render.umd.js"`，或传入可访问的 CDN URL。默认值是 `./render.umd.js`。
+Engine 的预览能力用于编辑过程中的快速确认；它仍依赖画布 iframe 的 `renderJSUrl` 和物料资源。可通过 `engine.preview()`、`engine.existPreview()` 等 API 管理预览状态。它不应替代真实的业务预览页。
 
 ## 独立预览页
 
-独立预览页可以从后端取得页面协议，加载 `assets`，再用 `@chamn/render` 的 `Render` 配合 `ReactAdapter` 渲染。仓库开发预览页的流程是：从 `localStorage.pageSchema` 读取协议，使用 `AssetLoader` 加载资源，按 `componentsMeta` 区分组件库和第三方库，最后渲染页面。
+独立页面直接使用 `@chamn/render`。每个 Schema 节点的 `componentName` 必须能在 `components` 映射中找到 React 组件。
 
 ```tsx
-<Render page={page} components={components} render={renderHandle} adapter={ReactAdapter} $$context={{ thirdLibs }} />
+import { Render, ReactAdapter } from '@chamn/render';
+import { Button, Card } from './components';
+
+export function PagePreview({ page }: { page: CPageDataType }) {
+  return (
+    <Render page={page} adapter={ReactAdapter} components={{ Button, Card }} pageProps={{ user: { name: 'Ada' } }} />
+  );
+}
 ```
 
-独立预览不包含编辑器面板和节点选择能力，适合发布后的只读页面；发布前仍需验证资源地址、组件版本和页面协议兼容性。
+资源动态加载、`useRender` 与 UMD 方式见 [Render 使用指南](./useRender)。
+
+## 发布前验证
+
+- 从后端读取真实保存的 Schema，不使用编辑器内存对象。
+- 检查所有 `componentName` 都存在于 `components` 映射。
+- 外部组件库需要同时加载 JS 与 CSS。
+- `pageProps`、全局状态和请求适配要满足页面表达式、生命周期需求。
