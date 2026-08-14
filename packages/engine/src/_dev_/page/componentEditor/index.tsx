@@ -63,7 +63,7 @@ export const ComponentEditor = ({ loadingUI }: { loadingUI?: React.ReactNode }) 
       engineRef.current?.engine.preview();
 
       setTimeout(() => {
-        engineRef.current?.engine.existPreview();
+        engineRef.current?.engine.exitPreview();
         setTimeout(() => {
           engineRef.current?.engine.preview();
         }, 5000);

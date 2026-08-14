@@ -223,7 +223,7 @@ export class Engine extends React.Component<EngineProps> {
     designerPluginExport?.setPreviewMode();
   }
 
-  async existPreview() {
+  async exitPreview() {
     this.workbenchRef.current?.hiddenWidget({
       ...(this._oldHiddenWidgetConfig || {}),
       canvasFull: false,

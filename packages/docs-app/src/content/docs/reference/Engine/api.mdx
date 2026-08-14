@@ -353,19 +353,19 @@ const onReady = async (ctx: EnginContext) => {
 };
 ```
 
-### existPreview
+### exitPreview
 
 退出预览模式
 
 ```typescript
-existPreview(): Promise<void>
+exitPreview(): Promise<void>
 ```
 
 **示例：**
 
 ```tsx
 const onReady = async (ctx: EnginContext) => {
-  await ctx.engine.existPreview();
+  await ctx.engine.exitPreview();
 };
 ```
 
@@ -1000,7 +1000,7 @@ function App() {
         <div>我的编辑器</div>
         <div>
           <Button onClick={() => engine.preview()}>预览</Button>
-          <Button onClick={() => engine.existPreview()}>退出预览</Button>
+          <Button onClick={() => engine.exitPreview()}>退出预览</Button>
           <Button onClick={handleSave}>保存</Button>
         </div>
       </div>

@@ -1,6 +1,7 @@
 ---
 const base = '/chameleon/documents';
 const isEnglish = Astro.url.pathname.includes('/en/');
+const isHome = Astro.url.pathname === `${base}/` || Astro.url.pathname === `${base}/en/`;
 const copy = isEnglish
   ? {
       overview: 'Overview',
@@ -32,7 +33,7 @@ const copy = isEnglish
     };
 ---
 
-<footer class="site-footer">
+{isHome && <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-brand">
       <img src={`${base}/favicon.svg`} alt="" aria-hidden="true" />
@@ -66,7 +67,7 @@ const copy = isEnglish
     </div>
   </div>
   <div class="footer-meta"><span>{copy.copyright}</span><span>React visual editor runtime</span></div>
-</footer>
+</footer>}
 
 <style>
   .site-footer { position: relative; left: 50%; width: 100vw; margin: 5rem 0 -1.5rem; transform: translateX(-50%); border-top: 1px solid #2b2038; background: #101014; color: #a1a1aa; }

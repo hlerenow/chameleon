@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { defineConfig, passthroughImageService } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import react from '@astrojs/react';
@@ -9,7 +8,7 @@ export default defineConfig({
   base: '/chameleon/documents',
   integrations: [
     starlight({
-      title: 'Chameleon Docs',
+      title: 'Chameleon',
       customCss: ['./src/styles/fonts.css'],
       locales: {
         root: { label: '中文', lang: 'zh-CN' },

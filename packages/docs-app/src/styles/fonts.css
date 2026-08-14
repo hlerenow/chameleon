@@ -193,6 +193,8 @@ header.header {
 
 .right-sidebar-panel {
   border-inline-start: 1px solid var(--sl-color-hairline-shade);
+  max-height: calc(100vh - var(--sl-nav-height, 4rem) - 2rem);
+  overflow-y: auto;
 }
 .right-sidebar-panel :is(h2, a) {
   color: var(--sl-color-gray-3) !important;
@@ -200,6 +202,11 @@ header.header {
 .right-sidebar-panel a:hover,
 .right-sidebar-panel a[aria-current='true'] {
   color: #c4b5fd !important;
+}
+
+.site-footer {
+  position: relative;
+  z-index: 1;
 }
 
 button,
