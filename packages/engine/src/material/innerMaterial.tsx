@@ -342,13 +342,13 @@ const BaseComponentMeta: CMaterialType[] = [
     props: [
       {
         name: 'afterMount',
-        title: '渲染之后',
+        title: 'afterMount',
         valueType: 'function',
         setters: ['FunctionSetter', 'ExpressionSetter', 'ActionFlowSetter' as any],
       },
       {
         name: 'beforeDestroy',
-        title: '销毁之前',
+        title: 'beforeDestroy',
         valueType: 'function',
         setters: ['FunctionSetter', 'ExpressionSetter'],
       },

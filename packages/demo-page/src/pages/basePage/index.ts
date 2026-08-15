@@ -39,20 +39,40 @@ export const BasePage: CPageDataType = {
                 props: {
                   width: '100px',
                   height: '100px',
-                  afterMount: {
-                    type: 'FUNCTION',
-                    value:
-                      "function didRender() {\n  const staticVar = $$context.getStaticVar();\n  console.log('$$context', $$context)\n  let setTimer = function () {\n    const staticVar = $$context.getStaticVar();\n    if (staticVar.timer) {\n      clearInterval(staticVar.timer);\n    }\n    console.log('window.__CHAMN_RENDER_MODE ', window.__CHAMN_RENDER_MODE )\n    if(window.__CHAMN_RENDER_MODE === 'DESIGN') {\n      return;\n    }\n    const timer = setInterval(() => {\n      const bannerStateObj = $$context.getStateObj();\n      console.log('bannerStateObj', bannerStateObj)\n      bannerStateObj.updateState((oldState) => {\n        const newPage = (oldState.currentPage + 1) % 3;\n        console.log('newPage', newPage, oldState)\n        return {\n          ...oldState,\n          currentPage: newPage\n        };\n      })\n    }, 2 * 1000);\n    staticVar.timer = timer;\n  }\n\n  staticVar.preScence = function leftClick(e) {\n    const staticVar = $$context.getStaticVar();\n    if (staticVar.timer) {\n      clearInterval(staticVar.timer);\n    }\n\n    const bannerStateObj = $$context.getStateObj();\n    console.log('currentStateObj', bannerStateObj, $$context, bannerStateObj);\n    if (bannerStateObj.state.currentPage === 0) {\n      setTimer();\n      return\n    }\n    const newPage = (bannerStateObj.state.currentPage - 1) % 3;\n    bannerStateObj.updateState({\n      currentPage: newPage\n    });\n    setTimer();\n  };\n\n  staticVar.nextScence = function rightClick(e) {\n    const staticVar = $$context.getStaticVar();\n    if (staticVar.timer) {\n      clearInterval(staticVar.timer);\n    }\n\n    console.log($$context, e);\n    const currentStateObj = $$context.getStateObj();\n    console.log('currentStateObj', currentStateObj);\n\n    if (currentStateObj.state.currentPage === 2) {\n      setTimer();\n      return\n    }\n    const newPage = (currentStateObj.state.currentPage + 1) % 3\n    currentStateObj.updateState({\n      currentPage: newPage\n    });\n    setTimer();\n  };\n\n  console.log('staticVar', staticVar)\n\n\n  setTimer();\n}",
-                  },
-                  beforeDestroy: {
-                    type: 'FUNCTION',
-                    value:
-                      "function beforeDestroy() {\n  console.log('clear timer 1111');\n  if ($$context.staticState.timer) {\n    console.log('clear timer');\n    clearInterval($$context.staticState.timer);\n  }  \n}",
-                  },
                   $$attributes: [{}],
                 },
                 componentName: 'CContainer',
                 id: '2vi5b1',
+                eventListener: [
+                  {
+                    name: 'ON_DID_RENDER',
+                    func: {
+                      type: 'ACTION',
+                      handler: [
+                        {
+                          type: 'RUN_CODE',
+                          id: 'base-page-did-render',
+                          value:
+                            "const staticVar = $$context.getStaticVar();\nconsole.log('$$context', $$context)\nlet setTimer = function () {\n  const staticVar = $$context.getStaticVar();\n  if (staticVar.timer) clearInterval(staticVar.timer);\n  if (window.__CHAMN_RENDER_MODE === 'DESIGN') return;\n  const timer = setInterval(() => {\n    const bannerStateObj = $$context.getStateObj();\n    bannerStateObj.updateState((oldState) => ({ ...oldState, currentPage: (oldState.currentPage + 1) % 3 }));\n  }, 2 * 1000);\n  staticVar.timer = timer;\n};\nstaticVar.preScence = function leftClick() {\n  const staticVar = $$context.getStaticVar();\n  if (staticVar.timer) clearInterval(staticVar.timer);\n  const bannerStateObj = $$context.getStateObj();\n  if (bannerStateObj.state.currentPage === 0) { setTimer(); return; }\n  bannerStateObj.updateState({ currentPage: (bannerStateObj.state.currentPage - 1) % 3 });\n  setTimer();\n};\nstaticVar.nextScence = function rightClick() {\n  const staticVar = $$context.getStaticVar();\n  if (staticVar.timer) clearInterval(staticVar.timer);\n  const currentStateObj = $$context.getStateObj();\n  if (currentStateObj.state.currentPage === 2) { setTimer(); return; }\n  currentStateObj.updateState({ currentPage: (currentStateObj.state.currentPage + 1) % 3 });\n  setTimer();\n};\nsetTimer();",
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    name: 'ON_WILL_DESTROY',
+                    func: {
+                      type: 'ACTION',
+                      handler: [
+                        {
+                          type: 'RUN_CODE',
+                          id: 'base-page-will-destroy',
+                          value:
+                            "console.log('clear timer 1111');\nif ($$context.staticState.timer) {\n  console.log('clear timer');\n  clearInterval($$context.staticState.timer);\n}",
+                        },
+                      ],
+                    },
+                  },
+                ],
                 children: [
                   {
                     props: {

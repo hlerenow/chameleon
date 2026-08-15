@@ -155,19 +155,18 @@ const CText = ({ $$attributes = [], content, ...props }: any) => {
   );
 };
 
-const CContainer = ({ children, $$attributes = [], afterMount, beforeDestroy, style, ...props }: any) => {
+const CContainer = ({
+  children,
+  $$attributes = [],
+  afterMount: _afterMount,
+  beforeDestroy: _beforeDestroy,
+  style,
+  ...props
+}: any) => {
   let child = children;
   if (!Array.isArray(children)) {
     child = [children];
   }
-  useEffect(() => {
-    afterMount?.(props);
-    return () => {
-      beforeDestroy?.(props);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const finalStyle = {
     boxSizing: 'border-box',
     ...(style || {}),

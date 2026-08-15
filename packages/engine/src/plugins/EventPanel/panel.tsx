@@ -6,6 +6,7 @@ import { Button, Select } from 'antd';
 import { ActionFlowSetter } from '@/component/CustomSchemaForm/components/Setters/ActionFlowSetter';
 import { DeleteOutlined } from '@ant-design/icons';
 import { ON_DID_RENDER, ON_WILL_DESTROY } from '@chamn/render';
+import { useTranslation } from 'react-i18next';
 
 export type EventPanelProps = {
   node: CNode | CRootNode | null;
@@ -14,17 +15,18 @@ export type EventPanelProps = {
 
 const INNER_EVENT_LIST_MAP = [
   {
-    label: '初始化完成后',
+    label: 'afterMount',
     value: ON_DID_RENDER,
   },
   {
-    label: '组件销毁之前',
+    label: 'beforeDestroy',
     value: ON_WILL_DESTROY,
   },
 ];
 
 export const EventPanel = (props: EventPanelProps) => {
   const { node } = props;
+  const { t } = useTranslation();
   const [eventList, updateEventList] = useState<
     {
       label: string;
@@ -48,8 +50,8 @@ export const EventPanel = (props: EventPanelProps) => {
           value: evt.event,
         };
       }) || [];
-    updateEventList([...INNER_EVENT_LIST_MAP, ...list]);
-  }, [node?.id, node?.material?.value.events]);
+    updateEventList([...INNER_EVENT_LIST_MAP.map((event) => ({ ...event, label: t(event.label) })), ...list]);
+  }, [node?.id, node?.material?.value.events, t]);
   const [currentEvent, updateCurrentEvent] = useState<string>();
 
   const onChange = (value: string) => {
@@ -66,7 +68,7 @@ export const EventPanel = (props: EventPanelProps) => {
         <Select
           value={currentEvent}
           showSearch
-          placeholder="Select a person"
+          placeholder={t('selectEvent')}
           optionFilterProp="label"
           onChange={onChange}
           allowClear
@@ -97,7 +99,7 @@ export const EventPanel = (props: EventPanelProps) => {
             updateCurrentEvent(undefined);
           }}
         >
-          Add
+          {t('add')}
         </Button>
       </div>
       <div className={styles.eventList}>

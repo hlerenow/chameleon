@@ -351,7 +351,7 @@ export const App = ({ loadingUI }: { loadingUI?: React.ReactNode }) => {
         );
       }}
       monacoEditor={{
-        cndUrl: 'https://static.hai-fe.com/code-block/web/dist/monaco-editor/min/vs',
+        cndUrl: '/node_modules/monaco-editor/min/vs',
       }}
       renderJSUrl={renderAsURL}
       onReady={onReady}
