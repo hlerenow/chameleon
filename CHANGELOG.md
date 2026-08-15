@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.4](https://github.com/ByteCrazy/chameleon/compare/v0.12.3...v0.12.4) (2026-08-15)
+
+### 📝 Documentation | 文档
+
+* refine bilingual site layout ([36fe55f](https://github.com/ByteCrazy/chameleon/commit/36fe55fede824e3fbef8816b52857674f4dde2bd))
+* refresh documentation site ([50490f0](https://github.com/ByteCrazy/chameleon/commit/50490f0ecf181d4bf411274c75f0588b6674a851))
+* update footer icon and keyboard shortcuts ([04f24ef](https://github.com/ByteCrazy/chameleon/commit/04f24ef90df2fe53defb4a154b9400947e1c50d0))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **docs:** keep code blocks dark ([3a92fe3](https://github.com/ByteCrazy/chameleon/commit/3a92fe32b229345802aba6557ec51f1c084f5d9f))
+* **docs:** lock dark theme tokens ([5cb661e](https://github.com/ByteCrazy/chameleon/commit/5cb661e1e5fbc1c85fd3acb369049caebd12151a))
+* **docs:** preserve dark theme text colors ([ea55051](https://github.com/ByteCrazy/chameleon/commit/ea55051f700be8e8ca63ce4d95185988d3bdfe87))
+* improve drag placeholder and ghost UI ([931f5e4](https://github.com/ByteCrazy/chameleon/commit/931f5e45d148e67f84620e134d227835fb395f2b))
+* sync highlight box with scrolling ([4039bce](https://github.com/ByteCrazy/chameleon/commit/4039bcef3c0052eca2c48ee99605c7c9f077e728))
+
+### 💄 Styles | 样式
+
+* refine selection toolbar UI ([e85fc2a](https://github.com/ByteCrazy/chameleon/commit/e85fc2a73fe9e7f2da54e9d4f87ad07acb4ff000))
+* tighten docs homepage layout ([4bdda29](https://github.com/ByteCrazy/chameleon/commit/4bdda294af2bf6cc8729c66d5f8cf5061882592f))
+
+### ♻️ Code Refactoring | 代码重构
+
+* migrate container lifecycle events ([9316864](https://github.com/ByteCrazy/chameleon/commit/9316864733f9a96cde360512dc4df2107aab73ae))
+
+### ✨ Features | 新功能
+
+* add node schema viewer copy button ([038ce16](https://github.com/ByteCrazy/chameleon/commit/038ce16a7f500d5035890cdf7318186ab0633538))
+* expand valued property panels ([f7bc49e](https://github.com/ByteCrazy/chameleon/commit/f7bc49ecdabcb540f104db55f31551a1c605de99))
+* improve visual size panel ([6c7c98d](https://github.com/ByteCrazy/chameleon/commit/6c7c98d4638f03b37aaad22fda219a3995c24e46))
+* show all quick add materials ([fe5f73f](https://github.com/ByteCrazy/chameleon/commit/fe5f73fab3b12a54e1a380ef9ca136e894f10ba8))
+* support custom loading UI ([5cc9ba4](https://github.com/ByteCrazy/chameleon/commit/5cc9ba4a27aa1b481b57c58e8d151976fb959252))
+
 ## [0.12.3](https://github.com/hlerenow/chameleon/compare/v0.12.2...v0.12.3) (2026-08-11)
 
 **Note:** Version bump only for package chameleon

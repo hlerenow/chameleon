@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.4](https://github.com/ByteCrazy/chameleon/compare/v0.12.3...v0.12.4) (2026-08-15)
+
+### ✨ Features | 新功能
+
+* show all quick add materials ([fe5f73f](https://github.com/ByteCrazy/chameleon/commit/fe5f73fab3b12a54e1a380ef9ca136e894f10ba8))
+
 ## [0.12.3](https://github.com/hlerenow/chameleon/compare/v0.12.2...v0.12.3) (2026-08-11)
 
 **Note:** Version bump only for package @chamn/model

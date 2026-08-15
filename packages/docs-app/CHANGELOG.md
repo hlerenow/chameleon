@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.4](https://github.com/ByteCrazy/chameleon/compare/v0.12.3...v0.12.4) (2026-08-15)
+
+### ✨ Features | 新功能
+
+* support custom loading UI ([5cc9ba4](https://github.com/ByteCrazy/chameleon/commit/5cc9ba4a27aa1b481b57c58e8d151976fb959252))
+
+### 📝 Documentation | 文档
+
+* refine bilingual site layout ([36fe55f](https://github.com/ByteCrazy/chameleon/commit/36fe55fede824e3fbef8816b52857674f4dde2bd))
+* refresh documentation site ([50490f0](https://github.com/ByteCrazy/chameleon/commit/50490f0ecf181d4bf411274c75f0588b6674a851))
+* update footer icon and keyboard shortcuts ([04f24ef](https://github.com/ByteCrazy/chameleon/commit/04f24ef90df2fe53defb4a154b9400947e1c50d0))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **docs:** keep code blocks dark ([3a92fe3](https://github.com/ByteCrazy/chameleon/commit/3a92fe32b229345802aba6557ec51f1c084f5d9f))
+* **docs:** lock dark theme tokens ([5cb661e](https://github.com/ByteCrazy/chameleon/commit/5cb661e1e5fbc1c85fd3acb369049caebd12151a))
+* **docs:** preserve dark theme text colors ([ea55051](https://github.com/ByteCrazy/chameleon/commit/ea55051f700be8e8ca63ce4d95185988d3bdfe87))
+
+### 💄 Styles | 样式
+
+* tighten docs homepage layout ([4bdda29](https://github.com/ByteCrazy/chameleon/commit/4bdda294af2bf6cc8729c66d5f8cf5061882592f))
+
 ## [0.12.3](https://github.com/hlerenow/chameleon/compare/v0.12.2...v0.12.3) (2026-08-11)
 
 **Note:** Version bump only for package docs-app

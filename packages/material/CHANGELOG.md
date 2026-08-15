@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.4](https://github.com/ByteCrazy/chameleon/compare/v0.12.3...v0.12.4) (2026-08-15)
+
+### ✨ Features | 新功能
+
+* support custom loading UI ([5cc9ba4](https://github.com/ByteCrazy/chameleon/commit/5cc9ba4a27aa1b481b57c58e8d151976fb959252))
+
 ## [0.12.3](https://github.com/hlerenow/chameleon/compare/v0.12.2...v0.12.3) (2026-08-11)
 
 **Note:** Version bump only for package @chamn/material

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.4](https://github.com/ByteCrazy/chameleon/compare/v0.12.3...v0.12.4) (2026-08-15)
+
+### 💄 Styles | 样式
+
+* refine selection toolbar UI ([e85fc2a](https://github.com/ByteCrazy/chameleon/commit/e85fc2a73fe9e7f2da54e9d4f87ad07acb4ff000))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* improve drag placeholder and ghost UI ([931f5e4](https://github.com/ByteCrazy/chameleon/commit/931f5e45d148e67f84620e134d227835fb395f2b))
+* sync highlight box with scrolling ([4039bce](https://github.com/ByteCrazy/chameleon/commit/4039bcef3c0052eca2c48ee99605c7c9f077e728))
+
 ## [0.12.3](https://github.com/hlerenow/chameleon/compare/v0.12.2...v0.12.3) (2026-08-11)
 
 **Note:** Version bump only for package @chamn/layout

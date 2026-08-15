@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.4](https://github.com/ByteCrazy/chameleon/compare/v0.12.3...v0.12.4) (2026-08-15)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* improve drag placeholder and ghost UI ([931f5e4](https://github.com/ByteCrazy/chameleon/commit/931f5e45d148e67f84620e134d227835fb395f2b))
+
+### ✨ Features | 新功能
+
+* support custom loading UI ([5cc9ba4](https://github.com/ByteCrazy/chameleon/commit/5cc9ba4a27aa1b481b57c58e8d151976fb959252))
+
+### ♻️ Code Refactoring | 代码重构
+
+* migrate container lifecycle events ([9316864](https://github.com/ByteCrazy/chameleon/commit/9316864733f9a96cde360512dc4df2107aab73ae))
+
 ## [0.12.3](https://github.com/hlerenow/chameleon/compare/v0.12.2...v0.12.3) (2026-08-11)
 
 **Note:** Version bump only for package @chamn/render

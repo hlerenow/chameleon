@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.4](https://github.com/ByteCrazy/chameleon/compare/v0.12.3...v0.12.4) (2026-08-15)
+
+### ♻️ Code Refactoring | 代码重构
+
+* migrate container lifecycle events ([9316864](https://github.com/ByteCrazy/chameleon/commit/9316864733f9a96cde360512dc4df2107aab73ae))
+
 ## [0.12.3](https://github.com/hlerenow/chameleon/compare/v0.12.2...v0.12.3) (2026-08-11)
 
 **Note:** Version bump only for package @chamn/demo-page
