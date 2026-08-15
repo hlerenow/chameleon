@@ -10,6 +10,13 @@ import { CFormContext } from '../Form/context';
 import { CSetter } from '../Setters/type';
 import { SetterSwitcherCore } from './core';
 
+const hasValue = (value: unknown) => {
+  if (value === undefined || value === null || value === '') return false;
+  if (Array.isArray(value)) return value.length > 0;
+  if (typeof value === 'object') return Object.keys(value).length > 0;
+  return true;
+};
+
 export type SetterSwitcherProps = {
   // 支持的 setter 列表
   setters: SetterObjType[];
@@ -35,7 +42,7 @@ export const SetterSwitcher = ({
   ...props
 }: SetterSwitcherProps) => {
   const [visible, setVisible] = useState(true);
-  const { customSetterMap } = useContext(CFormContext);
+  const { customSetterMap, formState } = useContext(CFormContext);
   const { onSetterChange, defaultSetterConfig, formRef, pluginCtx, nodeId } = useContext(CCustomSchemaFormContext);
   const allSetterMap = {
     ...InnerSetters,
@@ -208,7 +215,9 @@ export const SetterSwitcher = ({
             marginBottom: '10px',
             flex: 1,
           }}
-          defaultActiveKey={[defaultCollapseOpen ?? collapseObj.open ? props.name : '']}
+          defaultActiveKey={[
+            defaultCollapseOpen ?? collapseObj.open ?? hasValue(formState[keyPaths.join('.')]) ? props.name : '',
+          ]}
           items={[
             {
               key: props.name,
@@ -227,7 +236,7 @@ export const SetterSwitcher = ({
 
       return CollapseComponent;
     },
-    [collapse, defaultCollapseOpen, props.name, props.label, switcher, filedView]
+    [collapse, defaultCollapseOpen, formState, keyPaths, props.name, props.label, switcher, filedView]
   );
 
   if (['ArraySetter'].includes(currentSetter?.componentName || '')) {
