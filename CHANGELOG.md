@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.5](https://github.com/hlerenow/chameleon/compare/v0.12.4...v0.12.5) (2026-08-29)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* improve engine panel and runtime logs ([364a78e](https://github.com/hlerenow/chameleon/commit/364a78eba0a2e48f71b1507aee0d3cc7be2771a9))
+
 ## [0.12.4](https://github.com/ByteCrazy/chameleon/compare/v0.12.3...v0.12.4) (2026-08-15)
 
 ### 📝 Documentation | 文档
