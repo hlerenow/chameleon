@@ -34,9 +34,30 @@ export type PageRuntimeLogPluginExport = {
 
 const DEFAULT_MAX_ENTRIES = 300;
 
+type RuntimeErrorLike = {
+  name?: unknown;
+  message?: unknown;
+  stack?: unknown;
+};
+
+const isRuntimeError = (value: unknown): value is RuntimeErrorLike => {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  return (
+    value instanceof Error ||
+    Object.prototype.toString.call(value) === '[object Error]' ||
+    (typeof (value as RuntimeErrorLike).message === 'string' &&
+      (typeof (value as RuntimeErrorLike).stack === 'string' || typeof (value as RuntimeErrorLike).name === 'string'))
+  );
+};
+
 const formatRuntimeLogValue = (value: unknown) => {
-  if (value instanceof Error) {
-    return value.message;
+  if (isRuntimeError(value)) {
+    const name = typeof value.name === 'string' ? value.name : 'Error';
+    const message = typeof value.message === 'string' ? value.message : '';
+    return message ? `${name}: ${message}` : name;
   }
   if (typeof value === 'string') {
     try {
@@ -101,7 +122,7 @@ export class PageRuntimeLogStore {
       this.append({
         level: 'exception',
         message: event.message || formatRuntimeLogValue(error) || 'Unknown page runtime error',
-        stack: error instanceof Error ? error.stack : undefined,
+        stack: isRuntimeError(error) && typeof error.stack === 'string' ? error.stack : undefined,
       });
     };
     const onUnhandledRejection = (event: PromiseRejectionEvent) => {
@@ -109,7 +130,7 @@ export class PageRuntimeLogStore {
       this.append({
         level: 'unhandledrejection',
         message: formatRuntimeLogValue(reason) || 'Unhandled promise rejection',
-        stack: reason instanceof Error ? reason.stack : undefined,
+        stack: isRuntimeError(reason) && typeof reason.stack === 'string' ? reason.stack : undefined,
       });
     };
 
@@ -120,8 +141,8 @@ export class PageRuntimeLogStore {
           level,
           message: args.map(formatRuntimeLogValue).join(' '),
           stack:
-            args.find((arg) => arg instanceof Error) instanceof Error
-              ? (args.find((arg) => arg instanceof Error) as Error).stack
+            args.find(isRuntimeError) && typeof args.find(isRuntimeError)?.stack === 'string'
+              ? (args.find(isRuntimeError)?.stack as string)
               : undefined,
         });
       };
@@ -181,6 +202,9 @@ export const PageRuntimeLog = ({
   const [snapshot, setSnapshot] = React.useState(store.getSnapshot());
   const [collapsed, setCollapsed] = React.useState(defaultCollapsed);
   const [fullScreen, setFullScreen] = React.useState(false);
+  const issueCount = snapshot.entries.filter((entry) =>
+    ['warn', 'error', 'exception', 'unhandledrejection'].includes(entry.level)
+  ).length;
 
   React.useEffect(() => store.subscribe(() => setSnapshot(store.getSnapshot())), [store]);
 
@@ -230,7 +254,7 @@ export const PageRuntimeLog = ({
             className={`${styles.connectionStatus} ${snapshot.connected ? styles.connected : styles.disconnected}`}
           />
           <span>PageRuntimeLog</span>
-          {snapshot.entries.length > 0 && <span className={styles.count}>{snapshot.entries.length}</span>}
+          {issueCount > 0 && <span className={styles.count}>{issueCount}</span>}
         </div>
         <div className={styles.actions}>
           <button

@@ -5,6 +5,14 @@ import { Workbench } from '../component/Workbench';
 import { CustomI18n } from '../i18n';
 import { AssetsPackageListManager } from './assetPackagesListManage';
 
+export type PluginMeta = {
+  engine: {
+    version: string;
+  };
+  /** 是否启用画布节点快捷添加入口 */
+  quickAddView?: boolean;
+};
+
 export type PluginObj<C, E = any> = {
   name: string;
   PLUGIN_NAME?: string;
@@ -14,11 +22,7 @@ export type PluginObj<C, E = any> = {
   reload?: (ctx: CPluginCtx<C>) => Promise<void>;
   /** 插件暴露给外部可以调用的方法 */
   export: (ctx: CPluginCtx<C>) => E;
-  meta: {
-    engine: {
-      version: string;
-    };
-  };
+  meta: PluginMeta;
 };
 
 interface PluginFunction<C, E> {
@@ -39,6 +43,7 @@ type PluginManagerOptions = {
 
 export type CPluginCtx<C = any> = {
   name?: string;
+  meta?: PluginMeta;
   globalEmitter: Emitter<any>;
   /** 当前插件外部传入的配置 **/
   config: C;
@@ -108,6 +113,7 @@ export class PluginManager {
     } else {
       innerPlugin = plugin;
     }
+    ctx.meta = innerPlugin.meta;
     let pluginCtx: PluginInstance = {
       source: innerPlugin,
       ctx: ctx,

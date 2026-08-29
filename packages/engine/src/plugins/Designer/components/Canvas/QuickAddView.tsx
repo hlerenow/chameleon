@@ -27,6 +27,14 @@ export const QuickAddView = ({ instance, direction, insideBoundary, getMaterials
       return;
     }
 
+    const closeIfTargetUnavailable = () => {
+      const targetDom = instance.getDom();
+      if (!targetDom || !targetDom.isConnected) {
+        setOpenPosition(null);
+      }
+    };
+    const closeTimer = window.setTimeout(closeIfTargetUnavailable, 2000);
+
     const handleOutsidePointerDown = (event: PointerEvent) => {
       const target = event.target;
       if (!(target instanceof Element)) {
@@ -39,10 +47,17 @@ export const QuickAddView = ({ instance, direction, insideBoundary, getMaterials
 
       setOpenPosition(null);
     };
+    const handleIframeClick = () => setOpenPosition(null);
+    const iframeDocument = instance.getDom()?.ownerDocument;
 
     document.addEventListener('pointerdown', handleOutsidePointerDown);
-    return () => document.removeEventListener('pointerdown', handleOutsidePointerDown);
-  }, [openPosition]);
+    iframeDocument?.addEventListener('click', handleIframeClick, true);
+    return () => {
+      window.clearTimeout(closeTimer);
+      document.removeEventListener('pointerdown', handleOutsidePointerDown);
+      iframeDocument?.removeEventListener('click', handleIframeClick, true);
+    };
+  }, [instance, openPosition]);
 
   return (
     <div className={`${styles.quickAddBox} ${styles[direction]}`}>

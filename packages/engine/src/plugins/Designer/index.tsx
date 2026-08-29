@@ -81,6 +81,9 @@ export const DesignerPlugin: DesignerPluginType = () => {
         getSelectedNodeId: () => {
           return designerRef.current?.layoutRef.current?.state.currentSelectId;
         },
+        clearSelectNode: () => {
+          designerRef.current?.layoutRef.current?.clearSelectNode();
+        },
         updatePage: (page: CPageDataType | CPage) => {
           designerRef.current?.layoutRef.current?.designRenderRef?.current?.rerender(page);
         },

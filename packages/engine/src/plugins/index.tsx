@@ -9,8 +9,10 @@ import { DisplaySourceSchema } from './DisplaySourceSchema';
 import { HistoryPlugin } from './History';
 import { HotkeysPlugin } from './Hotkeys';
 import { PageRuntimeLogPlugin } from './PageRuntimeLog';
+import { PropertyPanel, PropertyPanelConfig } from './PropertyPanel';
 
-export const DEFAULT_PLUGIN_LIST: CPlugin[] = [
+// 默认插件包含不同配置和导出类型，使用 any 作为集合边界，保留各插件自身的具体类型。
+export const DEFAULT_PLUGIN_LIST: CPlugin<any, any>[] = [
   DesignerPlugin,
   PageRuntimeLogPlugin,
   OutlineTreePlugin,
@@ -31,6 +33,8 @@ export {
   DisplaySourceSchema,
   HotkeysPlugin,
   PageRuntimeLogPlugin,
+  PropertyPanel,
+  PropertyPanelConfig,
 };
 
 /** 组件唯一名 */
@@ -53,7 +57,6 @@ export * from './DisplaySourceSchema/index';
 export * from './GlobalStatePanel/index';
 export * from './History';
 export * from './OutlineTree';
-export * from './PropertyPanel';
 export * from './RightPanel';
 export * from './RightPanel/type';
 export * from './VisualPanelPlus';

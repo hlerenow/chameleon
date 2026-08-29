@@ -1,6 +1,8 @@
 import { CRightPanelItem } from '../RightPanel/view';
 import { PropertyPanel } from './view';
 
+export { PropertyPanel };
+
 export const PropertyPanelConfig: CRightPanelItem = {
   key: 'Property',
   name: 'Property',

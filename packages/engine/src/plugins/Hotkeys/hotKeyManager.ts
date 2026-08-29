@@ -39,10 +39,11 @@ export class HotKeysManager {
     const triggerAction = this.getTriggerHotkeyDebounce();
     // 收集所有的 keys
     const keydownCb = (event: KeyboardEvent) => {
-      // 表单控件过滤 默认表单控件不触发快捷键
-      if (this.filterInputElement(event)) return;
-
       const key = this.getKeyCodeByEvent(event);
+      // Escape 用于取消选中，即使焦点在表单控件内也需要生效。
+      // 其他快捷键仍遵循默认的表单控件过滤规则。
+      if (key !== this.getKeyCodeByLabel('escape') && this.filterInputElement(event)) return;
+
       if (this.downKeyCodeSet.has(key)) return;
 
       this.downKeyCodeSet.add(key);

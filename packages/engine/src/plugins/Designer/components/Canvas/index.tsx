@@ -489,6 +489,8 @@ export class Designer extends React.Component<DesignerPropsType, DesignerStateTy
   };
 
   renderQuickAddView = () => {
+    if (this.props.pluginCtx.meta?.quickAddView !== true) return null;
+
     const node = this.state.quickAddNode;
     const instances = node ? this.layoutRef.current?.designRenderRef.current?.getInstancesById(node.id) : [];
     const selectedInstance = this.layoutRef.current?.state.currentSelectInstance;

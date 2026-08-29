@@ -88,6 +88,10 @@ export const HotkeysPlugin: HotKeysPluginType = {
     hotkeyManager.addHotAction(['backspace'], () => {
       actionMap.deleteNode(ctx);
     });
+
+    hotkeyManager.addHotAction(['escape'], () => {
+      actionMap.clearSelect(ctx);
+    });
     (ctx as any).hotkeyManager = hotkeyManager;
     ctx.pluginReadyOk();
   },

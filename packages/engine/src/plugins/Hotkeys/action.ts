@@ -5,6 +5,10 @@ import { HistoryPluginInstance } from '../History/type';
 import { message } from 'antd';
 
 export const actionMap = {
+  clearSelect: async (ctx: CPluginCtx) => {
+    const designer = await ctx.pluginManager.get<DesignerPluginInstance>('Designer');
+    designer?.export.clearSelectNode();
+  },
   deleteNode: async (ctx: CPluginCtx) => {
     const designer = await ctx.pluginManager.get<DesignerPluginInstance>('Designer');
     const activeNode = ctx.engine.getActiveNode();

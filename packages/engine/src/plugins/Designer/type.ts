@@ -12,6 +12,7 @@ export type DesignerExport = {
   copyNode: (nodeId: string) => Promise<boolean | undefined>;
   deleteNode: (nodeId: string) => Promise<boolean | undefined>;
   getSelectedNodeId: () => string | undefined;
+  clearSelectNode: () => void;
   updatePage: (page: CPageDataType) => void;
   getComponentInstances: (id: string) => RenderInstance[];
   getDynamicComponentInstances: (id: string) => RenderInstance;
