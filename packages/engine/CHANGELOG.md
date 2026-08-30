@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.7](https://github.com/hlerenow/chameleon/compare/v0.12.6...v0.12.7) (2026-08-30)
+
+### 🐛 Bug Fixes | Bug 修复
+
+* **engine:** improve selection panel and ghost labels ([b979437](https://github.com/hlerenow/chameleon/commit/b9794375c54ea52153c53080f2e11668e9aa3cd7))
+
 ## [0.12.6](https://github.com/hlerenow/chameleon/compare/v0.12.5...v0.12.6) (2026-08-30)
 
 ### ✨ Features | 新功能

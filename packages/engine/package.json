@@ -1,6 +1,6 @@
 {
   "name": "@chamn/engine",
-  "version": "0.12.6",
+  "version": "0.12.7",
   "engines": {
     "node": ">=22",
     "pnpm": ">=9"
