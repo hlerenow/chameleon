@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.6](https://github.com/hlerenow/chameleon/compare/v0.12.5...v0.12.6) (2026-08-30)
+
+### ✨ Features | 新功能
+
+* **engine:** customize component library views ([f87d0ad](https://github.com/hlerenow/chameleon/commit/f87d0ad6c765622e98e5827a5c3442d853fa192f))
+
 ## [0.12.5](https://github.com/hlerenow/chameleon/compare/v0.12.4...v0.12.5) (2026-08-29)
 
 ### 🐛 Bug Fixes | Bug 修复
