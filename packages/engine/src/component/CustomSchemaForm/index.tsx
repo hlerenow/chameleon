@@ -9,6 +9,7 @@ import { ConfigProvider } from 'antd';
 import { CCustomSchemaFormContext } from './context';
 import { CPluginCtx } from '../../core/pluginManager';
 import { CFormContextData } from './components/Form/context';
+import { SetterErrorBoundary } from './components/SetterSwitcher/SetterErrorBoundary';
 
 export type CustomSchemaFormInstance = CForm;
 
@@ -73,16 +74,17 @@ const CustomSchemaFormCore = (props: CustomSchemaFormProps, ref: Ref<CustomSchem
                 const setterList = getSetterList(property.setters);
                 const keyPaths = [property.name];
                 return (
-                  <SetterSwitcher
-                    key={property.name}
-                    condition={property.condition}
-                    keyPaths={keyPaths}
-                    setters={setterList}
-                    label={title}
-                    name={property.name || ''}
-                    tips={tip}
-                    readOnly={property.readOnly}
-                  />
+                  <SetterErrorBoundary key={property.name} setterName={property.name}>
+                    <SetterSwitcher
+                      condition={property.condition}
+                      keyPaths={keyPaths}
+                      setters={setterList}
+                      label={title}
+                      name={property.name || ''}
+                      tips={tip}
+                      readOnly={property.readOnly}
+                    />
+                  </SetterErrorBoundary>
                 );
               }
             })}

@@ -7,9 +7,9 @@ import { CPlugin, CPluginCtx } from '../../core/pluginManager';
 import localize from './localize';
 import styles from './style.module.scss';
 import { withTranslation, WithTranslation } from 'react-i18next';
-import { ListView } from './components/ListView';
+import { ComponentLibItemRenderProps, ListView, ListViewDataSource } from './components/ListView';
 import { getTargetMNodeKeyVal, searchComponentSnippets } from './util';
-import { DRAG_ITEM_KEY } from './components/DragItem';
+import { DragComponent, DRAG_ITEM_KEY } from './components/DragItem';
 import {
   CNode,
   CRootNode,
@@ -35,6 +35,17 @@ const TabTitle = ({ children }: { children: any }) => {
   return <div className={styles.tabTitle}>{children}</div>;
 };
 
+export type ComponentLibRenderContext = {
+  /** All loaded, normalized materials grouped by groupName and category. */
+  materials: SnippetsCollection;
+  /** Current search input. Updated on every input change. */
+  searchString: string;
+  /** Whether the component library is currently showing search results. */
+  searchMode: boolean;
+  /** Latest search result, grouped for ListView/renderList. */
+  searchResults: ListViewDataSource;
+};
+
 type ComponentLibViewState = {
   componentsList: SnippetsCollection;
   searchString: string;
@@ -50,6 +61,16 @@ export type ComponentLibPluginConfig = {
     defaultInputView: React.ReactNode;
     updateState: (newState: Partial<ComponentLibViewState>) => string;
   }) => React.ReactNode;
+  /** Customize one material card while keeping access to the default card and drag wrapper. */
+  customItemRender?: (props: ComponentLibItemRenderProps & ComponentLibRenderContext) => React.ReactNode;
+  /** Replace the main group-tab/search region. */
+  customTabsRender?: (
+    props: ComponentLibRenderContext & {
+      defaultView: React.ReactNode;
+      renderList: (dataSource: ListViewDataSource) => React.ReactNode;
+      DragComponent: typeof DragComponent;
+    }
+  ) => React.ReactNode;
 };
 
 class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentLibViewState> {
@@ -274,15 +295,49 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
     });
   };
 
+  renderItem = (props: ComponentLibItemRenderProps) => {
+    const customItemRender = this.props.pluginCtx.config.customItemRender;
+    if (!customItemRender) {
+      return props.defaultView;
+    }
+    return customItemRender({
+      ...props,
+      ...this.getRenderContext(),
+    });
+  };
+
+  renderList = (dataSource: ListViewDataSource) => {
+    return <ListView dataSource={dataSource} renderItem={this.renderItem} />;
+  };
+
+  getRenderContext = (): ComponentLibRenderContext => {
+    return {
+      materials: this.state.componentsList,
+      searchString: this.state.searchString,
+      searchMode: this.state.searchMode,
+      searchResults: this.state.searchResultList,
+    };
+  };
+
+  renderSearchView = () => {
+    const { searchResultList } = this.state;
+    return (
+      <div>
+        {!searchResultList.length && <div className={styles.notFoundComponent}>暂无相关组件</div>}
+        <ListView dataSource={searchResultList} renderItem={this.renderItem} />
+      </div>
+    );
+  };
+
   render(): React.ReactNode {
-    const { componentsList, searchString, searchResultList, searchMode } = this.state;
+    const { componentsList, searchString } = this.state;
     const { toAddNewNode } = this;
     const CustomSearchBar = this.props.pluginCtx.config.customSearchBar;
     const items = componentsList.map((el) => {
       return {
         label: <TabTitle>{capitalize(el.name)}</TabTitle>,
         key: el.name,
-        children: <ListView dataSource={el.list} />,
+        children: this.renderList(el.list),
       };
     });
 
@@ -316,24 +371,34 @@ class ComponentLibView extends React.Component<ComponentLibViewProps, ComponentL
             defaultSearchValue
           )}
         </div>
-        {searchMode && (
-          <div>
-            {!searchResultList.length && <div className={styles.notFoundComponent}>暂无相关组件</div>}
-            <ListView dataSource={searchResultList} />
-          </div>
-        )}
-        {!searchResultList.length && !searchMode && (
-          <Tabs
-            defaultActiveKey="BaseComponent"
-            items={items}
-            style={{
-              width: '100%',
-            }}
-          />
-        )}
+        {this.renderTabs(items)}
       </div>
     );
   }
+
+  renderTabs = (items: { label: React.ReactNode; key: string; children: React.ReactNode }[]) => {
+    const defaultView = this.state.searchMode ? (
+      this.renderSearchView()
+    ) : (
+      <Tabs
+        defaultActiveKey="BaseComponent"
+        items={items}
+        style={{
+          width: '100%',
+        }}
+      />
+    );
+    const customTabsRender = this.props.pluginCtx.config.customTabsRender;
+    if (!customTabsRender) {
+      return defaultView;
+    }
+    return customTabsRender({
+      ...this.getRenderContext(),
+      defaultView,
+      renderList: this.renderList,
+      DragComponent,
+    });
+  };
 }
 
 export const ComponentLibPlugin: CPlugin<ComponentLibPluginConfig> = {
@@ -370,3 +435,7 @@ export const ComponentLibPlugin: CPlugin<ComponentLibPluginConfig> = {
 };
 
 ComponentLibPlugin.PLUGIN_NAME = PLUGIN_NAME;
+
+export { DragComponent, DragComponentItem, DRAG_ITEM_KEY } from './components/DragItem';
+export type { DragComponentProps } from './components/DragItem';
+export type { ComponentLibItemRenderProps, ListViewDataSource } from './components/ListView';

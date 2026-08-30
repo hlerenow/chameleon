@@ -1,17 +1,29 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { SnippetsType } from '@chamn/model';
 import { Collapse } from 'antd';
-import { DragComponentItem } from '../DragItem';
+import { DragComponent, DragComponentItem } from '../DragItem';
 import styles from './style.module.scss';
 
+export type ListViewDataSource = {
+  name: string;
+  list: SnippetsType[];
+}[];
+
+export type ComponentLibItemRenderProps = {
+  /** The material snippet represented by this card. */
+  item: SnippetsType;
+  /** Default card, useful when custom rendering only adds a wrapper or actions. */
+  defaultView: React.ReactNode;
+  /** Add this wrapper around custom content to retain engine drag behavior. */
+  DragComponent: typeof DragComponent;
+};
+
 export type ListViewProps = {
-  dataSource: {
-    name: string;
-    list: SnippetsType[];
-  }[];
+  dataSource: ListViewDataSource;
+  renderItem?: (props: ComponentLibItemRenderProps) => React.ReactNode;
 };
 export const ListView = (props: ListViewProps) => {
-  const { dataSource } = props;
+  const { dataSource, renderItem } = props;
   const defaultActiveKey = dataSource.map((el) => el.name || '');
 
   const items = useMemo(() => {
@@ -20,7 +32,7 @@ export const ListView = (props: ListViewProps) => {
       const contentView = (
         <div className={styles.collapsePanel}>
           {el.list.map((it) => {
-            return (
+            const defaultView = (
               <DragComponentItem
                 id={it.id!}
                 key={it.id!}
@@ -30,6 +42,14 @@ export const ListView = (props: ListViewProps) => {
                 description={it.description || ''}
               />
             );
+            const itemView = renderItem
+              ? renderItem({
+                  item: it,
+                  defaultView,
+                  DragComponent,
+                })
+              : defaultView;
+            return <React.Fragment key={it.id}>{itemView}</React.Fragment>;
           })}
         </div>
       );
@@ -40,7 +60,7 @@ export const ListView = (props: ListViewProps) => {
         children: contentView,
       };
     });
-  }, [dataSource]);
+  }, [dataSource, renderItem]);
 
   if (!dataSource.length) {
     return null;

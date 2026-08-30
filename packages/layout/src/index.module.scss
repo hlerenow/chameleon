@@ -47,6 +47,11 @@
   }
 }
 
+.layoutContainerDragging {
+  // Keep DropAnchor and its toolbar above the canvas toolbar while dragging.
+  z-index: 3;
+}
+
 .canvasZoomed {
   overflow: auto;
   -ms-overflow-style: none;

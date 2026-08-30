@@ -1166,8 +1166,13 @@ export class Layout extends React.Component<LayoutPropsType, LayoutStateType> {
       dropViewItemRender = this.dropViewItemRender;
     }
     const canvasViewportHeight = canvasScale < 1 ? `${100 / canvasScale}%` : '100%';
-    const layoutContainerClassName =
-      canvasScale > 1 ? `${styles.layoutContainer} ${styles.canvasZoomed}` : styles.layoutContainer;
+    const layoutContainerClassName = [
+      styles.layoutContainer,
+      canvasScale > 1 ? styles.canvasZoomed : '',
+      isDragging ? styles.layoutContainerDragging : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
     return (
       <div className={styles.layoutRoot}>
         {this.props.canvasToolbarView && <div className={styles.canvasToolbar}>{this.props.canvasToolbarView}</div>}

@@ -7,6 +7,7 @@ import clsx from 'clsx';
 import mitt, { Emitter } from 'mitt';
 import { waitReactUpdate } from '../../utils';
 import { createPortal } from 'react-dom';
+import { PluginErrorBoundary } from './PluginErrorBoundary';
 
 export interface PluginContext {
   openPanel: () => void;
@@ -315,7 +316,9 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
       <div className={styles.workbenchContainer}>
         {!hiddenTopBar && (
           <div className={styles.topToolBarBox}>
-            <div className={styles.topToolBarView}>{topToolBarView}</div>
+            <div className={styles.topToolBarView}>
+              <PluginErrorBoundary area="top toolbar">{topToolBarView}</PluginErrorBoundary>
+            </div>
           </div>
         )}
 
@@ -336,7 +339,7 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
                         currentActivePluginObj?.name === pl.name && styles.active,
                       ])}
                     >
-                      {pl.icon}
+                      <PluginErrorBoundary area={`${pl.name} icon`}>{pl.icon}</PluginErrorBoundary>
                     </div>
                   );
                 })}
@@ -355,7 +358,9 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
                 >
                   <div className={styles.pluginHeader}>
                     <span className={styles.pluginNameText}>
-                      {currentActivePluginObj?.title || currentActivePluginObj?.name}
+                      <PluginErrorBoundary area={`${currentActivePluginObj?.name || 'left panel'} header`}>
+                        {currentActivePluginObj?.title || currentActivePluginObj?.name}
+                      </PluginErrorBoundary>
                     </span>
                     <Button
                       className={clsx([styles.fixedBtn])}
@@ -373,16 +378,26 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
                       <CloseOutlined />
                     </Button>
                   </div>
-                  <div className={styles.pluginPanelBox}>{CurrentPluginRenderView}</div>
+                  <div className={styles.pluginPanelBox}>
+                    <PluginErrorBoundary area={currentActivePluginObj?.name || 'left panel'}>
+                      {CurrentPluginRenderView}
+                    </PluginErrorBoundary>
+                  </div>
                 </Resizable>
               )}
             </div>
           )}
 
           <div className={styles.centerBox}>
-            {subTopToolBarView && <div className={styles.subTopToolbarBox}>{subTopToolBarView}</div>}
+            {subTopToolBarView && (
+              <div className={styles.subTopToolbarBox}>
+                <PluginErrorBoundary area="sub top toolbar">{subTopToolBarView}</PluginErrorBoundary>
+              </div>
+            )}
             <div className={clsx([styles.canvasBox, this.state.canvasFull !== true && styles.canvasBoxPadding])}>
-              <div className={styles.scrollBox}>{bodyView}</div>
+              <div className={styles.scrollBox}>
+                <PluginErrorBoundary area="body">{bodyView}</PluginErrorBoundary>
+              </div>
             </div>
           </div>
 
@@ -412,7 +427,9 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
                   });
                 }}
               >
-                <div className={styles.rightBox}>{rightView}</div>
+                <div className={styles.rightBox}>
+                  <PluginErrorBoundary area="right panel">{rightView}</PluginErrorBoundary>
+                </div>
               </Resizable>
             </div>
           </div>
@@ -428,7 +445,7 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
                     display: 'inline-block',
                   }}
                 >
-                  {el.view}
+                  <PluginErrorBoundary area={`custom view: ${el.key}`}>{el.view}</PluginErrorBoundary>
                 </div>
               );
             })}

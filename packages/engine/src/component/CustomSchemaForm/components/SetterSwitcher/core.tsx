@@ -6,6 +6,7 @@ import { CCustomSchemaFormContext } from '../../context';
 import { CFormContext } from '../Form/context';
 import { CSetter, CSetterProps } from '../Setters/type';
 import { getDefaultSetterByValue } from '../../utils';
+import { SetterErrorBoundary } from './SetterErrorBoundary';
 
 export type SetterSwitcherProps = {
   // 支持的 setter 列表
@@ -71,5 +72,9 @@ export const SetterSwitcherCore = ({
     };
   }
 
-  return <CurrentSetterComp {...props} />;
+  return (
+    <SetterErrorBoundary setterName={currentSetter?.componentName} key={currentSetter?.componentName}>
+      <CurrentSetterComp {...props} />
+    </SetterErrorBoundary>
+  );
 };

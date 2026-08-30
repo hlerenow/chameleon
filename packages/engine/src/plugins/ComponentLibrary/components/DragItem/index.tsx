@@ -3,6 +3,29 @@ import clsx from 'clsx';
 import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import styles from './style.module.scss';
 
+export const DRAG_ITEM_KEY = 'data-drag-key';
+
+/**
+ * Generic drag wrapper for custom component-library item renderers.
+ * The ComponentLibrary plugin registers the drag sensor on its container, so
+ * any element rendered inside that container with this attribute keeps the
+ * default engine drag behavior.
+ */
+export type DragComponentProps = {
+  id: string;
+  children: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+};
+
+export const DragComponent = ({ id, children, className, style }: DragComponentProps) => {
+  return (
+    <div {...{ [DRAG_ITEM_KEY]: id }} className={className} style={style}>
+      {children}
+    </div>
+  );
+};
+
 export type DragComponentItemProps = {
   id: string;
   name: string;
@@ -14,9 +37,6 @@ export type DragComponentItemProps = {
 };
 
 export const DragComponentItem = (props: DragComponentItemProps) => {
-  const dragInfo = {
-    [DRAG_ITEM_KEY]: props.id,
-  };
   const nameRef = useRef<HTMLSpanElement>(null);
   const [nameOverflow, setNameOverflow] = useState(false);
 
@@ -55,7 +75,7 @@ export const DragComponentItem = (props: DragComponentItemProps) => {
 
   const contentView = (
     <div className={clsx([styles.square, props.containerClassName])}>
-      <div {...dragInfo} className={styles.componentItem} style={props.style}>
+      <DragComponent id={props.id} className={styles.componentItem} style={props.style}>
         <div className={styles.iconBox}>{icon}</div>
         {nameOverflow ? (
           <Tooltip title={props.name} placement="top">
@@ -64,7 +84,7 @@ export const DragComponentItem = (props: DragComponentItemProps) => {
         ) : (
           nameView
         )}
-      </div>
+      </DragComponent>
     </div>
   );
 
@@ -87,5 +107,3 @@ export const DragComponentItem = (props: DragComponentItemProps) => {
     return contentView;
   }
 };
-
-export const DRAG_ITEM_KEY = 'data-drag-key';

@@ -241,6 +241,7 @@ function App() {
 - 🔍 组件搜索
 - 🖱️ 拖拽添加组件
 - 🎨 自定义组件图标
+- 🧩 自定义卡片和 Tab 区域
 
 ### 配置选项
 
@@ -261,10 +262,47 @@ const beforePluginRun = ({ pluginManager }) => {
       );
     };
 
+    // 自定义组件卡片。DragComponent 会复用引擎已有的拖拽传感器。
+    pluginInstance.ctx.config.customItemRender = ({ item, materials, DragComponent }) => {
+      return (
+        <DragComponent id={item.id!} className="my-material-card">
+          <span>{item.title}</span>
+          <small>{materials.length} 个组件分组</small>
+        </DragComponent>
+      );
+    };
+
+    // 自定义 Tab / 搜索区域。搜索输入或结果变化时会重新调用。
+    pluginInstance.ctx.config.customTabsRender = ({
+      materials,
+      searchMode,
+      searchResults,
+      renderList,
+      defaultView,
+    }) => {
+      if (searchMode) {
+        return <div>{renderList(searchResults)}</div>;
+      }
+      return (
+        <div>
+          {materials.map((group) => (
+            <section key={group.name}>
+              <h4>{group.name}</h4>
+              {renderList(group.list)}
+            </section>
+          ))}
+        </div>
+      );
+    };
+
     return pluginInstance;
   });
 };
 ```
+
+`customItemRender` 会同时作用于普通列表和搜索结果。它接收当前 `item`、全部已加载并整理后的 `materials`、默认卡片 `defaultView` 和 `DragComponent`。自定义卡片需要将内容放在 `DragComponent` 内，且不要通过 Portal 移出组件库面板容器。
+
+`customTabsRender` 替换默认 Tab / 搜索区域，接收 `materials`、`defaultView`、`renderList`、`DragComponent`，以及实时更新的 `searchString`、`searchMode`、`searchResults`。搜索输入、搜索结果或物料列表变化时会重新渲染。不配置时保留默认面板行为。
 
 ### 使用示例
 

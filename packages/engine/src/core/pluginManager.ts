@@ -129,7 +129,14 @@ export class PluginManager {
       pluginCtx.ready = true;
     };
     this.plugins.set(innerPlugin.name, pluginCtx);
-    await innerPlugin.init(ctx);
+    try {
+      await innerPlugin.init(ctx);
+    } catch (error) {
+      // A broken plugin must not reject Engine.componentDidMount and take down
+      // the other plugins that have already been mounted.
+      console.error(`Plugin ${innerPlugin.name} initialization failed`, error);
+      ctx.pluginReadyOk();
+    }
   }
 
   async get<P extends PluginInstance<any, any>>(pluginName: string): Promise<P | undefined> {
