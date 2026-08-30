@@ -273,13 +273,7 @@ const beforePluginRun = ({ pluginManager }) => {
     };
 
     // 自定义 Tab / 搜索区域。搜索输入或结果变化时会重新调用。
-    pluginInstance.ctx.config.customTabsRender = ({
-      materials,
-      searchMode,
-      searchResults,
-      renderList,
-      defaultView,
-    }) => {
+    pluginInstance.ctx.config.customTabsRender = ({ materials, searchMode, searchResults, renderList }) => {
       if (searchMode) {
         return <div>{renderList(searchResults)}</div>;
       }
@@ -303,6 +297,28 @@ const beforePluginRun = ({ pluginManager }) => {
 `customItemRender` 会同时作用于普通列表和搜索结果。它接收当前 `item`、全部已加载并整理后的 `materials`、默认卡片 `defaultView` 和 `DragComponent`。自定义卡片需要将内容放在 `DragComponent` 内，且不要通过 Portal 移出组件库面板容器。
 
 `customTabsRender` 替换默认 Tab / 搜索区域，接收 `materials`、`defaultView`、`renderList`、`DragComponent`，以及实时更新的 `searchString`、`searchMode`、`searchResults`。搜索输入、搜索结果或物料列表变化时会重新渲染。不配置时保留默认面板行为。
+
+### 自定义渲染上下文
+
+| 参数            | 适用回调                               | 说明                                                |
+| --------------- | -------------------------------------- | --------------------------------------------------- |
+| `materials`     | `customItemRender`、`customTabsRender` | 引擎按 `groupName`、`category` 整理后的全部物料分组 |
+| `searchString`  | `customItemRender`、`customTabsRender` | 当前搜索关键词，输入变化时更新                      |
+| `searchMode`    | `customItemRender`、`customTabsRender` | 是否处于搜索结果模式                                |
+| `searchResults` | `customItemRender`、`customTabsRender` | 最新搜索结果，可直接传给 `renderList`               |
+| `defaultView`   | `customItemRender`、`customTabsRender` | 引擎默认卡片或默认 Tab / 搜索视图                   |
+| `DragComponent` | `customItemRender`、`customTabsRender` | 可拖拽包装组件                                      |
+| `renderList`    | `customTabsRender`                     | 使用引擎默认分类列表和卡片渲染搜索结果或物料分组    |
+
+默认搜索框按 Enter 后更新 `searchResults`；清空搜索框会退出搜索模式并清空结果。物料通过 `engine.updateMaterials()` 更新后，`materials`、`searchResults` 和自定义视图会同步刷新。
+
+只替换搜索态、保留默认 Tab 视图：
+
+```tsx
+customTabsRender: ({ searchMode, searchResults, renderList, defaultView }) => {
+  return searchMode ? renderList(searchResults) : defaultView;
+};
+```
 
 ### 使用示例
 
