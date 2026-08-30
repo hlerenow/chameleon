@@ -115,6 +115,11 @@
       }
     }
 
+    // An unfixed panel is positioned over the canvas and must be above it.
+    .leftBoxFloating {
+      z-index: 102;
+    }
+
     .hiddenLeftPanel {
       width: 0px;
     }

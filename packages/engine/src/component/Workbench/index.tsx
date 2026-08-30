@@ -325,7 +325,11 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
         <div className={styles.bodyContent}>
           {!hiddenLeftPanel && (
             <div
-              className={clsx([styles.leftBox, hiddenLeftPanel ?? styles.hiddenLeftPanel])}
+              className={clsx([
+                styles.leftBox,
+                hiddenLeftPanel ?? styles.hiddenLeftPanel,
+                leftBoxVisible && !leftBoxFixed && styles.leftBoxFloating,
+              ])}
               ref={this.leftPanelContentRef}
             >
               <div className={styles.pluginIconBar}>
@@ -333,7 +337,12 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
                   return (
                     <div
                       key={pl.name}
-                      onClick={() => onPluginIconClick(pl)}
+                      onClick={(event) => {
+                        // Prevent the document-level auto-close handler from
+                        // immediately closing a panel that was just opened.
+                        event.stopPropagation();
+                        onPluginIconClick(pl);
+                      }}
                       className={clsx([
                         styles.pluginIconItem,
                         currentActivePluginObj?.name === pl.name && styles.active,
@@ -366,9 +375,14 @@ export class Workbench extends React.Component<WorkbenchPropsType, WorkbenchStat
                       className={clsx([styles.fixedBtn])}
                       type="text"
                       size="small"
-                      onClick={() => {
-                        this.setState({
-                          leftBoxFixed: !this.state.leftBoxFixed,
+                      onClick={(event) => {
+                        // Pin/unpin is an internal panel action; it must not
+                        // be interpreted as an outside click.
+                        event.stopPropagation();
+                        this.setState((state) => {
+                          return {
+                            leftBoxFixed: !state.leftBoxFixed,
+                          };
                         });
                       }}
                     >
