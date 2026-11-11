@@ -5,7 +5,7 @@ import astroMermaid from 'astro-mermaid';
 
 // https://astro.build/config
 export default defineConfig({
-  base: '/chameleon/documents',
+  base: '/documents',
   integrations: [
     starlight({
       title: 'Chameleon',
@@ -16,7 +16,7 @@ export default defineConfig({
       },
       defaultLocale: 'root',
       social: {
-        github: 'https://github.com/hlerenow/chameleon',
+        github: 'https://chamn.bytekit.cc',
       },
       components: {
         Header: './src/components/DocsHeader.astro',
